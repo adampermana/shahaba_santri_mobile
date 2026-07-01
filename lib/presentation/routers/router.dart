@@ -41,7 +41,7 @@ final GoRouter router = GoRouter(
   routes: [
     GoRoute(
       path: RouterPath.mainPath,
-      builder: (context, state) => MainScreen(
+      builder: (context, state) => MainProvider(
         key: state.pageKey,
       ),
     ),

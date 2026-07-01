@@ -43,6 +43,7 @@ flutter:
 
   assets:
     - assets/svg/
+    - assets/svg/header/
 
   fonts:
     - family: Amiri
