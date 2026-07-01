@@ -44,6 +44,10 @@ flutter:
   assets:
     - assets/svg/
     - assets/svg/header/
+    - assets/svg/jadwal_sholat/isya/
+    - assets/svg/jadwal_sholat/maghrib/
+    - assets/svg/jadwal_sholat/subuh/
+    - assets/svg/jadwal_sholat/terbit/
 
   fonts:
     - family: Amiri

@@ -32,4 +32,36 @@ abstract class AppIcons {
   static const String volumeUpLine = '$_path/volume-up-line.svg';
   static const String zoomInLine = '$_path/zoom-in-line.svg';
   static const String zoomOutLine = '$_path/zoom-out-line.svg';
+
+  // Jadwal Sholat - Isya
+  static const String jadwalSholatIsyaFrame =
+      '$_path/jadwal_sholat/isya/Frame.svg';
+  static const String jadwalSholatIsyaVector =
+      '$_path/jadwal_sholat/isya/Vector.svg';
+  static const String jadwalSholatIsyaVector1 =
+      '$_path/jadwal_sholat/isya/Vector-1.svg';
+
+  // Jadwal Sholat - Maghrib
+  static const String jadwalSholatMaghribFlat =
+      '$_path/jadwal_sholat/maghrib/Flat.svg';
+  static const String jadwalSholatMaghribVector =
+      '$_path/jadwal_sholat/maghrib/Vector.svg';
+  static const String jadwalSholatMaghribVector1 =
+      '$_path/jadwal_sholat/maghrib/Vector-1.svg';
+
+  // Jadwal Sholat - Subuh
+  static const String jadwalSholatSubuhCapa1 =
+      '$_path/jadwal_sholat/subuh/Capa_1.svg';
+  static const String jadwalSholatSubuhVector =
+      '$_path/jadwal_sholat/subuh/Vector.svg';
+  static const String jadwalSholatSubuhVector1 =
+      '$_path/jadwal_sholat/subuh/Vector-1.svg';
+
+  // Jadwal Sholat - Terbit
+  static const String jadwalSholatTerbitCapa1 =
+      '$_path/jadwal_sholat/terbit/Capa_1.svg';
+  static const String jadwalSholatTerbitVector =
+      '$_path/jadwal_sholat/terbit/Vector.svg';
+  static const String jadwalSholatTerbitVector1 =
+      '$_path/jadwal_sholat/terbit/Vector-1.svg';
 }
