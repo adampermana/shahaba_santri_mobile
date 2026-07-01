@@ -3,6 +3,8 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
+import 'package:hive_ce/hive_ce.dart';
+import 'package:sahaba_mobile/infrastructure/failures/failures.dart';
 
 part 'core_local_datasource.dart';
 
