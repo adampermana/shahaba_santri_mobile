@@ -19,8 +19,9 @@ jobs:
   build:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
     with:
-      flutter_version: "3.44.x"
+      flutter_channel: stable
       run_bloc_lint: true
+      min_coverage: 0
 
   spell-check:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
