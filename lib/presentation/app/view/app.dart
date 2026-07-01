@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:sahaba_mobile/counter/counter.dart';
 import 'package:sahaba_mobile/l10n/l10n.dart';
+import 'package:sahaba_mobile/presentation/routers/router.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        ),
-        useMaterial3: true,
-      ),
+    return MaterialApp.router(
+      routerConfig: router,
+      // theme: AppTheme.lightTheme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const CounterPage(),
+      builder: (context, child) => child!,
     );
   }
 }

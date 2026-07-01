@@ -1,5 +1,5 @@
-class RoutePath {
-  RoutePath._();
+class RouterPath {
+  RouterPath._();
 
   /// Root paths
   static const String rootPath = '/';
