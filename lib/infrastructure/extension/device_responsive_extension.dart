@@ -1,0 +1,111 @@
+import 'package:flutter/material.dart';
+
+extension ContextExtensionss on BuildContext {
+  /// The same of [MediaQuery.sizeOf(context)]
+  Size get mediaQuerySize => MediaQuery.sizeOf(this);
+
+  /// The same of [MediaQuery.of(context).size.height]
+  /// Note: updates when you rezise your screen (like on a browser or
+  /// desktop window)
+  double get height => mediaQuerySize.height;
+
+  /// The same of [MediaQuery.of(context).size.width]
+  /// Note: updates when you rezise your screen (like on a browser or
+  /// desktop window)
+  double get width => mediaQuerySize.width;
+
+  /// Gives you the power to get a portion of the height.
+  /// Useful for responsive applications.
+  ///
+  /// [dividedBy] is for when you want to have a portion of the value you
+  /// would get like for example: if you want a value that represents a third
+  /// of the screen you can set it to 3, and you will get a third of the height
+  ///
+  /// [reducedBy] is a percentage value of how much of the height you want
+  /// if you for example want 46% of the height, then you reduce it by 56%.
+  double heightTransformer({double dividedBy = 1, double reducedBy = 0.0}) {
+    return (mediaQuerySize.height -
+            ((mediaQuerySize.height / 100) * reducedBy)) /
+        dividedBy;
+  }
+
+  /// Gives you the power to get a portion of the width.
+  /// Useful for responsive applications.
+  ///
+  /// [dividedBy] is for when you want to have a portion of the value you
+  /// would get like for example: if you want a value that represents a third
+  /// of the screen you can set it to 3, and you will get a third of the width
+  ///
+  /// [reducedBy] is a percentage value of how much of the width you want
+  /// if you for example want 46% of the width, then you reduce it by 56%.
+  double widthTransformer({double dividedBy = 1, double reducedBy = 0.0}) {
+    return (mediaQuerySize.width - ((mediaQuerySize.width / 100) * reducedBy)) /
+        dividedBy;
+  }
+
+  /// Divide the height proportionally by the given value
+  double ratio({
+    double dividedBy = 1,
+    double reducedByW = 0.0,
+    double reducedByH = 0.0,
+  }) {
+    return heightTransformer(dividedBy: dividedBy, reducedBy: reducedByH) /
+        widthTransformer(dividedBy: dividedBy, reducedBy: reducedByW);
+  }
+
+  /// similar to [MediaQuery.of(context).padding]
+  ThemeData get theme => Theme.of(this);
+
+  /// Check if dark mode theme is enable
+  bool get isDarkMode => theme.brightness == Brightness.dark;
+
+  /// give access to Theme.of(context).iconTheme.color
+  Color? get iconColor => theme.iconTheme.color;
+
+  /// similar to [MediaQuery.of(context).padding]
+  TextTheme get textTheme => Theme.of(this).textTheme;
+
+  /// similar to [MediaQuery.paddingOf(context)]
+  EdgeInsets get mediaQueryPadding => MediaQuery.paddingOf(this);
+
+  /// similar to [MediaQuery.of(context).padding]
+  MediaQueryData get mediaQuery => MediaQuery.of(this);
+
+  /// similar to [MediaQuery.viewPaddingOf(context)]
+  EdgeInsets get mediaQueryViewPadding => MediaQuery.viewPaddingOf(this);
+
+  /// similar to [MediaQuery.viewInsetsOf(context)]
+  EdgeInsets get mediaQueryViewInsets => MediaQuery.viewInsetsOf(this);
+
+  /// similar to [MediaQuery.orientationOf(context)]
+  Orientation get orientation => MediaQuery.orientationOf(this);
+
+  /// check if device is on landscape mode
+  bool get isLandscape => orientation == Orientation.landscape;
+
+  /// check if device is on portrait mode
+  bool get isPortrait => orientation == Orientation.portrait;
+
+  /// similar to [MediaQuery.devicePixelRatioOf(this)]
+  double get devicePixelRatio => MediaQuery.devicePixelRatioOf(this);
+
+  /// similar to [MediaQuery.textScalerOf(this)]
+  double get textScaleFactor => MediaQuery.textScalerOf(this).scale(1);
+
+  /// get the shortestSide from screen
+  double get mediaQueryShortestSide => mediaQuerySize.shortestSide;
+
+  /// True if width be larger than 800
+  bool get showNavbar => width > 800;
+
+  /// Gunakan width karena lebih tepat untuk layout responsif
+  double get screenWidth => mediaQuerySize.width;
+
+  bool get isPhoneSmall => width < 400;
+  bool get isPhoneMedium => width >= 400 && width < 480;
+  bool get isPhoneLarge => width >= 480 && width < 600;
+
+  bool get isTabletSmall => width >= 600 && width < 720;
+  bool get isTabletMedium => width >= 720 && width < 1024;
+  bool get isTabletLarge => width >= 1024;
+}
