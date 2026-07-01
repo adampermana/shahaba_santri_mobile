@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sahaba_mobile/infrastructure/extension/datetime_extension.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/screens/home/widgets/card_jadwal_sholat.dart';
+import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -9,39 +12,55 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final today = DateTime.now();
 
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBackground,
+      appBar: CustomAppBar.buildHomeAppBar(
+        date:
+            '${today.day} ${IndoDateTimeX.bulan[today.month - 1]} ${today.year}',
+      ),
       body: SafeArea(
-        child: Padding(
+        top: false,
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 16),
+              const CardJadwalSholat(),
+              const SizedBox(height: 32),
+              const Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _FeatureCard(
+                      icon: AppIcons.compass3Line,
+                      title: 'Kiblat',
+                      subtitle: 'Temukan arah akurat',
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: _FeatureCard(
+                      icon: AppIcons.calendarLine,
+                      title: 'Kalender Hijriah',
+                      subtitle: 'Lihat hari penting',
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 32),
               Text(
-                '26 June 2026',
-                style: textTheme.titleMedium,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                '10 Muharram',
-                style: textTheme.bodySmall?.copyWith(
-                  color: ColorPalette.contentSecondary,
+                'Lanjutkan baca',
+                style: textTheme.titleMedium?.copyWith(
+                  color: ColorPalette.contentTertiary,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.6,
                 ),
               ),
-              const SizedBox(height: 32),
-              const _FeatureCard(
-                icon: AppIcons.compass3Line,
-                title: 'Kiblat',
-                subtitle: 'Temukan arah akurat',
-              ),
               const SizedBox(height: 12),
-              const _FeatureCard(
-                icon: AppIcons.calendarLine,
-                title: 'Kalender Hijriah',
-                subtitle: 'Lihat hari penting',
-              ),
+              const _ContinueReadingCard(),
             ],
           ),
         ),
@@ -66,61 +85,73 @@ class _FeatureCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
+      height: 114,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: ColorPalette.kWhite,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: ColorPalette.kBlack.withValues(alpha: 0.08),
-            blurRadius: 8,
-          ),
-        ],
+        boxShadow: _cardShadow,
       ),
-      child: Row(
+      child: Stack(
         children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: ColorPalette.primaryColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                icon,
-                width: 20,
-                height: 20,
-                colorFilter: const ColorFilter.mode(
-                  ColorPalette.kWhite,
-                  BlendMode.srcIn,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: ColorPalette.primaryColor,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: textTheme.titleMedium),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: ColorPalette.contentTertiary,
+                child: Center(
+                  child: SvgPicture.asset(
+                    icon,
+                    width: 20,
+                    height: 20,
+                    colorFilter: const ColorFilter.mode(
+                      ColorPalette.kWhite,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.titleMedium?.copyWith(
+                  fontSize: 16,
+                  height: 1,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.bodySmall?.copyWith(
+                  fontSize: 12,
+                  height: 1,
+                  color: ColorPalette.contentTertiary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
-          SvgPicture.asset(
-            AppIcons.arrowDropRightLine,
-            width: 24,
-            height: 24,
-            colorFilter: const ColorFilter.mode(
-              ColorPalette.contentSecondary,
-              BlendMode.srcIn,
+          Positioned(
+            top: 7,
+            right: 0,
+            child: SvgPicture.asset(
+              AppIcons.arrowDropRightLine,
+              width: 24,
+              height: 24,
+              colorFilter: const ColorFilter.mode(
+                ColorPalette.primaryColor,
+                BlendMode.srcIn,
+              ),
             ),
           ),
         ],
@@ -128,3 +159,113 @@ class _FeatureCard extends StatelessWidget {
     );
   }
 }
+
+class _ContinueReadingCard extends StatelessWidget {
+  const _ContinueReadingCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+      decoration: BoxDecoration(
+        color: ColorPalette.kWhite,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: _cardShadow,
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: Column(
+        children: [
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Al-Baqarah',
+                        style: textTheme.headlineSmall?.copyWith(
+                          color: ColorPalette.kBlack,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Ayat 255',
+                        style: textTheme.bodySmall?.copyWith(
+                          color: ColorPalette.contentTertiary,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.6,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    'البقرة',
+                    textDirection: TextDirection.rtl,
+                    style: textTheme.displaySmall?.copyWith(
+                      color: ColorPalette.arabicText,
+                      fontFamily: 'Amiri',
+                      fontSize: 32,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorPalette.primaryColor,
+                    foregroundColor: ColorPalette.kWhite,
+                    elevation: 1,
+                    shadowColor: ColorPalette.kBlack.withValues(alpha: 0.05),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(9999),
+                    ),
+                  ),
+                  child: Text(
+                    'Lanjutkan',
+                    style: textTheme.bodySmall?.copyWith(
+                      color: ColorPalette.kWhite,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.6,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+List<BoxShadow> get _cardShadow => [
+  BoxShadow(
+    color: ColorPalette.kBlack.withValues(alpha: 0.08),
+    blurRadius: 2,
+  ),
+  BoxShadow(
+    color: ColorPalette.kBlack.withValues(alpha: 0.07),
+    blurRadius: 4,
+  ),
+  BoxShadow(
+    color: ColorPalette.kBlack.withValues(alpha: 0.04),
+    blurRadius: 5,
+  ),
+  BoxShadow(
+    color: ColorPalette.kBlack.withValues(alpha: 0.01),
+    blurRadius: 6,
+  ),
+];

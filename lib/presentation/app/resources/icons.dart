@@ -19,9 +19,9 @@ abstract class AppIcons {
   static const String home9Line = '$_path/home-9-line.svg';
   static const String indeterminateCircleLine =
       '$_path/indeterminate-circle-line.svg';
-  static const String mapPin2Line = '$_path/map-pin-2-line.svg';
+  static const String mapPin2Line = '$_path/map-pin-line.svg';
   static const String moonLine = '$_path/moon-line.svg';
-  static const String notification2Line = '$_path/notification-2-line.svg';
+  static const String notification2Line = '$_path/notification-line.svg';
   static const String searchLine = '$_path/search-line.svg';
   static const String settings4Line = '$_path/settings-4-line.svg';
   static const String shareLine = '$_path/share-line.svg';
