@@ -31,3 +31,29 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+
+  fonts:
+    - family: Amiri
+      fonts:
+        - asset: assets/fonts/amiri/Amiri-Regular.ttf
+        - asset: assets/fonts/amiri/Amiri-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/amiri/Amiri-Italic.ttf
+          style: italic
+        - asset: assets/fonts/amiri/Amiri-BoldItalic.ttf
+          weight: 700
+          style: italic
+    - family: Synonym
+      fonts:
+        - asset: assets/fonts/synonym_complete/Fonts/OTF/Synonym-Extralight.otf
+          weight: 200
+        - asset: assets/fonts/synonym_complete/Fonts/OTF/Synonym-Light.otf
+          weight: 300
+        - asset: assets/fonts/synonym_complete/Fonts/OTF/Synonym-Regular.otf
+          weight: 400
+        - asset: assets/fonts/synonym_complete/Fonts/OTF/Synonym-Medium.otf
+          weight: 500
+        - asset: assets/fonts/synonym_complete/Fonts/OTF/Synonym-Semibold.otf
+          weight: 600
+        - asset: assets/fonts/synonym_complete/Fonts/OTF/Synonym-Bold.otf
+          weight: 700
