@@ -11,6 +11,7 @@ import 'package:sahaba_mobile/domains/city_model/city_model.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 
 class SelectCityScreen extends StatefulWidget {
   const SelectCityScreen({super.key});
@@ -108,18 +109,73 @@ class _SelectCityViewState extends State<_SelectCityView> {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-              child: _SearchField(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: CustomTextFormFieldWidget(
                 controller: _searchController,
+                textInputAction: TextInputAction.search,
+                hintText: 'Cari Kota',
+                fillColor: ColorPalette.surfaceTertiary,
+                borderRadius: 22,
+                colorBorder: Colors.transparent,
+                focusedBorderColor: Colors.transparent,
+                textStyle: const TextStyle(
+                  color: ColorPalette.kBlack,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                hintStyle: const TextStyle(
+                  color: ColorPalette.kGrayHintText,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 17, 16, 17),
+                  child: SvgPicture.asset(
+                    AppIcons.searchLine,
+                    colorFilter: const ColorFilter.mode(
+                      ColorPalette.primaryColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+                suffixIconConstraints: const BoxConstraints(
+                  minWidth: 56,
+                  minHeight: 50,
+                ),
+                suffixIcon: ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: _searchController,
+                  builder: (_, value, _) {
+                    if (value.text.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return IconButton(
+                      onPressed: () {
+                        _searchController.clear();
+                        context.read<CitySearchBloc>().add(
+                          const CitySearchEvent.clearSearch(),
+                        );
+                      },
+                      icon: SvgPicture.asset(
+                        AppIcons.closeLine,
+                        width: 24,
+                        height: 24,
+                        colorFilter: const ColorFilter.mode(
+                          ColorPalette.kGrayHintText,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(
+                        minWidth: 56,
+                        minHeight: 50,
+                      ),
+                    );
+                  },
+                ),
                 onChanged: (value) {
                   context.read<CitySearchBloc>().add(
                     CitySearchEvent.searchCity(value),
-                  );
-                },
-                onClear: () {
-                  _searchController.clear();
-                  context.read<CitySearchBloc>().add(
-                    const CitySearchEvent.clearSearch(),
                   );
                 },
               ),
@@ -215,80 +271,6 @@ class _SelectCityViewState extends State<_SelectCityView> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SearchField extends StatelessWidget {
-  const _SearchField({
-    required this.controller,
-    required this.onChanged,
-    required this.onClear,
-  });
-
-  final TextEditingController controller;
-  final ValueChanged<String> onChanged;
-  final VoidCallback onClear;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 46,
-      decoration: BoxDecoration(
-        color: ColorPalette.surfaceTertiary,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: TextField(
-        controller: controller,
-        onChanged: onChanged,
-        textInputAction: TextInputAction.search,
-        style: const TextStyle(
-          color: ColorPalette.kBlack,
-          fontSize: 14,
-        ),
-        decoration: InputDecoration(
-          isDense: true,
-          contentPadding: EdgeInsets.zero,
-          border: InputBorder.none,
-          hintText: 'Cari Kota',
-          hintStyle: const TextStyle(
-            color: ColorPalette.kGrayHintText,
-            fontSize: 14,
-          ),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.all(11),
-            child: SvgPicture.asset(
-              AppIcons.searchLine,
-              width: 24,
-              height: 24,
-              colorFilter: const ColorFilter.mode(
-                ColorPalette.kGrayHintText,
-                BlendMode.srcIn,
-              ),
-            ),
-          ),
-          suffixIcon: ValueListenableBuilder<TextEditingValue>(
-            valueListenable: controller,
-            builder: (_, value, _) {
-              if (value.text.isEmpty) return const SizedBox.shrink();
-              return IconButton(
-                onPressed: onClear,
-                icon: SvgPicture.asset(
-                  AppIcons.closeLine,
-                  width: 18,
-                  height: 18,
-                  colorFilter: const ColorFilter.mode(
-                    ColorPalette.kGrayHintText,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-              );
-            },
-          ),
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sahaba_mobile/infrastructure/extension/datetime_extension.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 
@@ -83,7 +84,7 @@ class CustomAppBar {
   // 3. Home AppBar
   static PreferredSizeWidget buildHomeAppBar({
     required String date,
-    String hijriDate = '10 Muharram',
+    String? hijriDate,
     String location = 'Jagakarsa',
     VoidCallback? onLocationTap,
     VoidCallback? onSearchTap,
@@ -92,7 +93,7 @@ class CustomAppBar {
   }) => _HomeAppBar(
     key: key,
     date: date,
-    hijriDate: hijriDate,
+    hijriDate: hijriDate ?? DateTime.now().hijriDateId(),
     location: location,
     onLocationTap: onLocationTap,
     onSearchTap: onSearchTap,

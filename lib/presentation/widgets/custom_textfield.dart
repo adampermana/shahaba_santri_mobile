@@ -203,11 +203,6 @@ class CustomTextFormFieldWidget extends StatelessWidget {
                     TextStyle(color: theme.colorScheme.error, fontSize: 12),
           errorMaxLines: errorMaxLines,
           suffixIconConstraints: suffixIconConstraints,
-          // suffixIconConstraints:
-          //     suffixIconConstraints ??
-          //     ((suffixIcon != null && suffixIcon is Text)
-          //         ? const BoxConstraints(minWidth: 16)
-          //         : const BoxConstraints(minWidth: 32, minHeight: 24)),
         );
 
     // ── core TextFormField ───────────────────────────────────────────────────

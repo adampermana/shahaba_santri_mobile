@@ -33,6 +33,7 @@ class HomeScreen extends StatelessWidget {
       appBar: CustomAppBar.buildHomeAppBar(
         date:
             '${today.day} ${IndoDateTimeX.bulan[today.month - 1]} ${today.year}',
+        hijriDate: today.hijriDateId(),
         location: location,
         onLocationTap: () async {
           await context.push(

@@ -16,26 +16,6 @@ class DateNavigator extends StatelessWidget {
   final VoidCallback onPrevious;
   final VoidCallback onNext;
 
-  static const _hijriMonths = [
-    'Muharram',
-    'Safar',
-    "Rabi'ul Awal",
-    "Rabi'ul Akhir",
-    'Jumadil Awal',
-    'Jumadil Akhir',
-    'Rajab',
-    "Sya'ban",
-    'Ramadhan',
-    'Syawal',
-    "Dzulqa'dah",
-    'Dzulhijjah',
-  ];
-
-  String _hijriDate(DateTime date) {
-    final hijriMonth = _hijriMonths[date.month - 1];
-    return '${date.day} $hijriMonth';
-  }
-
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -48,7 +28,7 @@ class DateNavigator extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _ArrowButton(
-            icon: AppIcons.arrowLeftLine,
+            quarterTurns: 2,
             onTap: onPrevious,
           ),
           Column(
@@ -62,7 +42,7 @@ class DateNavigator extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                _hijriDate(date),
+                date.hijriDateId(),
                 style: textTheme.bodySmall?.copyWith(
                   color: ColorPalette.contentSecondary,
                   fontWeight: FontWeight.w500,
@@ -72,7 +52,6 @@ class DateNavigator extends StatelessWidget {
             ],
           ),
           _ArrowButton(
-            icon: AppIcons.arrowRightLine,
             onTap: onNext,
           ),
         ],
@@ -82,10 +61,10 @@ class DateNavigator extends StatelessWidget {
 }
 
 class _ArrowButton extends StatelessWidget {
-  const _ArrowButton({required this.icon, required this.onTap});
+  const _ArrowButton({required this.onTap, this.quarterTurns = 0});
 
-  final String icon;
   final VoidCallback onTap;
+  final int quarterTurns;
 
   @override
   Widget build(BuildContext context) {
@@ -99,13 +78,16 @@ class _ArrowButton extends StatelessWidget {
       child: IconButton(
         onPressed: onTap,
         padding: EdgeInsets.zero,
-        icon: SvgPicture.asset(
-          icon,
-          width: 24,
-          height: 24,
-          colorFilter: const ColorFilter.mode(
-            ColorPalette.kBlack,
-            BlendMode.srcIn,
+        icon: RotatedBox(
+          quarterTurns: quarterTurns,
+          child: SvgPicture.asset(
+            AppIcons.arrowDropRightLine,
+            width: 24,
+            height: 24,
+            colorFilter: const ColorFilter.mode(
+              ColorPalette.kBlack,
+              BlendMode.srcIn,
+            ),
           ),
         ),
       ),

@@ -26,6 +26,24 @@ extension IndoDateTimeX on DateTime {
     'Desember',
   ];
 
+  static const _hijriMonths = <String>[
+    'Muharram',
+    'Safar',
+    "Rabi'ul Awal",
+    "Rabi'ul Akhir",
+    'Jumadil Awal',
+    'Jumadil Akhir',
+    'Rajab',
+    "Sya'ban",
+    'Ramadhan',
+    'Syawal',
+    "Dzulqa'dah",
+    'Dzulhijjah',
+  ];
+
+  static final DateTime _hijriEpoch = DateTime(2026, 6, 16);
+  static const int _hijriEpochYear = 1448;
+
   /// Konversi ke UTC+offset (jam)
   DateTime _toUtcOffset(int offsetHours) =>
       toUtc().add(Duration(hours: offsetHours));
@@ -181,6 +199,71 @@ extension IndoDateTimeX on DateTime {
       debugPrint('Error formatting date: "$date", error: $e');
       return date;
     }
+  }
+
+  HijriDate toHijriDate() {
+    final gregorianDate = DateTime(year, month, day);
+    var remainingDays = gregorianDate.difference(_hijriEpoch).inDays;
+    var hijriYear = _hijriEpochYear;
+
+    while (remainingDays < 0) {
+      hijriYear--;
+      remainingDays += _daysInHijriYear(hijriYear);
+    }
+
+    while (remainingDays >= _daysInHijriYear(hijriYear)) {
+      remainingDays -= _daysInHijriYear(hijriYear);
+      hijriYear++;
+    }
+
+    var hijriMonth = 1;
+    while (remainingDays >= _daysInHijriMonth(hijriYear, hijriMonth)) {
+      remainingDays -= _daysInHijriMonth(hijriYear, hijriMonth);
+      hijriMonth++;
+    }
+
+    return HijriDate(
+      day: remainingDays + 1,
+      month: hijriMonth,
+      year: hijriYear,
+      monthName: _hijriMonths[hijriMonth - 1],
+    );
+  }
+
+  String hijriDateId({bool withYear = true}) {
+    return toHijriDate().formatId(withYear: withYear);
+  }
+
+  static int _daysInHijriYear(int year) => _isHijriLeapYear(year) ? 355 : 354;
+
+  static int _daysInHijriMonth(int year, int month) {
+    if (month == 12) return _isHijriLeapYear(year) ? 30 : 29;
+    return month.isOdd ? 30 : 29;
+  }
+
+  static bool _isHijriLeapYear(int year) {
+    const leapYears = {2, 5, 7, 10, 13, 16, 18, 21, 24, 26, 29};
+    final yearInCycle = year % 30;
+    return leapYears.contains(yearInCycle == 0 ? 30 : yearInCycle);
+  }
+}
+
+class HijriDate {
+  const HijriDate({
+    required this.day,
+    required this.month,
+    required this.year,
+    required this.monthName,
+  });
+
+  final int day;
+  final int month;
+  final int year;
+  final String monthName;
+
+  String formatId({bool withYear = true}) {
+    if (!withYear) return '$day $monthName';
+    return '$day $monthName $year H';
   }
 }
 
