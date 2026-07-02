@@ -28,42 +28,57 @@ class JadwalSholatScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBackground,
       body: SafeArea(
-        child: BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
-          builder: (context, state) {
-            if (state is PrayerScheduleLoading) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: ColorPalette.primaryColor,
-                ),
-              );
-            }
-            if (state is PrayerScheduleError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(state.message),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () => _reload(context),
-                      child: const Text('Coba Lagi'),
-                    ),
-                  ],
-                ),
-              );
-            }
-            if (state is PrayerScheduleLoaded) {
-              return _LoadedView(
-                state: state,
-                schedule: state.response.jadwal,
-              );
-            }
-            return const SizedBox.shrink();
+        child: BlocListener<PrayerScheduleCubit, PrayerScheduleState>(
+          listenWhen: (previous, current) {
+            if (current is! PrayerScheduleLoaded) return false;
+            if (previous is! PrayerScheduleLoaded) return true;
+            return !_isSameDate(previous.date, current.date);
           },
+          listener: (context, state) {
+            if (state is PrayerScheduleLoaded) {
+              unawaited(context.read<StreakCubit>().loadStreak(state.date));
+            }
+          },
+          child: BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
+            builder: (context, state) {
+              if (state is PrayerScheduleLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: ColorPalette.primaryColor,
+                  ),
+                );
+              }
+              if (state is PrayerScheduleError) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(state.message),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () => _reload(context),
+                        child: const Text('Coba Lagi'),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              if (state is PrayerScheduleLoaded) {
+                return _LoadedView(
+                  state: state,
+                  schedule: state.response.jadwal,
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       ),
     );
   }
+
+  bool _isSameDate(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
 
   Future<void> _reload(BuildContext context) async {
     final locationState = context.read<LocationCubit>().state;
@@ -114,6 +129,7 @@ class _LoadedView extends StatelessWidget {
           sliver: SliverToBoxAdapter(
             child: _InfoRow(
               textTheme: textTheme,
+              date: state.date,
               onCompassTap: () => context.push(
                 '${RouterPath.mainPath}/${RouterPath.qiblaPath}',
               ),
@@ -141,6 +157,7 @@ class _LoadedView extends StatelessWidget {
               final streakState = context.watch<StreakCubit>().state;
               final isChecked =
                   streakState is StreakLoaded &&
+                  streakState.date == _dateKey(state.date) &&
                   streakState.isPrayerChecked(
                     item.name.toLowerCase(),
                   );
@@ -206,6 +223,12 @@ class _LoadedView extends StatelessWidget {
     final parts = time.split(':');
     if (parts.length != 2) return time;
     return '${parts[0].trim()} : ${parts[1].trim()}';
+  }
+
+  String _dateKey(DateTime date) {
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return '${date.year}-$month-$day';
   }
 
   static const _prayers = [
@@ -447,18 +470,21 @@ class _CloudPosition {
 class _InfoRow extends StatelessWidget {
   const _InfoRow({
     required this.textTheme,
+    required this.date,
     required this.onCompassTap,
     required this.onLocationTap,
   });
 
   final TextTheme textTheme;
+  final DateTime date;
   final VoidCallback onCompassTap;
   final VoidCallback onLocationTap;
 
   @override
   Widget build(BuildContext context) {
     final streakState = context.watch<StreakCubit>().state;
-    final streakCount = streakState is StreakLoaded
+    final streakCount =
+        streakState is StreakLoaded && streakState.date == _dateKey(date)
         ? streakState.checkedPrayerCount
         : 0;
 
@@ -489,6 +515,12 @@ class _InfoRow extends StatelessWidget {
         );
       },
     );
+  }
+
+  String _dateKey(DateTime date) {
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return '${date.year}-$month-$day';
   }
 }
 

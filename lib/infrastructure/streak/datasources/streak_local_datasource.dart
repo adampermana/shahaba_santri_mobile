@@ -6,12 +6,11 @@ import 'package:sahaba_mobile/infrastructure/streak/datasources/i_streak_local_d
 
 class StreakLocalDatasource implements IStreakLocalDatasource {
   static const String streakBox = 'streak_data';
-  static const String _legacyStreakKey = 'streak_key';
 
   @override
   Future<StreakModel> getStreak(String date) async {
     final box = Hive.box<String>(streakBox);
-    final raw = box.get(date) ?? box.get(_legacyStreakKey);
+    final raw = box.get(date);
     if (raw == null) return StreakModel.empty();
     final model = StreakModel.fromHiveMap(
       jsonDecode(raw) as Map<String, dynamic>,
@@ -27,7 +26,7 @@ class StreakLocalDatasource implements IStreakLocalDatasource {
     bool checked,
   ) async {
     final box = Hive.box<String>(streakBox);
-    final raw = box.get(date) ?? box.get(_legacyStreakKey);
+    final raw = box.get(date);
     final model = raw != null
         ? StreakModel.fromHiveMap(
             jsonDecode(raw) as Map<String, dynamic>,

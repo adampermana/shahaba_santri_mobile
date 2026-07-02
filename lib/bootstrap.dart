@@ -78,10 +78,10 @@ Future<void> bootstrap(
       await SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
       ]);
-      // runApp(app);
-      runApp(
-        kDebugMode ? DevicePreview(builder: (_) => app) : app,
-      );
+      runApp(app);
+      // runApp(
+      //   kDebugMode ? DevicePreview(builder: (_) => app) : app,
+      // );
 
       FlutterError.onError = (details) {
         log(details.exceptionAsString(), stackTrace: details.stack);

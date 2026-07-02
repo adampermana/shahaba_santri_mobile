@@ -50,8 +50,8 @@ class PrayerTimeTile extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 20,
-            height: 20,
+            width: 32,
+            height: 32,
             child: showCheckbox
                 ? Center(
                     child: _PrayerCheckbox(
@@ -132,7 +132,7 @@ class _PrayerCheckbox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final borderColor = isChecked
-        ? ColorPalette.primaryColor
+        ? (isActive ? ColorPalette.kWhite : ColorPalette.primaryColor)
         : isActive
         ? ColorPalette.kWhite
         : ColorPalette.contentDisabled;
@@ -141,13 +141,13 @@ class _PrayerCheckbox extends StatelessWidget {
       onTap: isEnabled ? onTap : null,
       borderRadius: BorderRadius.circular(6),
       child: Container(
-        width: 32,
-        height: 32,
+        width: 24,
+        height: 24,
         decoration: BoxDecoration(
           color: isChecked ? ColorPalette.primaryColor : Colors.transparent,
           border: Border.all(
             color: borderColor,
-            width: 3,
+            width: 2,
           ),
           borderRadius: BorderRadius.circular(4),
         ),
@@ -155,7 +155,7 @@ class _PrayerCheckbox extends StatelessWidget {
             ? const Icon(
                 Icons.check_rounded,
                 color: ColorPalette.kWhite,
-                size: 26,
+                size: 20,
               )
             : null,
       ),

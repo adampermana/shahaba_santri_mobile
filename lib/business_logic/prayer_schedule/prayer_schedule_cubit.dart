@@ -75,6 +75,10 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
     DateTime now,
   ) {
     if (schedule == null) return null;
+    final selectedDate = _currentDate;
+    if (selectedDate != null && _isPastDate(selectedDate, now)) {
+      return WaktuSholat.isya;
+    }
 
     final prayers = _getPrayerTimes(schedule);
     for (final entry in prayers) {
@@ -83,6 +87,16 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
       }
     }
     return WaktuSholat.subuh;
+  }
+
+  bool _isPastDate(DateTime selectedDate, DateTime now) {
+    final selectedDay = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+    );
+    final today = DateTime(now.year, now.month, now.day);
+    return selectedDay.isBefore(today);
   }
 
   List<MapEntry<WaktuSholat, DateTime>> _getPrayerTimes(
