@@ -43,6 +43,7 @@ unlinked_spec.ds
 
 # Agents
 .agents/
+AGENTS.md
 
 # Android related
 **/android/**/gradle-wrapper.jar

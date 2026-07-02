@@ -70,6 +70,7 @@ android {
         create("development") {
             dimension = "default"
             applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
             manifestPlaceholders["appName"] = "[DEV] Sahaba Mobile"
         }
     }

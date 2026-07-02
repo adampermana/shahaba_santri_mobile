@@ -18,7 +18,6 @@ Future<void> initHiveStorage() async {
 // }
 
 Future<void> initHiveBox() async {
-  // final encryptionKey = Hive.generateSecureKey();
   await Hive.openBox<String>(HiveCoreLocalDatasource.l10nBox);
 
   await Hive.openBox<bool>(HiveCoreLocalDatasource.onBoardingBox);
