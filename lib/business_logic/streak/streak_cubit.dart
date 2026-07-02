@@ -17,7 +17,7 @@ class StreakCubit extends Cubit<StreakState> {
       (f) => emit(StreakError(f.message)),
       (r) => emit(
         StreakLoaded(
-          currentStreak: r.currentStreak,
+          currentStreak: r.checkedPrayerCount,
           checkedPrayers: Map<String, bool>.from(r.checkedPrayers),
           date: dateKey,
         ),
@@ -50,10 +50,11 @@ class StreakCubit extends Cubit<StreakState> {
 
     final updated = Map<String, bool>.from(currentState.checkedPrayers);
     updated[prayerName] = true;
+    final currentStreak = _checkedPrayerCount(updated);
 
     emit(
       StreakLoaded(
-        currentStreak: currentState.currentStreak,
+        currentStreak: currentStreak,
         checkedPrayers: updated,
         date: currentState.date,
       ),
@@ -111,8 +112,14 @@ class StreakCubit extends Cubit<StreakState> {
     }
   }
 
-  String _dateKey(DateTime date) =>
-      '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  String _dateKey(DateTime date) {
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return '${date.year}-$month-$day';
+  }
+
+  int _checkedPrayerCount(Map<String, bool> checkedPrayers) =>
+      checkedPrayers.values.where((isChecked) => isChecked).length;
 }
 
 class _PrayerWindow {

@@ -12,10 +12,16 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
   String? _currentCityId;
   DateTime? _currentDate;
 
-  Future<void> loadSchedule(String cityId, DateTime date) async {
+  Future<void> loadSchedule(
+    String cityId,
+    DateTime date, {
+    bool showLoading = true,
+  }) async {
     _currentCityId = cityId;
     _currentDate = date;
-    emit(PrayerScheduleLoading());
+    if (showLoading) {
+      emit(PrayerScheduleLoading());
+    }
 
     final result = await _repository.getPrayerSchedule(cityId, date);
     result.fold(
@@ -39,13 +45,13 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
   Future<void> nextDay() async {
     if (_currentCityId == null || _currentDate == null) return;
     final next = _currentDate!.add(const Duration(days: 1));
-    await loadSchedule(_currentCityId!, next);
+    await loadSchedule(_currentCityId!, next, showLoading: false);
   }
 
   Future<void> previousDay() async {
     if (_currentCityId == null || _currentDate == null) return;
     final prev = _currentDate!.subtract(const Duration(days: 1));
-    await loadSchedule(_currentCityId!, prev);
+    await loadSchedule(_currentCityId!, prev, showLoading: false);
   }
 
   WaktuSholat? _resolveActivePrayer(

@@ -15,6 +15,9 @@ class StreakLoaded extends StreakState {
   final Map<String, bool> checkedPrayers;
   final String date;
 
+  int get checkedPrayerCount =>
+      checkedPrayers.values.where((isChecked) => isChecked).length;
+
   bool isPrayerChecked(String name) => checkedPrayers[name] ?? false;
 }
 

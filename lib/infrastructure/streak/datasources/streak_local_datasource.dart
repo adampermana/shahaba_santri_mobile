@@ -6,16 +6,18 @@ import 'package:sahaba_mobile/infrastructure/streak/datasources/i_streak_local_d
 
 class StreakLocalDatasource implements IStreakLocalDatasource {
   static const String streakBox = 'streak_data';
-  static const String _streakKey = 'streak_key';
+  static const String _legacyStreakKey = 'streak_key';
 
   @override
   Future<StreakModel> getStreak(String date) async {
     final box = Hive.box<String>(streakBox);
-    final raw = box.get(_streakKey);
+    final raw = box.get(date) ?? box.get(_legacyStreakKey);
     if (raw == null) return StreakModel.empty();
-    return StreakModel.fromHiveMap(
+    final model = StreakModel.fromHiveMap(
       jsonDecode(raw) as Map<String, dynamic>,
-    );
+    )..lastCheckedDate = date;
+    await box.put(date, jsonEncode(model.toHiveMap()));
+    return model;
   }
 
   @override
@@ -25,21 +27,32 @@ class StreakLocalDatasource implements IStreakLocalDatasource {
     bool checked,
   ) async {
     final box = Hive.box<String>(streakBox);
-    final raw = box.get(_streakKey);
+    final raw = box.get(date) ?? box.get(_legacyStreakKey);
     final model = raw != null
         ? StreakModel.fromHiveMap(
             jsonDecode(raw) as Map<String, dynamic>,
           )
         : StreakModel.empty();
 
-    model.checkedPrayers[prayerName] = checked;
-    model.lastCheckedDate = date;
-    await box.put(_streakKey, jsonEncode(model.toHiveMap()));
+    final checkedPrayers = Map<String, bool>.from(model.checkedPrayers)
+      ..[prayerName] = checked;
+    model
+      ..checkedPrayers = checkedPrayers
+      ..currentStreak = checkedPrayers.values
+          .where((isChecked) => isChecked)
+          .length
+      ..lastCheckedDate = date;
+    await box.put(date, jsonEncode(model.toHiveMap()));
   }
 
   @override
   Future<void> saveStreakModel(StreakModel model) async {
     final box = Hive.box<String>(streakBox);
-    await box.put(_streakKey, jsonEncode(model.toHiveMap()));
+    final date = model.lastCheckedDate;
+    if (date == null) {
+      await box.clear();
+      return;
+    }
+    await box.put(date, jsonEncode(model.toHiveMap()));
   }
 }

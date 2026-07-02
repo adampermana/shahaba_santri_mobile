@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -190,10 +192,12 @@ class _LoadedView extends StatelessWidget {
     final now = DateTime.now();
     if (schedule == null) return;
 
-    context.read<StreakCubit>().checkPrayer(
-      prayerName: name.toLowerCase(),
-      now: now,
-      schedule: schedule!,
+    unawaited(
+      context.read<StreakCubit>().checkPrayer(
+        prayerName: name.toLowerCase(),
+        now: now,
+        schedule: schedule!,
+      ),
     );
   }
 
@@ -289,90 +293,133 @@ class _NextPrayerCard extends StatelessWidget {
         gradient: w.gradient.toLinearGradient(),
       ),
       clipBehavior: Clip.hardEdge,
-      child: Stack(
-        children: [
-          // Celestial body (Sun / Moon)
-          Positioned(
-            top: isNight ? -20 : -90,
-            left: 0,
-            right: 0,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 700),
-              child: SvgPicture.asset(
-                celestialAsset,
-                key: ValueKey(celestialAsset),
-                height: 151,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final cardWidth = constraints.maxWidth;
+          final cloudWidth = _cloudWidth(cardWidth);
+          final cloudPosition = _cloudPosition(w, cloudWidth);
+
+          return Stack(
+            children: [
+              // Celestial body (Sun / Moon)
+              Positioned(
+                top: isNight ? -20 : -90,
+                left: 0,
+                right: 0,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 700),
+                  child: SvgPicture.asset(
+                    celestialAsset,
+                    key: ValueKey(celestialAsset),
+                    height: 151,
+                  ),
+                ),
               ),
-            ),
-          ),
-          // Masjid
-          Positioned(
-            bottom: context.isTabletLarge
-                ? -350
-                : context.isTabletMedium
-                ? -200
-                : context.isTabletSmall
-                ? -200
-                : context.isPhoneLarge
-                ? -110
-                : context.isPhoneMedium
-                ? -100
-                : context.isPhoneSmall
-                ? -100
-                : -100,
-            left: -10,
-            right: -10,
-            child: SvgPicture.asset(
-              masjidAsset,
-              fit: BoxFit.cover,
-            ),
-          ),
-          // Clouds Left
-          Positioned(
-            left: w.vectorLT.dx,
-            top: w.vectorLT.dy,
-            child: SvgPicture.asset(
-              w.vectorL,
-              width: w.vectorLSize,
-            ),
-          ),
-          // Clouds Right
-          Positioned(
-            left: w.vectorRT.dx,
-            top: w.vectorRT.dy,
-            child: SvgPicture.asset(
-              w.vectorR,
-              width: w.vectorRSize,
-            ),
-          ),
-          // Text content
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 20),
-                Text(
-                  w.label,
-                  style: textTheme.titleLarge?.copyWith(
-                    color: ColorPalette.kWhite,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
+              // Masjid
+              Positioned(
+                bottom: context.isTabletLarge
+                    ? -350
+                    : context.isTabletMedium
+                    ? -200
+                    : context.isTabletSmall
+                    ? -200
+                    : context.isPhoneLarge
+                    ? -110
+                    : context.isPhoneMedium
+                    ? -100
+                    : context.isPhoneSmall
+                    ? -100
+                    : -100,
+                left: -10,
+                right: -10,
+                child: SvgPicture.asset(
+                  masjidAsset,
+                  fit: BoxFit.cover,
                 ),
-                Text(
-                  _formatTime(time),
-                  style: textTheme.displayLarge?.copyWith(
-                    color: ColorPalette.kWhite,
-                    fontSize: 48,
-                    fontWeight: FontWeight.w700,
-                  ),
+              ),
+              Positioned(
+                left: cloudPosition.left,
+                top: cloudPosition.leftTop,
+                child: SvgPicture.asset(
+                  w.vectorL,
+                  width: cloudWidth,
                 ),
-              ],
-            ),
-          ),
-        ],
+              ),
+              Positioned(
+                right: cloudPosition.right,
+                top: cloudPosition.rightTop,
+                child: SvgPicture.asset(
+                  w.vectorR,
+                  width: cloudWidth,
+                ),
+              ),
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 20),
+                    Text(
+                      w.label,
+                      style: textTheme.titleLarge?.copyWith(
+                        color: ColorPalette.kWhite,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      _formatTime(time),
+                      style: textTheme.displayLarge?.copyWith(
+                        color: ColorPalette.kWhite,
+                        fontSize: 48,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
+  }
+
+  double _cloudWidth(double cardWidth) =>
+      (cardWidth * 0.62).clamp(154.0, 210.0);
+
+  _CloudPosition _cloudPosition(WaktuSholat prayer, double cloudWidth) {
+    switch (prayer) {
+      case WaktuSholat.maghrib:
+        return _CloudPosition(
+          left: -cloudWidth * 0.74,
+          leftTop: -2,
+          right: -cloudWidth * 0.56,
+          rightTop: 0,
+        );
+      case WaktuSholat.isya:
+        return _CloudPosition(
+          left: -cloudWidth * 0.66,
+          leftTop: -6,
+          right: -cloudWidth * 0.62,
+          rightTop: -6,
+        );
+      case WaktuSholat.terbit:
+        return _CloudPosition(
+          left: -cloudWidth * 0.74,
+          leftTop: 0,
+          right: -cloudWidth * 0.60,
+          rightTop: -4,
+        );
+      case WaktuSholat.subuh:
+      case WaktuSholat.dzuhur:
+      case WaktuSholat.ashar:
+        return _CloudPosition(
+          left: -cloudWidth * 0.74,
+          leftTop: 0,
+          right: -cloudWidth * 0.58,
+          rightTop: -4,
+        );
+    }
   }
 
   String _formatTime(String? time) {
@@ -381,6 +428,20 @@ class _NextPrayerCard extends StatelessWidget {
     if (parts.length != 2) return time;
     return '${parts[0].trim()} : ${parts[1].trim()}';
   }
+}
+
+class _CloudPosition {
+  const _CloudPosition({
+    required this.left,
+    required this.leftTop,
+    required this.right,
+    required this.rightTop,
+  });
+
+  final double left;
+  final double leftTop;
+  final double right;
+  final double rightTop;
 }
 
 class _InfoRow extends StatelessWidget {
@@ -398,7 +459,7 @@ class _InfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final streakState = context.watch<StreakCubit>().state;
     final streakCount = streakState is StreakLoaded
-        ? streakState.currentStreak
+        ? streakState.checkedPrayerCount
         : 0;
 
     return BlocBuilder<LocationCubit, LocationState>(
@@ -412,12 +473,12 @@ class _InfoRow extends StatelessWidget {
           children: [
             StreakIndicator(count: streakCount),
             Row(
+              spacing: 14,
               children: [
                 _InfoChip(
                   icon: AppIcons.compass3Line,
                   onTap: onCompassTap,
                 ),
-                const SizedBox(width: 10),
                 _LocationChip(
                   label: location,
                   onTap: onLocationTap,
@@ -497,17 +558,16 @@ class _LocationChip extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 80),
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: textTheme.bodySmall?.copyWith(
-                  fontSize: 12,
-                  color: ColorPalette.contentSecondary,
-                  fontWeight: FontWeight.w500,
-                ),
+            // ConstrainedBox(
+            //   constraints: const BoxConstraints(maxWidth: 90),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: textTheme.bodySmall?.copyWith(
+                fontSize: 12,
+                color: ColorPalette.contentSecondary,
+                fontWeight: FontWeight.w500,
               ),
             ),
             SvgPicture.asset(

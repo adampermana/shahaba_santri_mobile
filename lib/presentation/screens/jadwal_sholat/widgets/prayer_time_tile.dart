@@ -49,40 +49,17 @@ class PrayerTimeTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Checkbox
           SizedBox(
             width: 20,
             height: 20,
             child: showCheckbox
-                ? GestureDetector(
-                    onTap: isEnabled ? onCheck : null,
-                    child: isChecked
-                        ? SvgPicture.asset(
-                            AppIcons.checkboxCircleLine,
-                            width: 20,
-                            height: 20,
-                            colorFilter: ColorFilter.mode(
-                              isActive
-                                  ? ColorPalette.kWhite
-                                  : ColorPalette.primaryColor,
-                              BlendMode.srcIn,
-                            ),
-                          )
-                        : Container(
-                            width: 20,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: isEnabled
-                                    ? (isActive
-                                          ? ColorPalette.kWhite
-                                          : ColorPalette.contentSecondary)
-                                    : Colors.transparent,
-                                width: 1.5,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
+                ? Center(
+                    child: _PrayerCheckbox(
+                      isActive: isActive,
+                      isChecked: isChecked,
+                      isEnabled: isEnabled,
+                      onTap: onCheck,
+                    ),
                   )
                 : const SizedBox.shrink(),
           ),
@@ -134,6 +111,53 @@ class PrayerTimeTile extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _PrayerCheckbox extends StatelessWidget {
+  const _PrayerCheckbox({
+    required this.isActive,
+    required this.isChecked,
+    required this.isEnabled,
+    required this.onTap,
+  });
+
+  final bool isActive;
+  final bool isChecked;
+  final bool isEnabled;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final borderColor = isChecked
+        ? ColorPalette.primaryColor
+        : isActive
+        ? ColorPalette.kWhite
+        : ColorPalette.contentDisabled;
+
+    return InkWell(
+      onTap: isEnabled ? onTap : null,
+      borderRadius: BorderRadius.circular(6),
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: isChecked ? ColorPalette.primaryColor : Colors.transparent,
+          border: Border.all(
+            color: borderColor,
+            width: 3,
+          ),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: isChecked
+            ? const Icon(
+                Icons.check_rounded,
+                color: ColorPalette.kWhite,
+                size: 26,
+              )
+            : null,
       ),
     );
   }

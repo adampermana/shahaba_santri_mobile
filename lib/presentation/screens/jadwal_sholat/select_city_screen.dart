@@ -116,8 +116,8 @@ class _SelectCityViewState extends State<_SelectCityView> {
                 hintText: 'Cari Kota',
                 fillColor: ColorPalette.surfaceTertiary,
                 borderRadius: 22,
-                colorBorder: Colors.transparent,
-                focusedBorderColor: Colors.transparent,
+                // colorBorder: Colors.transparent,
+                // focusedBorderColor: Colors.transparent,
                 textStyle: const TextStyle(
                   color: ColorPalette.kBlack,
                   fontSize: 14,
