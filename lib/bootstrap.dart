@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
-// import 'package:device_preview_plus/device_preview_plus.dart';
+import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sahaba_mobile/infrastructure/core/api/hayuwe_http_overrides.dart';
 import 'package:sahaba_mobile/infrastructure/failures/failures.dart';
+import 'package:sahaba_mobile/injector.dart';
 
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
@@ -53,7 +54,7 @@ Future<void> bootstrap(
       // );
 
       // Inject classes & dependencies
-      // await initApp();
+      await initApp();
 
       // Setup BLoC observer for debugging
       if (kDebugMode) Bloc.observer = const AppBlocObserver();
@@ -77,10 +78,10 @@ Future<void> bootstrap(
       await SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
       ]);
-      runApp(app);
-      // runApp(
-      //   kDebugMode ? DevicePreview(builder: (_) => app) : app,
-      // );
+      // runApp(app);
+      runApp(
+        kDebugMode ? DevicePreview(builder: (_) => app) : app,
+      );
 
       FlutterError.onError = (details) {
         log(details.exceptionAsString(), stackTrace: details.stack);

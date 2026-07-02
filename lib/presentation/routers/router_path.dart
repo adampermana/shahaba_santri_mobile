@@ -20,4 +20,7 @@ class RouterPath {
 
   // Calendar
   static const String calendarPath = 'calendar';
+
+  // Select City
+  static const String selectCityPath = 'select-city';
 }

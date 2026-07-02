@@ -2,6 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sahaba_mobile/business_logic/location/location_cubit.dart';
+import 'package:sahaba_mobile/business_logic/location/location_state.dart';
+import 'package:sahaba_mobile/business_logic/prayer_schedule/prayer_schedule_cubit.dart';
+import 'package:sahaba_mobile/business_logic/streak/streak_cubit.dart';
+import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/screens/home/home_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/jadwal_sholat_screen.dart';
@@ -13,7 +19,20 @@ class MainProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _MainScreen();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => sl<LocationCubit>()..loadSavedCity(),
+        ),
+        BlocProvider(
+          create: (_) => sl<PrayerScheduleCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => sl<StreakCubit>(),
+        ),
+      ],
+      child: const _MainScreen(),
+    );
   }
 }
 
@@ -27,10 +46,10 @@ class _MainScreen extends StatefulWidget {
 class _MainScreenState extends State<_MainScreen> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _screens = [
-    HomeScreen(),
-    JadwalSholatScreen(),
-    QuranScreen(),
+  List<Widget> get _screens => [
+    HomeScreen(onPrayerScheduleTap: () => _onTabChanged(1)),
+    const JadwalSholatScreen(),
+    const QuranScreen(),
   ];
 
   void _onTabChanged(int index) {
@@ -38,35 +57,52 @@ class _MainScreenState extends State<_MainScreen> {
     setState(() => _selectedIndex = index);
   }
 
+  void _onLocationChanged(
+    BuildContext context,
+    LocationState state,
+  ) {
+    if (state is LocationLoaded) {
+      final cityId = state.city.id;
+      if (cityId != null) {
+        final now = DateTime.now();
+        context.read<PrayerScheduleCubit>().loadSchedule(cityId, now);
+        context.read<StreakCubit>().loadStreak(now);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _screens,
-      ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: BottomNavigationItemsBar(
-          initialIndex: _selectedIndex,
-          items: const [
-            NavBarItem(
-              defaultSvgPath: AppIcons.home9Line,
-              selectedSvgPath: AppIcons.home9Line,
-              title: 'Beranda',
-            ),
-            NavBarItem(
-              defaultSvgPath: AppIcons.timeLine,
-              selectedSvgPath: AppIcons.timeLine,
-              title: 'Jadwal Solat',
-            ),
-            NavBarItem(
-              defaultSvgPath: AppIcons.bookOpenLine,
-              selectedSvgPath: AppIcons.bookOpenLine,
-              title: "Qur'an",
-            ),
-          ],
-          onChanged: _onTabChanged,
+    return BlocListener<LocationCubit, LocationState>(
+      listener: _onLocationChanged,
+      child: Scaffold(
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _screens,
+        ),
+        bottomNavigationBar: SafeArea(
+          top: false,
+          child: BottomNavigationItemsBar(
+            initialIndex: _selectedIndex,
+            items: const [
+              NavBarItem(
+                defaultSvgPath: AppIcons.home9Line,
+                selectedSvgPath: AppIcons.home9Line,
+                title: 'Beranda',
+              ),
+              NavBarItem(
+                defaultSvgPath: AppIcons.timeLine,
+                selectedSvgPath: AppIcons.timeLine,
+                title: 'Jadwal Solat',
+              ),
+              NavBarItem(
+                defaultSvgPath: AppIcons.bookOpenLine,
+                selectedSvgPath: AppIcons.bookOpenLine,
+                title: "Qur'an",
+              ),
+            ],
+            onChanged: _onTabChanged,
+          ),
         ),
       ),
     );

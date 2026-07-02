@@ -33,6 +33,18 @@ abstract class AppIcons {
   static const String zoomInLine = '$_path/zoom-in-line.svg';
   static const String zoomOutLine = '$_path/zoom-out-line.svg';
 
+  // Jadwal Sholat - Moon & Masjid
+  static const String jadwalSholatMoon =
+      '$_path/jadwal_sholat/moon.svg';
+  static const String jadwalSholatMasjidMalam =
+      '$_path/jadwal_sholat/masjid-malam.svg';
+  static const String jadwalSholatMasjidSiang =
+      '$_path/jadwal_sholat/masjid-siang.svg';
+  static const String jadwalSholatVector =
+      '$_path/jadwal_sholat/Vector.svg';
+  static const String jadwalSholatVector1 =
+      '$_path/jadwal_sholat/Vector-1.svg';
+
   // Jadwal Sholat - Isya
   static const String jadwalSholatIsyaFrame =
       '$_path/jadwal_sholat/isya/Frame.svg';

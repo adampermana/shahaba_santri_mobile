@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 
@@ -35,11 +36,11 @@ class StateGradient {
   final List<double> stops;
 
   LinearGradient toLinearGradient() => LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: colors,
-        stops: stops,
-      );
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: colors,
+    stops: stops,
+  );
 }
 
 enum WaktuSholat {
@@ -180,7 +181,8 @@ enum WaktuSholat {
     vectorR: _Assets.isyaVectorR,
     vectorRT: Offset(313, -11),
     vectorRSize: 209,
-  );
+  )
+  ;
 
   const WaktuSholat({
     required this.label,
@@ -226,7 +228,16 @@ enum WaktuSholat {
 }
 
 class CardJadwalSholat extends StatefulWidget {
-  const CardJadwalSholat({super.key});
+  const CardJadwalSholat({
+    super.key,
+    this.schedule,
+    this.isLoading = false,
+    this.onTap,
+  });
+
+  final PrayerScheduleModel? schedule;
+  final bool isLoading;
+  final VoidCallback? onTap;
 
   @override
   State<CardJadwalSholat> createState() => _CardJadwalSholatState();
@@ -252,6 +263,14 @@ class _CardJadwalSholatState extends State<CardJadwalSholat> {
   }
 
   @override
+  void didUpdateWidget(CardJadwalSholat oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.schedule != widget.schedule) {
+      _nextPrayer = _resolveNextPrayer(_now);
+    }
+  }
+
+  @override
   void dispose() {
     _timer.cancel();
     super.dispose();
@@ -259,18 +278,37 @@ class _CardJadwalSholatState extends State<CardJadwalSholat> {
 
   _NextPrayer _resolveNextPrayer(DateTime now) {
     for (final prayer in WaktuSholat.values) {
-      final schedule = prayer.dateTimeOn(now);
-      if (schedule.isAfter(now)) {
-        return _NextPrayer(prayer: prayer, schedule: schedule);
+      final scheduledTime = _getScheduledTime(prayer, now);
+      if (scheduledTime.isAfter(now)) {
+        return _NextPrayer(prayer: prayer, schedule: scheduledTime);
       }
     }
 
     final tomorrow = now.add(const Duration(days: 1));
-    final subuhTomorrow = WaktuSholat.subuh.dateTimeOn(tomorrow);
+    final subuhTomorrow = _getScheduledTime(WaktuSholat.subuh, tomorrow);
     return _NextPrayer(prayer: WaktuSholat.subuh, schedule: subuhTomorrow);
   }
 
+  DateTime _getScheduledTime(WaktuSholat prayer, DateTime date) {
+    if (widget.schedule != null) {
+      final timeStr = widget.schedule!.getTimeByPrayerName(
+        prayer.label.toLowerCase(),
+      );
+      if (timeStr != null) {
+        final parts = timeStr.split(':');
+        if (parts.length == 2) {
+          final hour = int.tryParse(parts[0].trim()) ?? prayer.hour;
+          final minute = int.tryParse(parts[1].trim()) ?? prayer.minute;
+          return DateTime(date.year, date.month, date.day, hour, minute);
+        }
+      }
+    }
+    return prayer.dateTimeOn(date);
+  }
+
   String _countdownText() {
+    if (widget.isLoading) return 'Sedang memuat';
+
     final remaining = _nextPrayer.schedule.difference(_now);
     if (!remaining.isNegative && remaining.inSeconds <= 0) return 'Sekarang';
     if (remaining.isNegative) return 'Sekarang';
@@ -287,148 +325,161 @@ class _CardJadwalSholatState extends State<CardJadwalSholat> {
     return 'Dalam $minutes Menit';
   }
 
+  String _formatScheduleTime(DateTime time) {
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
+    return '$hour : $minute';
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final w = _nextPrayer.prayer;
 
-    return AnimatedContainer(
-      duration: const Duration(seconds: 1),
-      curve: Curves.easeInOut,
-      height: 184,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        gradient: w.gradient.toLinearGradient(),
-        boxShadow: [
-          BoxShadow(
-            color: ColorPalette.kBlack.withValues(alpha: 0.08),
-            blurRadius: 32,
+    return Semantics(
+      button: widget.onTap != null,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        behavior: HitTestBehavior.opaque,
+        child: AnimatedContainer(
+          duration: const Duration(seconds: 1),
+          curve: Curves.easeInOut,
+          height: 184,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: w.gradient.toLinearGradient(),
+            boxShadow: [
+              BoxShadow(
+                color: ColorPalette.kBlack.withValues(alpha: 0.08),
+                blurRadius: 32,
+              ),
+              BoxShadow(
+                color: ColorPalette.kBlack.withValues(alpha: 0.07),
+                blurRadius: 16,
+              ),
+              BoxShadow(
+                color: ColorPalette.kBlack.withValues(alpha: 0.04),
+                blurRadius: 5,
+              ),
+              BoxShadow(
+                color: ColorPalette.kBlack.withValues(alpha: 0.01),
+                blurRadius: 6,
+              ),
+            ],
           ),
-          BoxShadow(
-            color: ColorPalette.kBlack.withValues(alpha: 0.07),
-            blurRadius: 16,
-          ),
-          BoxShadow(
-            color: ColorPalette.kBlack.withValues(alpha: 0.04),
-            blurRadius: 5,
-          ),
-          BoxShadow(
-            color: ColorPalette.kBlack.withValues(alpha: 0.01),
-            blurRadius: 6,
-          ),
-        ],
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: Stack(
-        children: [
-          const Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xA3000000), Color(0x00666666)],
+          clipBehavior: Clip.hardEdge,
+          child: Stack(
+            children: [
+              const Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xA3000000), Color(0x00666666)],
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          Positioned(
-            left: w.vectorLT.dx,
-            top: w.vectorLT.dy,
-            child: SvgPicture.asset(
-              w.vectorL,
-              width: w.vectorLSize,
-            ),
-          ),
-          Positioned(
-            left: w.vectorRT.dx,
-            top: w.vectorRT.dy,
-            child: SvgPicture.asset(
-              w.vectorR,
-              width: w.vectorRSize,
-            ),
-          ),
-          Positioned(
-            right: w.illustrationRight,
-            top: w.illustrationTop,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 700),
-              switchInCurve: Curves.easeInOut,
-              switchOutCurve: Curves.easeInOut,
-              transitionBuilder: (child, animation) {
-                final offset = Tween<Offset>(
-                  begin: const Offset(0, 0.16),
-                  end: Offset.zero,
-                ).animate(animation);
+              Positioned(
+                left: w.vectorLT.dx,
+                top: w.vectorLT.dy,
+                child: SvgPicture.asset(
+                  w.vectorL,
+                  width: w.vectorLSize,
+                ),
+              ),
+              Positioned(
+                left: w.vectorRT.dx,
+                top: w.vectorRT.dy,
+                child: SvgPicture.asset(
+                  w.vectorR,
+                  width: w.vectorRSize,
+                ),
+              ),
+              Positioned(
+                right: w.illustrationRight,
+                top: w.illustrationTop,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 700),
+                  switchInCurve: Curves.easeInOut,
+                  switchOutCurve: Curves.easeInOut,
+                  transitionBuilder: (child, animation) {
+                    final offset = Tween<Offset>(
+                      begin: const Offset(0, 0.16),
+                      end: Offset.zero,
+                    ).animate(animation);
 
-                return FadeTransition(
-                  opacity: animation,
-                  child: SlideTransition(
-                    position: offset,
-                    child: child,
-                  ),
-                );
-              },
-              child: SvgPicture.asset(
-                w.illustration,
-                key: ValueKey(w),
-                width: w.illustrationSize,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Berikutnya',
-                  style: textTheme.bodySmall?.copyWith(
-                    color: ColorPalette.kWhite,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12,
+                    return FadeTransition(
+                      opacity: animation,
+                      child: SlideTransition(
+                        position: offset,
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: SvgPicture.asset(
+                    w.illustration,
+                    key: ValueKey(w),
+                    width: w.illustrationSize,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      w.label,
-                      style: textTheme.titleLarge?.copyWith(
+                      'Berikutnya',
+                      style: textTheme.bodySmall?.copyWith(
                         color: ColorPalette.kWhite,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    SvgPicture.asset(
-                      AppIcons.arrowRightLine,
-                      width: 24,
-                      colorFilter: const ColorFilter.mode(
-                        ColorPalette.kWhite,
-                        BlendMode.srcIn,
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          w.label,
+                          style: textTheme.titleLarge?.copyWith(
+                            color: ColorPalette.kWhite,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SvgPicture.asset(
+                          AppIcons.arrowRightLine,
+                          width: 24,
+                          colorFilter: const ColorFilter.mode(
+                            ColorPalette.kWhite,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      _formatScheduleTime(_nextPrayer.schedule),
+                      style: textTheme.displayLarge?.copyWith(
+                        color: ColorPalette.kWhite,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 48,
+                        height: 1,
                       ),
+                    ),
+                    const Spacer(),
+                    _CountdownPill(
+                      textTheme: textTheme,
+                      text: _countdownText(),
                     ),
                   ],
                 ),
-                Text(
-                  w.time,
-                  style: textTheme.displayLarge?.copyWith(
-                    color: ColorPalette.kWhite,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 48,
-                    height: 1,
-                  ),
-                ),
-                const Spacer(),
-                _CountdownPill(
-                  textTheme: textTheme,
-                  text: _countdownText(),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -1,24 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sahaba_mobile/business_logic/location/location_cubit.dart';
+import 'package:sahaba_mobile/business_logic/location/location_state.dart';
+import 'package:sahaba_mobile/business_logic/prayer_schedule/prayer_schedule_cubit.dart';
+import 'package:sahaba_mobile/business_logic/prayer_schedule/prayer_schedule_state.dart';
 import 'package:sahaba_mobile/infrastructure/extension/datetime_extension.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/home/widgets/card_jadwal_sholat.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.onPrayerScheduleTap});
+
+  final VoidCallback? onPrayerScheduleTap;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final today = DateTime.now();
 
+    final locationState = context.watch<LocationCubit>().state;
+    final location = locationState is LocationLoaded
+        ? (locationState.city.lokasi ?? 'Jakarta Selatan')
+        : 'Jakarta Selatan';
+
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBackground,
       appBar: CustomAppBar.buildHomeAppBar(
         date:
             '${today.day} ${IndoDateTimeX.bulan[today.month - 1]} ${today.year}',
+        location: location,
+        onLocationTap: () async {
+          await context.push(
+            '${RouterPath.mainPath}/select-city',
+            extra: context.read<LocationCubit>(),
+          );
+        },
       ),
       body: SafeArea(
         top: false,
@@ -28,9 +49,20 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
-              const CardJadwalSholat(),
+              BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
+                builder: (context, scheduleState) {
+                  final schedule = scheduleState is PrayerScheduleLoaded
+                      ? scheduleState.response.jadwal
+                      : null;
+                  return CardJadwalSholat(
+                    schedule: schedule,
+                    isLoading: scheduleState is PrayerScheduleLoading,
+                    onTap: onPrayerScheduleTap,
+                  );
+                },
+              ),
               const SizedBox(height: 32),
-              const Row(
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
@@ -38,14 +70,20 @@ class HomeScreen extends StatelessWidget {
                       icon: AppIcons.compass3Line,
                       title: 'Kiblat',
                       subtitle: 'Temukan arah akurat',
+                      onTap: () => context.push(
+                        '${RouterPath.mainPath}/${RouterPath.qiblaPath}',
+                      ),
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: _FeatureCard(
                       icon: AppIcons.calendarLine,
                       title: 'Kalender Hijriah',
                       subtitle: 'Lihat hari penting',
+                      onTap: () => context.push(
+                        '${RouterPath.mainPath}/${RouterPath.calendarPath}',
+                      ),
                     ),
                   ),
                 ],
@@ -74,87 +112,93 @@ class _FeatureCard extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.subtitle,
+    this.onTap,
   });
 
   final String icon;
   final String title;
   final String subtitle;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return Container(
-      height: 114,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: ColorPalette.kWhite,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: _cardShadow,
-      ),
-      child: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: ColorPalette.primaryColor,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    icon,
-                    width: 20,
-                    height: 20,
-                    colorFilter: const ColorFilter.mode(
-                      ColorPalette.kWhite,
-                      BlendMode.srcIn,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        height: 114,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: ColorPalette.kWhite,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: _cardShadow,
+        ),
+        child: Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: ColorPalette.primaryColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      icon,
+                      width: 20,
+                      height: 20,
+                      colorFilter: const ColorFilter.mode(
+                        ColorPalette.kWhite,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: textTheme.titleMedium?.copyWith(
-                  fontSize: 16,
-                  height: 1,
-                  fontWeight: FontWeight.w600,
+                const SizedBox(height: 8),
+                Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textTheme.titleMedium?.copyWith(
+                    fontSize: 16,
+                    height: 1,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: textTheme.bodySmall?.copyWith(
-                  fontSize: 12,
-                  height: 1,
-                  color: ColorPalette.contentTertiary,
-                  fontWeight: FontWeight.w500,
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textTheme.bodySmall?.copyWith(
+                    fontSize: 12,
+                    height: 1,
+                    color: ColorPalette.contentTertiary,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          Positioned(
-            top: 7,
-            right: 0,
-            child: SvgPicture.asset(
-              AppIcons.arrowDropRightLine,
-              width: 24,
-              height: 24,
-              colorFilter: const ColorFilter.mode(
-                ColorPalette.primaryColor,
-                BlendMode.srcIn,
+              ],
+            ),
+            Positioned(
+              top: 7,
+              right: 0,
+              child: SvgPicture.asset(
+                AppIcons.arrowDropRightLine,
+                width: 24,
+                height: 24,
+                colorFilter: const ColorFilter.mode(
+                  ColorPalette.primaryColor,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
