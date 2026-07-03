@@ -231,6 +231,7 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
+          spacing: 8,
           children: [
             SizedBox(
               width: context.isTabletLarge
@@ -272,9 +273,9 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 8),
             Expanded(
               child: Row(
+                spacing: 16,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Flexible(
@@ -283,12 +284,10 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                       onTap: onLocationTap,
                     ),
                   ),
-                  const SizedBox(width: 16),
                   _HomeIconButton(
                     icon: AppIcons.searchLine,
                     onTap: onSearchTap,
                   ),
-                  const SizedBox(width: 16),
                   _HomeIconButton(
                     icon: AppIcons.notification2Line,
                     onTap: onNotificationTap,
@@ -320,19 +319,32 @@ class _HomeLocationChip extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
+        width: context.isTabletLarge
+            ? null
+            : context.isTabletMedium
+            ? null
+            : context.isTabletSmall
+            ? null
+            : context.isPhoneLarge
+            ? 110
+            : context.isPhoneMedium
+            ? 140
+            : context.isPhoneSmall
+            ? 140
+            : 140,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
           color: ColorPalette.surfaceTertiary,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
+          spacing: 8,
           mainAxisSize: MainAxisSize.min,
           children: [
             const _HomeSvgIcon(
               icon: AppIcons.mapPin2Line,
               color: ColorPalette.primary,
             ),
-            const SizedBox(width: 8),
             Flexible(
               child: Text(
                 location,

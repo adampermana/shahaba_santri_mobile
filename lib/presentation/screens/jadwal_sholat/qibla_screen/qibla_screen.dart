@@ -10,6 +10,7 @@ import 'package:sahaba_mobile/business_logic/qibla_cubit/qibla_state.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 
 class QiblaScreen extends StatelessWidget {
   const QiblaScreen({super.key});
@@ -48,9 +49,7 @@ class _QiblaViewState extends State<_QiblaView> {
 
     return Scaffold(
       backgroundColor: ColorPalette.kWhite,
-      appBar: _QiblaBackAppBar(
-        onBackTap: () => Navigator.of(context).maybePop(),
-      ),
+      appBar: _buildAppBar(context),
       body: SafeArea(
         child: BlocConsumer<QiblaCubit, QiblaState>(
           listenWhen: (previous, current) {
@@ -85,6 +84,52 @@ class _QiblaViewState extends State<_QiblaView> {
             return const SizedBox.shrink();
           },
         ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    return CustomAppBar.buildAppBarSimple(
+      backgroundColor: ColorPalette.kWhite,
+      elevation: 0,
+      leadingWidth: 40,
+      leading: IconButton(
+        onPressed: () => Navigator.of(context).maybePop(),
+        icon: const Icon(
+          Icons.arrow_back_rounded,
+          color: ColorPalette.contentSecondary,
+          size: 22,
+        ),
+        padding: const EdgeInsets.only(left: 16),
+        constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+        splashRadius: 20,
+      ),
+      titleWidget: Text(
+        'Kembali',
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: ColorPalette.contentSecondary,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: _QiblaInfoButton(onTap: _showQiblaInfoModal),
+        ),
+      ],
+    );
+  }
+
+  void _showQiblaInfoModal() {
+    unawaited(
+      showDialog<void>(
+        context: context,
+        builder: (context) {
+          return _QiblaInfoModal(
+            onClose: () => Navigator.of(context).pop(),
+          );
+        },
       ),
     );
   }
@@ -437,47 +482,6 @@ class _CompassPointerPainter extends CustomPainter {
   }
 }
 
-class _QiblaBackAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const _QiblaBackAppBar({required this.onBackTap});
-
-  final VoidCallback onBackTap;
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: ColorPalette.kWhite,
-      elevation: 0,
-      scrolledUnderElevation: 0,
-      automaticallyImplyLeading: false,
-      centerTitle: false,
-      leadingWidth: 40,
-      titleSpacing: 0,
-      leading: IconButton(
-        onPressed: onBackTap,
-        icon: const Icon(
-          Icons.arrow_back_rounded,
-          color: ColorPalette.contentSecondary,
-          size: 22,
-        ),
-        padding: const EdgeInsets.only(left: 16),
-        constraints: const BoxConstraints.tightFor(width: 40, height: 40),
-        splashRadius: 20,
-      ),
-      title: Text(
-        'Kembali',
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: ColorPalette.contentSecondary,
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-}
-
 class _DirectionInfo extends StatelessWidget {
   const _DirectionInfo({
     required this.heading,
@@ -550,6 +554,117 @@ class _DirectionInfo extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _QiblaInfoButton extends StatelessWidget {
+  const _QiblaInfoButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      customBorder: const CircleBorder(),
+      child: Container(
+        width: 28,
+        height: 28,
+        decoration: const BoxDecoration(
+          color: ColorPalette.surfaceTertiary,
+          shape: BoxShape.circle,
+        ),
+        alignment: Alignment.center,
+        child: SvgPicture.asset(
+          AppIcons.information2Line,
+          width: 18,
+          height: 18,
+          colorFilter: const ColorFilter.mode(
+            ColorPalette.primaryColor,
+            BlendMode.srcIn,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _QiblaInfoModal extends StatelessWidget {
+  const _QiblaInfoModal({required this.onClose});
+
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+      backgroundColor: ColorPalette.kWhite,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(28, 32, 28, 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              QiblaIcons.kalibrasi,
+              width: 128,
+              height: 96,
+            ),
+            const SizedBox(height: 18),
+            Text(
+              'Tips Akurasi Kompas',
+              textAlign: TextAlign.center,
+              style: textTheme.titleLarge?.copyWith(
+                color: ColorPalette.kBlack,
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                height: 1.2,
+              ),
+            ),
+            const SizedBox(height: 22),
+            Text(
+              'Untuk mendapatkan arah kiblat yang lebih presisi, gerakkan '
+              'ponsel Anda membentuk pola angka 8 di udara beberapa kali.',
+              textAlign: TextAlign.left,
+              style: textTheme.bodyLarge?.copyWith(
+                color: ColorPalette.kBlack,
+                fontSize: 18,
+                height: 1.35,
+              ),
+            ),
+            const SizedBox(height: 28),
+            SizedBox(
+              width: double.infinity,
+              height: 56,
+              child: ElevatedButton(
+                onPressed: onClose,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: ColorPalette.primaryColor,
+                  foregroundColor: ColorPalette.kWhite,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(28),
+                  ),
+                ),
+                child: Text(
+                  'Tutup',
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: ColorPalette.kWhite,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

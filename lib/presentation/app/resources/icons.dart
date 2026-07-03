@@ -19,6 +19,7 @@ abstract class AppIcons {
   static const String home9Line = '$_path/home-9-line.svg';
   static const String indeterminateCircleLine =
       '$_path/indeterminate-circle-line.svg';
+  static const String information2Line = '$_path/information-2-line.svg';
   static const String mapPin2Line = '$_path/map-pin-line.svg';
   static const String moonLine = '$_path/moon-line.svg';
   static const String notification2Line = '$_path/notification-line.svg';
@@ -84,5 +85,6 @@ abstract class QiblaIcons {
   static const String indicatorActive = '$_path/indicator-active.svg';
   static const String indicatorNonaktif = '$_path/indicator-nonaktif.svg';
   static const String jarum = '$_path/jarum.svg';
+  static const String kalibrasi = '$_path/kalibrasi.svg';
   static const String kabah = '$_path/kabah.svg';
 }
