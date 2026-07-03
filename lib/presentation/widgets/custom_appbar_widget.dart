@@ -133,101 +133,6 @@ class CustomAppBar {
     actions: actions,
   );
 
-  // 5. Profile Edit AppBar
-  //    ← + title | centered title + Save
-  static PreferredSizeWidget buildProfileEditAppBar({
-    required BuildContext context,
-    required String title,
-    VoidCallback? onBackTap,
-    Widget? action,
-    Color? backgroundColor,
-    bool titleLeading = false,
-    IconData icon = Icons.arrow_back_rounded,
-    Key? key,
-  }) => AppBar(
-    key: key,
-    backgroundColor: backgroundColor ?? ColorPalette.scaffoldBackgroundAppBar,
-    elevation: 0,
-    toolbarHeight: 64,
-    automaticallyImplyLeading: false,
-    centerTitle: false,
-    titleSpacing: 0,
-    title: SizedBox(
-      height: 64,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: titleLeading
-            ? Row(
-                children: [
-                  SizedBox(
-                    width: 130,
-                    child: Row(
-                      children: [
-                        _ProfileEditBackButton(
-                          onTap: onBackTap ?? () => Navigator.of(context).pop(),
-                          icon: icon,
-                        ),
-                        const SizedBox(width: 4),
-                        Flexible(child: _ProfileEditTitle(title: title)),
-                      ],
-                    ),
-                  ),
-                ],
-              )
-            : Row(
-                children: [
-                  SizedBox(
-                    width: 40,
-                    child: _ProfileEditBackButton(
-                      onTap: onBackTap ?? () => Navigator.of(context).pop(),
-                      icon: icon,
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(child: _ProfileEditTitle(title: title)),
-                  ),
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(minWidth: 40),
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: action ?? const SizedBox.shrink(),
-                    ),
-                  ),
-                ],
-              ),
-      ),
-    ),
-  );
-
-  static Widget buildProfileEditSaveAction({
-    required VoidCallback? onPressed,
-    String label = 'Save',
-    bool isLoading = false,
-  }) => TextButton(
-    onPressed: isLoading ? null : onPressed,
-    style: TextButton.styleFrom(
-      minimumSize: const Size(40, 32),
-      padding: EdgeInsets.zero,
-      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-    ),
-    child: isLoading
-        ? const SizedBox(
-            width: 18,
-            height: 18,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          )
-        : Text(
-            label,
-            style: const TextStyle(
-              fontFamily: 'Figtree',
-              color: ColorPalette.primaryContainer,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              letterSpacing: -0.4,
-            ),
-          ),
-  );
-
   // 6. Search AppBar
   static PreferredSizeWidget buildSearchAppBar({
     required BuildContext context,
@@ -268,7 +173,7 @@ class CustomAppBar {
     centerTitle: true,
     titleSpacing: 0,
     bottom: PreferredSize(
-      preferredSize: const Size.fromHeight(18),
+      preferredSize: const Size.fromHeight(20),
       child: _JadwalSholatDateNavigator(
         date: date,
         onPrevious: onPrevious,
@@ -590,32 +495,6 @@ class _ProfileEditBackButton extends StatelessWidget {
   }
 }
 
-/// Circular avatar for the chat detail appbar.
-class _ChatAvatar extends StatelessWidget {
-  const _ChatAvatar({this.avatarUrl, this.avatarWidget});
-
-  final String? avatarUrl;
-  final Widget? avatarWidget;
-
-  @override
-  Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 18,
-      backgroundColor: ColorPalette.surfaceContainerHigh,
-      backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl!) : null,
-      child:
-          avatarWidget ??
-          (avatarUrl == null
-              ? const Icon(
-                  Icons.person_rounded,
-                  size: 20,
-                  color: ColorPalette.onSurfaceVariant,
-                )
-              : null),
-    );
-  }
-}
-
 class _JadwalSholatDateNavigator extends StatelessWidget {
   const _JadwalSholatDateNavigator({
     required this.date,
@@ -634,7 +513,7 @@ class _JadwalSholatDateNavigator extends StatelessWidget {
     final formatted = '${date.day} $monthName ${date.year}';
 
     return Padding(
-      padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
+      padding: const EdgeInsets.only(top: 8, right: 8, left: 8, bottom: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

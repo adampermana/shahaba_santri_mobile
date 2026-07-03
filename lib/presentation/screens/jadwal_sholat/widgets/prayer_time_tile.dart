@@ -12,6 +12,7 @@ class PrayerTimeTile extends StatelessWidget {
     required this.isChecked,
     required this.isEnabled,
     required this.onCheck,
+    this.isHistory = false,
     this.showCheckbox = true,
     this.isVolumeMuted = false,
     super.key,
@@ -23,6 +24,7 @@ class PrayerTimeTile extends StatelessWidget {
   final bool isActive;
   final bool isChecked;
   final bool isEnabled;
+  final bool isHistory;
   final bool showCheckbox;
   final bool isVolumeMuted;
   final VoidCallback? onCheck;
@@ -58,6 +60,7 @@ class PrayerTimeTile extends StatelessWidget {
                       isActive: isActive,
                       isChecked: isChecked,
                       isEnabled: isEnabled,
+                      isHistory: isHistory,
                       onTap: onCheck,
                     ),
                   )
@@ -121,17 +124,21 @@ class _PrayerCheckbox extends StatelessWidget {
     required this.isActive,
     required this.isChecked,
     required this.isEnabled,
+    required this.isHistory,
     required this.onTap,
   });
 
   final bool isActive;
   final bool isChecked;
   final bool isEnabled;
+  final bool isHistory;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = isChecked
+    final borderColor = isHistory
+        ? ColorPalette.contentDisabled
+        : isChecked
         ? (isActive ? ColorPalette.kWhite : ColorPalette.primaryColor)
         : isActive
         ? ColorPalette.kWhite
@@ -144,14 +151,26 @@ class _PrayerCheckbox extends StatelessWidget {
         width: 24,
         height: 24,
         decoration: BoxDecoration(
-          color: isChecked ? ColorPalette.primaryColor : Colors.transparent,
+          color: isHistory
+              ? Colors.transparent
+              : isChecked
+              ? ColorPalette.primaryColor
+              : Colors.transparent,
           border: Border.all(
             color: borderColor,
             width: 2,
           ),
           borderRadius: BorderRadius.circular(4),
         ),
-        child: isChecked
+        child: isHistory
+            ? (isChecked
+                  ? const Icon(
+                      Icons.check_rounded,
+                      color: ColorPalette.contentDisabled,
+                      size: 20,
+                    )
+                  : null)
+            : isChecked
             ? const Icon(
                 Icons.check_rounded,
                 color: ColorPalette.kWhite,

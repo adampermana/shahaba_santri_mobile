@@ -167,6 +167,7 @@ class _LoadedView extends StatelessWidget {
                 time,
                 state.date,
               );
+              final isPastDay = _isPastDate(state.date);
 
               return PrayerTimeTile(
                 icon: item.icon,
@@ -174,7 +175,8 @@ class _LoadedView extends StatelessWidget {
                 time: _formatTime(time),
                 isActive: isActive,
                 isChecked: isChecked,
-                isEnabled: !isChecked && !isFuture,
+                isHistory: isPastDay,
+                isEnabled: !isChecked && !isFuture && !isPastDay,
                 showCheckbox: item.showCheckbox,
                 isVolumeMuted: item.isVolumeMuted,
                 onCheck: () => _onCheck(context, item.name, time),
@@ -191,6 +193,13 @@ class _LoadedView extends StatelessWidget {
     final today = DateTime(now.year, now.month, now.day);
     final target = DateTime(date.year, date.month, date.day);
     return target.isAfter(today);
+  }
+
+  bool _isPastDate(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final target = DateTime(date.year, date.month, date.day);
+    return target.isBefore(today);
   }
 
   bool _isPrayerInFuture(String? time, DateTime date) {
