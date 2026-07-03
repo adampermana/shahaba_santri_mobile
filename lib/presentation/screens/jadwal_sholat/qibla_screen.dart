@@ -85,8 +85,8 @@ class _QiblaScreenState extends State<QiblaScreen> {
   }
 
   @override
-  void dispose() {
-    _compassSub?.cancel();
+  Future<void> dispose() async {
+    await _compassSub?.cancel();
     super.dispose();
   }
 

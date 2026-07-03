@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sahaba_mobile/infrastructure/extension/datetime_extension.dart';
+import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 
@@ -228,7 +229,6 @@ class CustomAppBar {
   );
 
   // 6. Search AppBar
-  //    ← | [🔍 Cari thread atau topik…] (search field)
   static PreferredSizeWidget buildSearchAppBar({
     required BuildContext context,
     required TextEditingController controller,
@@ -252,75 +252,32 @@ class CustomAppBar {
     icon: icon,
   );
 
-  // 6. Chat Detail AppBar
-  //    ← | [Avatar + Name] | [note, call, search]
-  static PreferredSizeWidget buildChatDetailAppBar({
-    required BuildContext context,
-    required String userName,
-    String? avatarUrl,
-    Widget? avatarWidget,
-    VoidCallback? onBackTap,
-    VoidCallback? onNoteTap,
-    VoidCallback? onCallTap,
-    VoidCallback? onSearchTap,
+  // 7. Jadwal Sholat AppBar  (date navigator in title)
+  static PreferredSizeWidget buildJadwalSholatAppBar({
+    required DateTime date,
+    required VoidCallback onPrevious,
+    required VoidCallback onNext,
     Color? backgroundColor,
-    IconData icon = Icons.arrow_back_rounded,
     Key? key,
   }) => AppBar(
     key: key,
     backgroundColor: backgroundColor ?? ColorPalette.scaffoldBackgroundAppBar,
     elevation: 0,
+    scrolledUnderElevation: 0,
     automaticallyImplyLeading: false,
-    centerTitle: false,
-    leadingWidth: 40,
-    leading: _BackButton(
-      onTap: onBackTap ?? () => Navigator.of(context).maybePop(),
-      icon: icon,
+    centerTitle: true,
+    titleSpacing: 0,
+    bottom: PreferredSize(
+      preferredSize: const Size.fromHeight(18),
+      child: _JadwalSholatDateNavigator(
+        date: date,
+        onPrevious: onPrevious,
+        onNext: onNext,
+      ),
     ),
-    title: Row(
-      children: [
-        // Avatar
-        _ChatAvatar(avatarUrl: avatarUrl, avatarWidget: avatarWidget),
-        const SizedBox(width: 10),
-        // Name
-        Expanded(
-          child: Text(
-            userName,
-            style: const TextStyle(
-              color: ColorPalette.kBlack,
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    ),
-    actions: [
-      if (onNoteTap != null)
-        IconButton(
-          onPressed: onNoteTap,
-          icon: const Icon(Icons.note_alt_outlined, size: 22),
-          splashRadius: 20,
-        ),
-      if (onCallTap != null)
-        IconButton(
-          onPressed: onCallTap,
-          icon: const Icon(Icons.phone_outlined, size: 22),
-          splashRadius: 20,
-        ),
-      if (onSearchTap != null)
-        IconButton(
-          onPressed: onSearchTap,
-          icon: const Icon(Icons.search_rounded, size: 22),
-          splashRadius: 20,
-        ),
-      const SizedBox(width: 4),
-    ],
   );
 
-  // 7. Logo Only AppBar  (minimal — no actions)
+  // 8. Logo Only AppBar  (minimal — no actions)
   static PreferredSizeWidget buildLogoOnlyAppBar({
     Color? backgroundColor,
     Key? key,
@@ -371,8 +328,21 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 108,
+              width: context.isTabletLarge
+                  ? 140
+                  : context.isTabletMedium
+                  ? 140
+                  : context.isTabletSmall
+                  ? 140
+                  : context.isPhoneLarge
+                  ? 110
+                  : context.isPhoneMedium
+                  ? 108
+                  : context.isPhoneSmall
+                  ? 108
+                  : 108,
               child: Column(
+                spacing: 4,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -381,12 +351,9 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: textTheme.titleMedium?.copyWith(
-                      fontSize: 16,
-                      color: ColorPalette.kBlack,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 4),
                   Text(
                     hijriDate,
                     maxLines: 1,
@@ -645,6 +612,115 @@ class _ChatAvatar extends StatelessWidget {
                   color: ColorPalette.onSurfaceVariant,
                 )
               : null),
+    );
+  }
+}
+
+class _JadwalSholatDateNavigator extends StatelessWidget {
+  const _JadwalSholatDateNavigator({
+    required this.date,
+    required this.onPrevious,
+    required this.onNext,
+  });
+
+  final DateTime date;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final monthName = IndoDateTimeX.bulan[date.month - 1];
+    final formatted = '${date.day} $monthName ${date.year}';
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _DateNavArrowButton(
+            quarterTurns: 2,
+            onTap: onPrevious,
+          ),
+          Flexible(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  formatted,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  date.hijriDateId(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: ColorPalette.contentSecondary,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _DateNavArrowButton(
+            onTap: onNext,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DateNavArrowButton extends StatelessWidget {
+  const _DateNavArrowButton({required this.onTap, this.quarterTurns = 0});
+
+  final VoidCallback onTap;
+  final int quarterTurns;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 32,
+      height: context.isTabletLarge
+          ? 50
+          : context.isTabletMedium
+          ? 50
+          : context.isTabletSmall
+          ? 50
+          : context.isPhoneLarge
+          ? 50
+          : context.isPhoneMedium
+          ? 40
+          : context.isPhoneSmall
+          ? 40
+          : 40,
+      decoration: BoxDecoration(
+        color: ColorPalette.surfaceTertiary,
+        borderRadius: BorderRadius.circular(1000),
+      ),
+      child: IconButton(
+        onPressed: onTap,
+        padding: EdgeInsets.zero,
+        icon: RotatedBox(
+          quarterTurns: quarterTurns,
+          child: SvgPicture.asset(
+            AppIcons.arrowDropRightLine,
+            width: 24,
+            height: 24,
+            colorFilter: const ColorFilter.mode(
+              ColorPalette.kBlack,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

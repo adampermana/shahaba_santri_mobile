@@ -101,8 +101,8 @@ class PrayerScheduleResponse {
         final firstEntry = rawJadwal.entries.first;
         final scheduleData = firstEntry.value;
         if (scheduleData is Map<String, dynamic>) {
-          parsedJadwal = PrayerScheduleModel.fromJson(scheduleData);
-          parsedJadwal.date ??= firstEntry.key;
+          parsedJadwal = PrayerScheduleModel.fromJson(scheduleData)
+            ..date ??= firstEntry.key;
         }
       }
     }

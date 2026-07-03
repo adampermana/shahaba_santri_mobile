@@ -13,12 +13,14 @@ class PrayerScheduleLoaded extends PrayerScheduleState {
     required this.date,
     this.activePrayer,
     this.nextPrayer,
+    this.todaySchedule,
   });
 
   final PrayerScheduleResponse response;
   final DateTime date;
   final WaktuSholat? activePrayer;
   final WaktuSholat? nextPrayer;
+  final PrayerScheduleModel? todaySchedule;
 }
 
 class PrayerScheduleError extends PrayerScheduleState {

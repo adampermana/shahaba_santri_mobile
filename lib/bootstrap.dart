@@ -2,9 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:device_preview_plus/device_preview_plus.dart';
+// import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sahaba_mobile/infrastructure/core/api/hayuwe_http_overrides.dart';
@@ -75,9 +74,9 @@ Future<void> bootstrap(
 
       // Build and run the app
       final app = await builder();
-      await SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-      ]);
+      // await SystemChrome.setPreferredOrientations([
+      //   DeviceOrientation.portraitUp,
+      // ]);
       runApp(app);
       // runApp(
       //   kDebugMode ? DevicePreview(builder: (_) => app) : app,

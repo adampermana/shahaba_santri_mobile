@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:sahaba_mobile/business_logic/location/location_state.dart';
+import 'package:sahaba_mobile/business_logic/location_cubit/location_state.dart';
 import 'package:sahaba_mobile/domains/city_model/city_model.dart';
 import 'package:sahaba_mobile/infrastructure/prayer_schedule/repository/i_prayer_repository.dart';
 import 'package:sahaba_mobile/infrastructure/services/location_permission_service.dart';

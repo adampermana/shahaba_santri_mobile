@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sahaba_mobile/business_logic/streak/streak_state.dart';
+import 'package:sahaba_mobile/business_logic/streak_cubit/streak_state.dart';
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
 import 'package:sahaba_mobile/infrastructure/streak/repository/i_streak_repository.dart';
 

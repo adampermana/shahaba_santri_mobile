@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sahaba_mobile/business_logic/prayer_schedule/prayer_schedule_state.dart';
+import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_state.dart';
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
 import 'package:sahaba_mobile/infrastructure/prayer_schedule/repository/i_prayer_repository.dart';
 import 'package:sahaba_mobile/presentation/screens/home/widgets/card_jadwal_sholat.dart';
@@ -11,6 +11,7 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
 
   String? _currentCityId;
   DateTime? _currentDate;
+  PrayerScheduleModel? _todaySchedule;
 
   Future<void> loadSchedule(
     String cityId,
@@ -28,6 +29,9 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
       (f) => emit(PrayerScheduleError(f.message)),
       (r) {
         final now = DateTime.now();
+        if (_isSameDay(date, now)) {
+          _todaySchedule = r.jadwal;
+        }
         final active = _resolveActivePrayer(r.jadwal, now);
         final next = _resolveNextPrayer(r.jadwal, now);
         emit(
@@ -36,6 +40,7 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
             date: date,
             activePrayer: active,
             nextPrayer: next,
+            todaySchedule: _todaySchedule,
           ),
         );
       },
@@ -59,10 +64,15 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
     DateTime now,
   ) {
     if (schedule == null) return null;
+    final selectedDate = _currentDate;
+    if (selectedDate == null) return null;
 
-    final prayers = _getPrayerTimes(schedule);
-    for (var i = prayers.length - 1; i >= 0; i--) {
-      final entry = prayers[i];
+    final isToday = _isSameDay(selectedDate, now);
+    if (!isToday) return null;
+
+    final todayPrayers = _getPrayerTimesForDate(schedule, now);
+    for (var i = todayPrayers.length - 1; i >= 0; i--) {
+      final entry = todayPrayers[i];
       if (now.isAfter(entry.value) || now.isAtSameMomentAs(entry.value)) {
         return entry.key;
       }
@@ -76,35 +86,43 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
   ) {
     if (schedule == null) return null;
     final selectedDate = _currentDate;
-    if (selectedDate != null && _isPastDate(selectedDate, now)) {
-      return WaktuSholat.isya;
+    if (selectedDate == null) return null;
+
+    final isPast = _isPastDate(selectedDate, now);
+    final isToday = _isSameDay(selectedDate, now);
+
+    if (isPast || isToday) {
+      final todayPrayers = _getPrayerTimesForDate(schedule, now);
+      for (final entry in todayPrayers) {
+        if (entry.value.isAfter(now)) {
+          return entry.key;
+        }
+      }
+      if (isPast) return WaktuSholat.isya;
+      return WaktuSholat.subuh;
     }
 
-    final prayers = _getPrayerTimes(schedule);
-    for (final entry in prayers) {
-      if (entry.value.isAfter(now)) {
-        return entry.key;
+    final todaySchedule = _todaySchedule;
+    if (todaySchedule != null) {
+      final todayPrayers = _getPrayerTimesForDate(todaySchedule, now);
+      for (final entry in todayPrayers) {
+        if (entry.value.isAfter(now)) {
+          return entry.key;
+        }
       }
     }
     return WaktuSholat.subuh;
   }
 
-  bool _isPastDate(DateTime selectedDate, DateTime now) {
-    final selectedDay = DateTime(
-      selectedDate.year,
-      selectedDate.month,
-      selectedDate.day,
-    );
-    final today = DateTime(now.year, now.month, now.day);
-    return selectedDay.isBefore(today);
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
-  List<MapEntry<WaktuSholat, DateTime>> _getPrayerTimes(
+  List<MapEntry<WaktuSholat, DateTime>> _getPrayerTimesForDate(
     PrayerScheduleModel schedule,
+    DateTime date,
   ) {
-    final date = _currentDate ?? DateTime.now();
     final entries = <MapEntry<WaktuSholat, DateTime>>[];
-
     final timeMap = {
       WaktuSholat.subuh: schedule.subuh,
       WaktuSholat.terbit: schedule.terbit,
@@ -113,7 +131,6 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
       WaktuSholat.maghrib: schedule.maghrib,
       WaktuSholat.isya: schedule.isya,
     };
-
     for (final entry in timeMap.entries) {
       final time = entry.value;
       if (time != null) {
@@ -130,7 +147,16 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
         }
       }
     }
-
     return entries;
+  }
+
+  bool _isPastDate(DateTime selectedDate, DateTime now) {
+    final selectedDay = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+    );
+    final today = DateTime(now.year, now.month, now.day);
+    return selectedDay.isBefore(today);
   }
 }

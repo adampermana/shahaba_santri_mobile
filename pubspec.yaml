@@ -1,6 +1,6 @@
 name: sahaba_mobile
 description: Sahaba mobile application
-version: 0.0.1+1
+version: 0.0.2+1
 publish_to: none
 
 environment:
@@ -55,6 +55,7 @@ flutter:
   assets:
     - assets/svg/
     - assets/svg/header/
+    - assets/svg/qibla/
     - assets/svg/jadwal_sholat/
     - assets/svg/jadwal_sholat/isya/
     - assets/svg/jadwal_sholat/maghrib/

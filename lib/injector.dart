@@ -1,9 +1,9 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
-import 'package:sahaba_mobile/business_logic/city_search/city_search_bloc.dart';
-import 'package:sahaba_mobile/business_logic/location/location_cubit.dart';
-import 'package:sahaba_mobile/business_logic/prayer_schedule/prayer_schedule_cubit.dart';
-import 'package:sahaba_mobile/business_logic/streak/streak_cubit.dart';
+import 'package:sahaba_mobile/business_logic/city_search_bloc/city_search_bloc.dart';
+import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
+import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
+import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/infrastructure/core/api/dio_api.dart';
 import 'package:sahaba_mobile/infrastructure/core/datasources/i_core_local_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/core/repository/i_core_repository.dart';

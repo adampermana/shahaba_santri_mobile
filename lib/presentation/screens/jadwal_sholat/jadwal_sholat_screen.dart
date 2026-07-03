@@ -4,76 +4,87 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sahaba_mobile/business_logic/location/location_cubit.dart';
-import 'package:sahaba_mobile/business_logic/location/location_state.dart';
-import 'package:sahaba_mobile/business_logic/prayer_schedule/prayer_schedule_cubit.dart';
-import 'package:sahaba_mobile/business_logic/prayer_schedule/prayer_schedule_state.dart';
-import 'package:sahaba_mobile/business_logic/streak/streak_cubit.dart';
-import 'package:sahaba_mobile/business_logic/streak/streak_state.dart';
+import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
+import 'package:sahaba_mobile/business_logic/location_cubit/location_state.dart';
+import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
+import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_state.dart';
+import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
+import 'package:sahaba_mobile/business_logic/streak_cubit/streak_state.dart';
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
 import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/home/widgets/card_jadwal_sholat.dart';
-import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/date_navigator.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/prayer_time_tile.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/streak_indicator.dart';
+import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 
 class JadwalSholatScreen extends StatelessWidget {
   const JadwalSholatScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorPalette.scaffoldBackground,
-      body: SafeArea(
-        child: BlocListener<PrayerScheduleCubit, PrayerScheduleState>(
-          listenWhen: (previous, current) {
-            if (current is! PrayerScheduleLoaded) return false;
-            if (previous is! PrayerScheduleLoaded) return true;
-            return !_isSameDate(previous.date, current.date);
-          },
-          listener: (context, state) {
-            if (state is PrayerScheduleLoaded) {
-              unawaited(context.read<StreakCubit>().loadStreak(state.date));
-            }
-          },
-          child: BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
-            builder: (context, state) {
-              if (state is PrayerScheduleLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: ColorPalette.primaryColor,
-                  ),
-                );
-              }
-              if (state is PrayerScheduleError) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(state.message),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () => _reload(context),
-                        child: const Text('Coba Lagi'),
-                      ),
-                    ],
-                  ),
-                );
-              }
-              if (state is PrayerScheduleLoaded) {
-                return _LoadedView(
-                  state: state,
-                  schedule: state.response.jadwal,
-                );
-              }
-              return const SizedBox.shrink();
-            },
+    return BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
+      builder: (context, scheduleState) {
+        return Scaffold(
+          appBar: CustomAppBar.buildJadwalSholatAppBar(
+            date: scheduleState is PrayerScheduleLoaded
+                ? scheduleState.date
+                : DateTime.now(),
+            onPrevious: () => context.read<PrayerScheduleCubit>().previousDay(),
+            onNext: () => context.read<PrayerScheduleCubit>().nextDay(),
           ),
-        ),
-      ),
+          backgroundColor: ColorPalette.scaffoldBackground,
+          body: SafeArea(
+            child: BlocListener<PrayerScheduleCubit, PrayerScheduleState>(
+              listenWhen: (previous, current) {
+                if (current is! PrayerScheduleLoaded) return false;
+                if (previous is! PrayerScheduleLoaded) return true;
+                return !_isSameDate(previous.date, current.date);
+              },
+              listener: (context, state) {
+                if (state is PrayerScheduleLoaded) {
+                  unawaited(context.read<StreakCubit>().loadStreak(state.date));
+                }
+              },
+              child: BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
+                builder: (context, state) {
+                  if (state is PrayerScheduleLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: ColorPalette.primaryColor,
+                      ),
+                    );
+                  }
+                  if (state is PrayerScheduleError) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(state.message),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () => _reload(context),
+                            child: const Text('Coba Lagi'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  if (state is PrayerScheduleLoaded) {
+                    return _LoadedView(
+                      state: state,
+                      schedule: state.response.jadwal,
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -104,23 +115,14 @@ class _LoadedView extends StatelessWidget {
     return CustomScrollView(
       slivers: [
         SliverPadding(
-          padding: const EdgeInsets.fromLTRB(0, 32, 0, 0),
-          sliver: SliverToBoxAdapter(
-            child: DateNavigator(
-              date: state.date,
-              onPrevious: () =>
-                  context.read<PrayerScheduleCubit>().previousDay(),
-              onNext: () => context.read<PrayerScheduleCubit>().nextDay(),
-            ),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(0, 24, 0, 16),
+          padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
           sliver: SliverToBoxAdapter(
             child: _NextPrayerCard(
               textTheme: textTheme,
               nextPrayer: state.nextPrayer,
-              schedule: schedule,
+              schedule: _isFutureDate(state.date)
+                  ? (state.todaySchedule ?? schedule)
+                  : schedule,
             ),
           ),
         ),
@@ -182,6 +184,13 @@ class _LoadedView extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  bool _isFutureDate(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final target = DateTime(date.year, date.month, date.day);
+    return target.isAfter(today);
   }
 
   bool _isPrayerInFuture(String? time, DateTime date) {
