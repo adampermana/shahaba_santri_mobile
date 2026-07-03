@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "100290353508",
+    "project_id": "sahaba-c7ee7",
+    "storage_bucket": "sahaba-c7ee7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100290353508:android:4d341a7bb6477e1a340271",
+        "android_client_info": {
+          "package_name": "com.solu.sahaba"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4xFnypz1Xs1VJ_i8-ACYqaHFaRq_BzVc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

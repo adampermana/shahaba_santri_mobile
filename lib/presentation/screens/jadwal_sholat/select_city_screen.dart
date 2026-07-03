@@ -11,6 +11,7 @@ import 'package:sahaba_mobile/domains/city_model/city_model.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 
 class SelectCityScreen extends StatefulWidget {
@@ -76,36 +77,7 @@ class _SelectCityViewState extends State<_SelectCityView> {
       listener: _onLocationChanged,
       child: Scaffold(
         backgroundColor: ColorPalette.scaffoldBackground,
-        appBar: AppBar(
-          backgroundColor: ColorPalette.scaffoldBackgroundAppBar,
-          elevation: 0,
-          centerTitle: false,
-          leadingWidth: 0,
-          titleSpacing: 16,
-          leading: const SizedBox.shrink(),
-          title: Text(
-            'Pilih Kota',
-            style: textTheme.titleLarge?.copyWith(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: ColorPalette.contentSecondary,
-            ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () => context.pop(),
-              icon: SvgPicture.asset(
-                AppIcons.closeLine,
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(
-                  ColorPalette.kBlack,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
-          ],
-        ),
+        appBar: _buildAppBar(context, textTheme),
         body: Column(
           children: [
             Padding(
@@ -273,6 +245,40 @@ class _SelectCityViewState extends State<_SelectCityView> {
           ],
         ),
       ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar(
+    BuildContext context,
+    TextTheme textTheme,
+  ) {
+    return CustomAppBar.buildAppBarSimple(
+      backgroundColor: ColorPalette.scaffoldBackgroundAppBar,
+      elevation: 0,
+      leadingWidth: 0,
+      leading: const SizedBox.shrink(),
+      titleWidget: Text(
+        'Pilih Kota',
+        style: textTheme.titleLarge?.copyWith(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: ColorPalette.contentSecondary,
+        ),
+      ),
+      actions: [
+        IconButton(
+          onPressed: () => context.pop(),
+          icon: SvgPicture.asset(
+            AppIcons.closeLine,
+            width: 24,
+            height: 24,
+            colorFilter: const ColorFilter.mode(
+              ColorPalette.kBlack,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

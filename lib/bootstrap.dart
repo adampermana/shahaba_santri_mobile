@@ -1,14 +1,20 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
 // import 'package:device_preview_plus/device_preview_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sahaba_mobile/firebase_options.dart';
 import 'package:sahaba_mobile/infrastructure/core/api/hayuwe_http_overrides.dart';
 import 'package:sahaba_mobile/infrastructure/failures/failures.dart';
+import 'package:sahaba_mobile/infrastructure/services/firebase_messaging_service.dart';
+import 'package:sahaba_mobile/infrastructure/services/local_notifications_service.dart';
 import 'package:sahaba_mobile/injector.dart';
 
 class AppBlocObserver extends BlocObserver {
@@ -25,6 +31,33 @@ class AppBlocObserver extends BlocObserver {
     log('onError(${bloc.runtimeType}, $error, $stackTrace)');
     super.onError(bloc, error, stackTrace);
   }
+}
+
+/// Background message handler for Firebase Cloud Messaging
+/// This runs in a separate isolate when app is terminated/background
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Initialize Firebase in background isolate
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  debugPrint('Background FCM message received: ${message.messageId}');
+  debugPrint('Message data: ${message.data}');
+
+  // Initialize LocalNotificationsService in background isolate
+  final localNotif = LocalNotificationsService.instance();
+  await localNotif.init();
+
+  // Extract title and body
+  final title = message.notification?.title;
+  final body = message.notification?.body;
+
+  // Show notification
+  await localNotif.showNotification(
+    message.messageId.hashCode,
+    title,
+    body,
+    jsonEncode(message.data),
+  );
 }
 
 Future<void> bootstrap(
@@ -44,9 +77,10 @@ Future<void> bootstrap(
       // );
 
       // Initialize Firebase
-      // await Firebase.initializeApp(
-      //   options: DefaultFirebaseOptions.currentPlatform,
-      // );
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+
       // Initialize Google Sign-In (singleton — harus dipanggil tepat sekali)
       // serverClientId: Web Client ID (type 3) dari Firebase Console
       // await GoogleSignIn.instance.initialize(
@@ -61,17 +95,16 @@ Future<void> bootstrap(
 
       // ========== NOTIFICATION SERVICES SETUP ==========
       // Initialize Local Notifications Service
-      // final localNotificationsService = LocalNotificationsService.instance();
-      // await localNotificationsService.init();
+      final localNotificationsService = LocalNotificationsService.instance();
+      await localNotificationsService.init();
 
-      // // Initialize Firebase Messaging Service
-      // final firebaseMessagingService = FirebaseMessagingService.instance();
-      // await firebaseMessagingService.init(
-      //   localNotificationsService: localNotificationsService,
-      // );
+      // Initialize Firebase Messaging Service
+      final firebaseMessagingService = FirebaseMessagingService.instance();
+      await firebaseMessagingService.init(
+        localNotificationsService: localNotificationsService,
+      );
 
       debugPrint('Notification services initialized successfully');
-      // =================================================
 
       // Build and run the app
       final app = await builder();

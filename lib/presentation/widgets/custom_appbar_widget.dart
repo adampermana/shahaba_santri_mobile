@@ -31,6 +31,8 @@ class CustomAppBar {
     centerTitle: centerTitle,
     actions: actions,
     elevation: elevation ?? 0,
+    scrolledUnderElevation: 0,
+    surfaceTintColor: Colors.transparent,
     bottom: bottom,
     backgroundColor: backgroundColor,
   );

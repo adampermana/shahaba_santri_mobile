@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_it/get_it.dart';
 import 'package:sahaba_mobile/business_logic/city_search_bloc/city_search_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
@@ -37,6 +38,7 @@ Future<void> _initCoreFeature() async {
   sl
     ..registerLazySingleton(DioApi.initMyQuran)
     ..registerLazySingleton(Connectivity.new)
+    ..registerLazySingleton(() => FirebaseMessaging.instance)
     ..registerLazySingleton(LocationPermissionService.new);
 }
 
