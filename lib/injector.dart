@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:sahaba_mobile/business_logic/city_search_bloc/city_search_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
+import 'package:sahaba_mobile/business_logic/qibla_cubit/qibla_cubit.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/infrastructure/core/api/dio_api.dart';
 import 'package:sahaba_mobile/infrastructure/core/datasources/i_core_local_datasource.dart';
@@ -13,6 +14,8 @@ import 'package:sahaba_mobile/infrastructure/prayer_schedule/datasources/prayer_
 import 'package:sahaba_mobile/infrastructure/prayer_schedule/datasources/prayer_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/prayer_schedule/repository/i_prayer_repository.dart';
 import 'package:sahaba_mobile/infrastructure/prayer_schedule/repository/prayer_repository.dart';
+import 'package:sahaba_mobile/infrastructure/qibla/repository/i_qibla_repository.dart';
+import 'package:sahaba_mobile/infrastructure/qibla/repository/qibla_repository.dart';
 import 'package:sahaba_mobile/infrastructure/services/location_permission_service.dart';
 import 'package:sahaba_mobile/infrastructure/streak/datasources/i_streak_local_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/streak/datasources/streak_local_datasource.dart';
@@ -26,6 +29,7 @@ Future<void> initApp() async {
   await _initCoreFeature();
   await _initL10nFeature();
   await _initPrayerFeature();
+  await _initQiblaFeature();
   await _initStreakFeature();
 }
 
@@ -58,6 +62,14 @@ Future<void> _initPrayerFeature() async {
     ..registerFactory(() => LocationCubit(sl(), sl()))
     ..registerFactory(() => PrayerScheduleCubit(sl()))
     ..registerFactory(() => CitySearchBloc(sl()));
+}
+
+Future<void> _initQiblaFeature() async {
+  sl
+    ..registerLazySingleton<IQiblaRepository>(
+      () => QiblaRepository(sl(), sl()),
+    )
+    ..registerFactory(() => QiblaCubit(sl(), sl()));
 }
 
 Future<void> _initStreakFeature() async {

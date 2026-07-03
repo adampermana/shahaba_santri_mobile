@@ -1,0 +1,556 @@
+import 'dart:async';
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sahaba_mobile/business_logic/qibla_cubit/qibla_cubit.dart';
+import 'package:sahaba_mobile/business_logic/qibla_cubit/qibla_state.dart';
+import 'package:sahaba_mobile/injector.dart';
+import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
+import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+
+class QiblaScreen extends StatelessWidget {
+  const QiblaScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) {
+        final cubit = sl<QiblaCubit>();
+        unawaited(cubit.loadQibla());
+        return cubit;
+      },
+      child: const _QiblaView(),
+    );
+  }
+}
+
+class _QiblaView extends StatefulWidget {
+  const _QiblaView();
+
+  @override
+  State<_QiblaView> createState() => _QiblaViewState();
+}
+
+class _QiblaViewState extends State<_QiblaView> {
+  static const _hapticAngleThreshold = 5.0;
+  static const _hapticThrottle = Duration(milliseconds: 180);
+
+  double? _lastHapticAngle;
+  DateTime? _lastHapticAt;
+  bool _wasFacingQibla = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Scaffold(
+      backgroundColor: ColorPalette.kWhite,
+      appBar: _QiblaBackAppBar(
+        onBackTap: () => Navigator.of(context).maybePop(),
+      ),
+      body: SafeArea(
+        child: BlocConsumer<QiblaCubit, QiblaState>(
+          listenWhen: (previous, current) {
+            if (current is QiblaError) return true;
+            return current is QiblaLoaded;
+          },
+          listener: (context, state) {
+            if (state is QiblaError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.message)),
+              );
+              _resetHapticState();
+            }
+
+            if (state is QiblaLoaded) {
+              _handleHaptic(state);
+            }
+          },
+          builder: (context, state) {
+            if (state is QiblaLoading || state is QiblaInitial) {
+              return _loadingState();
+            }
+
+            if (state is QiblaError) {
+              return _errorState(context, state.message, textTheme);
+            }
+
+            if (state is QiblaLoaded) {
+              return _loadedState(state, textTheme);
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
+      ),
+    );
+  }
+
+  void _handleHaptic(QiblaLoaded state) {
+    final arrowAngle = _normalizeAngle(state.qiblaDirection - state.heading);
+
+    if (state.isFacingQibla && !_wasFacingQibla) {
+      unawaited(HapticFeedback.mediumImpact());
+      _lastHapticAngle = arrowAngle;
+      _lastHapticAt = DateTime.now();
+      _wasFacingQibla = true;
+      return;
+    }
+
+    _wasFacingQibla = state.isFacingQibla;
+
+    if (_shouldTriggerRotationHaptic(arrowAngle)) {
+      unawaited(HapticFeedback.selectionClick());
+      _lastHapticAngle = arrowAngle;
+      _lastHapticAt = DateTime.now();
+    }
+  }
+
+  bool _shouldTriggerRotationHaptic(double arrowAngle) {
+    final lastAngle = _lastHapticAngle;
+    if (lastAngle == null) {
+      _lastHapticAngle = arrowAngle;
+      return false;
+    }
+
+    final now = DateTime.now();
+    final lastAt = _lastHapticAt;
+    if (lastAt != null && now.difference(lastAt) < _hapticThrottle) {
+      return false;
+    }
+
+    final diff = _shortestAngle(arrowAngle - lastAngle);
+    return diff >= _hapticAngleThreshold;
+  }
+
+  void _resetHapticState() {
+    _lastHapticAngle = null;
+    _lastHapticAt = null;
+    _wasFacingQibla = false;
+  }
+
+  double _normalizeAngle(double angle) => (angle % 360 + 360) % 360;
+
+  double _shortestAngle(double angle) {
+    final diff = _normalizeAngle(angle);
+    return diff > 180 ? 360 - diff : diff;
+  }
+
+  Widget _loadingState() {
+    return const Center(
+      child: CircularProgressIndicator(
+        color: ColorPalette.primaryColor,
+      ),
+    );
+  }
+
+  Widget _errorState(
+    BuildContext context,
+    String message,
+    TextTheme textTheme,
+  ) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.explore_off_outlined,
+              size: 64,
+              color: ColorPalette.contentTertiary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: textTheme.bodyMedium?.copyWith(
+                color: ColorPalette.contentTertiary,
+              ),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => context.read<QiblaCubit>().loadQibla(),
+              child: const Text('Coba Lagi'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _loadedState(QiblaLoaded state, TextTheme textTheme) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final availableWidth = constraints.maxWidth - 32;
+        var compassSize = availableWidth;
+        if (compassSize < 184) compassSize = 184;
+        if (compassSize > 204) compassSize = 204;
+
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 32,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _CompassWidget(
+                      heading: state.heading,
+                      qiblaDirection: state.qiblaDirection,
+                      isFacingQibla: state.isFacingQibla,
+                      size: compassSize,
+                    ),
+                    const SizedBox(height: 54),
+                    _DirectionInfo(
+                      heading: state.heading,
+                      qiblaDirection: state.qiblaDirection,
+                      isFacingQibla: state.isFacingQibla,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _CompassWidget extends StatelessWidget {
+  const _CompassWidget({
+    required this.heading,
+    required this.qiblaDirection,
+    required this.isFacingQibla,
+    required this.size,
+  });
+
+  final double heading;
+  final double qiblaDirection;
+  final bool isFacingQibla;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final kabahSize = size * 0.18;
+    final topOffset = kabahSize + size * 0.07;
+
+    return SizedBox(
+      width: size,
+      height: size + topOffset,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            top: topOffset,
+            left: 0,
+            child: _compassFace(),
+          ),
+          Positioned(
+            top: 0,
+            left: size / 2 - kabahSize / 2,
+            child: _kabahIcon(
+              size: kabahSize,
+            ),
+          ),
+          Positioned(
+            top: topOffset,
+            left: 0,
+            child: _compassPointer(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _compassFace() {
+    return CustomPaint(
+      size: Size.square(size),
+      painter: _CompassFacePainter(isFacingQibla: isFacingQibla),
+    );
+  }
+
+  Widget _kabahIcon({
+    required double size,
+  }) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: ColorPalette.kWhite,
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: ColorPalette.primaryColor,
+          width: 3,
+        ),
+      ),
+      padding: EdgeInsets.all(size * 0.13),
+      child: SvgPicture.asset(
+        QiblaIcons.kabah,
+        width: size * 0.64,
+        height: size * 0.64,
+      ),
+    );
+  }
+
+  Widget _compassPointer() {
+    final arrowTurns = (qiblaDirection - heading) / 360;
+
+    return SizedBox.square(
+      dimension: size,
+      child: AnimatedRotation(
+        turns: arrowTurns,
+        duration: const Duration(milliseconds: 160),
+        child: CustomPaint(
+          size: Size.square(size),
+          painter: _CompassPointerPainter(
+            color: isFacingQibla
+                ? ColorPalette.primaryColor
+                : const Color(0xFFE71545),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CompassFacePainter extends CustomPainter {
+  const _CompassFacePainter({required this.isFacingQibla});
+
+  final bool isFacingQibla;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2 - 2;
+    final ringColor = isFacingQibla
+        ? ColorPalette.primaryColor
+        : ColorPalette.surfaceTertiary;
+
+    final ringPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..color = ringColor;
+    canvas.drawCircle(center, radius, ringPaint);
+
+    final tickPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.square
+      ..strokeWidth = 3.4
+      ..color = ColorPalette.primaryColor;
+
+    for (final degree in const [30, 60, 120, 150, 210, 240, 300, 330]) {
+      final angle = _toRadians(degree - 90);
+      final outerRadius = radius * 0.84;
+      final innerRadius = radius * 0.78;
+      canvas.drawLine(
+        Offset(
+          center.dx + innerRadius * cos(angle),
+          center.dy + innerRadius * sin(angle),
+        ),
+        Offset(
+          center.dx + outerRadius * cos(angle),
+          center.dy + outerRadius * sin(angle),
+        ),
+        tickPaint,
+      );
+    }
+
+    _drawLabel(canvas, center, radius * 0.76, 'N', -90);
+    _drawLabel(canvas, center, radius * 0.76, 'E', 0);
+    _drawLabel(canvas, center, radius * 0.76, 'S', 90);
+    _drawLabel(canvas, center, radius * 0.76, 'W', 180);
+  }
+
+  void _drawLabel(
+    Canvas canvas,
+    Offset center,
+    double radius,
+    String label,
+    double degree,
+  ) {
+    final angle = _toRadians(degree);
+    final painter = TextPainter(
+      text: TextSpan(
+        text: label,
+        style: const TextStyle(
+          color: ColorPalette.kBlack,
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          height: 1,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    painter.paint(
+      canvas,
+      Offset(
+        center.dx + radius * cos(angle) - painter.width / 2,
+        center.dy + radius * sin(angle) - painter.height / 2,
+      ),
+    );
+  }
+
+  double _toRadians(double degree) => degree * pi / 180;
+
+  @override
+  bool shouldRepaint(_CompassFacePainter oldDelegate) {
+    return oldDelegate.isFacingQibla != isFacingQibla;
+  }
+}
+
+class _CompassPointerPainter extends CustomPainter {
+  const _CompassPointerPainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final path = Path()
+      ..moveTo(center.dx, center.dy - size.height * 0.24)
+      ..lineTo(center.dx + size.width * 0.13, center.dy + size.height * 0.15)
+      ..lineTo(center.dx, center.dy + size.height * 0.1)
+      ..lineTo(center.dx - size.width * 0.13, center.dy + size.height * 0.15)
+      ..close();
+
+    canvas.drawPath(
+      path,
+      Paint()
+        ..style = PaintingStyle.fill
+        ..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_CompassPointerPainter oldDelegate) {
+    return oldDelegate.color != color;
+  }
+}
+
+class _QiblaBackAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const _QiblaBackAppBar({required this.onBackTap});
+
+  final VoidCallback onBackTap;
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: ColorPalette.kWhite,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      automaticallyImplyLeading: false,
+      centerTitle: false,
+      leadingWidth: 40,
+      titleSpacing: 0,
+      leading: IconButton(
+        onPressed: onBackTap,
+        icon: const Icon(
+          Icons.arrow_back_rounded,
+          color: ColorPalette.contentSecondary,
+          size: 22,
+        ),
+        padding: const EdgeInsets.only(left: 16),
+        constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+        splashRadius: 20,
+      ),
+      title: Text(
+        'Kembali',
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: ColorPalette.contentSecondary,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
+class _DirectionInfo extends StatelessWidget {
+  const _DirectionInfo({
+    required this.heading,
+    required this.qiblaDirection,
+    required this.isFacingQibla,
+  });
+
+  final double heading;
+  final double qiblaDirection;
+  final bool isFacingQibla;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      children: [
+        Text(
+          _directionText(),
+          textAlign: TextAlign.center,
+          style: textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+            fontSize: 22,
+            height: 1.25,
+            color: ColorPalette.onSurface,
+          ),
+        ),
+        const SizedBox(height: 20),
+        _degreeBadge(textTheme),
+      ],
+    );
+  }
+
+  String _directionText() {
+    if (isFacingQibla) return 'Menghadap Kiblat';
+
+    final diff = (qiblaDirection - heading + 360) % 360;
+    return diff > 180 ? 'Belok ke kiri' : 'Belok ke kanan';
+  }
+
+  Widget _degreeBadge(TextTheme textTheme) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 4,
+      ),
+      decoration: BoxDecoration(
+        color: ColorPalette.surfaceTertiary,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SvgPicture.asset(
+            AppIcons.compass3Line,
+            width: 16,
+            height: 16,
+            colorFilter: const ColorFilter.mode(
+              ColorPalette.primaryColor,
+              BlendMode.srcIn,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            '${qiblaDirection.toStringAsFixed(0)}°',
+            style: textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              fontSize: 11,
+              color: ColorPalette.contentSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

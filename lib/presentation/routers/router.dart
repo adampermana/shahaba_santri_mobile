@@ -6,7 +6,7 @@ import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart'
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/home/calendar_hijriah.dart';
-import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/qibla_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/qibla_screen/qibla_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/select_city_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/main_screen.dart';
 

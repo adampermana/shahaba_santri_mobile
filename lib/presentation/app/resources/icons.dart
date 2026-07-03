@@ -77,3 +77,12 @@ abstract class AppIcons {
   static const String jadwalSholatTerbitVector1 =
       '$_path/jadwal_sholat/terbit/Vector-1.svg';
 }
+
+abstract class QiblaIcons {
+  static const String _path = 'assets/svg/qibla';
+
+  static const String indicatorActive = '$_path/indicator-active.svg';
+  static const String indicatorNonaktif = '$_path/indicator-nonaktif.svg';
+  static const String jarum = '$_path/jarum.svg';
+  static const String kabah = '$_path/kabah.svg';
+}
