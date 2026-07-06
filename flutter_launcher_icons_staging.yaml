@@ -1,0 +1,9 @@
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/images/icon-apps/ic_launcher_dev-1.png"
+  adaptive_icon_foreground: "assets/images/icon-apps/ic_launcher_stg_adaptive_fore.png"
+  adaptive_icon_background: "assets/images/icon-apps/ic_launcher_adaptive.png"
+  image_path_ios: "assets/images/icon-apps/ic_launcher_dev-1.png"
+  adaptive_icon_foreground_inset: 16  # default value is 16
