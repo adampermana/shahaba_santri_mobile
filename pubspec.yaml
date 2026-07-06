@@ -1,6 +1,6 @@
 name: sahaba_mobile
 description: Sahaba mobile application
-version: 0.0.2+1
+version: 0.0.3+1
 publish_to: none
 
 environment:
@@ -8,6 +8,7 @@ environment:
   flutter: ^3.44.0
 
 dependencies:
+  alarm: ^5.5.0
   audioplayers: ^6.1.0
   connectivity_plus: ^6.1.1
   dartz: ^0.10.1
@@ -57,25 +58,29 @@ flutter:
 
   assets:
     - assets/svg/
-    - assets/svg/header/
+    - assets/svg/notif/
     - assets/svg/qibla/
     - assets/svg/jadwal_sholat/
     - assets/svg/jadwal_sholat/isya/
     - assets/svg/jadwal_sholat/maghrib/
     - assets/svg/jadwal_sholat/subuh/
     - assets/svg/jadwal_sholat/terbit/
+    - assets/audio/adzan-default.mp3
+    - assets/quran/
+    - assets/quran/surah/
+    - assets/quran/translation/
 
   fonts:
-    - family: Amiri
+    - family: Markazi Text
       fonts:
-        - asset: assets/fonts/amiri/Amiri-Regular.ttf
-        - asset: assets/fonts/amiri/Amiri-Bold.ttf
+        - asset: assets/fonts/Markazi/MarkaziText-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Markazi/MarkaziText-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Markazi/MarkaziText-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Markazi/MarkaziText-Bold.ttf
           weight: 700
-        - asset: assets/fonts/amiri/Amiri-Italic.ttf
-          style: italic
-        - asset: assets/fonts/amiri/Amiri-BoldItalic.ttf
-          weight: 700
-          style: italic
     - family: Synonym
       fonts:
         - asset: assets/fonts/synonym_complete/Fonts/OTF/Synonym-Extralight.otf

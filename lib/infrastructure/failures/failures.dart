@@ -106,7 +106,7 @@ class LocationError extends Failure {
 
 class CacheFailure extends Failure {
   const CacheFailure({required String? message})
-    : super(message ?? 'Failed', 'Error while caching data');
+    : super('Failed', message ?? 'Error while caching data');
 }
 
 enum PermissionType { location, storage, microphone }

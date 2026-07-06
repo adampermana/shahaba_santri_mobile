@@ -17,7 +17,7 @@ class StreakCubit extends Cubit<StreakState> {
       (f) => emit(StreakError(f.message)),
       (r) => emit(
         StreakLoaded(
-          currentStreak: r.checkedPrayerCount,
+          currentStreak: r.currentStreak,
           checkedPrayers: Map<String, bool>.from(r.checkedPrayers),
           date: dateKey,
         ),
@@ -50,11 +50,10 @@ class StreakCubit extends Cubit<StreakState> {
 
     final updated = Map<String, bool>.from(currentState.checkedPrayers);
     updated[prayerName] = true;
-    final currentStreak = _checkedPrayerCount(updated);
 
     emit(
       StreakLoaded(
-        currentStreak: currentStreak,
+        currentStreak: currentState.currentStreak + 1,
         checkedPrayers: updated,
         date: currentState.date,
       ),

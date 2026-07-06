@@ -10,7 +10,9 @@ import 'package:sahaba_mobile/business_logic/qibla_cubit/qibla_state.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
+import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
 class QiblaScreen extends StatelessWidget {
   const QiblaScreen({super.key});
@@ -217,9 +219,12 @@ class _QiblaViewState extends State<_QiblaView> {
               ),
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
+            SubmitButtonStylesWidget(
+              textButton: 'Coba Lagi',
+              height: 50,
+              primaryColor: ColorPalette.primaryColor,
+              style: SubmitButtonStyle.elevated,
               onPressed: () => context.read<QiblaCubit>().loadQibla(),
-              child: const Text('Coba Lagi'),
             ),
           ],
         ),

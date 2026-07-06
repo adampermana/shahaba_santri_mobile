@@ -76,7 +76,7 @@ class FirebaseMessagingService {
         });
 
     _onMessageSubscription ??= FirebaseMessaging.onMessage.listen((
-      RemoteMessage message,
+      message,
     ) {
       debugPrint('Foreground FCM message received');
       debugPrint('========== FCM MESSAGE DEBUG ==========');
@@ -156,15 +156,7 @@ class FirebaseMessagingService {
   }
 
   Future<void> _requestPermission() async {
-    final result = await FirebaseMessaging.instance.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-      announcement: false,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-    );
+    final result = await FirebaseMessaging.instance.requestPermission();
 
     debugPrint('Notification permission: ${result.authorizationStatus}');
 

@@ -4,11 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
 import 'package:sahaba_mobile/injector.dart';
+import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
-import 'package:sahaba_mobile/presentation/screens/home/calendar_hijriah.dart';
+import 'package:sahaba_mobile/presentation/screens/home/calendar/calendar_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/qibla_screen/qibla_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/select_city_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/main_screen.dart';
+import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
 final GoRouter router = GoRouter(
   debugLogDiagnostics: kDebugMode,
@@ -32,9 +34,10 @@ final GoRouter router = GoRouter(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('Halaman yang Anda cari tidak tersedia'),
-            ElevatedButton(
+            SubmitButtonStylesWidget(
+              style: SubmitButtonStyle.elevated,
+              textButton: 'Kembali ke Home',
               onPressed: () => context.go(RouterPath.mainPath),
-              child: const Text('Kembali ke Home'),
             ),
           ],
         ),
@@ -71,7 +74,7 @@ final GoRouter router = GoRouter(
         ),
         GoRoute(
           path: RouterPath.calendarPath,
-          builder: (context, state) => const CalendarHijriahScreen(),
+          builder: (context, state) => const CalendarScreen(),
         ),
       ],
     ),

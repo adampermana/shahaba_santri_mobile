@@ -61,17 +61,16 @@ class PrayerRemoteDatasource implements IPrayerRemoteDatasource {
   }
 
   @override
-  Future<PrayerScheduleResponse> getPrayerSchedule(
+  Future<MonthlyPrayerScheduleResponse> getMonthlyPrayerSchedule(
     String cityId,
     int year,
     int month,
-    int day,
   ) async {
     try {
       final mm = month.toString().padLeft(2, '0');
-      final dd = day.toString().padLeft(2, '0');
       final response = await _dio.get<Map<String, dynamic>>(
-        '/v3/sholat/jadwal/$cityId/$year-$mm-$dd',
+        '/v3/sholat/jadwal/$cityId/$year-$mm',
+        queryParameters: {'tz': 'Asia/Jakarta'},
       );
 
       final data = response.data;
@@ -83,7 +82,7 @@ class PrayerRemoteDatasource implements IPrayerRemoteDatasource {
         );
       }
 
-      return PrayerScheduleResponse.fromJson(
+      return MonthlyPrayerScheduleResponse.fromJson(
         data['data'] as Map<String, dynamic>,
       );
     } on DioException catch (e) {

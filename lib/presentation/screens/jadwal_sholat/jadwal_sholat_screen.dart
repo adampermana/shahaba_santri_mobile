@@ -12,13 +12,16 @@ import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_state.dart';
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
 import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
+import 'package:sahaba_mobile/infrastructure/services/adzan_service.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/home/widgets/card_jadwal_sholat.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/prayer_time_tile.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/streak_indicator.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
+import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
 class JadwalSholatScreen extends StatelessWidget {
   const JadwalSholatScreen({super.key});
@@ -64,9 +67,15 @@ class JadwalSholatScreen extends StatelessWidget {
                         children: [
                           Text(state.message),
                           const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () => _reload(context),
-                            child: const Text('Coba Lagi'),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 32),
+                            child: SubmitButtonStylesWidget(
+                              textButton: 'Coba Lagi',
+                              height: 50,
+                              primaryColor: ColorPalette.primaryColor,
+                              style: SubmitButtonStyle.elevated,
+                              onPressed: () => _reload(context),
+                            ),
                           ),
                         ],
                       ),
@@ -102,11 +111,35 @@ class JadwalSholatScreen extends StatelessWidget {
   }
 }
 
-class _LoadedView extends StatelessWidget {
+class _LoadedView extends StatefulWidget {
   const _LoadedView({required this.state, required this.schedule});
 
   final PrayerScheduleLoaded state;
   final PrayerScheduleModel? schedule;
+
+  @override
+  State<_LoadedView> createState() => _LoadedViewState();
+}
+
+class _LoadedViewState extends State<_LoadedView> {
+  final AdzanService _adzanService = AdzanService.instance();
+  Map<String, bool> _adzanEnabled = const {};
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_syncAdzan());
+  }
+
+  @override
+  void didUpdateWidget(covariant _LoadedView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final scheduleChanged = oldWidget.schedule != widget.schedule;
+    final dateChanged = !_isSameDate(oldWidget.state.date, widget.state.date);
+    if (scheduleChanged || dateChanged) {
+      unawaited(_syncAdzan());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,10 +152,10 @@ class _LoadedView extends StatelessWidget {
           sliver: SliverToBoxAdapter(
             child: _NextPrayerCard(
               textTheme: textTheme,
-              nextPrayer: state.nextPrayer,
-              schedule: _isFutureDate(state.date)
-                  ? (state.todaySchedule ?? schedule)
-                  : schedule,
+              nextPrayer: widget.state.nextPrayer,
+              schedule: _isFutureDate(widget.state.date)
+                  ? (widget.state.todaySchedule ?? widget.schedule)
+                  : widget.schedule,
             ),
           ),
         ),
@@ -131,7 +164,7 @@ class _LoadedView extends StatelessWidget {
           sliver: SliverToBoxAdapter(
             child: _InfoRow(
               textTheme: textTheme,
-              date: state.date,
+              date: widget.state.date,
               onCompassTap: () => context.push(
                 '${RouterPath.mainPath}/${RouterPath.qiblaPath}',
               ),
@@ -151,23 +184,23 @@ class _LoadedView extends StatelessWidget {
             itemBuilder: (context, index) {
               final item = _prayers[index];
               final time =
-                  schedule?.getTimeByPrayerName(
+                  widget.schedule?.getTimeByPrayerName(
                     item.name.toLowerCase(),
                   ) ??
                   item.defaultTime;
-              final isActive = state.activePrayer?.label == item.name;
+              final isActive = widget.state.activePrayer?.label == item.name;
               final streakState = context.watch<StreakCubit>().state;
               final isChecked =
                   streakState is StreakLoaded &&
-                  streakState.date == _dateKey(state.date) &&
+                  streakState.date == _dateKey(widget.state.date) &&
                   streakState.isPrayerChecked(
                     item.name.toLowerCase(),
                   );
               final isFuture = _isPrayerInFuture(
                 time,
-                state.date,
+                widget.state.date,
               );
-              final isPastDay = _isPastDate(state.date);
+              final isPastDay = _isPastDate(widget.state.date);
 
               return PrayerTimeTile(
                 icon: item.icon,
@@ -178,7 +211,11 @@ class _LoadedView extends StatelessWidget {
                 isHistory: isPastDay,
                 isEnabled: !isChecked && !isFuture && !isPastDay,
                 showCheckbox: item.showCheckbox,
-                isVolumeMuted: item.isVolumeMuted,
+                showVolume: item.showVolume,
+                isVolumeMuted: item.showVolume && !_isAdzanEnabled(item.name),
+                onVolumeTap: item.showVolume
+                    ? () => _onVolumeTap(context, item)
+                    : null,
                 onCheck: () => _onCheck(context, item.name, time),
               );
             },
@@ -187,6 +224,45 @@ class _LoadedView extends StatelessWidget {
       ],
     );
   }
+
+  Future<void> _syncAdzan() async {
+    final preferences = _adzanService.getAdzanPreferences(
+      _prayers.where((item) => item.showVolume).map((item) => item.name),
+    );
+    if (mounted) {
+      setState(() => _adzanEnabled = preferences);
+    }
+
+    await _adzanService.syncSchedule(
+      date: widget.state.date,
+      cityId: widget.state.cityId,
+    );
+  }
+
+  Future<void> _onVolumeTap(
+    BuildContext context,
+    _PrayerItem item,
+  ) async {
+    final isEnabled = await _adzanService.toggleAdzan(
+      prayerName: item.name,
+      date: widget.state.date,
+      cityId: widget.state.cityId,
+    );
+
+    if (!mounted) return;
+    setState(() {
+      _adzanEnabled = {
+        ..._adzanEnabled,
+        item.name.toLowerCase(): isEnabled,
+      };
+    });
+  }
+
+  bool _isAdzanEnabled(String prayerName) =>
+      _adzanEnabled[prayerName.toLowerCase()] ?? true;
+
+  bool _isSameDate(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
 
   bool _isFutureDate(DateTime date) {
     final now = DateTime.now();
@@ -225,13 +301,13 @@ class _LoadedView extends StatelessWidget {
     String? time,
   ) {
     final now = DateTime.now();
-    if (schedule == null) return;
+    if (widget.schedule == null) return;
 
     unawaited(
       context.read<StreakCubit>().checkPrayer(
         prayerName: name.toLowerCase(),
         now: now,
-        schedule: schedule!,
+        schedule: widget.schedule!,
       ),
     );
   }
@@ -260,6 +336,7 @@ class _LoadedView extends StatelessWidget {
       name: 'Terbit',
       defaultTime: '05:51',
       showCheckbox: false,
+      showVolume: false,
     ),
     _PrayerItem(
       icon: AppIcons.sunLine,
@@ -275,7 +352,6 @@ class _LoadedView extends StatelessWidget {
       icon: AppIcons.hazeLine,
       name: 'Maghrib',
       defaultTime: '17:43',
-      isVolumeMuted: true,
     ),
     _PrayerItem(
       icon: AppIcons.moonLine,
@@ -291,14 +367,14 @@ class _PrayerItem {
     required this.name,
     required this.defaultTime,
     this.showCheckbox = true,
-    this.isVolumeMuted = false,
+    this.showVolume = true,
   });
 
   final String icon;
   final String name;
   final String defaultTime;
   final bool showCheckbox;
-  final bool isVolumeMuted;
+  final bool showVolume;
 }
 
 class _NextPrayerCard extends StatelessWidget {
@@ -501,9 +577,8 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final streakState = context.watch<StreakCubit>().state;
-    final streakCount =
-        streakState is StreakLoaded && streakState.date == _dateKey(date)
-        ? streakState.checkedPrayerCount
+    final streakCount = streakState is StreakLoaded
+        ? streakState.currentStreak
         : 0;
 
     return BlocBuilder<LocationCubit, LocationState>(
@@ -533,12 +608,6 @@ class _InfoRow extends StatelessWidget {
         );
       },
     );
-  }
-
-  String _dateKey(DateTime date) {
-    final month = date.month.toString().padLeft(2, '0');
-    final day = date.day.toString().padLeft(2, '0');
-    return '${date.year}-$month-$day';
   }
 }
 

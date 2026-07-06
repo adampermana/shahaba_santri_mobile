@@ -25,8 +25,8 @@ class HomeScreen extends StatelessWidget {
 
     final locationState = context.watch<LocationCubit>().state;
     final location = locationState is LocationLoaded
-        ? (locationState.city.lokasi ?? 'Jakarta Selatan')
-        : 'Jakarta Selatan';
+        ? (locationState.city.lokasi ?? 'Jakarta')
+        : 'Jakarta';
 
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBackground,
@@ -256,7 +256,7 @@ class _ContinueReadingCard extends StatelessWidget {
                     textDirection: TextDirection.rtl,
                     style: textTheme.displaySmall?.copyWith(
                       color: ColorPalette.arabicText,
-                      fontFamily: 'Amiri',
+                      fontFamily: 'Markazi Text',
                       fontSize: 32,
                       height: 1.4,
                     ),

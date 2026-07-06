@@ -328,18 +328,19 @@ class _HomeLocationChip extends StatelessWidget {
             : context.isTabletSmall
             ? null
             : context.isPhoneLarge
-            ? 110
+            ? 140
             : context.isPhoneMedium
             ? 140
             : context.isPhoneSmall
             ? 140
             : 140,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
           color: ColorPalette.surfaceTertiary,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           spacing: 8,
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -527,7 +528,7 @@ class _JadwalSholatDateNavigator extends StatelessWidget {
     final formatted = '${date.day} $monthName ${date.year}';
 
     return Padding(
-      padding: const EdgeInsets.only(top: 8, right: 8, left: 8, bottom: 12),
+      padding: const EdgeInsets.only(top: 8, right: 16, left: 16, bottom: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

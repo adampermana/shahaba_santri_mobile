@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 // import 'package:device_preview_plus/device_preview_plus.dart';
+import 'package:alarm/alarm.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sahaba_mobile/firebase_options.dart';
 import 'package:sahaba_mobile/infrastructure/core/api/hayuwe_http_overrides.dart';
 import 'package:sahaba_mobile/infrastructure/failures/failures.dart';
+import 'package:sahaba_mobile/infrastructure/services/adzan_service.dart';
 import 'package:sahaba_mobile/infrastructure/services/firebase_messaging_service.dart';
 import 'package:sahaba_mobile/infrastructure/services/local_notifications_service.dart';
 import 'package:sahaba_mobile/injector.dart';
@@ -89,6 +91,8 @@ Future<void> bootstrap(
 
       // Inject classes & dependencies
       await initApp();
+      await Alarm.init();
+      await AdzanService.instance().init(sl());
 
       // Setup BLoC observer for debugging
       if (kDebugMode) Bloc.observer = const AppBlocObserver();

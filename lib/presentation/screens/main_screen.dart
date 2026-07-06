@@ -6,8 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_state.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
+import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/injector.dart';
+import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/screens/home/home_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/jadwal_sholat_screen.dart';
@@ -29,6 +31,11 @@ class MainProvider extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => sl<StreakCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => sl<QuranBloc>()
+            ..add(const QuranEvent.loadSurahs())
+            ..add(const QuranEvent.loadJuz()),
         ),
       ],
       child: const _MainScreen(),
@@ -76,6 +83,7 @@ class _MainScreenState extends State<_MainScreen> {
     return BlocListener<LocationCubit, LocationState>(
       listener: _onLocationChanged,
       child: Scaffold(
+        backgroundColor: ColorPalette.scaffoldBackground,
         body: IndexedStack(
           index: _selectedIndex,
           children: _screens,
@@ -83,6 +91,7 @@ class _MainScreenState extends State<_MainScreen> {
         bottomNavigationBar: SafeArea(
           top: false,
           child: BottomNavigationItemsBar(
+            backgroundColor: ColorPalette.scaffoldBackground,
             initialIndex: _selectedIndex,
             items: const [
               NavBarItem(

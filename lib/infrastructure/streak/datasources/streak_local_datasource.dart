@@ -10,12 +10,19 @@ class StreakLocalDatasource implements IStreakLocalDatasource {
   @override
   Future<StreakModel> getStreak(String date) async {
     final box = Hive.box<String>(streakBox);
-    final raw = box.get(date);
-    if (raw == null) return StreakModel.empty();
-    final model = StreakModel.fromHiveMap(
-      jsonDecode(raw) as Map<String, dynamic>,
-    )..lastCheckedDate = date;
-    await box.put(date, jsonEncode(model.toHiveMap()));
+    final model = _readModel(box, date) ?? StreakModel.empty();
+    final currentStreak = _totalCheckedPrayerCount(box);
+    final shouldBackfill =
+        box.containsKey(date) &&
+        (model.lastCheckedDate != date || model.currentStreak != currentStreak);
+
+    model
+      ..currentStreak = currentStreak
+      ..lastCheckedDate = date;
+
+    if (shouldBackfill) {
+      await box.put(date, jsonEncode(model.toHiveMap()));
+    }
     return model;
   }
 
@@ -26,20 +33,20 @@ class StreakLocalDatasource implements IStreakLocalDatasource {
     bool checked,
   ) async {
     final box = Hive.box<String>(streakBox);
-    final raw = box.get(date);
-    final model = raw != null
-        ? StreakModel.fromHiveMap(
-            jsonDecode(raw) as Map<String, dynamic>,
-          )
-        : StreakModel.empty();
+    final model = _readModel(box, date) ?? StreakModel.empty();
 
     final checkedPrayers = Map<String, bool>.from(model.checkedPrayers)
       ..[prayerName] = checked;
-    model
+    final updatedModel = model
       ..checkedPrayers = checkedPrayers
-      ..currentStreak = checkedPrayers.values
-          .where((isChecked) => isChecked)
-          .length
+      ..lastCheckedDate = date;
+    final currentStreak = _totalCheckedPrayerCount(
+      box,
+      overrideDate: date,
+      overrideModel: updatedModel,
+    );
+    model
+      ..currentStreak = currentStreak
       ..lastCheckedDate = date;
     await box.put(date, jsonEncode(model.toHiveMap()));
   }
@@ -53,5 +60,64 @@ class StreakLocalDatasource implements IStreakLocalDatasource {
       return;
     }
     await box.put(date, jsonEncode(model.toHiveMap()));
+  }
+
+  StreakModel? _readModel(Box<String> box, String date) {
+    final raw = box.get(date);
+    if (raw == null) return null;
+
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! Map) return null;
+      return StreakModel.fromHiveMap(
+        decoded.map((key, value) => MapEntry(key.toString(), value)),
+      );
+    } on FormatException {
+      return null;
+    }
+  }
+
+  int _totalCheckedPrayerCount(
+    Box<String> box, {
+    String? overrideDate,
+    StreakModel? overrideModel,
+  }) {
+    var total = 0;
+    var hasOverrideDate = false;
+
+    for (final key in box.keys) {
+      final date = key.toString();
+      if (!_isDateKey(date)) continue;
+
+      final model = date == overrideDate
+          ? overrideModel
+          : _readModel(box, date);
+      if (model == null) continue;
+
+      if (date == overrideDate) {
+        hasOverrideDate = true;
+      }
+      total += model.checkedPrayerCount;
+    }
+
+    if (!hasOverrideDate &&
+        overrideDate != null &&
+        overrideModel != null &&
+        _isDateKey(overrideDate)) {
+      total += overrideModel.checkedPrayerCount;
+    }
+
+    return total;
+  }
+
+  bool _isDateKey(String key) {
+    final parts = key.split('-');
+    if (parts.length != 3) return false;
+    return parts[0].length == 4 &&
+        parts[1].length == 2 &&
+        parts[2].length == 2 &&
+        int.tryParse(parts[0]) != null &&
+        int.tryParse(parts[1]) != null &&
+        int.tryParse(parts[2]) != null;
   }
 }

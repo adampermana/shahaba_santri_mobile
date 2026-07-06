@@ -3,44 +3,43 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:sahaba_mobile/business_logic/qibla_cubit/qibla_state.dart';
+import 'package:sahaba_mobile/infrastructure/prayer_schedule/repository/i_prayer_repository.dart';
 import 'package:sahaba_mobile/infrastructure/qibla/repository/i_qibla_repository.dart';
-import 'package:sahaba_mobile/infrastructure/services/location_permission_service.dart';
 
 class QiblaCubit extends Cubit<QiblaState> {
-  QiblaCubit(this._repository, this._locationPermissionService)
-    : super(QiblaInitial());
+  QiblaCubit(this._repository, this._prayerRepository) : super(QiblaInitial());
 
   final IQiblaRepository _repository;
-  final LocationPermissionService _locationPermissionService;
+  final IPrayerRepository _prayerRepository;
 
   StreamSubscription<CompassEvent>? _compassSub;
 
   static const _qiblaThreshold = 15.0;
+  static const _defaultLatitude = -6.200000;
+  static const _defaultLongitude = 106.816666;
 
   Future<void> loadQibla() async {
     await _cancelCompassSubscription();
     emit(QiblaLoading());
 
-    final positionResult = await _locationPermissionService
-        .getCurrentPosition();
+    final coordinateResult = _prayerRepository.getSelectedCoordinates();
+    final coordinates = coordinateResult.fold<PrayerCoordinate>(
+      (_) => (latitude: _defaultLatitude, longitude: _defaultLongitude),
+      (coordinate) =>
+          coordinate ??
+          (latitude: _defaultLatitude, longitude: _defaultLongitude),
+    );
 
-    await positionResult.fold<Future<void>>(
-      (f) async {
-        if (!isClosed) emit(QiblaError(f.message));
-      },
-      (position) async {
-        final result = await _repository.getQiblaDirection(
-          position.latitude,
-          position.longitude,
-        );
+    final result = await _repository.getQiblaDirection(
+      coordinates.latitude,
+      coordinates.longitude,
+    );
 
-        if (isClosed) return;
+    if (isClosed) return;
 
-        result.fold(
-          (f) => emit(QiblaError(f.message)),
-          _startCompass,
-        );
-      },
+    result.fold(
+      (f) => emit(QiblaError(f.message)),
+      _startCompass,
     );
   }
 

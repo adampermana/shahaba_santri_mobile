@@ -14,7 +14,7 @@ class LocationCubit extends Cubit<LocationState> {
 
   static final CityModel defaultCity = CityModel(
     id: '58a2fc6ed39fd083f55d4182bf88826d',
-    lokasi: 'KOTA JAKARTA',
+    lokasi: 'Jakarta',
   );
 
   Future<void> loadSavedCity() async {
@@ -60,15 +60,7 @@ class LocationCubit extends Cubit<LocationState> {
           }
 
           final placemark = placemarks.first;
-          final keywords =
-              {
-                    placemark.subAdministrativeArea,
-                    placemark.locality,
-                    placemark.administrativeArea,
-                  }
-                  .whereType<String>()
-                  .map((keyword) => keyword.trim())
-                  .where((keyword) => keyword.isNotEmpty);
+          final keywords = _locationSearchKeywords(placemark);
 
           String? lastErrorMessage;
           for (final keyword in keywords) {
@@ -82,13 +74,22 @@ class LocationCubit extends Cubit<LocationState> {
             );
 
             if (city != null) {
-              final saveResult = await _repository.saveSelectedCity(city);
-              saveResult.fold(
-                (f) => emit(LocationError(f.message)),
-                (_) => emit(LocationLoaded(city)),
+              await _saveCityWithCoordinates(
+                city: city,
+                latitude: position.latitude,
+                longitude: position.longitude,
               );
               return;
             }
+          }
+
+          if (_isJakartaLocation(keywords)) {
+            await _saveCityWithCoordinates(
+              city: defaultCity,
+              latitude: position.latitude,
+              longitude: position.longitude,
+            );
+            return;
           }
 
           emit(
@@ -101,5 +102,78 @@ class LocationCubit extends Cubit<LocationState> {
     } on Exception catch (e) {
       emit(LocationError(e.toString()));
     }
+  }
+
+  Future<void> _saveCityWithCoordinates({
+    required CityModel city,
+    required double latitude,
+    required double longitude,
+  }) async {
+    final saveCityResult = await _repository.saveSelectedCity(city);
+    await saveCityResult.fold<Future<void>>(
+      (f) async => emit(LocationError(f.message)),
+      (_) async {
+        final saveCoordinateResult = await _repository.saveSelectedCoordinates(
+          latitude: latitude,
+          longitude: longitude,
+        );
+        saveCoordinateResult.fold(
+          (f) => emit(LocationError(f.message)),
+          (_) => emit(LocationLoaded(city)),
+        );
+      },
+    );
+  }
+
+  List<String> _locationSearchKeywords(Placemark placemark) {
+    final keywords = <String>[];
+
+    void addKeyword(String? value) {
+      final keyword = value?.trim();
+      if (keyword == null || keyword.isEmpty) return;
+
+      for (final candidate in _locationKeywordCandidates(keyword)) {
+        if (!keywords.contains(candidate)) {
+          keywords.add(candidate);
+        }
+      }
+    }
+
+    addKeyword(placemark.subAdministrativeArea);
+    addKeyword(placemark.locality);
+    addKeyword(placemark.administrativeArea);
+
+    return keywords;
+  }
+
+  List<String> _locationKeywordCandidates(String keyword) {
+    final candidates = <String>[keyword];
+    final normalized = keyword
+        .replaceFirst(
+          RegExp(
+            r'^(Kota Administrasi|Kota|Kabupaten|Kab\.|Kecamatan|Provinsi)\s+',
+            caseSensitive: false,
+          ),
+          '',
+        )
+        .trim();
+
+    if (normalized.isNotEmpty && normalized != keyword) {
+      candidates.add(normalized);
+    }
+
+    final lowerKeyword = keyword.toLowerCase();
+    final lowerNormalized = normalized.toLowerCase();
+    if (lowerKeyword.contains('daerah khusus ibukota jakarta') ||
+        lowerKeyword.contains('dki jakarta') ||
+        lowerNormalized.contains('jakarta')) {
+      candidates.add('Jakarta');
+    }
+
+    return candidates;
+  }
+
+  bool _isJakartaLocation(List<String> keywords) {
+    return keywords.any((keyword) => keyword.toLowerCase().contains('jakarta'));
   }
 }

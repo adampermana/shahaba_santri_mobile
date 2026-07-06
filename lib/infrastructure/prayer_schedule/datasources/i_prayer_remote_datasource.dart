@@ -5,11 +5,11 @@ import 'package:sahaba_mobile/domains/qibla/qibla_model.dart';
 abstract class IPrayerRemoteDatasource {
   Future<List<CityModel>> searchCity(String keyword);
   Future<List<CityModel>> getAllCities();
-  Future<PrayerScheduleResponse> getPrayerSchedule(
+
+  Future<MonthlyPrayerScheduleResponse> getMonthlyPrayerSchedule(
     String cityId,
     int year,
     int month,
-    int day,
   );
 
   Future<QiblaResponse> getQibla(double latitude, double longitude);

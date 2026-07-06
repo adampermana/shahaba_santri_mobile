@@ -8,6 +8,7 @@ import 'package:sahaba_mobile/infrastructure/core/api/dio_interceptors.dart';
 // const String minio = 'https://api.minio-dev.solu.co.id';
 // const String aladhanBaseUrl = 'https://api.aladhan.com';
 const String myQuranBaseUrl = 'https://api.myquran.com';
+const String calendarBaseUrl = 'https://api-hari-libur.vercel.app';
 
 class DioApi {
   // static Dio init() {
@@ -28,6 +29,18 @@ class DioApi {
   static Dio initMyQuran() {
     final option = BaseOptions(
       baseUrl: myQuranBaseUrl,
+      connectTimeout: const Duration(seconds: 30),
+      sendTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 30),
+    );
+
+    return Dio(option)
+      ..interceptors.addAll([if (kDebugMode) LoggingInterceptor()]);
+  }
+
+  static Dio initCalendar() {
+    final option = BaseOptions(
+      baseUrl: calendarBaseUrl,
       connectTimeout: const Duration(seconds: 30),
       sendTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),

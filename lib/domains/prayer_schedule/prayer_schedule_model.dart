@@ -122,3 +122,35 @@ class PrayerScheduleResponse {
 
   Map<String, dynamic> toJson() => _$PrayerScheduleResponseToJson(this);
 }
+
+class MonthlyPrayerScheduleResponse {
+  MonthlyPrayerScheduleResponse({
+    required this.jadwal,
+    this.id,
+    this.lokasi,
+    this.daerah,
+  });
+
+  factory MonthlyPrayerScheduleResponse.fromJson(Map<String, dynamic> json) {
+    final rawJadwal = json['jadwal'] as Map<String, dynamic>? ?? {};
+    final parsed = <String, PrayerScheduleModel>{};
+    for (final entry in rawJadwal.entries) {
+      if (entry.value is Map<String, dynamic>) {
+        parsed[entry.key] = PrayerScheduleModel.fromJson(
+          entry.value as Map<String, dynamic>,
+        )..date ??= entry.key;
+      }
+    }
+    return MonthlyPrayerScheduleResponse(
+      id: json['id']?.toString(),
+      lokasi: json['kabko'] as String? ?? json['lokasi'] as String?,
+      daerah: json['prov'] as String? ?? json['daerah'] as String?,
+      jadwal: parsed,
+    );
+  }
+
+  final String? id;
+  final String? lokasi;
+  final String? daerah;
+  final Map<String, PrayerScheduleModel> jadwal;
+}

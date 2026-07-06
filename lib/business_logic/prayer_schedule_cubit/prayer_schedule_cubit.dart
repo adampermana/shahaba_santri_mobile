@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_state.dart';
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
@@ -12,6 +14,7 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
   String? _currentCityId;
   DateTime? _currentDate;
   PrayerScheduleModel? _todaySchedule;
+  String? _yearFetchedForCityId;
 
   Future<void> loadSchedule(
     String cityId,
@@ -20,6 +23,34 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
   }) async {
     _currentCityId = cityId;
     _currentDate = date;
+
+    final cachedResult = _repository.getCachedSchedule(cityId, date);
+    final cached = cachedResult.fold(
+      (_) => null,
+      (schedule) => schedule,
+    );
+
+    if (cached != null) {
+      final now = DateTime.now();
+      if (_isSameDay(date, now)) {
+        _todaySchedule = cached;
+      }
+      final active = _resolveActivePrayer(cached, now);
+      final next = _resolveNextPrayer(cached, now);
+      emit(
+        PrayerScheduleLoaded(
+          response: PrayerScheduleResponse(jadwal: cached),
+          cityId: cityId,
+          date: date,
+          activePrayer: active,
+          nextPrayer: next,
+          todaySchedule: _todaySchedule,
+        ),
+      );
+      _maybeFetchYear(cityId);
+      return;
+    }
+
     if (showLoading) {
       emit(PrayerScheduleLoading());
     }
@@ -37,6 +68,7 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
         emit(
           PrayerScheduleLoaded(
             response: r,
+            cityId: cityId,
             date: date,
             activePrayer: active,
             nextPrayer: next,
@@ -44,6 +76,15 @@ class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
           ),
         );
       },
+    );
+    _maybeFetchYear(cityId);
+  }
+
+  void _maybeFetchYear(String cityId) {
+    if (_yearFetchedForCityId == cityId) return;
+    _yearFetchedForCityId = cityId;
+    unawaited(
+      _repository.fetchAndSaveYearSchedule(cityId, DateTime.now().year),
     );
   }
 

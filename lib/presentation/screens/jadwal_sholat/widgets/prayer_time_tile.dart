@@ -14,7 +14,9 @@ class PrayerTimeTile extends StatelessWidget {
     required this.onCheck,
     this.isHistory = false,
     this.showCheckbox = true,
+    this.showVolume = true,
     this.isVolumeMuted = false,
+    this.onVolumeTap,
     super.key,
   });
 
@@ -26,8 +28,10 @@ class PrayerTimeTile extends StatelessWidget {
   final bool isEnabled;
   final bool isHistory;
   final bool showCheckbox;
+  final bool showVolume;
   final bool isVolumeMuted;
   final VoidCallback? onCheck;
+  final VoidCallback? onVolumeTap;
 
   @override
   Widget build(BuildContext context) {
@@ -103,16 +107,28 @@ class PrayerTimeTile extends StatelessWidget {
               fontSize: 16,
             ),
           ),
-          const SizedBox(width: 16),
-          SvgPicture.asset(
-            isVolumeMuted ? AppIcons.volumeMuteLine : AppIcons.volumeUpLine,
-            width: 24,
-            height: 24,
-            colorFilter: ColorFilter.mode(
-              isActive ? ColorPalette.kWhite : contentColor,
-              BlendMode.srcIn,
+          if (showVolume)
+            Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: InkWell(
+                onTap: onVolumeTap,
+                borderRadius: BorderRadius.circular(20),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: SvgPicture.asset(
+                    isVolumeMuted
+                        ? AppIcons.volumeMuteLine
+                        : AppIcons.volumeUpLine,
+                    width: 24,
+                    height: 24,
+                    colorFilter: ColorFilter.mode(
+                      isActive ? ColorPalette.kWhite : contentColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
         ],
       ),
     );

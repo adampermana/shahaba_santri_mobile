@@ -11,6 +11,7 @@ class PrayerScheduleLoaded extends PrayerScheduleState {
   PrayerScheduleLoaded({
     required this.response,
     required this.date,
+    required this.cityId,
     this.activePrayer,
     this.nextPrayer,
     this.todaySchedule,
@@ -18,6 +19,7 @@ class PrayerScheduleLoaded extends PrayerScheduleState {
 
   final PrayerScheduleResponse response;
   final DateTime date;
+  final String cityId;
   final WaktuSholat? activePrayer;
   final WaktuSholat? nextPrayer;
   final PrayerScheduleModel? todaySchedule;

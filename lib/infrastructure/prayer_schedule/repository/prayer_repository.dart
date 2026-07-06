@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sahaba_mobile/domains/city_model/city_model.dart';
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
 import 'package:sahaba_mobile/infrastructure/failures/exceptions.dart';
@@ -24,6 +25,12 @@ class PrayerRepository implements IPrayerRepository {
     return result.contains(ConnectivityResult.mobile) ||
         result.contains(ConnectivityResult.wifi) ||
         result.contains(ConnectivityResult.ethernet);
+  }
+
+  String _dateKey(DateTime date) {
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return '${date.year}-$month-$day';
   }
 
   @override
@@ -84,8 +91,7 @@ class PrayerRepository implements IPrayerRepository {
     DateTime date,
   ) async {
     try {
-      final cacheKey =
-          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+      final cacheKey = _dateKey(date);
 
       if (!await _isConnected()) {
         final cached = _local.getCachedSchedule(cityId, cacheKey);
@@ -99,16 +105,19 @@ class PrayerRepository implements IPrayerRepository {
         );
       }
 
-      final result = await _remote.getPrayerSchedule(
+      final monthly = await _remote.getMonthlyPrayerSchedule(
         cityId,
         date.year,
         date.month,
-        date.day,
       );
-      if (result.jadwal != null) {
-        await _local.savePrayerSchedule(cityId, cacheKey, result.jadwal!);
-      }
-      return Right(result);
+      await _local.saveMonthlySchedules(
+        cityId,
+        date.year,
+        date.month,
+        monthly.jadwal,
+      );
+      final schedule = monthly.jadwal[cacheKey];
+      return Right(PrayerScheduleResponse(jadwal: schedule));
     } on ServerException catch (e) {
       return Left(
         ServerFailures(
@@ -121,6 +130,67 @@ class PrayerRepository implements IPrayerRepository {
   }
 
   @override
+  Either<Failure, PrayerScheduleModel?> getCachedSchedule(
+    String cityId,
+    DateTime date,
+  ) {
+    try {
+      final cached = _local.getCachedSchedule(cityId, _dateKey(date));
+      return Right(cached);
+    } on Exception catch (e) {
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> fetchAndSaveYearSchedule(
+    String cityId,
+    int year,
+  ) async {
+    if (!await _isConnected()) {
+      return const Left(
+        ServerFailures(
+          statusCode: -4,
+          title: 'Tidak ada koneksi',
+          message: 'Periksa koneksi internet Anda',
+        ),
+      );
+    }
+
+    final uncachedMonths = <int>[];
+    for (var month = 1; month <= 12; month++) {
+      final firstDay = DateTime(year, month, 1);
+      if (_local.getCachedSchedule(cityId, _dateKey(firstDay)) == null) {
+        uncachedMonths.add(month);
+      }
+    }
+
+    if (uncachedMonths.isEmpty) return const Right(unit);
+
+    await Future.wait(
+      uncachedMonths.map((month) async {
+        try {
+          final result = await _remote.getMonthlyPrayerSchedule(
+            cityId,
+            year,
+            month,
+          );
+          await _local.saveMonthlySchedules(
+            cityId,
+            year,
+            month,
+            result.jadwal,
+          );
+        } on Exception catch (e) {
+          debugPrint('Failed to fetch schedule for $year-$month: $e');
+        }
+      }),
+    );
+
+    return const Right(unit);
+  }
+
+  @override
   Future<Either<Failure, CityModel>> getSelectedCity() async {
     try {
       final city = _local.getSelectedCity();
@@ -128,7 +198,7 @@ class PrayerRepository implements IPrayerRepository {
         return Right(
           CityModel(
             id: '58a2fc6ed39fd083f55d4182bf88826d',
-            lokasi: 'KOTA JAKARTA',
+            lokasi: 'JAKARTA',
           ),
         );
       }
@@ -150,6 +220,48 @@ class PrayerRepository implements IPrayerRepository {
       }
       await _local.saveSelectedCity(city);
       return const Right(unit);
+    } on Exception catch (e) {
+      return Left(
+        CacheFailure(message: e.toString()),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> saveSelectedCoordinates({
+    required double latitude,
+    required double longitude,
+  }) async {
+    try {
+      if (!latitude.isFinite || !longitude.isFinite) {
+        return const Left(
+          CacheFailure(message: 'Koordinat lokasi tidak valid'),
+        );
+      }
+
+      await _local.saveSelectedCoordinates(
+        latitude: latitude,
+        longitude: longitude,
+      );
+      return const Right(unit);
+    } on Exception catch (e) {
+      return Left(
+        CacheFailure(message: e.toString()),
+      );
+    }
+  }
+
+  @override
+  Either<Failure, PrayerCoordinate?> getSelectedCoordinates() {
+    try {
+      final latitude = _local.getSelectedLatitude();
+      final longitude = _local.getSelectedLongitude();
+
+      if (latitude == null || longitude == null) {
+        return const Right(null);
+      }
+
+      return Right((latitude: latitude, longitude: longitude));
     } on Exception catch (e) {
       return Left(
         CacheFailure(message: e.toString()),

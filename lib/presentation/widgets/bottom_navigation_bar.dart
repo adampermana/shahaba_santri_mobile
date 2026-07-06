@@ -66,7 +66,7 @@ class _BottomNavigationItemsBarState extends State<BottomNavigationItemsBar> {
     return Container(
       width: widget.barWidth,
       decoration: const BoxDecoration(
-        color: ColorPalette.kWhite,
+        color: ColorPalette.scaffoldBackground,
         border: Border(
           top: BorderSide(color: ColorPalette.borderTransparent),
         ),

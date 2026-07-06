@@ -63,10 +63,80 @@ class _SelectCityViewState extends State<_SelectCityView> {
     }
 
     if (state is LocationError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.message)),
-      );
+      _showLocationErrorSnackBar(context, state.message);
     }
+  }
+
+  void _showLocationErrorSnackBar(BuildContext context, String message) {
+    final textTheme = Theme.of(context).textTheme;
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: ColorPalette.kWhite,
+          padding: EdgeInsets.zero,
+          elevation: 0.1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          content: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 16, 14, 14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _locationSnackBarTitle(message),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: ColorPalette.kBlack,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  _locationSnackBarDescription(message),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: ColorPalette.contentTertiary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    height: 1.45,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+  }
+
+  String _locationSnackBarTitle(String message) {
+    if (_isPermissionDeniedMessage(message)) {
+      return 'Akses lokasi ditolak';
+    }
+
+    return 'Tidak bisa mendapatkan lokasi saat ini';
+  }
+
+  String _locationSnackBarDescription(String message) {
+    if (_isPermissionDeniedMessage(message)) {
+      return 'Aktifkan di pengaturan agar jadwal lebih akurat.';
+    }
+
+    return message;
+  }
+
+  bool _isPermissionDeniedMessage(String message) {
+    final normalizedMessage = message.toLowerCase();
+    return normalizedMessage.contains('izin lokasi ditolak') ||
+        normalizedMessage.contains('akses lokasi ditolak');
   }
 
   @override
@@ -81,7 +151,7 @@ class _SelectCityViewState extends State<_SelectCityView> {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: CustomTextFormFieldWidget(
                 controller: _searchController,
                 textInputAction: TextInputAction.search,
@@ -152,7 +222,7 @@ class _SelectCityViewState extends State<_SelectCityView> {
                 },
               ),
             ),
-            const Divider(height: 1, color: ColorPalette.borderTransparent),
+            const SizedBox(height: 4),
             _UseCurrentLocationRow(
               onTap: _onUseLocation,
             ),
@@ -231,6 +301,7 @@ class _SelectCityViewState extends State<_SelectCityView> {
                       height: 1,
                       color: ColorPalette.borderTransparent,
                     ),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     itemBuilder: (context, index) {
                       final city = cities[index];
                       return _CityTile(
@@ -299,7 +370,7 @@ class _UseCurrentLocationRow extends StatelessWidget {
         return InkWell(
           onTap: isLoading ? null : onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
             child: Row(
               children: [
                 if (isLoading)
