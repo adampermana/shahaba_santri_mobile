@@ -52,7 +52,7 @@ class ColorPalette {
   static const Color surfaceContainerHighest = Color(0xFFDCE5D9);
   static const Color surfaceTertiary = Color(0xFFE8E8E8);
   static const Color surfaceTint = Color(0xFF1B8354);
-  static const Color background = Color(0xFFFAF9F7);
+  static const Color background = Color(0xFFFFFFFF);
   static const Color scaffoldBackground = background;
   static const Color scaffoldBackgroundAppBar = background;
 

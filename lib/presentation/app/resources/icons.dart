@@ -21,6 +21,7 @@ abstract class AppIcons {
       '$_path/indeterminate-circle-line.svg';
   static const String information2Line = '$_path/information-2-line.svg';
   static const String mapPin2Line = '$_path/map-pin-line.svg';
+  static const String motifIslamShort = '$_path/motif/motif-islam-short.svg';
   static const String moonLine = '$_path/moon-line.svg';
   static const String notification2Line = '$_path/notification-line.svg';
   static const String searchLine = '$_path/search-line.svg';
@@ -35,16 +36,13 @@ abstract class AppIcons {
   static const String zoomOutLine = '$_path/zoom-out-line.svg';
 
   // Jadwal Sholat - Moon & Masjid
-  static const String jadwalSholatMoon =
-      '$_path/jadwal_sholat/moon.svg';
+  static const String jadwalSholatMoon = '$_path/jadwal_sholat/moon.svg';
   static const String jadwalSholatMasjidMalam =
       '$_path/jadwal_sholat/masjid-malam.svg';
   static const String jadwalSholatMasjidSiang =
       '$_path/jadwal_sholat/masjid-siang.svg';
-  static const String jadwalSholatVector =
-      '$_path/jadwal_sholat/Vector.svg';
-  static const String jadwalSholatVector1 =
-      '$_path/jadwal_sholat/Vector-1.svg';
+  static const String jadwalSholatVector = '$_path/jadwal_sholat/Vector.svg';
+  static const String jadwalSholatVector1 = '$_path/jadwal_sholat/Vector-1.svg';
 
   // Jadwal Sholat - Isya
   static const String jadwalSholatIsyaFrame =

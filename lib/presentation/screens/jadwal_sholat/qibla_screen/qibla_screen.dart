@@ -627,7 +627,7 @@ class _QiblaInfoModal extends StatelessWidget {
               textAlign: TextAlign.center,
               style: textTheme.titleLarge?.copyWith(
                 color: ColorPalette.kBlack,
-                fontSize: 24,
+                fontSize: 20,
                 fontWeight: FontWeight.w700,
                 height: 1.2,
               ),
@@ -636,10 +636,10 @@ class _QiblaInfoModal extends StatelessWidget {
             Text(
               'Untuk mendapatkan arah kiblat yang lebih presisi, gerakkan '
               'ponsel Anda membentuk pola angka 8 di udara beberapa kali.',
-              textAlign: TextAlign.left,
+              textAlign: TextAlign.justify,
               style: textTheme.bodyLarge?.copyWith(
                 color: ColorPalette.kBlack,
-                fontSize: 18,
+                fontSize: 16,
                 height: 1.35,
               ),
             ),

@@ -27,12 +27,12 @@ class HomeScreen extends StatelessWidget {
     final location = locationState is LocationLoaded
         ? (locationState.city.lokasi ?? 'Jakarta')
         : 'Jakarta';
+    final monthName = IndoDateTimeX.bulan[today.month - 1];
 
     return Scaffold(
       backgroundColor: ColorPalette.scaffoldBackground,
       appBar: CustomAppBar.buildHomeAppBar(
-        date:
-            '${today.day} ${IndoDateTimeX.bulan[today.month - 1]} ${today.year}',
+        date: '${today.day} $monthName ${today.year}',
         hijriDate: today.hijriDateId(),
         location: location,
         onLocationTap: () async {
@@ -124,13 +124,12 @@ class _FeatureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        height: 114,
-        padding: const EdgeInsets.all(16),
+        height: 128,
+        clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           color: ColorPalette.kWhite,
           borderRadius: BorderRadius.circular(16),
@@ -138,64 +137,78 @@ class _FeatureCard extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: ColorPalette.primaryColor,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: SvgPicture.asset(
-                      icon,
-                      width: 20,
-                      height: 20,
-                      colorFilter: const ColorFilter.mode(
-                        ColorPalette.kWhite,
-                        BlendMode.srcIn,
+            Positioned(
+              top: 0,
+              right: -30,
+              bottom: 0,
+              child: Image.asset(
+                'assets/images/motif-short.png',
+                fit: BoxFit.fitHeight,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: ColorPalette.primaryColor,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: SvgPicture.asset(
+                            icon,
+                            width: 28,
+                            height: 28,
+                            colorFilter: const ColorFilter.mode(
+                              ColorPalette.kWhite,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
                       ),
+                      SvgPicture.asset(
+                        AppIcons.arrowDropRightLine,
+                        width: 24,
+                        height: 24,
+                        colorFilter: const ColorFilter.mode(
+                          ColorPalette.primaryColor,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: textTheme.titleMedium?.copyWith(
+                      fontSize: 16,
+                      height: 1,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: textTheme.titleMedium?.copyWith(
-                    fontSize: 16,
-                    height: 1,
-                    fontWeight: FontWeight.w600,
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: textTheme.bodySmall?.copyWith(
+                      fontSize: 12,
+                      height: 1,
+                      color: ColorPalette.contentTertiary,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: textTheme.bodySmall?.copyWith(
-                    fontSize: 12,
-                    height: 1,
-                    color: ColorPalette.contentTertiary,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-              top: 7,
-              right: 0,
-              child: SvgPicture.asset(
-                AppIcons.arrowDropRightLine,
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(
-                  ColorPalette.primaryColor,
-                  BlendMode.srcIn,
-                ),
+                ],
               ),
             ),
           ],
@@ -214,81 +227,100 @@ class _ContinueReadingCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+      // ← hapus padding dari sini
       decoration: BoxDecoration(
         color: ColorPalette.kWhite,
         borderRadius: BorderRadius.circular(16),
         boxShadow: _cardShadow,
       ),
       clipBehavior: Clip.hardEdge,
-      child: Column(
+      child: Stack(
         children: [
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Al-Baqarah',
-                        style: textTheme.headlineSmall?.copyWith(
-                          color: ColorPalette.kBlack,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20,
+          //  Motif
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              'assets/images/motif-long.png',
+              fit: BoxFit.fitWidth,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+            child: Column(
+              children: [
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Al-Baqarah',
+                              style: textTheme.headlineSmall?.copyWith(
+                                color: ColorPalette.kBlack,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Ayat 255',
+                              style: textTheme.bodySmall?.copyWith(
+                                color: ColorPalette.contentTertiary,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: 0.6,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          'البقرة',
+                          textDirection: TextDirection.rtl,
+                          style: textTheme.displaySmall?.copyWith(
+                            color: ColorPalette.arabicText,
+                            fontFamily: 'Markazi Text',
+                            fontSize: 32,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorPalette.primaryColor,
+                          foregroundColor: ColorPalette.kWhite,
+                          elevation: 1,
+                          shadowColor: ColorPalette.kBlack.withValues(
+                            alpha: 0.05,
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9999),
+                          ),
+                        ),
+                        child: Text(
+                          'Lanjutkan',
+                          style: textTheme.bodySmall?.copyWith(
+                            color: ColorPalette.kWhite,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 0.6,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Ayat 255',
-                        style: textTheme.bodySmall?.copyWith(
-                          color: ColorPalette.contentTertiary,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.6,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    'البقرة',
-                    textDirection: TextDirection.rtl,
-                    style: textTheme.displaySmall?.copyWith(
-                      color: ColorPalette.arabicText,
-                      fontFamily: 'Markazi Text',
-                      fontSize: 32,
-                      height: 1.4,
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorPalette.primaryColor,
-                    foregroundColor: ColorPalette.kWhite,
-                    elevation: 1,
-                    shadowColor: ColorPalette.kBlack.withValues(alpha: 0.05),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9999),
-                    ),
-                  ),
-                  child: Text(
-                    'Lanjutkan',
-                    style: textTheme.bodySmall?.copyWith(
-                      color: ColorPalette.kWhite,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.6,
-                    ),
-                  ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
