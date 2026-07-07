@@ -9,7 +9,7 @@ class QuranDetailCubit extends Cubit<QuranDetailState> {
   final IQuranRepository _repository;
 
   Future<void> load(QuranDetailArgs args) async {
-    emit(QuranDetailLoading());
+    emit(QuranDetailLoading(args: args));
 
     final result = switch (args.type) {
       QuranDetailType.surah when args.surah != null =>
@@ -20,13 +20,13 @@ class QuranDetailCubit extends Cubit<QuranDetailState> {
     };
 
     if (result == null) {
-      emit(QuranDetailError('Data Quran tidak valid'));
+      emit(QuranDetailError('Data Quran tidak valid', args: args));
       return;
     }
 
     result.fold(
-      (f) => emit(QuranDetailError(f.message)),
-      (detail) => emit(QuranDetailLoaded(detail)),
+      (f) => emit(QuranDetailError(f.message, args: args)),
+      (detail) => emit(QuranDetailLoaded(detail, args: args)),
     );
   }
 }

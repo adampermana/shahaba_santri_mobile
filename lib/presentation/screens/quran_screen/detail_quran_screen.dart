@@ -15,6 +15,8 @@ import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
+const double _tabItemWidth = 116;
+
 class DetailQuranScreen extends StatefulWidget {
   const DetailQuranScreen({super.key, this.args});
 
@@ -26,7 +28,11 @@ class DetailQuranScreen extends StatefulWidget {
 
 class _DetailQuranScreenState extends State<DetailQuranScreen> {
   late final PageController _pageController;
+  final _tabKeys = <GlobalKey>[];
   final _tabScrollController = ScrollController();
+  final _details = <int, QuranDetailModel>{};
+  final _errors = <int, String>{};
+  final _requestedIndexes = <int>{};
   late QuranDetailArgs? _selectedArgs;
   late int _selectedIndex;
 
@@ -54,17 +60,30 @@ class _DetailQuranScreenState extends State<DetailQuranScreen> {
     _selectedIndex = _initialIndex();
     _selectedArgs = _argsAt(_selectedIndex);
     _pageController = PageController(initialPage: _selectedIndex);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToSelected());
+    _syncTabKeys();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _scrollToSelected(animate: false);
+      _requestNearby(_selectedIndex);
+    });
   }
 
   @override
   void didUpdateWidget(covariant DetailQuranScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.args != widget.args) {
+      _details.clear();
+      _errors.clear();
+      _requestedIndexes.clear();
       _selectedIndex = _initialIndex();
       _selectedArgs = _argsAt(_selectedIndex);
+      _syncTabKeys();
       _pageController.jumpToPage(_selectedIndex);
-      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToSelected());
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _scrollToSelected(animate: false);
+        _requestNearby(_selectedIndex);
+      });
     }
   }
 
@@ -90,7 +109,7 @@ class _DetailQuranScreenState extends State<DetailQuranScreen> {
 
   QuranDetailArgs? _argsAt(int index) {
     final args = widget.args;
-    if (args == null) return null;
+    if (args == null || index < 0 || index >= _itemCount) return null;
 
     if (args.type == QuranDetailType.surah) {
       return QuranDetailArgs.surah(
@@ -105,8 +124,28 @@ class _DetailQuranScreenState extends State<DetailQuranScreen> {
     );
   }
 
+  int _indexForArgs(QuranDetailArgs? args) {
+    if (args == null || args.type != widget.args?.type) return -1;
+
+    if (args.type == QuranDetailType.surah) {
+      return _surahs.indexWhere((s) => s.index == args.surah?.index);
+    }
+
+    return _juzList.indexWhere((j) => j.index == args.juz?.index);
+  }
+
+  void _syncTabKeys() {
+    while (_tabKeys.length < _itemCount) {
+      _tabKeys.add(GlobalKey());
+    }
+    if (_tabKeys.length > _itemCount) {
+      _tabKeys.removeRange(_itemCount, _tabKeys.length);
+    }
+  }
+
   void _selectIndex(int index) {
     if (index == _selectedIndex || index < 0 || index >= _itemCount) return;
+    _loadIndex(index);
     unawaited(
       _pageController.animateToPage(
         index,
@@ -116,7 +155,7 @@ class _DetailQuranScreenState extends State<DetailQuranScreen> {
     );
   }
 
-  void _onPageChanged(int index) {
+  void _loadIndex(int index) {
     final nextArgs = _argsAt(index);
     if (nextArgs == null) return;
 
@@ -125,20 +164,54 @@ class _DetailQuranScreenState extends State<DetailQuranScreen> {
       _selectedArgs = nextArgs;
     });
     _scrollToSelected();
-    unawaited(context.read<QuranDetailCubit>().load(nextArgs));
+    _requestNearby(index);
   }
 
-  void _scrollToSelected() {
-    if (!_tabScrollController.hasClients) return;
-    final target = (_selectedIndex * 104.0) - 148;
+  void _onPageChanged(int index) => _loadIndex(index);
+
+  void _requestNearby(int index) {
+    _requestLoad(index);
+    _requestLoad(index - 1);
+    _requestLoad(index + 1);
+  }
+
+  void _requestLoad(int index) {
+    final args = _argsAt(index);
+    if (args == null) return;
+    if (_details.containsKey(index) || !_requestedIndexes.add(index)) return;
+
+    unawaited(context.read<QuranDetailCubit>().load(args));
+  }
+
+  void _scrollToSelected({bool animate = true}) {
+    final selectedContext = _tabKeys
+        .elementAtOrNull(_selectedIndex)
+        ?.currentContext;
+    if (selectedContext == null) return;
+
+    final duration = animate
+        ? const Duration(milliseconds: 220)
+        : Duration.zero;
     unawaited(
-      _tabScrollController.animateTo(
-        target.clamp(
-          _tabScrollController.position.minScrollExtent,
-          _tabScrollController.position.maxScrollExtent,
-        ),
-        duration: const Duration(milliseconds: 220),
+      Scrollable.ensureVisible(
+        selectedContext,
+        duration: duration,
         curve: Curves.easeOut,
+        alignment: 0.5,
+      ),
+    );
+  }
+
+  Widget _pageAt(int index) {
+    final detail = _details[index];
+    if (detail != null) return _DetailContent(detail: detail);
+
+    final error = _errors[index];
+    if (error != null) return _ErrorState(message: error);
+
+    return const Center(
+      child: CircularProgressIndicator(
+        color: ColorPalette.primaryColor,
       ),
     );
   }
@@ -160,46 +233,39 @@ class _DetailQuranScreenState extends State<DetailQuranScreen> {
     return _DetailScaffold(
       tabBar: _ScrollableTabBar(
         controller: _tabScrollController,
+        itemKeys: _tabKeys,
         selectedIndex: _selectedIndex,
         labels: _tabLabels(),
         onTap: _selectIndex,
       ),
-      child: PageView.builder(
-        controller: _pageController,
-        reverse: true,
-        itemCount: _itemCount,
-        onPageChanged: _onPageChanged,
-        itemBuilder: (context, index) {
-          if (index != _selectedIndex) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: ColorPalette.primaryColor,
-              ),
-            );
-          }
+      child: BlocListener<QuranDetailCubit, QuranDetailState>(
+        listener: (context, state) {
+          final index = switch (state) {
+            QuranDetailLoaded(:final args) => _indexForArgs(args),
+            QuranDetailError(:final args) => _indexForArgs(args),
+            QuranDetailLoading(:final args) => _indexForArgs(args),
+            _ => -1,
+          };
+          if (index < 0) return;
 
-          return BlocBuilder<QuranDetailCubit, QuranDetailState>(
-            builder: (context, state) {
-              if (state is QuranDetailLoading || state is QuranDetailInitial) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: ColorPalette.primaryColor,
-                  ),
-                );
-              }
-
-              if (state is QuranDetailError) {
-                return _ErrorState(message: state.message);
-              }
-
-              if (state is QuranDetailLoaded) {
-                return _DetailContent(detail: state.detail);
-              }
-
-              return const SizedBox.shrink();
-            },
-          );
+          setState(() {
+            if (state is QuranDetailLoaded) {
+              _errors.remove(index);
+              _details[index] = state.detail;
+            } else if (state is QuranDetailError) {
+              _details.remove(index);
+              _errors[index] = state.message;
+            }
+          });
         },
+        child: PageView.builder(
+          controller: _pageController,
+          reverse: true,
+          allowImplicitScrolling: true,
+          itemCount: _itemCount,
+          onPageChanged: _onPageChanged,
+          itemBuilder: (context, index) => _pageAt(index),
+        ),
       ),
     );
   }
@@ -291,12 +357,14 @@ class _AppBarSection extends StatelessWidget {
 class _ScrollableTabBar extends StatelessWidget {
   const _ScrollableTabBar({
     required this.controller,
+    required this.itemKeys,
     required this.selectedIndex,
     required this.labels,
     required this.onTap,
   });
 
   final ScrollController controller;
+  final List<GlobalKey> itemKeys;
   final int selectedIndex;
   final List<String> labels;
   final ValueChanged<int> onTap;
@@ -340,6 +408,7 @@ class _ScrollableTabBar extends StatelessWidget {
           textDirection: TextDirection.rtl,
           children: List.generate(labels.length, (index) {
             return _TabItem(
+              key: itemKeys[index],
               label: labels[index],
               isActive: index == selectedIndex,
               onTap: () => onTap(index),
@@ -353,6 +422,7 @@ class _ScrollableTabBar extends StatelessWidget {
 
 class _TabItem extends StatelessWidget {
   const _TabItem({
+    required super.key,
     required this.label,
     required this.isActive,
     required this.onTap,
@@ -369,7 +439,7 @@ class _TabItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 116,
+        width: _tabItemWidth,
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: isActive
             ? const BoxDecoration(

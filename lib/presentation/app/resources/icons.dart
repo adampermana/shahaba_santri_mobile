@@ -28,7 +28,7 @@ abstract class AppIcons {
   static const String moonLine = '$_path/moon-line.svg';
   static const String notification2Line = '$_path/notification-line.svg';
   static const String searchLine = '$_path/search-line.svg';
-  static const String settings4Line = '$_path/settings-4-line.svg';
+  static const String settings4Line = '$_path/settings-line.svg';
   static const String shareLine = '$_path/share-line.svg';
   static const String sunFoggyLine = '$_path/sun-foggy-line.svg';
   static const String sunLine = '$_path/sun-line.svg';
