@@ -33,6 +33,19 @@ class SurahCard extends StatelessWidget {
               color: Color(0x11000000),
               blurRadius: 4,
             ),
+            BoxShadow(
+              color: Color(0x0A000000),
+              blurRadius: 5,
+            ),
+            BoxShadow(
+              color: Color(0x02000000),
+              blurRadius: 6,
+            ),
+            BoxShadow(
+              color: Color(0x00000000),
+              blurRadius: 6,
+              offset: Offset(1, 0),
+            ),
           ],
         ),
         child: Row(

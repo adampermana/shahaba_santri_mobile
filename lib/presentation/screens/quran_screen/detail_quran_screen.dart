@@ -15,6 +15,7 @@ import 'package:sahaba_mobile/infrastructure/helpers/helper.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
+import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/dialog_setting_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
 typedef _SurahGroup = ({
@@ -78,8 +79,21 @@ class DetailQuranScreen extends HookWidget {
     final details = useState(<int, QuranDetailModel>{});
     final errors = useState(<int, String>{});
     final requestedIndexes = useState(<int>{});
+    final textSizeSetting = useState(QuranTextSizeSetting.initial);
     final pageController = usePageController(initialPage: selectedIndex.value);
     final tabScrollController = useScrollController();
+
+    void openSettingDialog() {
+      unawaited(
+        showDialog<void>(
+          context: context,
+          builder: (_) => DialogSettingWidget(
+            initialSetting: textSizeSetting.value,
+            onChanged: (setting) => textSizeSetting.value = setting,
+          ),
+        ),
+      );
+    }
 
     void scrollToSelected(int index, {bool animate = true}) {
       if (!tabScrollController.hasClients) return;
@@ -162,8 +176,8 @@ class DetailQuranScreen extends HookWidget {
       final detail = details.value[index];
       if (detail != null) {
         return detail.type == QuranDetailType.juz
-            ? _juzContent(context, detail)
-            : _surahContent(context, detail);
+            ? _juzContent(context, detail, textSizeSetting.value)
+            : _surahContent(context, detail, textSizeSetting.value);
       }
 
       final error = errors.value[index];
@@ -218,6 +232,7 @@ class DetailQuranScreen extends HookWidget {
 
     return _detailScaffold(
       context,
+      onSettingTap: openSettingDialog,
       tabBar: _scrollableTabBar(
         context,
         controller: tabScrollController,
@@ -276,13 +291,14 @@ List<JuzModel> _juzListFromArgs(QuranDetailArgs? args) {
 Widget _detailScaffold(
   BuildContext context, {
   required Widget child,
+  VoidCallback? onSettingTap,
   Widget? tabBar,
 }) {
   return Scaffold(
     backgroundColor: const Color(0xFFF3F3F3),
     body: Column(
       children: [
-        _appBarSection(context),
+        _appBarSection(context, onSettingTap: onSettingTap),
         ?tabBar,
         Expanded(child: child),
       ],
@@ -290,7 +306,7 @@ Widget _detailScaffold(
   );
 }
 
-Widget _appBarSection(BuildContext context) {
+Widget _appBarSection(BuildContext context, {VoidCallback? onSettingTap}) {
   final textTheme = Theme.of(context).textTheme;
 
   return SafeArea(
@@ -329,10 +345,13 @@ Widget _appBarSection(BuildContext context) {
                 width: 24,
                 height: 24,
               ),
-              SvgPicture.asset(
-                AppIcons.settings4Line,
-                width: 24,
-                height: 24,
+              GestureDetector(
+                onTap: onSettingTap,
+                child: SvgPicture.asset(
+                  AppIcons.settings4Line,
+                  width: 24,
+                  height: 24,
+                ),
               ),
             ],
           ),
@@ -439,7 +458,11 @@ Widget _tabItem(
   );
 }
 
-Widget _surahContent(BuildContext context, QuranDetailModel detail) {
+Widget _surahContent(
+  BuildContext context,
+  QuranDetailModel detail,
+  QuranTextSizeSetting textSizeSetting,
+) {
   return CustomScrollView(
     slivers: [
       SliverToBoxAdapter(child: _surahBanner(context, detail: detail)),
@@ -455,6 +478,7 @@ Widget _surahContent(BuildContext context, QuranDetailModel detail) {
           itemBuilder: (context, index) => _verseRow(
             context,
             detail.verses[index],
+            textSizeSetting,
           ),
         ),
       ),
@@ -462,7 +486,11 @@ Widget _surahContent(BuildContext context, QuranDetailModel detail) {
   );
 }
 
-Widget _juzContent(BuildContext context, QuranDetailModel detail) {
+Widget _juzContent(
+  BuildContext context,
+  QuranDetailModel detail,
+  QuranTextSizeSetting textSizeSetting,
+) {
   final groups = _groupBySurah(detail.verses);
 
   return ListView.builder(
@@ -482,7 +510,7 @@ Widget _juzContent(BuildContext context, QuranDetailModel detail) {
             final isLast = e.key == group.verses.length - 1;
             return Column(
               children: [
-                _verseRow(context, e.value),
+                _verseRow(context, e.value, textSizeSetting),
                 if (!isLast || gi < groups.length - 1)
                   const Divider(
                     height: 1,
@@ -594,7 +622,11 @@ Widget _surahBannerInJuz(
   );
 }
 
-Widget _verseRow(BuildContext context, QuranVerseModel verse) {
+Widget _verseRow(
+  BuildContext context,
+  QuranVerseModel verse,
+  QuranTextSizeSetting textSizeSetting,
+) {
   final textTheme = Theme.of(context).textTheme;
 
   return Container(
@@ -615,9 +647,9 @@ Widget _verseRow(BuildContext context, QuranVerseModel verse) {
                   children: [
                     TextSpan(
                       text: verse.arabic,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: ColorPalette.kBlack,
-                        fontSize: 24,
+                        fontSize: textSizeSetting.arabic,
                         fontFamily: 'Markazi Text',
                         fontWeight: FontWeight.w400,
                       ),
@@ -634,7 +666,7 @@ Widget _verseRow(BuildContext context, QuranVerseModel verse) {
                 style: textTheme.displaySmall?.copyWith(
                   fontFamily: 'Markazi Text',
                   color: ColorPalette.kBlack,
-                  fontSize: 24,
+                  fontSize: textSizeSetting.arabic,
                   height: 1.4,
                   fontWeight: FontWeight.w500,
                 ),
@@ -648,7 +680,7 @@ Widget _verseRow(BuildContext context, QuranVerseModel verse) {
             verse.transliteration,
             style: textTheme.titleMedium?.copyWith(
               color: ColorPalette.primaryColor,
-              fontSize: 14,
+              fontSize: textSizeSetting.latin,
               fontFamily: 'Synonym Variable',
               fontWeight: FontWeight.w400,
             ),
@@ -660,7 +692,7 @@ Widget _verseRow(BuildContext context, QuranVerseModel verse) {
             verse.translation,
             style: textTheme.bodyLarge?.copyWith(
               color: ColorPalette.kBlack,
-              fontSize: 14,
+              fontSize: textSizeSetting.translation,
               fontFamily: 'Synonym Variable',
               fontWeight: FontWeight.w400,
             ),

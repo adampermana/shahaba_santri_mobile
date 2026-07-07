@@ -1343,7 +1343,10 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182463,
     verseKey: '2:129',
     text:
-        'Ya Tuhan kami, utuslah di tengah mereka seorang rasul dari kalangan mereka sendiri, yang akan membacakan kepada mereka ayat-ayat-Mu, dan mengajarkan Kitab dan Hikmah kepada mereka, dan menyucikan mereka. Sungguh, Engkaulah Yang Mahaperkasa, Mahabijaksana.',
+        'Ya Tuhan kami, utuslah di tengah mereka seorang rasul dari kalangan '
+        'mereka sendiri, yang akan membacakan kepada mereka ayat-ayat-Mu, dan '
+        'mengajarkan Kitab dan Hikmah kepada mereka, dan menyucikan mereka. '
+        'Sungguh, Engkaulah Yang Mahaperkasa, Mahabijaksana.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1351,7 +1354,10 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182470,
     verseKey: '2:130',
     text:
-        'Dan orang yang membenci agama Ibrahim, hanyalah orang yang memperbodoh dirinya sendiri. Dan sungguh, Kami telah memilihnya (Ibrahim) di dunia ini. Dan sesungguhnya di akhirat dia termasuk orang-orang yang saleh.',
+        'Dan orang yang membenci agama Ibrahim, hanyalah orang yang '
+        'memperbodoh dirinya sendiri. Dan sungguh, Kami telah memilihnya '
+        '(Ibrahim) di dunia ini. Dan sesungguhnya di akhirat dia termasuk '
+        'orang-orang yang saleh.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1359,7 +1365,9 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182467,
     verseKey: '2:131',
     text:
-        '(Ingatlah) ketika Tuhan berfirman kepadanya (Ibrahim), &#34;Berserah dirilah!&#34; Dia menjawab, &#34;Aku berserah diri kepada Tuhan seluruh alam.&#34;',
+        '(Ingatlah) ketika Tuhan berfirman kepadanya (Ibrahim), &#34;Berserah '
+        'dirilah!&#34; Dia menjawab, &#34;Aku berserah diri kepada Tuhan '
+        'seluruh alam.&#34;',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1367,7 +1375,10 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182475,
     verseKey: '2:132',
     text:
-        'Dan Ibrahim mewasiatkan (ucapan) itu kepada anak-anaknya, demikian pula Yakub. &#34;Wahai anak-anakku! Sesungguhnya Allah telah memilih agama ini untukmu, maka janganlah kamu mati kecuali dalam keadaan muslim.&#34;',
+        'Dan Ibrahim mewasiatkan (ucapan) itu kepada anak-anaknya, demikian '
+        'pula Yakub. &#34;Wahai anak-anakku! Sesungguhnya Allah telah '
+        'memilih agama ini untukmu, maka janganlah kamu mati kecuali '
+        'dalam keadaan muslim.&#34;',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1375,7 +1386,12 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182474,
     verseKey: '2:133',
     text:
-        'Apakah kamu menjadi saksi saat maut akan menjemput Yakub, ketika dia berkata kepada anak-anaknya, &#34;Apa yang kamu sembah sepeninggalku?&#34; Mereka menjawab, &#34;Kami akan menyembah Tuhanmu dan Tuhan nenek moyangmu yaitu Ibrahim, Ismail dan Ishak, (yaitu) Tuhan Yang Mahaesa dan kami (hanya) berserah diri kepada-Nya.&#34;',
+        'Apakah kamu menjadi saksi saat maut akan menjemput Yakub, '
+        'ketika dia berkata kepada anak-anaknya, &#34;Apa yang kamu '
+        'sembah sepeninggalku?&#34; Mereka menjawab, &#34;Kami akan '
+        'menyembah Tuhanmu dan Tuhan nenek moyangmu yaitu Ibrahim, Ismail dan '
+        'Ishak, (yaitu) Tuhan Yang Mahaesa dan kami (hanya) berserah diri '
+        'kepada-Nya.&#34;',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1383,7 +1399,9 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182483,
     verseKey: '2:134',
     text:
-        'Itulah umat yang telah lalu. Baginya apa yang telah mereka usahakan dan bagimu apa yang telah kamu usahakan. Dan kamu tidak akan diminta (pertanggungjawaban) tentang apa yang dahulu mereka kerjakan.',
+        'Itulah umat yang telah lalu. Baginya apa yang telah mereka usahakan '
+        'dan bagimu apa yang telah kamu usahakan. Dan kamu tidak akan diminta '
+        '(pertanggungjawaban) tentang apa yang dahulu mereka kerjakan.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1391,7 +1409,11 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182473,
     verseKey: '2:135',
     text:
-        'Dan mereka berkata, &#34;Jadilah kamu (penganut) Yahudi atau Nasrani, niscaya kamu mendapat petunjuk.&#34; Katakanlah, &#34;(Tidak!) Tetapi (kami mengikuti) agama Ibrahim yang lurus dan dia termasuk golongan orang yang mempersekutukan Tuhan.&#34;',
+        'Dan mereka berkata, &#34;Jadilah kamu (penganut) Yahudi atau '
+        'Nasrani, niscaya kamu mendapat petunjuk.&#34; '
+        'Katakanlah, &#34;(Tidak!) Tetapi (kami mengikuti) agama Ibrahim '
+        'yang lurus dan dia termasuk golongan orang yang mempersekutukan '
+        'Tuhan.&#34;',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1399,7 +1421,12 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182484,
     verseKey: '2:136',
     text:
-        'Katakanlah, &#34;Kami beriman kepada Allah dan kepada apa yang diturunkan kepada kami, dan kepada apa yang diturunkan kepada Ibrahim, Ismail, Ishak, Yakub dan anak cucunya, dan kepada apa yang diberikan kepada Musa dan Isa serta kepada apa yang diberikan kepada nabi-nabi dari Tuhan mereka. Kami tidak membeda-bedakan seorang pun di antara mereka dan kami berserah diri kepada-Nya.&#34;',
+        'Katakanlah, &#34;Kami beriman kepada Allah dan kepada apa yang '
+        'diturunkan kepada kami, dan kepada apa yang diturunkan kepada '
+        'Ibrahim, Ismail, Ishak, Yakub dan anak cucunya, dan kepada apa '
+        'yang diberikan kepada Musa dan Isa serta kepada apa yang diberikan '
+        'kepada nabi-nabi dari Tuhan mereka. Kami tidak membeda-bedakan '
+        'seorang pun di antara mereka dan kami berserah diri kepada-Nya.&#34;',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1407,7 +1434,11 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182485,
     verseKey: '2:137',
     text:
-        'Maka jika mereka telah beriman sebagaimana yang kamu imani, sungguh, mereka telah mendapat petunjuk. Tetapi jika mereka berpaling, sesungguhnya mereka berada dalam permusuhan (denganmu), maka Allah mencukupkan engkau (Muhammad) terhadap mereka (dengan pertolongan-Nya). Dan Dia Maha Mendengar, Maha Mengetahui.',
+        'Maka jika mereka telah beriman sebagaimana yang kamu imani, sungguh, '
+        'mereka telah mendapat petunjuk. Tetapi jika mereka berpaling, '
+        'sesungguhnya mereka berada dalam permusuhan (denganmu), maka '
+        'Allah mencukupkan engkau (Muhammad) terhadap mereka (dengan '
+        'pertolongan-Nya). Dan Dia Maha Mendengar, Maha Mengetahui.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1423,7 +1454,10 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182489,
     verseKey: '2:139',
     text:
-        'Katakanlah (Muhammad), &#34;Apakah kamu hendak berdebat dengan kami tentang Allah, padahal Dia adalah Tuhan kami dan Tuhan kamu. Bagi kami amalan kami, bagi kamu amalan kamu, dan hanya kepada-Nya kami dengan tulus mengabdikan diri.',
+        'Katakanlah (Muhammad), &#34;Apakah kamu hendak berdebat dengan kami '
+        'tentang Allah, padahal Dia adalah Tuhan kami dan Tuhan kamu. Bagi '
+        'kami amalan kami, bagi kamu amalan kamu, dan hanya kepada-Nya kami '
+        'dengan tulus mengabdikan diri.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1439,7 +1473,9 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182500,
     verseKey: '2:141',
     text:
-        'Itulah umat yang telah lalu. Baginya apa yang telah mereka usahakan dan bagimu apa yang telah kamu usahakan. Dan kamu tidak akan diminta (pertanggungjawaban) tentang apa yang dahulu mereka kerjakan.',
+        'Itulah umat yang telah lalu. Baginya apa yang telah mereka usahakan '
+        'dan bagimu apa yang telah kamu usahakan. Dan kamu tidak akan diminta '
+        '(pertanggungjawaban) tentang apa yang dahulu mereka kerjakan.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1447,7 +1483,11 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182499,
     verseKey: '2:142',
     text:
-        'Orang-orang yang kurang akal di antara manusia akan berkata, &#34;Apakah yang memalingkan mereka (muslim) dari kiblat yang dahulu mereka (berkiblat) kepadanya?&#34; Katakanlah (Muhammad), &#34;Milik Allah-lah timur dan barat; Dia memberi petunjuk kepada siapa yang Dia kehendaki ke jalan yang lurus.&#34;',
+        'Orang-orang yang kurang akal di antara manusia akan '
+        'berkata, &#34;Apakah yang memalingkan mereka (muslim) dari '
+        'kiblat yang dahulu mereka (berkiblat) kepadanya?&#34; Katakanlah '
+        '(Muhammad), &#34;Milik Allah-lah timur dan barat; Dia memberi '
+        'petunjuk kepada siapa yang Dia kehendaki ke jalan yang lurus.&#34;',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1463,7 +1503,13 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182507,
     verseKey: '2:144',
     text:
-        'Kami melihat wajahmu (Muhammad) sering menengadah ke langit, maka akan Kami palingkan engkau ke kiblat yang engkau senangi. Maka hadapkanlah wajahmu ke arah Masjidilharam. Dan di mana saja engkau berada, hadapkanlah wajahmu ke arah itu. Dan sesungguhnya orang-orang yang diberi Kitab (Taurat dan Injil) tahu, bahwa (pemindahan kiblat) itu adalah kebenaran dari Tuhan mereka. Dan Allah tidak lengah terhadap apa yang mereka kerjakan.',
+        'Kami melihat wajahmu (Muhammad) sering menengadah ke langit, maka '
+        'akan Kami palingkan engkau ke kiblat yang engkau senangi. Maka '
+        'hadapkanlah wajahmu ke arah Masjidilharam. Dan di mana saja engkau '
+        'berada, hadapkanlah wajahmu ke arah itu. Dan sesungguhnya '
+        'orang-orang yang diberi Kitab (Taurat dan Injil) tahu, bahwa '
+        '(pemindahan kiblat) itu adalah kebenaran dari Tuhan mereka. Dan '
+        'Allah tidak lengah terhadap apa yang mereka kerjakan.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1471,7 +1517,12 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182495,
     verseKey: '2:145',
     text:
-        'Dan walaupun engkau (Muhammad) memberikan semua ayat (keterangan) kepada orang-orang yang diberi kitab itu, mereka tidak akan mengikuti kiblatmu, dan engkau pun tidak akan mengikuti kiblat mereka. Sebagian mereka tidak akan mengikuti kiblat sebagian yang lain. Dan jika engkau mengikuti keinginan mereka setelah sampai ilmu kepadamu, niscaya engkau termasuk orang-orang zalim.',
+        'Dan walaupun engkau (Muhammad) memberikan semua ayat (keterangan) '
+        'kepada orang-orang yang diberi kitab itu, mereka tidak akan '
+        'mengikuti kiblatmu, dan engkau pun tidak akan mengikuti kiblat '
+        'mereka. Sebagian mereka tidak akan mengikuti kiblat sebagian yang '
+        'lain. Dan jika engkau mengikuti keinginan mereka setelah sampai ilmu '
+        'kepadamu, niscaya engkau termasuk orang-orang zalim.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1487,7 +1538,8 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 177277,
     verseKey: '2:147',
     text:
-        'Kebenaran itu dari Tuhanmu, maka janganlah sekali-kali engkau (Muhammad) termasuk orang-orang yang ragu.',
+        'Kebenaran itu dari Tuhanmu, maka janganlah sekali-kali engkau '
+        '(Muhammad) termasuk orang-orang yang ragu.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1495,7 +1547,10 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182512,
     verseKey: '2:148',
     text:
-        'Dan setiap umat mempunyai kiblat yang dia menghadap kepadanya. Maka berlomba-lombalah kamu dalam kebaikan. Di mana saja kamu berada pasti Allah akan mengumpulkan kamu semuanya. Sungguh, Allah Mahakuasa atas segala sesuatu.',
+        'Dan setiap umat mempunyai kiblat yang dia menghadap kepadanya. '
+        'Maka berlomba-lombalah kamu dalam kebaikan. Di mana saja kamu '
+        'berada pasti Allah akan mengumpulkan kamu semuanya. Sungguh, Allah '
+        'Mahakuasa atas segala sesuatu.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1503,7 +1558,9 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182517,
     verseKey: '2:149',
     text:
-        'Dan dari mana pun engkau (Muhammad) keluar, hadapkanlah wajahmu ke arah Masjidilharam, sesungguhnya itu benar-benar ketentuan dari Tuhanmu. Allah tidak lengah terhadap apa yang kamu kerjakan.',
+        'Dan dari mana pun engkau (Muhammad) keluar, hadapkanlah wajahmu ke '
+        'arah Masjidilharam, sesungguhnya itu benar-benar ketentuan dari '
+        'Tuhanmu. Allah tidak lengah terhadap apa yang kamu kerjakan.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1511,7 +1568,13 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182494,
     verseKey: '2:150',
     text:
-        'Dan dari mana pun engkau (Muhammad) keluar, maka hadapkanlah wajahmu ke arah Masjidilharam. Dan di mana saja kamu berada, maka hadapkanlah wajahmu ke arah itu, agar tidak ada alasan bagi manusia (untuk menentangmu), kecuali orang-orang yang zalim di antara mereka. Janganlah kamu takut kepada mereka, tetapi takutlah kepada-Ku, agar Aku sempurnakan nikmat-Ku kepadamu, dan agar kamu mendapat petunjuk.',
+        'Dan dari mana pun engkau (Muhammad) keluar, maka hadapkanlah wajahmu '
+        'ke arah Masjidilharam. Dan di mana saja kamu berada, maka hadapkanlah '
+        'wajahmu ke arah itu, agar tidak ada alasan bagi manusia '
+        '(untuk menentangmu), kecuali orang-orang yang zalim di antara '
+        'mereka. Janganlah kamu takut kepada mereka, tetapi takutlah '
+        'kepada-Ku, agar Aku sempurnakan nikmat-Ku kepadamu, dan agar kamu '
+        'mendapat petunjuk.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1519,7 +1582,10 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182515,
     verseKey: '2:151',
     text:
-        'Sebagaimana Kami telah mengutus kepadamu seorang Rasul (Muhammad) dari (kalangan) kamu yang membacakan ayat-ayat Kami, menyucikan kamu dan mengajarkan kepadamu Kitab (Alquran) dan Hikmah (Sunah), serta mengajarkan apa yang belum kamu ketahui.',
+        'Sebagaimana Kami telah mengutus kepadamu seorang Rasul (Muhammad) '
+        'dari (kalangan) kamu yang membacakan ayat-ayat Kami, menyucikan kamu '
+        'dan mengajarkan kepadamu Kitab (Alquran) dan Hikmah (Sunah), serta '
+        'mengajarkan apa yang belum kamu ketahui.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1535,7 +1601,8 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182622,
     verseKey: '2:153',
     text:
-        'Wahai orang-orang yang beriman! Mohonlah pertolongan (kepada Allah) dengan sabar dan salat. Sungguh, Allah beserta orang-orang yang sabar.',
+        'Wahai orang-orang yang beriman! Mohonlah pertolongan (kepada Allah) '
+        'dengan sabar dan salat. Sungguh, Allah beserta orang-orang yang sabar.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1551,7 +1618,9 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182537,
     verseKey: '2:155',
     text:
-        'Dan Kami pasti akan menguji kamu dengan sedikit ketakutan, kelaparan, kekurangan harta, jiwa, dan buah-buahan. Dan sampaikanlah kabar gembira kepada orang-orang yang sabar,',
+        'Dan Kami pasti akan menguji kamu dengan sedikit ketakutan, '
+        'kelaparan, kekurangan harta, jiwa, dan buah-buahan. Dan sampaikanlah '
+        'kabar gembira kepada orang-orang yang sabar,',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1567,7 +1636,8 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182530,
     verseKey: '2:157',
     text:
-        'Mereka itulah yang memperoleh ampunan dan rahmat dari Tuhannya, dan mereka itulah orang-orang yang mendapat petunjuk.',
+        'Mereka itulah yang memperoleh ampunan dan rahmat dari Tuhannya, dan '
+        'mereka itulah orang-orang yang mendapat petunjuk.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1583,7 +1653,10 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182536,
     verseKey: '2:159',
     text:
-        'Sungguh, orang-orang yang menyembunyikan apa yang telah Kami turunkan berupa keterangan-keterangan dan petunjuk, setelah Kami jelaskan kepada manusia dalam Kitab (Alquran), mereka itulah yang dilaknat Allah dan dilaknat (pula) oleh orang-orang yang melaknat,',
+        'Sungguh, orang-orang yang menyembunyikan apa yang telah Kami '
+        'turunkan berupa keterangan-keterangan dan petunjuk, setelah Kami '
+        'jelaskan kepada manusia dalam Kitab (Alquran), mereka itulah yang '
+        'dilaknat Allah dan dilaknat (pula) oleh orang-orang yang melaknat,',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1599,7 +1672,8 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182527,
     verseKey: '2:161',
     text:
-        'Sungguh, orang-orang yang kafir dan mati dalam keadaan kafir, mereka itu mendapat laknat Allah, para malaikat dan manusia seluruhnya,',
+        'Sungguh, orang-orang yang kafir dan mati dalam keadaan kafir, '
+        'mereka itu mendapat laknat Allah, para malaikat dan manusia seluruhnya,',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1607,7 +1681,8 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182597,
     verseKey: '2:162',
     text:
-        'mereka kekal di dalamnya (laknat), tidak akan diringankan azabnya, dan mereka tidak diberi penangguhan.',
+        'mereka kekal di dalamnya (laknat), tidak akan diringankan azabnya, '
+        'dan mereka tidak diberi penangguhan.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1615,7 +1690,8 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182543,
     verseKey: '2:163',
     text:
-        'Dan Tuhan kamu adalah Tuhan Yang Maha Esa, tidak ada tuhan selain Dia, Yang Maha Pengasih, Maha Penyayang.',
+        'Dan Tuhan kamu adalah Tuhan Yang Maha Esa, tidak ada tuhan selain '
+        'Dia, Yang Maha Pengasih, Maha Penyayang.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1623,7 +1699,10 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182547,
     verseKey: '2:164',
     text:
-        'Sesungguhnya pada penciptaan langit dan bumi, pergantian malam dan siang, kapal yang berlayar di laut dengan (muatan) yang bermanfaat bagi manusia, apa yang diturunkan Allah dari langit berupa air, lalu dengan itu dihidupkan-Nya bumi setelah mati (kering), dan Dia tebarkan di dalamnya bermacam-macam binatang, dan perkisaran angin dan awan yang dikendalikan antara langit dan bumi, (semua itu) sungguh, merupakan tanda-tanda (kebesaran Allah) bagi orang-orang yang mengerti.',
+        'Sesungguhnya pada penciptaan langit dan bumi, pergantian malam dan '
+        'siang, kapal yang berlayar di laut dengan (muatan) yang bermanfaat '
+        'bagi manusia, apa yang diturunkan Allah dari langit berupa air, lalu '
+        'dengan itu dihidupkan-Nya bumi setelah mati (kering), dan Dia tebarkan di dalamnya bermacam-macam binatang, dan perkisaran angin dan awan yang dikendalikan antara langit dan bumi, (semua itu) sungguh, merupakan tanda-tanda (kebesaran Allah) bagi orang-orang yang mengerti.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1759,7 +1838,9 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182582,
     verseKey: '2:181',
     text:
-        'Barang siapa mengubahnya (wasiat itu), setelah mendengarnya, maka sesungguhnya dosanya hanya bagi orang yang mengubahnya. Sungguh, Allah Maha Mendengar, Maha Mengetahui.',
+        'Barang siapa mengubahnya (wasiat itu), setelah mendengarnya, maka '
+        'sesungguhnya dosanya hanya bagi orang yang mengubahnya. Sungguh, '
+        'Allah Maha Mendengar, Maha Mengetahui.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1775,7 +1856,8 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182592,
     verseKey: '2:183',
     text:
-        'Wahai orang-orang yang beriman! Diwajibkan atas kamu berpuasa sebagaimana diwajibkan atas orang sebelum kamu agar kamu bertakwa,',
+        'Wahai orang-orang yang beriman! Diwajibkan atas kamu berpuasa '
+        'sebagaimana diwajibkan atas orang sebelum kamu agar kamu bertakwa,',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1791,7 +1873,16 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182591,
     verseKey: '2:185',
     text:
-        'Bulan Ramadan adalah (bulan) yang di dalamnya diturunkan Alquran, sebagai petunjuk bagi manusia dan penjelasan-penjelasan mengenai petunjuk itu dan pembeda (antara yang benar dan yang batil). Karena itu, barang siapa di antara kamu mendapati bulan itu, maka berpuasalah. Dan barang siapa sakit atau dalam perjalanan (dia tidak berpuasa), maka (wajib menggantinya), sebanyak hari yang ditinggalkannya, pada hari-hari yang lain. Allah menghendaki kemudahan bagimu, dan tidak menghendaki kesukaran bagimu. Hendaklah kamu mencukupkan bilangannya dan mengagungkan Allah atas petunjuk-Nya yang diberikan kepadamu, agar kamu bersyukur.',
+        'Bulan Ramadan adalah (bulan) yang di dalamnya diturunkan Alquran, '
+        'sebagai petunjuk bagi manusia dan penjelasan-penjelasan mengenai '
+        'petunjuk itu dan pembeda (antara yang benar dan yang batil). '
+        'Karena itu, barang siapa di antara kamu mendapati bulan itu, maka '
+        'berpuasalah. Dan barang siapa sakit atau dalam perjalanan (dia tidak '
+        'berpuasa), maka (wajib menggantinya), sebanyak hari yang '
+        'ditinggalkannya, pada hari-hari yang lain. Allah menghendaki '
+        'kemudahan bagimu, dan tidak menghendaki kesukaran bagimu. Hendaklah '
+        'kamu mencukupkan bilangannya dan mengagungkan Allah atas petunjuk-'
+        'Nya yang diberikan kepadamu, agar kamu bersyukur.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
