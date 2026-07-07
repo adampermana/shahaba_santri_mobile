@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:sahaba_mobile/domains/quran/juz_model.dart';
+import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/domains/quran/surah_model.dart';
 import 'package:sahaba_mobile/infrastructure/failures/failures.dart';
 import 'package:sahaba_mobile/infrastructure/quran/datasources/i_quran_local_datasource.dart';
@@ -25,6 +26,28 @@ class QuranRepository implements IQuranRepository {
     try {
       final juzList = await _localDatasource.getAllJuz();
       return Right(juzList);
+    } on Exception catch (e) {
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, QuranDetailModel>> getSurahDetail(
+    SurahModel surah,
+  ) async {
+    try {
+      final detail = await _localDatasource.getSurahDetail(surah);
+      return Right(detail);
+    } on Exception catch (e) {
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, QuranDetailModel>> getJuzDetail(JuzModel juz) async {
+    try {
+      final detail = await _localDatasource.getJuzDetail(juz);
+      return Right(detail);
     } on Exception catch (e) {
       return Left(CacheFailure(message: e.toString()));
     }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
+import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
+import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/juz_card.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/quran_search_bar.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/quran_tab_bar.dart';
@@ -44,9 +47,7 @@ class _QuranViewState extends State<_QuranView> {
               child: QuranSearchBar(
                 controller: _searchController,
                 onChanged: (keyword) {
-                  context
-                      .read<QuranBloc>()
-                      .add(QuranEvent.search(keyword));
+                  context.read<QuranBloc>().add(QuranEvent.search(keyword));
                 },
               ),
             ),
@@ -56,9 +57,7 @@ class _QuranViewState extends State<_QuranView> {
                 return QuranTabBar(
                   currentIndex: state.currentTab,
                   onTabChanged: (index) {
-                    context
-                        .read<QuranBloc>()
-                        .add(QuranEvent.changeTab(index));
+                    context.read<QuranBloc>().add(QuranEvent.changeTab(index));
                   },
                 );
               },
@@ -106,7 +105,18 @@ class _SurahList extends StatelessWidget {
       itemCount: surahs.length,
       separatorBuilder: (_, _) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
-        return SurahCard(surah: surahs[index]);
+        final surah = surahs[index];
+        return SurahCard(
+          surah: surah,
+          onTap: () => context.push(
+            '${RouterPath.mainPath}/${RouterPath.quranPath}/'
+            '${RouterPath.detailQuranPath}',
+            extra: QuranDetailArgs.surah(
+              surah,
+              allSurahs: state.surahs,
+            ),
+          ),
+        );
       },
     );
   }
@@ -138,7 +148,18 @@ class _JuzList extends StatelessWidget {
       itemCount: juzList.length,
       separatorBuilder: (_, _) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
-        return JuzCard(juz: juzList[index]);
+        final juz = juzList[index];
+        return JuzCard(
+          juz: juz,
+          onTap: () => context.push(
+            '${RouterPath.mainPath}/${RouterPath.quranPath}/'
+            '${RouterPath.detailQuranPath}',
+            extra: QuranDetailArgs.juz(
+              juz,
+              allJuz: state.juzList,
+            ),
+          ),
+        );
       },
     );
   }

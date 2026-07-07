@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
+import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
+import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
@@ -10,6 +14,7 @@ import 'package:sahaba_mobile/presentation/screens/home/calendar/calendar_screen
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/qibla_screen/qibla_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/select_city_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/main_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/quran_screen/detail_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
 final GoRouter router = GoRouter(
@@ -75,6 +80,24 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: RouterPath.calendarPath,
           builder: (context, state) => const CalendarScreen(),
+        ),
+        GoRoute(
+          path: '${RouterPath.quranPath}/${RouterPath.detailQuranPath}',
+          builder: (context, state) {
+            final args = state.extra;
+            if (args is QuranDetailArgs) {
+              return BlocProvider(
+                create: (_) {
+                  final cubit = sl<QuranDetailCubit>();
+                  unawaited(cubit.load(args));
+                  return cubit;
+                },
+                child: DetailQuranScreen(args: args),
+              );
+            }
+
+            return const DetailQuranScreen();
+          },
         ),
       ],
     ),

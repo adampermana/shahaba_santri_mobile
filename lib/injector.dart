@@ -7,6 +7,7 @@ import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart'
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
 import 'package:sahaba_mobile/business_logic/qibla_cubit/qibla_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
+import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/infrastructure/calendar/datasources/calendar_local_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/calendar/datasources/calendar_remote_datasource.dart';
@@ -108,7 +109,8 @@ Future<void> _initQuranFeature() async {
     ..registerLazySingleton<IQuranRepository>(
       () => QuranRepository(sl()),
     )
-    ..registerFactory(() => QuranBloc(sl()));
+    ..registerFactory(() => QuranBloc(sl()))
+    ..registerFactory(() => QuranDetailCubit(sl()));
 }
 
 Future<void> _initCalendarFeature() async {

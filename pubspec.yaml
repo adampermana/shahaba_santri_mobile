@@ -72,9 +72,6 @@ flutter:
     - assets/svg/jadwal_sholat/subuh/
     - assets/svg/jadwal_sholat/terbit/
     - assets/audio/adzan-default.mp3
-    - assets/quran/
-    - assets/quran/surah/
-    - assets/quran/translation/
 
   fonts:
     - family: Markazi Text

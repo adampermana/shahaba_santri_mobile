@@ -350,7 +350,7 @@ as DateTime,
 /// @nodoc
 mixin _$CalendarState {
 
- bool get isLoading; bool get isSuccess; String get errorMessage; List<IslamicHolidayModel> get holidays; DateTime get focusedMonth; DateTime get selectedDate;
+ DateTime get focusedMonth; DateTime get selectedDate; bool get isLoading; bool get isSuccess; String get errorMessage; List<IslamicHolidayModel> get holidays;
 /// Create a copy of CalendarState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -361,16 +361,16 @@ $CalendarStateCopyWith<CalendarState> get copyWith => _$CalendarStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CalendarState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&const DeepCollectionEquality().equals(other.holidays, holidays)&&(identical(other.focusedMonth, focusedMonth) || other.focusedMonth == focusedMonth)&&(identical(other.selectedDate, selectedDate) || other.selectedDate == selectedDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CalendarState&&(identical(other.focusedMonth, focusedMonth) || other.focusedMonth == focusedMonth)&&(identical(other.selectedDate, selectedDate) || other.selectedDate == selectedDate)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&const DeepCollectionEquality().equals(other.holidays, holidays));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,isSuccess,errorMessage,const DeepCollectionEquality().hash(holidays),focusedMonth,selectedDate);
+int get hashCode => Object.hash(runtimeType,focusedMonth,selectedDate,isLoading,isSuccess,errorMessage,const DeepCollectionEquality().hash(holidays));
 
 @override
 String toString() {
-  return 'CalendarState(isLoading: $isLoading, isSuccess: $isSuccess, errorMessage: $errorMessage, holidays: $holidays, focusedMonth: $focusedMonth, selectedDate: $selectedDate)';
+  return 'CalendarState(focusedMonth: $focusedMonth, selectedDate: $selectedDate, isLoading: $isLoading, isSuccess: $isSuccess, errorMessage: $errorMessage, holidays: $holidays)';
 }
 
 
@@ -381,7 +381,7 @@ abstract mixin class $CalendarStateCopyWith<$Res>  {
   factory $CalendarStateCopyWith(CalendarState value, $Res Function(CalendarState) _then) = _$CalendarStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, bool isSuccess, String errorMessage, List<IslamicHolidayModel> holidays, DateTime focusedMonth, DateTime selectedDate
+ DateTime focusedMonth, DateTime selectedDate, bool isLoading, bool isSuccess, String errorMessage, List<IslamicHolidayModel> holidays
 });
 
 
@@ -398,15 +398,15 @@ class _$CalendarStateCopyWithImpl<$Res>
 
 /// Create a copy of CalendarState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? isSuccess = null,Object? errorMessage = null,Object? holidays = null,Object? focusedMonth = null,Object? selectedDate = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? focusedMonth = null,Object? selectedDate = null,Object? isLoading = null,Object? isSuccess = null,Object? errorMessage = null,Object? holidays = null,}) {
   return _then(_self.copyWith(
-isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+focusedMonth: null == focusedMonth ? _self.focusedMonth : focusedMonth // ignore: cast_nullable_to_non_nullable
+as DateTime,selectedDate: null == selectedDate ? _self.selectedDate : selectedDate // ignore: cast_nullable_to_non_nullable
+as DateTime,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,isSuccess: null == isSuccess ? _self.isSuccess : isSuccess // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: null == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String,holidays: null == holidays ? _self.holidays : holidays // ignore: cast_nullable_to_non_nullable
-as List<IslamicHolidayModel>,focusedMonth: null == focusedMonth ? _self.focusedMonth : focusedMonth // ignore: cast_nullable_to_non_nullable
-as DateTime,selectedDate: null == selectedDate ? _self.selectedDate : selectedDate // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as List<IslamicHolidayModel>,
   ));
 }
 
@@ -491,10 +491,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  bool isSuccess,  String errorMessage,  List<IslamicHolidayModel> holidays,  DateTime focusedMonth,  DateTime selectedDate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DateTime focusedMonth,  DateTime selectedDate,  bool isLoading,  bool isSuccess,  String errorMessage,  List<IslamicHolidayModel> holidays)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CalendarState() when $default != null:
-return $default(_that.isLoading,_that.isSuccess,_that.errorMessage,_that.holidays,_that.focusedMonth,_that.selectedDate);case _:
+return $default(_that.focusedMonth,_that.selectedDate,_that.isLoading,_that.isSuccess,_that.errorMessage,_that.holidays);case _:
   return orElse();
 
 }
@@ -512,10 +512,10 @@ return $default(_that.isLoading,_that.isSuccess,_that.errorMessage,_that.holiday
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  bool isSuccess,  String errorMessage,  List<IslamicHolidayModel> holidays,  DateTime focusedMonth,  DateTime selectedDate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DateTime focusedMonth,  DateTime selectedDate,  bool isLoading,  bool isSuccess,  String errorMessage,  List<IslamicHolidayModel> holidays)  $default,) {final _that = this;
 switch (_that) {
 case _CalendarState():
-return $default(_that.isLoading,_that.isSuccess,_that.errorMessage,_that.holidays,_that.focusedMonth,_that.selectedDate);case _:
+return $default(_that.focusedMonth,_that.selectedDate,_that.isLoading,_that.isSuccess,_that.errorMessage,_that.holidays);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -532,10 +532,10 @@ return $default(_that.isLoading,_that.isSuccess,_that.errorMessage,_that.holiday
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  bool isSuccess,  String errorMessage,  List<IslamicHolidayModel> holidays,  DateTime focusedMonth,  DateTime selectedDate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DateTime focusedMonth,  DateTime selectedDate,  bool isLoading,  bool isSuccess,  String errorMessage,  List<IslamicHolidayModel> holidays)?  $default,) {final _that = this;
 switch (_that) {
 case _CalendarState() when $default != null:
-return $default(_that.isLoading,_that.isSuccess,_that.errorMessage,_that.holidays,_that.focusedMonth,_that.selectedDate);case _:
+return $default(_that.focusedMonth,_that.selectedDate,_that.isLoading,_that.isSuccess,_that.errorMessage,_that.holidays);case _:
   return null;
 
 }
@@ -547,9 +547,11 @@ return $default(_that.isLoading,_that.isSuccess,_that.errorMessage,_that.holiday
 
 
 class _CalendarState implements CalendarState {
-  const _CalendarState({this.isLoading = false, this.isSuccess = false, this.errorMessage = '', final  List<IslamicHolidayModel> holidays = const <IslamicHolidayModel>[], required this.focusedMonth, required this.selectedDate}): _holidays = holidays;
+  const _CalendarState({required this.focusedMonth, required this.selectedDate, this.isLoading = false, this.isSuccess = false, this.errorMessage = '', final  List<IslamicHolidayModel> holidays = const <IslamicHolidayModel>[]}): _holidays = holidays;
   
 
+@override final  DateTime focusedMonth;
+@override final  DateTime selectedDate;
 @override@JsonKey() final  bool isLoading;
 @override@JsonKey() final  bool isSuccess;
 @override@JsonKey() final  String errorMessage;
@@ -560,8 +562,6 @@ class _CalendarState implements CalendarState {
   return EqualUnmodifiableListView(_holidays);
 }
 
-@override final  DateTime focusedMonth;
-@override final  DateTime selectedDate;
 
 /// Create a copy of CalendarState
 /// with the given fields replaced by the non-null parameter values.
@@ -573,16 +573,16 @@ _$CalendarStateCopyWith<_CalendarState> get copyWith => __$CalendarStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CalendarState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&const DeepCollectionEquality().equals(other._holidays, _holidays)&&(identical(other.focusedMonth, focusedMonth) || other.focusedMonth == focusedMonth)&&(identical(other.selectedDate, selectedDate) || other.selectedDate == selectedDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CalendarState&&(identical(other.focusedMonth, focusedMonth) || other.focusedMonth == focusedMonth)&&(identical(other.selectedDate, selectedDate) || other.selectedDate == selectedDate)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&const DeepCollectionEquality().equals(other._holidays, _holidays));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,isSuccess,errorMessage,const DeepCollectionEquality().hash(_holidays),focusedMonth,selectedDate);
+int get hashCode => Object.hash(runtimeType,focusedMonth,selectedDate,isLoading,isSuccess,errorMessage,const DeepCollectionEquality().hash(_holidays));
 
 @override
 String toString() {
-  return 'CalendarState(isLoading: $isLoading, isSuccess: $isSuccess, errorMessage: $errorMessage, holidays: $holidays, focusedMonth: $focusedMonth, selectedDate: $selectedDate)';
+  return 'CalendarState(focusedMonth: $focusedMonth, selectedDate: $selectedDate, isLoading: $isLoading, isSuccess: $isSuccess, errorMessage: $errorMessage, holidays: $holidays)';
 }
 
 
@@ -593,7 +593,7 @@ abstract mixin class _$CalendarStateCopyWith<$Res> implements $CalendarStateCopy
   factory _$CalendarStateCopyWith(_CalendarState value, $Res Function(_CalendarState) _then) = __$CalendarStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, bool isSuccess, String errorMessage, List<IslamicHolidayModel> holidays, DateTime focusedMonth, DateTime selectedDate
+ DateTime focusedMonth, DateTime selectedDate, bool isLoading, bool isSuccess, String errorMessage, List<IslamicHolidayModel> holidays
 });
 
 
@@ -610,15 +610,15 @@ class __$CalendarStateCopyWithImpl<$Res>
 
 /// Create a copy of CalendarState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? isSuccess = null,Object? errorMessage = null,Object? holidays = null,Object? focusedMonth = null,Object? selectedDate = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? focusedMonth = null,Object? selectedDate = null,Object? isLoading = null,Object? isSuccess = null,Object? errorMessage = null,Object? holidays = null,}) {
   return _then(_CalendarState(
-isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+focusedMonth: null == focusedMonth ? _self.focusedMonth : focusedMonth // ignore: cast_nullable_to_non_nullable
+as DateTime,selectedDate: null == selectedDate ? _self.selectedDate : selectedDate // ignore: cast_nullable_to_non_nullable
+as DateTime,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,isSuccess: null == isSuccess ? _self.isSuccess : isSuccess // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: null == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String,holidays: null == holidays ? _self._holidays : holidays // ignore: cast_nullable_to_non_nullable
-as List<IslamicHolidayModel>,focusedMonth: null == focusedMonth ? _self.focusedMonth : focusedMonth // ignore: cast_nullable_to_non_nullable
-as DateTime,selectedDate: null == selectedDate ? _self.selectedDate : selectedDate // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as List<IslamicHolidayModel>,
   ));
 }
 

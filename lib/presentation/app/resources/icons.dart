@@ -21,6 +21,9 @@ abstract class AppIcons {
       '$_path/indeterminate-circle-line.svg';
   static const String information2Line = '$_path/information-2-line.svg';
   static const String mapPin2Line = '$_path/map-pin-line.svg';
+  static const String motifBorderSelected = '$_path/motif/border-selected.svg';
+  static const String motifBorderUnselected =
+      '$_path/motif/border-unselected.svg';
   static const String motifIslamShort = '$_path/motif/motif-islam-short.svg';
   static const String moonLine = '$_path/moon-line.svg';
   static const String notification2Line = '$_path/notification-line.svg';

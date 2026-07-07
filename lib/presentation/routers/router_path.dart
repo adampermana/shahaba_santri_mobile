@@ -10,6 +10,7 @@ class RouterPath {
   /// Sub Paths
   // Quran
   static const String quranPath = 'quran';
+  static const String detailQuranPath = 'detail-quran';
 
   // Qibla
   static const String qiblaPath = 'qibla';

@@ -41,14 +41,15 @@ class SurahCard extends StatelessWidget {
           children: [
             Text(
               '${int.tryParse(surah.index ?? '') ?? surah.index}',
-              style: textTheme.displaySmall?.copyWith(
-                fontSize: 30,
-                fontWeight: FontWeight.w500,
+              style: const TextStyle(
                 color: ColorPalette.primaryColor,
-                letterSpacing: 0.6,
-                height: 1,
+                fontSize: 40,
+                fontFamily: 'Synonym Variable',
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.60,
               ),
             ),
+
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
