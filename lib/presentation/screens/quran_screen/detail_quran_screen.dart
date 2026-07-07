@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
@@ -16,219 +17,192 @@ import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
-// const double _tabItemWidth = 130;
+typedef _SurahGroup = ({
+  String surahIndex,
+  String surahName,
+  String surahNameAr,
+  List<QuranVerseModel> verses,
+});
 
-class DetailQuranScreen extends StatefulWidget {
+class DetailQuranScreen extends HookWidget {
   const DetailQuranScreen({super.key, this.args});
 
   final QuranDetailArgs? args;
 
   @override
-  State<DetailQuranScreen> createState() => _DetailQuranScreenState();
-}
+  Widget build(BuildContext context) {
+    final surahs = _surahsFromArgs(args);
+    final juzList = _juzListFromArgs(args);
+    final isSurah = args?.type == QuranDetailType.surah;
+    final itemCount = isSurah ? surahs.length : juzList.length;
 
-class _DetailQuranScreenState extends State<DetailQuranScreen> {
-  late final PageController _pageController;
-  final _tabScrollController = ScrollController();
-  final _details = <int, QuranDetailModel>{};
-  final _errors = <int, String>{};
-  final _requestedIndexes = <int>{};
-  late QuranDetailArgs? _selectedArgs;
-  late int _selectedIndex;
+    int initialIndex() {
+      if (args == null) return 0;
 
-  List<SurahModel> get _surahs {
-    final args = widget.args;
-    if (args == null) return const [];
-    if (args.allSurahs.isNotEmpty) return args.allSurahs;
-    return args.surah == null ? const [] : [args.surah!];
-  }
+      if (args!.type == QuranDetailType.surah) {
+        final index = surahs.indexWhere((s) => s.index == args!.surah?.index);
+        return index < 0 ? 0 : index;
+      }
 
-  List<JuzModel> get _juzList {
-    final args = widget.args;
-    if (args == null) return const [];
-    if (args.allJuz.isNotEmpty) return args.allJuz;
-    return args.juz == null ? const [] : [args.juz!];
-  }
-
-  bool get _isSurah => widget.args?.type == QuranDetailType.surah;
-
-  int get _itemCount => _isSurah ? _surahs.length : _juzList.length;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedIndex = _initialIndex();
-    _selectedArgs = _argsAt(_selectedIndex);
-    _pageController = PageController(initialPage: _selectedIndex);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _scrollToSelected(animate: false);
-      _requestCurrentThenNearby(_selectedIndex);
-    });
-  }
-
-  @override
-  void didUpdateWidget(covariant DetailQuranScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.args != widget.args) {
-      _details.clear();
-      _errors.clear();
-      _requestedIndexes.clear();
-      _selectedIndex = _initialIndex();
-      _selectedArgs = _argsAt(_selectedIndex);
-        _pageController.jumpToPage(_selectedIndex);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        _scrollToSelected(animate: false);
-        _requestCurrentThenNearby(_selectedIndex);
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    _tabScrollController.dispose();
-    super.dispose();
-  }
-
-  int _initialIndex() {
-    final args = widget.args;
-    if (args == null) return 0;
-
-    if (args.type == QuranDetailType.surah) {
-      final index = _surahs.indexWhere((s) => s.index == args.surah?.index);
+      final index = juzList.indexWhere((j) => j.index == args!.juz?.index);
       return index < 0 ? 0 : index;
     }
 
-    final index = _juzList.indexWhere((j) => j.index == args.juz?.index);
-    return index < 0 ? 0 : index;
-  }
+    QuranDetailArgs? argsAt(int index) {
+      if (args == null || index < 0 || index >= itemCount) return null;
 
-  QuranDetailArgs? _argsAt(int index) {
-    final args = widget.args;
-    if (args == null || index < 0 || index >= _itemCount) return null;
+      if (args!.type == QuranDetailType.surah) {
+        return QuranDetailArgs.surah(
+          surahs[index],
+          allSurahs: surahs,
+        );
+      }
 
-    if (args.type == QuranDetailType.surah) {
-      return QuranDetailArgs.surah(
-        _surahs[index],
-        allSurahs: _surahs,
+      return QuranDetailArgs.juz(
+        juzList[index],
+        allJuz: juzList,
       );
     }
 
-    return QuranDetailArgs.juz(
-      _juzList[index],
-      allJuz: _juzList,
-    );
-  }
+    int indexForArgs(QuranDetailArgs? value) {
+      if (value == null || value.type != args?.type) return -1;
 
-  int _indexForArgs(QuranDetailArgs? args) {
-    if (args == null || args.type != widget.args?.type) return -1;
+      if (value.type == QuranDetailType.surah) {
+        return surahs.indexWhere((s) => s.index == value.surah?.index);
+      }
 
-    if (args.type == QuranDetailType.surah) {
-      return _surahs.indexWhere((s) => s.index == args.surah?.index);
+      return juzList.indexWhere((j) => j.index == value.juz?.index);
     }
 
-    return _juzList.indexWhere((j) => j.index == args.juz?.index);
-  }
+    final selectedIndex = useState(initialIndex());
+    final details = useState(<int, QuranDetailModel>{});
+    final errors = useState(<int, String>{});
+    final requestedIndexes = useState(<int>{});
+    final pageController = usePageController(initialPage: selectedIndex.value);
+    final tabScrollController = useScrollController();
 
-  void _selectIndex(int index) {
-    if (index == _selectedIndex || index < 0 || index >= _itemCount) return;
-    _setSelectedIndex(index);
-    unawaited(
-      _pageController
-          .animateToPage(
-            index,
-            duration: const Duration(milliseconds: 240),
-            curve: Curves.easeOut,
-          )
-          .then((_) {
-            if (!mounted) return;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (!mounted) return;
-              _requestCurrentThenNearby(index);
-            });
-          }),
-    );
-  }
+    void scrollToSelected(int index, {bool animate = true}) {
+      if (!tabScrollController.hasClients) return;
 
-  void _setSelectedIndex(int index) {
-    final nextArgs = _argsAt(index);
-    if (nextArgs == null) return;
+      final tabWidth = context.mediaQuerySize.width * 0.34;
+      final viewportWidth = context.mediaQuerySize.width;
+      final target = (index * tabWidth) - ((viewportWidth - tabWidth) / 2);
+      final offset = target.clamp(
+        tabScrollController.position.minScrollExtent,
+        tabScrollController.position.maxScrollExtent,
+      );
 
-    setState(() {
-      _selectedIndex = index;
-      _selectedArgs = nextArgs;
-    });
-    _scrollToSelected();
-  }
+      if (!animate) {
+        tabScrollController.jumpTo(offset);
+        return;
+      }
 
-  void _onPageChanged(int index) {
-    _setSelectedIndex(index);
-    _requestCurrentThenNearby(index);
-  }
-
-  void _requestCurrentThenNearby(int index) {
-    _requestLoad(index);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _requestLoad(index - 1);
-      _requestLoad(index + 1);
-    });
-  }
-
-  void _requestLoad(int index) {
-    final args = _argsAt(index);
-    if (args == null) return;
-    if (_details.containsKey(index) || !_requestedIndexes.add(index)) return;
-
-    unawaited(context.read<QuranDetailCubit>().load(args));
-  }
-
-  void _scrollToSelected({bool animate = true}) {
-    if (!_tabScrollController.hasClients) return;
-
-    final tabWidth = context.mediaQuerySize.width * 0.34;
-    final viewportWidth = context.mediaQuerySize.width;
-    final target = (_selectedIndex * tabWidth) - ((viewportWidth - tabWidth) / 2);
-    final offset = target.clamp(
-      _tabScrollController.position.minScrollExtent,
-      _tabScrollController.position.maxScrollExtent,
-    );
-
-    if (!animate) {
-      _tabScrollController.jumpTo(offset);
-      return;
+      unawaited(
+        tabScrollController.animateTo(
+          offset,
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
+        ),
+      );
     }
 
-    unawaited(
-      _tabScrollController.animateTo(
-        offset,
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeOut,
-      ),
+    void requestLoad(int index) {
+      final nextArgs = argsAt(index);
+      if (nextArgs == null) return;
+      if (details.value.containsKey(index) ||
+          requestedIndexes.value.contains(index)) {
+        return;
+      }
+
+      requestedIndexes.value = {...requestedIndexes.value, index};
+      if (!context.mounted) return;
+      unawaited(context.read<QuranDetailCubit>().load(nextArgs));
+    }
+
+    void requestCurrentThenNearby(int index) {
+      requestLoad(index);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        requestLoad(index - 1);
+        requestLoad(index + 1);
+      });
+    }
+
+    void setSelectedIndex(int index) {
+      if (argsAt(index) == null) return;
+
+      selectedIndex.value = index;
+      scrollToSelected(index);
+    }
+
+    void selectIndex(int index) {
+      if (index == selectedIndex.value || index < 0 || index >= itemCount) {
+        return;
+      }
+
+      setSelectedIndex(index);
+      unawaited(
+        pageController
+            .animateToPage(
+              index,
+              duration: const Duration(milliseconds: 240),
+              curve: Curves.easeOut,
+            )
+            .then((_) {
+              if (!context.mounted) return;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!context.mounted) return;
+                requestCurrentThenNearby(index);
+              });
+            }),
+      );
+    }
+
+    Widget pageAt(int index) {
+      final detail = details.value[index];
+      if (detail != null) {
+        return detail.type == QuranDetailType.juz
+            ? _juzContent(context, detail)
+            : _surahContent(context, detail);
+      }
+
+      final error = errors.value[index];
+      if (error != null) return _errorState(context, error);
+
+      return const Center(
+        child: CircularProgressIndicator(
+          color: ColorPalette.primaryColor,
+        ),
+      );
+    }
+
+    useEffect(
+      () {
+        final index = initialIndex();
+        details.value = <int, QuranDetailModel>{};
+        errors.value = <int, String>{};
+        requestedIndexes.value = <int>{};
+        selectedIndex.value = index;
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!context.mounted) return;
+          if (pageController.hasClients) pageController.jumpToPage(index);
+          scrollToSelected(index, animate: false);
+          requestCurrentThenNearby(index);
+        });
+        return null;
+      },
+      [args],
     );
-  }
 
-  Widget _pageAt(int index) {
-    final detail = _details[index];
-    if (detail != null) return _DetailContent(detail: detail);
+    final safeSelectedIndex = selectedIndex.value >= itemCount
+        ? initialIndex()
+        : selectedIndex.value;
+    final selectedArgs = argsAt(safeSelectedIndex);
 
-    final error = _errors[index];
-    if (error != null) return _ErrorState(message: error);
-
-    return const Center(
-      child: CircularProgressIndicator(
-        color: ColorPalette.primaryColor,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (widget.args == null || _selectedArgs == null || _itemCount == 0) {
-      return _DetailScaffold(
-        tabBar: null,
+    if (args == null || selectedArgs == null || itemCount == 0) {
+      return _detailScaffold(
+        context,
         child: Center(
           child: Text(
             'Data Quran tidak valid',
@@ -238,627 +212,536 @@ class _DetailQuranScreenState extends State<DetailQuranScreen> {
       );
     }
 
-    return _DetailScaffold(
-      tabBar: _ScrollableTabBar(
-        controller: _tabScrollController,
-        selectedIndex: _selectedIndex,
-        labels: _tabLabels(),
-        onTap: _selectIndex,
+    final tabLabels = isSurah
+        ? surahs.map((s) => s.title ?? '').toList()
+        : juzList.map((j) => 'Juz ${j.index}').toList();
+
+    return _detailScaffold(
+      context,
+      tabBar: _scrollableTabBar(
+        context,
+        controller: tabScrollController,
+        selectedIndex: safeSelectedIndex,
+        labels: tabLabels,
+        onTap: selectIndex,
       ),
       child: BlocListener<QuranDetailCubit, QuranDetailState>(
         listener: (context, state) {
           final index = switch (state) {
-            QuranDetailLoaded(:final args) => _indexForArgs(args),
-            QuranDetailError(:final args) => _indexForArgs(args),
-            QuranDetailLoading(:final args) => _indexForArgs(args),
+            QuranDetailLoaded(:final args) => indexForArgs(args),
+            QuranDetailError(:final args) => indexForArgs(args),
+            QuranDetailLoading(:final args) => indexForArgs(args),
             _ => -1,
           };
           if (index < 0) return;
 
-          setState(() {
-            if (state is QuranDetailLoaded) {
-              _errors.remove(index);
-              _details[index] = state.detail;
-            } else if (state is QuranDetailError) {
-              _details.remove(index);
-              _errors[index] = state.message;
-            }
-          });
+          if (state is QuranDetailLoaded) {
+            final nextErrors = {...errors.value}..remove(index);
+            errors.value = nextErrors;
+            details.value = {...details.value, index: state.detail};
+          } else if (state is QuranDetailError) {
+            final nextDetails = {...details.value}..remove(index);
+            details.value = nextDetails;
+            errors.value = {...errors.value, index: state.message};
+          }
         },
         child: PageView.builder(
-          controller: _pageController,
+          controller: pageController,
           reverse: true,
           allowImplicitScrolling: true,
-          itemCount: _itemCount,
-          onPageChanged: _onPageChanged,
-          itemBuilder: (context, index) => _pageAt(index),
-        ),
-      ),
-    );
-  }
-
-  List<String> _tabLabels() {
-    if (_isSurah) return _surahs.map((s) => s.title ?? '').toList();
-    return _juzList.map((j) => 'Juz ${j.index}').toList();
-  }
-}
-
-class _DetailScaffold extends StatelessWidget {
-  const _DetailScaffold({required this.child, required this.tabBar});
-
-  final Widget child;
-  final Widget? tabBar;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF3F3F3),
-      body: Column(
-        children: [
-          const _AppBarSection(),
-          ?tabBar,
-          Expanded(child: child),
-        ],
-      ),
-    );
-  }
-}
-
-class _AppBarSection extends StatelessWidget {
-  const _AppBarSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return SafeArea(
-      bottom: false,
-      child: Container(
-        color: ColorPalette.kWhite,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            GestureDetector(
-              onTap: () => context.pop(),
-              child: Row(
-                spacing: 8,
-                children: [
-                  SvgPicture.asset(
-                    AppIcons.arrowLeftLine,
-                    width: 24,
-                    height: 24,
-                  ),
-                  Text(
-                    'Kembali',
-                    style: textTheme.titleSmall?.copyWith(
-                      color: ColorPalette.contentSecondary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              spacing: 16,
-              children: [
-                SvgPicture.asset(
-                  AppIcons.arrowGoForwardLine,
-                  width: 24,
-                  height: 24,
-                ),
-                SvgPicture.asset(
-                  AppIcons.settings4Line,
-                  width: 24,
-                  height: 24,
-                ),
-              ],
-            ),
-          ],
+          itemCount: itemCount,
+          onPageChanged: (index) {
+            setSelectedIndex(index);
+            requestCurrentThenNearby(index);
+          },
+          itemBuilder: (context, index) => pageAt(index),
         ),
       ),
     );
   }
 }
 
-class _ScrollableTabBar extends StatelessWidget {
-  const _ScrollableTabBar({
-    required this.controller,
-    required this.selectedIndex,
-    required this.labels,
-    required this.onTap,
-  });
-
-  final ScrollController controller;
-  final int selectedIndex;
-  final List<String> labels;
-  final ValueChanged<int> onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: ColorPalette.kWhite,
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x14000000),
-            blurRadius: 1,
-            offset: Offset(0, 1),
-          ),
-          BoxShadow(
-            color: Color(0x12000000),
-            blurRadius: 2,
-            offset: Offset(0, 2),
-          ),
-          BoxShadow(
-            color: Color(0x0A000000),
-            blurRadius: 3,
-            offset: Offset(0, 5),
-          ),
-          BoxShadow(
-            color: Color(0x03000000),
-            blurRadius: 4,
-            offset: Offset(0, 10),
-          ),
-        ],
-      ),
-      child: SingleChildScrollView(
-        controller: controller,
-        scrollDirection: Axis.horizontal,
-        reverse: true,
-        child: Row(
-          textDirection: TextDirection.rtl,
-          children: List.generate(labels.length, (index) {
-            return _TabItem(
-              label: labels[index],
-              isActive: index == selectedIndex,
-              onTap: () => onTap(index),
-            );
-          }),
-        ),
-      ),
-    );
-  }
+List<SurahModel> _surahsFromArgs(QuranDetailArgs? args) {
+  if (args == null) return const [];
+  if (args.allSurahs.isNotEmpty) return args.allSurahs;
+  return args.surah == null ? const [] : [args.surah!];
 }
 
-class _TabItem extends StatelessWidget {
-  const _TabItem({
-    required this.label,
-    required this.isActive,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: context.mediaQuerySize.width * 0.34,
-        decoration: BoxDecoration(
-          color: ColorPalette.kWhite,
-          border: Border(
-            bottom: BorderSide(
-              color: isActive ? ColorPalette.primaryColor : Colors.transparent,
-              width: 2,
-            ),
-          ),
-        ),
-        padding: const EdgeInsets.only(top: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: textTheme.labelSmall?.copyWith(
-                color: isActive
-                    ? ColorPalette.primaryColor
-                    : ColorPalette.onSurface,
-                fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
-    );
-  }
+List<JuzModel> _juzListFromArgs(QuranDetailArgs? args) {
+  if (args == null) return const [];
+  if (args.allJuz.isNotEmpty) return args.allJuz;
+  return args.juz == null ? const [] : [args.juz!];
 }
 
-class _DetailContent extends StatelessWidget {
-  const _DetailContent({required this.detail});
-
-  final QuranDetailModel detail;
-
-  @override
-  Widget build(BuildContext context) {
-    if (detail.type == QuranDetailType.juz) {
-      return _JuzContent(detail: detail);
-    }
-    return _SurahContent(detail: detail);
-  }
-}
-
-class _SurahContent extends StatelessWidget {
-  const _SurahContent({required this.detail});
-
-  final QuranDetailModel detail;
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(child: _SurahBanner(detail: detail)),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
-          sliver: SliverList.separated(
-            itemCount: detail.verses.length,
-            separatorBuilder: (_, _) => const Divider(
-              height: 1,
-              thickness: 1,
-              color: ColorPalette.borderTransparent,
-            ),
-            itemBuilder: (context, index) {
-              return _VerseRow(
-                verse: detail.verses[index],
-                showSurahName: false,
-              );
-            },
-          ),
-        ),
+Widget _detailScaffold(
+  BuildContext context, {
+  required Widget child,
+  Widget? tabBar,
+}) {
+  return Scaffold(
+    backgroundColor: const Color(0xFFF3F3F3),
+    body: Column(
+      children: [
+        _appBarSection(context),
+        ?tabBar,
+        Expanded(child: child),
       ],
-    );
-  }
+    ),
+  );
 }
 
-class _JuzContent extends StatelessWidget {
-  const _JuzContent({required this.detail});
+Widget _appBarSection(BuildContext context) {
+  final textTheme = Theme.of(context).textTheme;
 
-  final QuranDetailModel detail;
-
-  List<_SurahGroup> _groupBySurah(List<QuranVerseModel> verses) {
-    final groups = <_SurahGroup>[];
-    for (final v in verses) {
-      if (groups.isEmpty || groups.last.surahIndex != v.surahIndex) {
-        groups.add(
-          _SurahGroup(
-            surahIndex: v.surahIndex,
-            surahName: v.surahName,
-            surahNameAr: v.surahNameAr,
-            verses: [v],
-          ),
-        );
-      } else {
-        groups.last.verses.add(v);
-      }
-    }
-    return groups;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final groups = _groupBySurah(detail.verses);
-
-    return ListView.builder(
-      padding: const EdgeInsets.only(bottom: 24),
-      itemCount: groups.length,
-      itemBuilder: (context, gi) {
-        final group = groups[gi];
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _SurahBannerInJuz(
-              surahName: group.surahName,
-              surahNameAr: group.surahNameAr,
-            ),
-            ...group.verses.asMap().entries.map((e) {
-              final isLast = e.key == group.verses.length - 1;
-              return Column(
-                children: [
-                  _VerseRow(verse: e.value, showSurahName: true),
-                  if (!isLast || gi < groups.length - 1)
-                    const Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: ColorPalette.borderTransparent,
-                    ),
-                ],
-              );
-            }),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _SurahGroup {
-  _SurahGroup({
-    required this.surahIndex,
-    required this.surahName,
-    required this.surahNameAr,
-    required this.verses,
-  });
-
-  final String surahIndex;
-  final String surahName;
-  final String surahNameAr;
-  final List<QuranVerseModel> verses;
-}
-
-class _SurahBanner extends StatelessWidget {
-  const _SurahBanner({required this.detail});
-
-  final QuranDetailModel detail;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return Container(
-      height: 49,
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            'assets/images/motif-header.png',
-          ),
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (detail.titleAr != null && detail.titleAr!.trim().isNotEmpty)
-                  Text(
-                    detail.titleAr!,
-                    style: textTheme.titleMedium?.copyWith(
-                      fontFamily: 'Markazi Text',
-                      color: ColorPalette.arabicText,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  )
-                else
-                  Text(
-                    detail.title,
-                    style: textTheme.titleSmall?.copyWith(
-                      color: ColorPalette.kWhite,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SurahBannerInJuz extends StatelessWidget {
-  const _SurahBannerInJuz({
-    required this.surahName,
-    required this.surahNameAr,
-  });
-
-  final String surahName;
-  final String surahNameAr;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return Container(
-      height: 49,
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            'assets/images/motif-header.png',
-          ),
-          Center(
-            child: Text(
-              surahNameAr.trim().isNotEmpty ? surahNameAr : surahName,
-              style: textTheme.titleMedium?.copyWith(
-                fontFamily: 'Markazi Text',
-                color: ColorPalette.arabicText,
-                fontSize: 24,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _VerseRow extends StatelessWidget {
-  const _VerseRow({required this.verse, required this.showSurahName});
-
-  final QuranVerseModel verse;
-  final bool showSurahName;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return Container(
+  return SafeArea(
+    bottom: false,
+    child: Container(
       color: ColorPalette.kWhite,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _VerseNumberBadge(number: verse.verseNumber),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: verse.arabic,
-                        style: const TextStyle(
-                          color: ColorPalette.kBlack,
-                          fontSize: 24,
-                          fontFamily: 'Markazi Text',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      const WidgetSpan(child: SizedBox(width: 8)),
-                      WidgetSpan(
-                        alignment: PlaceholderAlignment.middle,
-                        child: _ArabicVerseNumber(number: verse.verseNumber),
-                      ),
-                    ],
-                  ),
-                  textAlign: TextAlign.right,
-                  textDirection: TextDirection.rtl,
-                  style: textTheme.displaySmall?.copyWith(
-                    fontFamily: 'Markazi Text',
-                    color: ColorPalette.kBlack,
-                    fontSize: 24,
-                    height: 1.4,
+          GestureDetector(
+            onTap: () => context.pop(),
+            child: Row(
+              spacing: 8,
+              children: [
+                SvgPicture.asset(
+                  AppIcons.arrowLeftLine,
+                  width: 24,
+                  height: 24,
+                ),
+                Text(
+                  'Kembali',
+                  style: textTheme.titleSmall?.copyWith(
+                    color: ColorPalette.contentSecondary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
+              ],
+            ),
+          ),
+          Row(
+            spacing: 16,
+            children: [
+              SvgPicture.asset(
+                AppIcons.arrowGoForwardLine,
+                width: 24,
+                height: 24,
+              ),
+              SvgPicture.asset(
+                AppIcons.settings4Line,
+                width: 24,
+                height: 24,
               ),
             ],
           ),
-          if (verse.transliteration.trim().isNotEmpty) ...[
-            const SizedBox(height: 22),
-            Text(
-              verse.transliteration,
-              style: textTheme.titleMedium?.copyWith(
-                color: ColorPalette.primaryColor,
-                fontSize: 14,
-                fontFamily: 'Synonym Variable',
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-          if (verse.translation.trim().isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Text(
-              verse.translation,
-              style: textTheme.bodyLarge?.copyWith(
-                color: ColorPalette.kBlack,
-                fontSize: 14,
-                fontFamily: 'Synonym Variable',
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
         ],
       ),
-    );
-  }
+    ),
+  );
 }
 
-class _ArabicVerseNumber extends StatelessWidget {
-  const _ArabicVerseNumber({required this.number});
-
-  final int number;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return SizedBox.square(
-      dimension: 28,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: ColorPalette.arabicText),
+Widget _scrollableTabBar(
+  BuildContext context, {
+  required ScrollController controller,
+  required int selectedIndex,
+  required List<String> labels,
+  required ValueChanged<int> onTap,
+}) {
+  return Container(
+    decoration: const BoxDecoration(
+      color: ColorPalette.kWhite,
+      boxShadow: [
+        BoxShadow(
+          color: Color(0x14000000),
+          blurRadius: 1,
+          offset: Offset(0, 1),
         ),
-        child: Center(
-          child: Text(
-            toArabicNumber(number),
-            style: textTheme.labelSmall?.copyWith(
-              color: ColorPalette.arabicText,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-            ),
+        BoxShadow(
+          color: Color(0x12000000),
+          blurRadius: 2,
+          offset: Offset(0, 2),
+        ),
+        BoxShadow(
+          color: Color(0x0A000000),
+          blurRadius: 3,
+          offset: Offset(0, 5),
+        ),
+        BoxShadow(
+          color: Color(0x03000000),
+          blurRadius: 4,
+          offset: Offset(0, 10),
+        ),
+      ],
+    ),
+    child: SingleChildScrollView(
+      controller: controller,
+      scrollDirection: Axis.horizontal,
+      reverse: true,
+      child: Row(
+        textDirection: TextDirection.rtl,
+        children: List.generate(
+          labels.length,
+          (index) => _tabItem(
+            context,
+            label: labels[index],
+            isActive: index == selectedIndex,
+            onTap: () => onTap(index),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
-class _VerseNumberBadge extends StatelessWidget {
-  const _VerseNumberBadge({required this.number});
+Widget _tabItem(
+  BuildContext context, {
+  required String label,
+  required bool isActive,
+  required VoidCallback onTap,
+}) {
+  final textTheme = Theme.of(context).textTheme;
 
-  final int number;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return SizedBox.square(
-      dimension: 36,
-      child: Stack(
-        alignment: Alignment.center,
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      width: context.mediaQuerySize.width * 0.34,
+      decoration: BoxDecoration(
+        color: ColorPalette.kWhite,
+        border: Border(
+          bottom: BorderSide(
+            color: isActive ? ColorPalette.primaryColor : Colors.transparent,
+            width: 2,
+          ),
+        ),
+      ),
+      padding: const EdgeInsets.only(top: 16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          SvgPicture.asset(
-            AppIcons.motifBorderUnselected,
-            width: 36,
-            height: 36,
-          ),
           Text(
-            '$number',
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: textTheme.labelSmall?.copyWith(
-              color: ColorPalette.primaryColor,
-              fontWeight: FontWeight.w700,
+              color: isActive
+                  ? ColorPalette.primaryColor
+                  : ColorPalette.onSurface,
+              fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
             ),
           ),
+          const SizedBox(height: 16),
         ],
       ),
-    );
-  }
+    ),
+  );
 }
 
-class _ErrorState extends StatelessWidget {
-  const _ErrorState({required this.message});
+Widget _surahContent(BuildContext context, QuranDetailModel detail) {
+  return CustomScrollView(
+    slivers: [
+      SliverToBoxAdapter(child: _surahBanner(context, detail: detail)),
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
+        sliver: SliverList.separated(
+          itemCount: detail.verses.length,
+          separatorBuilder: (_, _) => const Divider(
+            height: 1,
+            thickness: 1,
+            color: ColorPalette.borderTransparent,
+          ),
+          itemBuilder: (context, index) => _verseRow(
+            context,
+            detail.verses[index],
+          ),
+        ),
+      ),
+    ],
+  );
+}
 
-  final String message;
+Widget _juzContent(BuildContext context, QuranDetailModel detail) {
+  final groups = _groupBySurah(detail.verses);
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
+  return ListView.builder(
+    padding: const EdgeInsets.only(bottom: 24),
+    itemCount: groups.length,
+    itemBuilder: (context, gi) {
+      final group = groups[gi];
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _surahBannerInJuz(
+            context,
+            surahName: group.surahName,
+            surahNameAr: group.surahNameAr,
+          ),
+          ...group.verses.asMap().entries.map((e) {
+            final isLast = e.key == group.verses.length - 1;
+            return Column(
+              children: [
+                _verseRow(context, e.value),
+                if (!isLast || gi < groups.length - 1)
+                  const Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: ColorPalette.borderTransparent,
+                  ),
+              ],
+            );
+          }),
+        ],
+      );
+    },
+  );
+}
+
+List<_SurahGroup> _groupBySurah(List<QuranVerseModel> verses) {
+  final groups = <_SurahGroup>[];
+  for (final v in verses) {
+    if (groups.isEmpty || groups.last.surahIndex != v.surahIndex) {
+      groups.add(
+        (
+          surahIndex: v.surahIndex,
+          surahName: v.surahName,
+          surahNameAr: v.surahNameAr,
+          verses: [v],
+        ),
+      );
+    } else {
+      groups.last.verses.add(v);
+    }
+  }
+  return groups;
+}
+
+Widget _surahBanner(
+  BuildContext context, {
+  required QuranDetailModel detail,
+}) {
+  final textTheme = Theme.of(context).textTheme;
+
+  return Container(
+    height: 49,
+    margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+    child: Stack(
+      fit: StackFit.expand,
+      children: [
+        Image.asset(
+          'assets/images/motif-header.png',
+        ),
+        Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (detail.titleAr != null && detail.titleAr!.trim().isNotEmpty)
+                Text(
+                  detail.titleAr!,
+                  style: textTheme.titleMedium?.copyWith(
+                    fontFamily: 'Markazi Text',
+                    color: ColorPalette.arabicText,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w400,
+                  ),
+                )
+              else
+                Text(
+                  detail.title,
+                  style: textTheme.titleSmall?.copyWith(
+                    color: ColorPalette.kWhite,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _surahBannerInJuz(
+  BuildContext context, {
+  required String surahName,
+  required String surahNameAr,
+}) {
+  final textTheme = Theme.of(context).textTheme;
+
+  return Container(
+    height: 49,
+    margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+    child: Stack(
+      fit: StackFit.expand,
+      children: [
+        Image.asset(
+          'assets/images/motif-header.png',
+        ),
+        Center(
+          child: Text(
+            surahNameAr.trim().isNotEmpty ? surahNameAr : surahName,
+            style: textTheme.titleMedium?.copyWith(
+              fontFamily: 'Markazi Text',
+              color: ColorPalette.arabicText,
+              fontSize: 24,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _verseRow(BuildContext context, QuranVerseModel verse) {
+  final textTheme = Theme.of(context).textTheme;
+
+  return Container(
+    color: ColorPalette.kWhite,
+    padding: const EdgeInsets.all(16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 16),
-            SubmitButtonStylesWidget(
-              textButton: 'Kembali',
-              height: 48,
-              primaryColor: ColorPalette.primaryColor,
-              style: SubmitButtonStyle.elevated,
-              onPressed: () => Navigator.of(context).maybePop(),
+            _verseNumberBadge(context, verse.verseNumber),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: verse.arabic,
+                      style: const TextStyle(
+                        color: ColorPalette.kBlack,
+                        fontSize: 24,
+                        fontFamily: 'Markazi Text',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const WidgetSpan(child: SizedBox(width: 8)),
+                    WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: _arabicVerseNumber(context, verse.verseNumber),
+                    ),
+                  ],
+                ),
+                textAlign: TextAlign.right,
+                textDirection: TextDirection.rtl,
+                style: textTheme.displaySmall?.copyWith(
+                  fontFamily: 'Markazi Text',
+                  color: ColorPalette.kBlack,
+                  fontSize: 24,
+                  height: 1.4,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
           ],
         ),
+        if (verse.transliteration.trim().isNotEmpty) ...[
+          const SizedBox(height: 22),
+          Text(
+            verse.transliteration,
+            style: textTheme.titleMedium?.copyWith(
+              color: ColorPalette.primaryColor,
+              fontSize: 14,
+              fontFamily: 'Synonym Variable',
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+        if (verse.translation.trim().isNotEmpty) ...[
+          const SizedBox(height: 10),
+          Text(
+            verse.translation,
+            style: textTheme.bodyLarge?.copyWith(
+              color: ColorPalette.kBlack,
+              fontSize: 14,
+              fontFamily: 'Synonym Variable',
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ],
+    ),
+  );
+}
+
+Widget _arabicVerseNumber(BuildContext context, int number) {
+  final textTheme = Theme.of(context).textTheme;
+
+  return SizedBox.square(
+    dimension: 28,
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: ColorPalette.arabicText),
       ),
-    );
-  }
+      child: Center(
+        child: Text(
+          toArabicNumber(number),
+          style: textTheme.labelSmall?.copyWith(
+            color: ColorPalette.arabicText,
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget _verseNumberBadge(BuildContext context, int number) {
+  final textTheme = Theme.of(context).textTheme;
+
+  return SizedBox.square(
+    dimension: 36,
+    child: Stack(
+      alignment: Alignment.center,
+      children: [
+        SvgPicture.asset(
+          AppIcons.motifBorderUnselected,
+          width: 36,
+          height: 36,
+        ),
+        Text(
+          '$number',
+          style: textTheme.labelSmall?.copyWith(
+            color: ColorPalette.primaryColor,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _errorState(BuildContext context, String message) {
+  return Center(
+    child: Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 16),
+          SubmitButtonStylesWidget(
+            textButton: 'Kembali',
+            height: 48,
+            primaryColor: ColorPalette.primaryColor,
+            style: SubmitButtonStyle.elevated,
+            onPressed: () => Navigator.of(context).maybePop(),
+          ),
+        ],
+      ),
+    ),
+  );
 }
