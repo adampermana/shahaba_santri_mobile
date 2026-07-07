@@ -29,7 +29,6 @@ class DetailQuranScreen extends StatefulWidget {
 
 class _DetailQuranScreenState extends State<DetailQuranScreen> {
   late final PageController _pageController;
-  final _tabKeys = <GlobalKey>[];
   final _tabScrollController = ScrollController();
   final _details = <int, QuranDetailModel>{};
   final _errors = <int, String>{};
@@ -61,11 +60,10 @@ class _DetailQuranScreenState extends State<DetailQuranScreen> {
     _selectedIndex = _initialIndex();
     _selectedArgs = _argsAt(_selectedIndex);
     _pageController = PageController(initialPage: _selectedIndex);
-    _syncTabKeys();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _scrollToSelected(animate: false);
-      _requestNearby(_selectedIndex);
+      _requestCurrentThenNearby(_selectedIndex);
     });
   }
 
@@ -78,12 +76,11 @@ class _DetailQuranScreenState extends State<DetailQuranScreen> {
       _requestedIndexes.clear();
       _selectedIndex = _initialIndex();
       _selectedArgs = _argsAt(_selectedIndex);
-      _syncTabKeys();
-      _pageController.jumpToPage(_selectedIndex);
+        _pageController.jumpToPage(_selectedIndex);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         _scrollToSelected(animate: false);
-        _requestNearby(_selectedIndex);
+        _requestCurrentThenNearby(_selectedIndex);
       });
     }
   }
@@ -135,28 +132,27 @@ class _DetailQuranScreenState extends State<DetailQuranScreen> {
     return _juzList.indexWhere((j) => j.index == args.juz?.index);
   }
 
-  void _syncTabKeys() {
-    while (_tabKeys.length < _itemCount) {
-      _tabKeys.add(GlobalKey());
-    }
-    if (_tabKeys.length > _itemCount) {
-      _tabKeys.removeRange(_itemCount, _tabKeys.length);
-    }
-  }
-
   void _selectIndex(int index) {
     if (index == _selectedIndex || index < 0 || index >= _itemCount) return;
-    _loadIndex(index);
+    _setSelectedIndex(index);
     unawaited(
-      _pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 240),
-        curve: Curves.easeOut,
-      ),
+      _pageController
+          .animateToPage(
+            index,
+            duration: const Duration(milliseconds: 240),
+            curve: Curves.easeOut,
+          )
+          .then((_) {
+            if (!mounted) return;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
+              _requestCurrentThenNearby(index);
+            });
+          }),
     );
   }
 
-  void _loadIndex(int index) {
+  void _setSelectedIndex(int index) {
     final nextArgs = _argsAt(index);
     if (nextArgs == null) return;
 
@@ -165,15 +161,20 @@ class _DetailQuranScreenState extends State<DetailQuranScreen> {
       _selectedArgs = nextArgs;
     });
     _scrollToSelected();
-    _requestNearby(index);
   }
 
-  void _onPageChanged(int index) => _loadIndex(index);
+  void _onPageChanged(int index) {
+    _setSelectedIndex(index);
+    _requestCurrentThenNearby(index);
+  }
 
-  void _requestNearby(int index) {
+  void _requestCurrentThenNearby(int index) {
     _requestLoad(index);
-    _requestLoad(index - 1);
-    _requestLoad(index + 1);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _requestLoad(index - 1);
+      _requestLoad(index + 1);
+    });
   }
 
   void _requestLoad(int index) {
@@ -185,20 +186,26 @@ class _DetailQuranScreenState extends State<DetailQuranScreen> {
   }
 
   void _scrollToSelected({bool animate = true}) {
-    final selectedContext = _tabKeys
-        .elementAtOrNull(_selectedIndex)
-        ?.currentContext;
-    if (selectedContext == null) return;
+    if (!_tabScrollController.hasClients) return;
 
-    final duration = animate
-        ? const Duration(milliseconds: 220)
-        : Duration.zero;
+    final tabWidth = context.mediaQuerySize.width * 0.34;
+    final viewportWidth = context.mediaQuerySize.width;
+    final target = (_selectedIndex * tabWidth) - ((viewportWidth - tabWidth) / 2);
+    final offset = target.clamp(
+      _tabScrollController.position.minScrollExtent,
+      _tabScrollController.position.maxScrollExtent,
+    );
+
+    if (!animate) {
+      _tabScrollController.jumpTo(offset);
+      return;
+    }
+
     unawaited(
-      Scrollable.ensureVisible(
-        selectedContext,
-        duration: duration,
+      _tabScrollController.animateTo(
+        offset,
+        duration: const Duration(milliseconds: 180),
         curve: Curves.easeOut,
-        alignment: 0.5,
       ),
     );
   }
@@ -234,7 +241,6 @@ class _DetailQuranScreenState extends State<DetailQuranScreen> {
     return _DetailScaffold(
       tabBar: _ScrollableTabBar(
         controller: _tabScrollController,
-        itemKeys: _tabKeys,
         selectedIndex: _selectedIndex,
         labels: _tabLabels(),
         onTap: _selectIndex,
@@ -358,14 +364,12 @@ class _AppBarSection extends StatelessWidget {
 class _ScrollableTabBar extends StatelessWidget {
   const _ScrollableTabBar({
     required this.controller,
-    required this.itemKeys,
     required this.selectedIndex,
     required this.labels,
     required this.onTap,
   });
 
   final ScrollController controller;
-  final List<GlobalKey> itemKeys;
   final int selectedIndex;
   final List<String> labels;
   final ValueChanged<int> onTap;
@@ -375,9 +379,6 @@ class _ScrollableTabBar extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: ColorPalette.kWhite,
-        border: Border(
-          bottom: BorderSide(color: ColorPalette.borderTransparent),
-        ),
         boxShadow: [
           BoxShadow(
             color: Color(0x14000000),
@@ -409,7 +410,6 @@ class _ScrollableTabBar extends StatelessWidget {
           textDirection: TextDirection.rtl,
           children: List.generate(labels.length, (index) {
             return _TabItem(
-              key: itemKeys[index],
               label: labels[index],
               isActive: index == selectedIndex,
               onTap: () => onTap(index),
@@ -423,7 +423,6 @@ class _ScrollableTabBar extends StatelessWidget {
 
 class _TabItem extends StatelessWidget {
   const _TabItem({
-    required super.key,
     required this.label,
     required this.isActive,
     required this.onTap,
@@ -441,28 +440,33 @@ class _TabItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: context.mediaQuerySize.width * 0.34,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: isActive
-            ? const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: ColorPalette.primaryColor,
-                    width: 2,
-                  ),
-                ),
-              )
-            : null,
-        alignment: Alignment.center,
-        child: Text(
-          label,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: textTheme.labelSmall?.copyWith(
-            color: isActive
-                ? ColorPalette.primaryColor
-                : ColorPalette.onSurface,
-            fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
+        decoration: BoxDecoration(
+          color: ColorPalette.kWhite,
+          border: Border(
+            bottom: BorderSide(
+              color: isActive ? ColorPalette.primaryColor : Colors.transparent,
+              width: 2,
+            ),
           ),
+        ),
+        padding: const EdgeInsets.only(top: 16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: textTheme.labelSmall?.copyWith(
+                color: isActive
+                    ? ColorPalette.primaryColor
+                    : ColorPalette.onSurface,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
         ),
       ),
     );
