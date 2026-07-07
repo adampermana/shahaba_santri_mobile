@@ -10,6 +10,17 @@ import 'package:sahaba_mobile/domains/quran/verses/indopak.dart';
 import 'package:sahaba_mobile/infrastructure/quran/datasources/i_quran_local_datasource.dart';
 
 class QuranLocalDatasource implements IQuranLocalDatasource {
+  // ponytail: maps built once on first access; O(1) replaces O(n) firstWhere
+  late final Map<String, VerseTranslation> _translationByKey = {
+    for (final t in idIndonesianIslamicAffairsMinistry) t.verseKey: t,
+  };
+  late final Map<String, Transliteration> _transliterationByKey = {
+    for (final t in transliterations) t.id: t,
+  };
+  late final Map<int, Chapter> _chapterById = {
+    for (final c in chapters) c.id: c,
+  };
+
   @override
   Future<List<SurahModel>> getAllSurahs() async {
     return chapters.map(_chapterToSurah).toList();
@@ -130,15 +141,11 @@ class QuranLocalDatasource implements IQuranLocalDatasource {
   }
 
   QuranVerseModel _verseToDetail(Verse verse) {
-    final chapter = chapters.firstWhere((item) => item.id == verse.chapterID);
-    final translation = idIndonesianIslamicAffairsMinistry.firstWhere(
-      (item) => item.verseKey == verse.verseKey,
-      orElse: () => VerseTranslation(verseKey: verse.verseKey),
-    );
-    final transliteration = transliterations.firstWhere(
-      (item) => item.id == verse.verseKey,
-      orElse: () => Transliteration(id: verse.verseKey),
-    );
+    final chapter = _chapterById[verse.chapterID]!;
+    final translation = _translationByKey[verse.verseKey] ??
+        VerseTranslation(verseKey: verse.verseKey);
+    final transliteration = _transliterationByKey[verse.verseKey] ??
+        Transliteration(id: verse.verseKey);
 
     return QuranVerseModel(
       surahIndex: _paddedIndex(verse.chapterID),

@@ -9,13 +9,14 @@ import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_state.dart'
 import 'package:sahaba_mobile/domains/quran/juz_model.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/domains/quran/surah_model.dart';
+import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 import 'package:sahaba_mobile/infrastructure/helpers/helper.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
-const double _tabItemWidth = 116;
+// const double _tabItemWidth = 130;
 
 class DetailQuranScreen extends StatefulWidget {
   const DetailQuranScreen({super.key, this.args});
@@ -439,7 +440,7 @@ class _TabItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: _tabItemWidth,
+        width: context.mediaQuerySize.width * 0.34,
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: isActive
             ? const BoxDecoration(
