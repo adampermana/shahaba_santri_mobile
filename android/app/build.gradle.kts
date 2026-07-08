@@ -101,5 +101,6 @@ flutter {
 
 dependencies {
     add("coreLibraryDesugaring", "com.android.tools:desugar_jdk_libs:2.1.5")
+    implementation("androidx.core:core-ktx:1.17.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.20")
 }

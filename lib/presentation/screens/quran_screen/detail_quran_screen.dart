@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_state.dart';
 import 'package:sahaba_mobile/domains/quran/juz_model.dart';
@@ -34,6 +38,7 @@ const _maxLatinTextSize = 20.0;
 const _minArabicVerseNumberSize = 20.0;
 const _defaultArabicVerseNumberSize = 28.0;
 const _maxArabicVerseNumberSize = 34.0;
+const _shareChannel = MethodChannel('sahaba/share');
 
 double _arabicTextSize(double value) => _scaledTextSize(
   value,
@@ -851,10 +856,9 @@ Widget _verseRow(
                       children: [
                         TextSpan(
                           text: verse.arabic,
-                          style: TextStyle(
+                          style: GoogleFonts.harmattan(
                             color: ColorPalette.kBlack,
                             fontSize: _arabicTextSize(textSizeSetting),
-                            fontFamily: 'Markazi Text',
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -922,13 +926,23 @@ void _openVerseDialog(BuildContext context, QuranVerseModel verse) {
       dialog: CustomDialog(
         insetPadding: const EdgeInsets.symmetric(horizontal: 8),
         borderRadius: 8,
-        content: _verseDialogContent(context, verse),
+        content: _verseDialogContent(
+          context,
+          verse,
+          onShare: () => unawaited(_shareQuranVerse(context, verse)),
+          onCopy: () => unawaited(_copyQuranVerse(context, verse)),
+        ),
       ),
     ),
   );
 }
 
-Widget _verseDialogContent(BuildContext context, QuranVerseModel verse) {
+Widget _verseDialogContent(
+  BuildContext context,
+  QuranVerseModel verse, {
+  VoidCallback? onShare,
+  VoidCallback? onCopy,
+}) {
   final textTheme = Theme.of(context).textTheme;
 
   return Padding(
@@ -951,12 +965,13 @@ Widget _verseDialogContent(BuildContext context, QuranVerseModel verse) {
           context,
           icon: AppIcons.shareLine,
           label: 'Bagikan Ayat',
-          isHighlighted: true,
+          onTap: onShare,
         ),
         _verseDialogOption(
           context,
           icon: AppIcons.fileCopyLine,
           label: 'Salin Ayat',
+          onTap: onCopy,
         ),
         _verseDialogOption(
           context,
@@ -972,15 +987,20 @@ Widget _verseDialogOption(
   BuildContext context, {
   required String icon,
   required String label,
-  bool isHighlighted = false,
+  VoidCallback? onTap,
 }) {
   final textTheme = Theme.of(context).textTheme;
 
   return InkWell(
-    onTap: () => Navigator.of(context).pop(),
+    hoverColor: ColorPalette.surfaceTertiary,
+    highlightColor: ColorPalette.surfaceTertiary,
+    splashColor: ColorPalette.surfaceTertiary,
+    onTap: () {
+      Navigator.of(context).pop();
+      onTap?.call();
+    },
     child: Container(
       width: double.infinity,
-      color: isHighlighted ? ColorPalette.surfaceTertiary : null,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       child: Row(
         children: [
@@ -1006,6 +1026,206 @@ Widget _verseDialogOption(
           ),
         ],
       ),
+    ),
+  );
+}
+
+Future<void> _copyQuranVerse(
+  BuildContext context,
+  QuranVerseModel verse,
+) async {
+  await Clipboard.setData(ClipboardData(text: _quranVerseText(verse)));
+  if (!context.mounted) return;
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text('Ayat berhasil disalin')),
+  );
+}
+
+Future<void> _shareQuranVerse(
+  BuildContext context,
+  QuranVerseModel verse,
+) async {
+  try {
+    final bytes = await _quranVerseImageBytes(context, verse);
+    await _shareChannel.invokeMethod<void>('shareImage', {
+      'fileName': 'quran-${verse.verseKey.replaceAll(':', '-')}.png',
+      'bytes': bytes,
+      'text': _quranVerseText(verse),
+    });
+  } on Object {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Gagal membagikan ayat')),
+    );
+  }
+}
+
+String _quranVerseText(QuranVerseModel verse) {
+  final lines = <String>[
+    'QS ${verse.surahName} ${verse.surahIndex} : Ayat ${verse.verseNumber}',
+    '',
+    '${verse.arabic} ${toArabicNumber(verse.verseNumber)}',
+  ];
+
+  if (verse.transliteration.trim().isNotEmpty) {
+    lines
+      ..add('')
+      ..add(verse.transliteration.trim());
+  }
+
+  if (verse.translation.trim().isNotEmpty) {
+    lines
+      ..add('')
+      ..add(verse.translation.trim());
+  }
+
+  return lines.join('\n');
+}
+
+Future<Uint8List> _quranVerseImageBytes(
+  BuildContext context,
+  QuranVerseModel verse,
+) async {
+  final boundaryKey = GlobalKey();
+  final overlay = OverlayEntry(
+    builder: (context) => Positioned(
+      left: -10000,
+      top: 0,
+      child: Material(
+        color: Colors.transparent,
+        child: RepaintBoundary(
+          key: boundaryKey,
+          child: _quranShareCard(context, verse),
+        ),
+      ),
+    ),
+  );
+
+  Overlay.of(context).insert(overlay);
+  try {
+    await WidgetsBinding.instance.endOfFrame;
+    await WidgetsBinding.instance.endOfFrame;
+    final boundary =
+        boundaryKey.currentContext?.findRenderObject()
+            as RenderRepaintBoundary?;
+    final image = await boundary!.toImage(pixelRatio: 3);
+    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    image.dispose();
+    return byteData!.buffer.asUint8List();
+  } finally {
+    overlay.remove();
+  }
+}
+
+Widget _quranShareCard(BuildContext context, QuranVerseModel verse) {
+  final textTheme = Theme.of(context).textTheme;
+
+  return Container(
+    width: 360,
+    clipBehavior: Clip.hardEdge,
+    decoration: BoxDecoration(
+      color: ColorPalette.kWhite,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: ColorPalette.borderTransparent),
+    ),
+    child: Stack(
+      children: [
+        Positioned(
+          top: 0,
+          left: -30,
+          bottom: 0,
+          child: Image.asset(
+            'assets/images/motif-short.png',
+            width: 200,
+            fit: BoxFit.fitHeight,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'QS ${verse.surahName} ${verse.surahIndex} '
+                ': Ayat ${verse.verseNumber}',
+                textAlign: TextAlign.center,
+                style: textTheme.titleMedium?.copyWith(
+                  color: ColorPalette.primaryColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(text: verse.arabic),
+                          WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 4),
+                              child: _arabicVerseNumber(
+                                context,
+                                verse.verseNumber,
+                                28,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.right,
+                      textDirection: TextDirection.rtl,
+                      style: GoogleFonts.harmattan(
+                        color: ColorPalette.kBlack,
+                        fontSize: 32,
+                        height: 1.4,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (verse.transliteration.trim().isNotEmpty) ...[
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    verse.transliteration.trim(),
+                    textAlign: TextAlign.justify,
+                    style: textTheme.titleMedium?.copyWith(
+                      color: ColorPalette.primaryColor,
+                      fontSize: 16,
+                      fontFamily: 'Synonym Variable',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ],
+              if (verse.translation.trim().isNotEmpty) ...[
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    verse.translation.trim(),
+                    textAlign: TextAlign.justify,
+                    style: textTheme.bodyLarge?.copyWith(
+                      color: ColorPalette.kBlack,
+                      fontSize: 16,
+                      fontFamily: 'Synonym Variable',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
     ),
   );
 }
