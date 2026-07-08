@@ -13,7 +13,7 @@ abstract class AppIcons {
   static const String closeLine = '$_path/close-line.svg';
   static const String compass3Line = '$_path/compass-3-line.svg';
   static const String fileCopyLine = '$_path/file-copy-line.svg';
-  static const String flag2Line = '$_path/flag-2-line.svg';
+  static const String flag2Line = '$_path/flag-line.svg';
   static const String foggyLine = '$_path/foggy-line.svg';
   static const String hazeLine = '$_path/haze-line.svg';
   static const String home9Line = '$_path/home-9-line.svg';

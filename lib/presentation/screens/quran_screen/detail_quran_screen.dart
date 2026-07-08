@@ -15,7 +15,7 @@ import 'package:sahaba_mobile/infrastructure/helpers/helper.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/dialog_setting_widget.dart';
+import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
 typedef _SurahGroup = ({
@@ -24,6 +24,48 @@ typedef _SurahGroup = ({
   String surahNameAr,
   List<QuranVerseModel> verses,
 });
+
+const _minArabicTextSize = 20.0;
+const _defaultArabicTextSize = 28.0;
+const _maxArabicTextSize = 48.0;
+const _minLatinTextSize = 12.0;
+const _defaultLatinTextSize = 16.0;
+const _maxLatinTextSize = 20.0;
+const _minArabicVerseNumberSize = 20.0;
+const _defaultArabicVerseNumberSize = 28.0;
+const _maxArabicVerseNumberSize = 34.0;
+
+double _arabicTextSize(double value) => _scaledTextSize(
+  value,
+  min: _minArabicTextSize,
+  normal: _defaultArabicTextSize,
+  max: _maxArabicTextSize,
+);
+
+double _latinTextSize(double value) => _scaledTextSize(
+  value,
+  min: _minLatinTextSize,
+  normal: _defaultLatinTextSize,
+  max: _maxLatinTextSize,
+);
+
+double _arabicVerseNumberSize(double value) => _scaledTextSize(
+  value,
+  min: _minArabicVerseNumberSize,
+  normal: _defaultArabicVerseNumberSize,
+  max: _maxArabicVerseNumberSize,
+);
+
+double _scaledTextSize(
+  double value, {
+  required double min,
+  required double normal,
+  required double max,
+}) {
+  final clamped = value.clamp(-1, 1).toDouble();
+  if (clamped < 0) return normal + ((normal - min) * clamped);
+  return normal + ((max - normal) * clamped);
+}
 
 class DetailQuranScreen extends HookWidget {
   const DetailQuranScreen({super.key, this.args});
@@ -82,17 +124,22 @@ class DetailQuranScreen extends HookWidget {
     final details = useState(<int, QuranDetailModel>{});
     final errors = useState(<int, String>{});
     final requestedIndexes = useState(<int>{});
-    final textSizeSetting = useState(QuranTextSizeSetting.initial);
+    final textSizeSetting = useState<double>(0);
     final pageController = usePageController(initialPage: selectedIndex.value);
     final tabScrollController = useScrollController();
 
     void openSettingDialog() {
       unawaited(
-        showDialog<void>(
+        showCustomDialog<void>(
           context: context,
-          builder: (_) => DialogSettingWidget(
-            initialSetting: textSizeSetting.value,
-            onChanged: (setting) => textSizeSetting.value = setting,
+          dialog: CustomDialog(
+            insetPadding: const EdgeInsets.symmetric(horizontal: 14),
+            borderRadius: 8,
+            content: _settingDialogContent(
+              context,
+              initialValue: textSizeSetting.value,
+              onChanged: (value) => textSizeSetting.value = value,
+            ),
           ),
         ),
       );
@@ -284,6 +331,103 @@ class DetailQuranScreen extends HookWidget {
   }
 }
 
+Widget _settingDialogContent(
+  BuildContext context, {
+  required double initialValue,
+  required ValueChanged<double> onChanged,
+}) {
+  final textTheme = Theme.of(context).textTheme;
+  var value = initialValue;
+
+  return StatefulBuilder(
+    builder: (context, setState) {
+      return Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Ukuran Teks',
+                    style: textTheme.titleSmall?.copyWith(
+                      color: ColorPalette.contentSecondary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: SvgPicture.asset(
+                    AppIcons.closeLine,
+                    width: 24,
+                    height: 24,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Container(
+              decoration: BoxDecoration(
+                color: ColorPalette.surfaceTertiary,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Row(
+                children: [
+                  Text(
+                    'A',
+                    style: textTheme.titleSmall?.copyWith(
+                      color: ColorPalette.contentSecondary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: SliderTheme(
+                      data: SliderTheme.of(context).copyWith(
+                        activeTrackColor: ColorPalette.primaryColor,
+                        inactiveTrackColor: ColorPalette.contentTertiary,
+                        trackHeight: 4,
+                        thumbColor: ColorPalette.primaryColor,
+                        overlayColor: ColorPalette.primaryColor.withValues(
+                          alpha: 0.12,
+                        ),
+                      ),
+                      child: Slider(
+                        divisions: 2,
+                        min: -1,
+                        value: value.clamp(-1, 1).toDouble(),
+                        onChanged: (nextValue) {
+                          setState(() => value = nextValue);
+                          onChanged(nextValue);
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'A',
+                    style: textTheme.displaySmall?.copyWith(
+                      color: ColorPalette.contentSecondary,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
 List<SurahModel> _surahsFromArgs(QuranDetailArgs? args) {
   if (args == null) return const [];
   if (args.allSurahs.isNotEmpty) return args.allSurahs;
@@ -469,7 +613,7 @@ Widget _tabItem(
 Widget _surahContent(
   BuildContext context,
   QuranDetailModel detail,
-  QuranTextSizeSetting textSizeSetting, {
+  double textSizeSetting, {
   int? initialVerseNumber,
 }) {
   final targetIndex = initialVerseNumber == null
@@ -546,7 +690,7 @@ Widget _surahContent(
 Widget _juzContent(
   BuildContext context,
   QuranDetailModel detail,
-  QuranTextSizeSetting textSizeSetting,
+  double textSizeSetting,
 ) {
   final groups = _groupBySurah(detail.verses);
 
@@ -682,86 +826,186 @@ Widget _surahBannerInJuz(
 Widget _verseRow(
   BuildContext context,
   QuranVerseModel verse,
-  QuranTextSizeSetting textSizeSetting,
+  double textSizeSetting,
 ) {
   final textTheme = Theme.of(context).textTheme;
 
-  return Container(
+  return Material(
     color: ColorPalette.kWhite,
-    padding: const EdgeInsets.all(16),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+    child: InkWell(
+      onTap: () => _openVerseDialog(context, verse),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
           children: [
-            _verseNumberBadge(context, verse.verseNumber),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text.rich(
-                TextSpan(
-                  children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _verseNumberBadge(context, verse.verseNumber),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text.rich(
                     TextSpan(
-                      text: verse.arabic,
-                      style: TextStyle(
-                        color: ColorPalette.kBlack,
-                        fontSize: textSizeSetting.arabic,
-                        fontFamily: 'Markazi Text',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    WidgetSpan(
-                      alignment: PlaceholderAlignment.middle,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 4),
-                        child: _arabicVerseNumber(
-                          context,
-                          verse.verseNumber,
-                          textSizeSetting.arabicVerseNumber,
+                      children: [
+                        TextSpan(
+                          text: verse.arabic,
+                          style: TextStyle(
+                            color: ColorPalette.kBlack,
+                            fontSize: _arabicTextSize(textSizeSetting),
+                            fontFamily: 'Markazi Text',
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      ),
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 4),
+                            child: _arabicVerseNumber(
+                              context,
+                              verse.verseNumber,
+                              _arabicVerseNumberSize(textSizeSetting),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                    textAlign: TextAlign.right,
+                    textDirection: TextDirection.rtl,
+                    style: textTheme.displaySmall?.copyWith(
+                      fontFamily: 'Markazi Text',
+                      color: ColorPalette.kBlack,
+                      fontSize: _arabicTextSize(textSizeSetting),
+                      height: 1.4,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
-                textAlign: TextAlign.right,
-                textDirection: TextDirection.rtl,
-                style: textTheme.displaySmall?.copyWith(
-                  fontFamily: 'Markazi Text',
-                  color: ColorPalette.kBlack,
-                  fontSize: textSizeSetting.arabic,
-                  height: 1.4,
-                  fontWeight: FontWeight.w500,
+              ],
+            ),
+            if (verse.transliteration.trim().isNotEmpty) ...[
+              const SizedBox(height: 22),
+              Text(
+                verse.transliteration,
+                style: textTheme.titleMedium?.copyWith(
+                  color: ColorPalette.primaryColor,
+                  fontSize: _latinTextSize(textSizeSetting),
+                  fontFamily: 'Synonym Variable',
+                  fontWeight: FontWeight.w400,
                 ),
               ),
-            ),
+            ],
+            if (verse.translation.trim().isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Text(
+                verse.translation,
+                style: textTheme.bodyLarge?.copyWith(
+                  color: ColorPalette.kBlack,
+                  fontSize: _latinTextSize(textSizeSetting),
+                  fontFamily: 'Synonym Variable',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
           ],
         ),
-        if (verse.transliteration.trim().isNotEmpty) ...[
-          const SizedBox(height: 22),
-          Text(
-            verse.transliteration,
-            style: textTheme.titleMedium?.copyWith(
-              color: ColorPalette.primaryColor,
-              fontSize: textSizeSetting.latin,
-              fontFamily: 'Synonym Variable',
-              fontWeight: FontWeight.w400,
-            ),
+      ),
+    ),
+  );
+}
+
+void _openVerseDialog(BuildContext context, QuranVerseModel verse) {
+  unawaited(
+    showCustomDialog<void>(
+      context: context,
+      dialog: CustomDialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 8),
+        borderRadius: 8,
+        content: _verseDialogContent(context, verse),
+      ),
+    ),
+  );
+}
+
+Widget _verseDialogContent(BuildContext context, QuranVerseModel verse) {
+  final textTheme = Theme.of(context).textTheme;
+
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 16),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'QS ${verse.surahName} ${verse.surahIndex} '
+          ': Ayat ${verse.verseNumber}',
+          textAlign: TextAlign.center,
+          style: textTheme.titleMedium?.copyWith(
+            color: ColorPalette.kBlack,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
           ),
-        ],
-        if (verse.translation.trim().isNotEmpty) ...[
-          const SizedBox(height: 10),
-          Text(
-            verse.translation,
-            style: textTheme.bodyLarge?.copyWith(
-              color: ColorPalette.kBlack,
-              fontSize: textSizeSetting.translation,
-              fontFamily: 'Synonym Variable',
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
+        ),
+        const SizedBox(height: 24),
+        _verseDialogOption(
+          context,
+          icon: AppIcons.shareLine,
+          label: 'Bagikan Ayat',
+          isHighlighted: true,
+        ),
+        _verseDialogOption(
+          context,
+          icon: AppIcons.fileCopyLine,
+          label: 'Salin Ayat',
+        ),
+        _verseDialogOption(
+          context,
+          icon: AppIcons.flag2Line,
+          label: 'Tandai terakhir baca',
+        ),
       ],
+    ),
+  );
+}
+
+Widget _verseDialogOption(
+  BuildContext context, {
+  required String icon,
+  required String label,
+  bool isHighlighted = false,
+}) {
+  final textTheme = Theme.of(context).textTheme;
+
+  return InkWell(
+    onTap: () => Navigator.of(context).pop(),
+    child: Container(
+      width: double.infinity,
+      color: isHighlighted ? ColorPalette.surfaceTertiary : null,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      child: Row(
+        children: [
+          SvgPicture.asset(
+            icon,
+            width: 24,
+            height: 24,
+            colorFilter: const ColorFilter.mode(
+              ColorPalette.primaryColor,
+              BlendMode.srcIn,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              label,
+              style: textTheme.titleMedium?.copyWith(
+                color: ColorPalette.contentSecondary,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }

@@ -252,6 +252,7 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Column(
                 spacing: 4,
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
