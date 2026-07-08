@@ -91,7 +91,6 @@ class _MainScreenState extends State<_MainScreen> {
         bottomNavigationBar: SafeArea(
           top: false,
           child: BottomNavigationItemsBar(
-            backgroundColor: ColorPalette.scaffoldBackground,
             initialIndex: _selectedIndex,
             items: const [
               NavBarItem(

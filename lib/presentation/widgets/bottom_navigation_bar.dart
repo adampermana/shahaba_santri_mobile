@@ -10,7 +10,7 @@ class BottomNavigationItemsBar extends StatefulWidget {
     this.barHeight = 78,
     this.barWidth,
     this.iconSize = 24,
-    this.backgroundColor = ColorPalette.kWhite,
+    this.backgroundColor = ColorPalette.scaffoldBackground,
     this.selectedColor = ColorPalette.primaryColor,
     this.unselectedColor = ColorPalette.contentDisabled,
     this.selectedLabelStyle,

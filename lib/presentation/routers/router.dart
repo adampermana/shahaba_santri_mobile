@@ -15,6 +15,7 @@ import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/qibla_screen/qi
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/select_city_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/main_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/detail_quran_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
 final GoRouter router = GoRouter(
@@ -97,6 +98,19 @@ final GoRouter router = GoRouter(
             }
 
             return const DetailQuranScreen();
+          },
+        ),
+        GoRoute(
+          path: '${RouterPath.quranPath}/${RouterPath.searchQuranPath}',
+          builder: (context, state) {
+            final args = state.extra;
+            if (args is SearchQuranArgs) {
+              return SearchQuranScreen(args: args);
+            }
+
+            return const SearchQuranScreen(
+              args: SearchQuranArgs(surahs: [], juzList: []),
+            );
           },
         ),
       ],

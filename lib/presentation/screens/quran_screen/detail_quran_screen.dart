@@ -56,6 +56,9 @@ class DetailQuranScreen extends HookWidget {
         return QuranDetailArgs.surah(
           surahs[index],
           allSurahs: surahs,
+          initialVerseNumber: surahs[index].index == args!.surah?.index
+              ? args!.initialVerseNumber
+              : null,
         );
       }
 
@@ -177,7 +180,12 @@ class DetailQuranScreen extends HookWidget {
       if (detail != null) {
         return detail.type == QuranDetailType.juz
             ? _juzContent(context, detail, textSizeSetting.value)
-            : _surahContent(context, detail, textSizeSetting.value);
+            : _surahContent(
+                context,
+                detail,
+                textSizeSetting.value,
+                initialVerseNumber: argsAt(index)?.initialVerseNumber,
+              );
       }
 
       final error = errors.value[index];
@@ -296,9 +304,9 @@ Widget _detailScaffold(
 }) {
   return Scaffold(
     backgroundColor: const Color(0xFFF3F3F3),
+    appBar: _detailAppBar(context, onSettingTap: onSettingTap),
     body: Column(
       children: [
-        _appBarSection(context, onSettingTap: onSettingTap),
         ?tabBar,
         Expanded(child: child),
       ],
@@ -306,58 +314,58 @@ Widget _detailScaffold(
   );
 }
 
-Widget _appBarSection(BuildContext context, {VoidCallback? onSettingTap}) {
+PreferredSizeWidget _detailAppBar(
+  BuildContext context, {
+  VoidCallback? onSettingTap,
+}) {
   final textTheme = Theme.of(context).textTheme;
 
-  return SafeArea(
-    bottom: false,
-    child: Container(
-      color: ColorPalette.kWhite,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  return AppBar(
+    toolbarHeight: 50,
+    automaticallyImplyLeading: false,
+    backgroundColor: ColorPalette.kWhite,
+    elevation: 0,
+    scrolledUnderElevation: 0,
+    surfaceTintColor: Colors.transparent,
+    titleSpacing: 16,
+    title: GestureDetector(
+      onTap: () => context.pop(),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8,
         children: [
-          GestureDetector(
-            onTap: () => context.pop(),
-            child: Row(
-              spacing: 8,
-              children: [
-                SvgPicture.asset(
-                  AppIcons.arrowLeftLine,
-                  width: 24,
-                  height: 24,
-                ),
-                Text(
-                  'Kembali',
-                  style: textTheme.titleSmall?.copyWith(
-                    color: ColorPalette.contentSecondary,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
+          SvgPicture.asset(
+            AppIcons.arrowLeftLine,
+            width: 24,
+            height: 24,
           ),
-          Row(
-            spacing: 16,
-            children: [
-              SvgPicture.asset(
-                AppIcons.arrowGoForwardLine,
-                width: 24,
-                height: 24,
-              ),
-              GestureDetector(
-                onTap: onSettingTap,
-                child: SvgPicture.asset(
-                  AppIcons.settings4Line,
-                  width: 24,
-                  height: 24,
-                ),
-              ),
-            ],
+          Text(
+            'Kembali',
+            style: textTheme.titleSmall?.copyWith(
+              color: ColorPalette.contentSecondary,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),
     ),
+    actions: [
+      SvgPicture.asset(
+        AppIcons.arrowGoForwardLine,
+        width: 24,
+        height: 24,
+      ),
+      const SizedBox(width: 16),
+      GestureDetector(
+        onTap: onSettingTap,
+        child: SvgPicture.asset(
+          AppIcons.settings4Line,
+          width: 24,
+          height: 24,
+        ),
+      ),
+      const SizedBox(width: 16),
+    ],
   );
 }
 
@@ -461,15 +469,64 @@ Widget _tabItem(
 Widget _surahContent(
   BuildContext context,
   QuranDetailModel detail,
-  QuranTextSizeSetting textSizeSetting,
-) {
+  QuranTextSizeSetting textSizeSetting, {
+  int? initialVerseNumber,
+}) {
+  final targetIndex = initialVerseNumber == null
+      ? -1
+      : detail.verses.indexWhere((v) => v.verseNumber == initialVerseNumber);
+  if (targetIndex < 1) {
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(child: _surahBanner(context, detail: detail)),
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
+          sliver: SliverList.separated(
+            itemCount: detail.verses.length,
+            separatorBuilder: (_, _) => const Divider(
+              height: 1,
+              thickness: 1,
+              color: ColorPalette.borderTransparent,
+            ),
+            itemBuilder: (context, index) => _verseRow(
+              context,
+              detail.verses[index],
+              textSizeSetting,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  final centerKey = ValueKey('verse-$initialVerseNumber');
   return CustomScrollView(
+    center: centerKey,
     slivers: [
-      SliverToBoxAdapter(child: _surahBanner(context, detail: detail)),
+      SliverList(
+        delegate: SliverChildListDelegate.fixed([
+          _surahBanner(context, detail: detail),
+          ...detail.verses
+              .take(targetIndex)
+              .map(
+                (verse) => Column(
+                  children: [
+                    _verseRow(context, verse, textSizeSetting),
+                    const Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: ColorPalette.borderTransparent,
+                    ),
+                  ],
+                ),
+              ),
+        ]),
+      ),
       SliverPadding(
+        key: centerKey,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
         sliver: SliverList.separated(
-          itemCount: detail.verses.length,
+          itemCount: detail.verses.length - targetIndex,
           separatorBuilder: (_, _) => const Divider(
             height: 1,
             thickness: 1,
@@ -477,7 +534,7 @@ Widget _surahContent(
           ),
           itemBuilder: (context, index) => _verseRow(
             context,
-            detail.verses[index],
+            detail.verses[targetIndex + index],
             textSizeSetting,
           ),
         ),
@@ -654,10 +711,16 @@ Widget _verseRow(
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    const WidgetSpan(child: SizedBox(width: 8)),
                     WidgetSpan(
                       alignment: PlaceholderAlignment.middle,
-                      child: _arabicVerseNumber(context, verse.verseNumber),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: _arabicVerseNumber(
+                          context,
+                          verse.verseNumber,
+                          textSizeSetting.arabicVerseNumber,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -703,11 +766,11 @@ Widget _verseRow(
   );
 }
 
-Widget _arabicVerseNumber(BuildContext context, int number) {
+Widget _arabicVerseNumber(BuildContext context, int number, double size) {
   final textTheme = Theme.of(context).textTheme;
 
   return SizedBox.square(
-    dimension: 28,
+    dimension: size,
     child: DecoratedBox(
       decoration: BoxDecoration(
         shape: BoxShape.circle,

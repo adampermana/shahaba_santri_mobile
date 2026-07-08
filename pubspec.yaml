@@ -1,6 +1,6 @@
 name: sahaba_mobile
 description: Sahaba mobile application
-version: 0.0.4+2
+version: 0.0.5+3
 publish_to: none
 
 environment:

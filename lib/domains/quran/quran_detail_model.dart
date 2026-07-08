@@ -10,16 +10,19 @@ class QuranDetailArgs {
     this.juz,
     this.allSurahs = const [],
     this.allJuz = const [],
+    this.initialVerseNumber,
   });
 
   factory QuranDetailArgs.surah(
     SurahModel surah, {
     List<SurahModel> allSurahs = const [],
+    int? initialVerseNumber,
   }) {
     return QuranDetailArgs._(
       type: QuranDetailType.surah,
       surah: surah,
       allSurahs: allSurahs,
+      initialVerseNumber: initialVerseNumber,
     );
   }
 
@@ -39,6 +42,7 @@ class QuranDetailArgs {
   final JuzModel? juz;
   final List<SurahModel> allSurahs;
   final List<JuzModel> allJuz;
+  final int? initialVerseNumber;
 }
 
 class QuranDetailModel {

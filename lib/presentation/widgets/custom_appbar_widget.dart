@@ -251,7 +251,7 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   : 108,
               child: Column(
                 spacing: 4,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
@@ -458,53 +458,6 @@ class _BackButton extends StatelessWidget {
         color: ColorPalette.kBlack,
         size: 24,
       ),
-      splashRadius: 20,
-    );
-  }
-}
-
-class _ProfileEditTitle extends StatelessWidget {
-  const _ProfileEditTitle({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      title,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      style: const TextStyle(
-        fontFamily: 'Figtree',
-        color: ColorPalette.onSurface,
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        letterSpacing: -0.4,
-      ),
-    );
-  }
-}
-
-class _ProfileEditBackButton extends StatelessWidget {
-  const _ProfileEditBackButton({
-    required this.onTap,
-    this.icon = Icons.arrow_back_rounded,
-  });
-
-  final VoidCallback onTap;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: onTap,
-      icon: Icon(
-        icon,
-        color: ColorPalette.onSurface,
-        size: 24,
-      ),
-      padding: const EdgeInsets.all(8),
-      constraints: const BoxConstraints.tightFor(width: 40, height: 40),
       splashRadius: 20,
     );
   }

@@ -8,10 +8,14 @@ class QuranSearchBar extends StatelessWidget {
     super.key,
     this.onChanged,
     this.controller,
+    this.readOnly = false,
+    this.onTap,
   });
 
   final ValueChanged<String>? onChanged;
   final TextEditingController? controller;
+  final bool readOnly;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +40,8 @@ class QuranSearchBar extends StatelessWidget {
           Expanded(
             child: TextField(
               controller: controller,
+              readOnly: readOnly,
+              onTap: onTap,
               onChanged: onChanged,
               style: const TextStyle(
                 fontSize: 14,

@@ -133,7 +133,7 @@ class AdzanService {
         warningNotificationOnKill: Platform.isIOS,
         androidStopAlarmOnTermination: false,
         volumeSettings: const VolumeSettings.fixed(
-          volume: 1,
+          volume: 0.3,
         ),
         notificationSettings: NotificationSettings(
           title: notificationTitle,

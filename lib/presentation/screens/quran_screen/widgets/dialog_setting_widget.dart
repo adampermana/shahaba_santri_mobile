@@ -12,6 +12,9 @@ class QuranTextSizeSetting {
   static const minLatin = 12.0;
   static const defaultLatin = 16.0;
   static const maxLatin = 20.0;
+  static const minArabicVerseNumber = 20.0;
+  static const defaultArabicVerseNumber = 28.0;
+  static const maxArabicVerseNumber = 34.0;
 
   static const initial = QuranTextSizeSetting(0);
 
@@ -30,6 +33,12 @@ class QuranTextSizeSetting {
   );
 
   double get translation => latin;
+
+  double get arabicVerseNumber => _scaled(
+    min: minArabicVerseNumber,
+    normal: defaultArabicVerseNumber,
+    max: maxArabicVerseNumber,
+  );
 
   double _scaled({
     required double min,
