@@ -15,7 +15,7 @@ import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extensi
 import 'package:sahaba_mobile/infrastructure/services/adzan_service.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
-import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
+import 'package:sahaba_mobile/presentation/enum/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/home/widgets/card_jadwal_sholat.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/prayer_time_tile.dart';

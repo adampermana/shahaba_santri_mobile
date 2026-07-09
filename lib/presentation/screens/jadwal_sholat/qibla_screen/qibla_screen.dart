@@ -10,7 +10,7 @@ import 'package:sahaba_mobile/business_logic/qibla_cubit/qibla_state.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
-import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
+import 'package:sahaba_mobile/presentation/enum/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 

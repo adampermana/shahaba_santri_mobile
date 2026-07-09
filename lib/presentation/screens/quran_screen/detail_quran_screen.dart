@@ -19,7 +19,7 @@ import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extensi
 import 'package:sahaba_mobile/infrastructure/helpers/helper.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
-import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
+import 'package:sahaba_mobile/presentation/enum/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';

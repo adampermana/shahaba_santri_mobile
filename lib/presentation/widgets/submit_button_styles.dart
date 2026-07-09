@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
-import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
+import 'package:sahaba_mobile/presentation/enum/enum_widget.dart';
 
 class SubmitButtonStylesWidget extends StatelessWidget {
   const SubmitButtonStylesWidget({

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 import 'package:sahaba_mobile/infrastructure/failures/alert.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
-import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
+import 'package:sahaba_mobile/presentation/enum/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart'
     as custom_alert_dialog;

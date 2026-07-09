@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 const MaterialColor primaryMColor = ColorPalette.primarySwatch;
 
 class ColorPalette {
-  // ---------------------------------------------------------------------------
   // Primary colors (Figma: #1B8354)
-  // ---------------------------------------------------------------------------
   static const int _primaryColorValue = 0xFF1B8354;
 
   static const Color primaryColor = Color(_primaryColorValue);
@@ -15,33 +13,25 @@ class ColorPalette {
   static const Color onPrimaryContainer = Color(0xFF00401B);
   static const Color inversePrimary = Color(0xFF4CE17D);
 
-  // ---------------------------------------------------------------------------
   // Secondary colors
-  // ---------------------------------------------------------------------------
   static const Color secondary = Color(0xFF006D34);
   static const Color onSecondary = Color(0xFFFFFFFF);
   static const Color secondaryContainer = Color(0xFF8AFAA5);
   static const Color onSecondaryContainer = Color(0xFF007437);
 
-  // ---------------------------------------------------------------------------
   // Tertiary colors
-  // ---------------------------------------------------------------------------
   static const Color tertiary = Color(0xFFA9343A);
   static const Color onTertiary = Color(0xFFFFFFFF);
   static const Color tertiaryContainer = Color(0xFFFF7476);
   static const Color onTertiaryContainer = Color(0xFF720717);
 
-  // ---------------------------------------------------------------------------
   // Error colors
-  // ---------------------------------------------------------------------------
   static const Color error = kRed300;
   static const Color onError = kRed300;
   static const Color errorContainer = kRed300;
   static const Color onErrorContainer = kRed300;
 
-  // ---------------------------------------------------------------------------
   // Surface & background colors
-  // ---------------------------------------------------------------------------
   static const Color surface = Color(0xFFFAF9F7);
   static const Color surfaceDim = Color(0xFFD4DCD1);
   static const Color surfaceBright = Color(0xFFFAF9F7);
@@ -56,9 +46,7 @@ class ColorPalette {
   static const Color scaffoldBackground = background;
   static const Color scaffoldBackgroundAppBar = background;
 
-  // ---------------------------------------------------------------------------
   // Content / text colors (semantic — matches Figma design tokens)
-  // ---------------------------------------------------------------------------
   static const Color onSurface = Color(0xFF161D16);
   static const Color onSurfaceVariant = Color(0xFF3D4A3E);
   static const Color onBackground = Color(0xFF161D16);
@@ -67,28 +55,19 @@ class ColorPalette {
   static const Color contentDisabled = Color(0xFFA6A6A6);
   static const Color arabicText = Color(0xFF1A4D2E);
 
-  // ---------------------------------------------------------------------------
   // Inverse colors
-  // ---------------------------------------------------------------------------
   static const Color inverseSurface = Color(0xFF2B322B);
   static const Color inverseOnSurface = Color(0xFFEBF3E7);
   static const Color inverseSecondary = Color(0xFFDDDDDD);
 
-  // ---------------------------------------------------------------------------
   // Outline & border colors
-  // ---------------------------------------------------------------------------
   static const Color outline = Color(0xFF6D7B6C);
   static const Color outlineVariant = Color(0xFFBCCBBA);
   static const Color borderTransparent = Color(0x14000000); // rgba(0,0,0,0.08)
-
-  // ---------------------------------------------------------------------------
   // Surface variant (legacy)
-  // ---------------------------------------------------------------------------
   static const Color surfaceVariant = Color(0xFFDCE5D9);
 
-  // ---------------------------------------------------------------------------
   // Fixed colors (Material 3)
-  // ---------------------------------------------------------------------------
   static const Color primaryFixed = Color(0xFF6CFE96);
   static const Color primaryFixedDim = Color(0xFF4CE17D);
   static const Color onPrimaryFixed = Color(0xFF00210B);
@@ -102,9 +81,7 @@ class ColorPalette {
   static const Color onTertiaryFixed = Color(0xFF410007);
   static const Color onTertiaryFixedVariant = Color(0xFF891C25);
 
-  // ---------------------------------------------------------------------------
   // Primary swatch
-  // ---------------------------------------------------------------------------
   static const MaterialColor primarySwatch = MaterialColor(
     _primaryColorValue,
     <int, Color>{
@@ -121,9 +98,7 @@ class ColorPalette {
     },
   );
 
-  // ---------------------------------------------------------------------------
   // Green scale
-  // ---------------------------------------------------------------------------
   static const Color kGreen50 = Color(0xFFF3FCF0);
   static const Color kGreen100 = Color(0xFFEEF6EA);
   static const Color kGreen200 = Color(0xFFDCE5D9);
@@ -135,9 +110,7 @@ class ColorPalette {
   static const Color kGreen800 = Color(0xFF005225);
   static const Color kGreen900 = Color(0xFF00210B);
 
-  // ---------------------------------------------------------------------------
   // Red scale
-  // ---------------------------------------------------------------------------
   static const Color kRed50 = Color(0xFFFFDAD6);
   static const Color kRed100 = Color(0xFFFFB4AB);
   static const Color kRed200 = Color(0xFFFF897D);
@@ -149,9 +122,7 @@ class ColorPalette {
   static const Color kRed800 = Color(0xFF5F0004);
   static const Color kRed900 = Color(0xFF410002);
 
-  // ---------------------------------------------------------------------------
   // White scale
-  // ---------------------------------------------------------------------------
   static const Color kWhite = Colors.white;
   static const Color kWhite50 = Color(0xFFFFFFFF);
   static const Color kWhite100 = Color(0xFFF3FCF0);
@@ -164,9 +135,7 @@ class ColorPalette {
   static const Color kWhite800 = Color(0xFF6D7B6C);
   static const Color kWhite900 = Color(0xFF3D4A3E);
 
-  // ---------------------------------------------------------------------------
   // Grey scale
-  // ---------------------------------------------------------------------------
   static const Color kGrey50 = Color(0xFFF3FCF0);
   static const Color kGrey100 = Color(0xFFEEF6EA);
   static const Color kGrey200 = Color(0xFFE8F0E5);
@@ -178,17 +147,13 @@ class ColorPalette {
   static const Color kGrey800 = Color(0xFF161D16);
   static const Color kGrey900 = Color(0xFF00210B);
 
-  // ---------------------------------------------------------------------------
   // Grey aliases
-  // ---------------------------------------------------------------------------
   static const Color kGray = kGrey200;
   static const Color kGray100 = kGrey300;
   static const Color kGray200 = outlineVariant;
   static const Color kGrayHintText = kGrey500;
 
-  // ---------------------------------------------------------------------------
   // Accent / utility colors
-  // ---------------------------------------------------------------------------
   static const Color kBlack = onSurface;
   static const Color kOrange = Color(0xFFED6E33);
   static const Color kOrange100 = Color(0xFFFFF3E8);
@@ -199,9 +164,7 @@ class ColorPalette {
   static final Color kBanerRed = Colors.red.withValues(alpha: 0.6);
   static final Color kBanerBlue = Colors.blue.withValues(alpha: 0.6);
 
-  // ---------------------------------------------------------------------------
   // Legacy purple aliases (point to green scale)
-  // ---------------------------------------------------------------------------
   static const Color kPurple = kGreen600;
   static const Color kPurple50 = kGreen50;
   static const Color kPurple100 = kGreen100;
@@ -214,9 +177,7 @@ class ColorPalette {
   static const Color kPurple800 = kGreen800;
   static const Color kPurple900 = kGreen900;
 
-  // ---------------------------------------------------------------------------
   // Gradients
-  // ---------------------------------------------------------------------------
   static const LinearGradient kGradient = LinearGradient(
     begin: Alignment(0, 0.50),
     end: Alignment(1, 0.50),

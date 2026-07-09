@@ -1601,8 +1601,9 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     id: 182622,
     verseKey: '2:153',
     text:
-        'Wahai orang-orang yang beriman! Mohonlah pertolongan (kepada Allah) '
-        'dengan sabar dan salat. Sungguh, Allah beserta orang-orang yang sabar.',
+        'Wahai orang-orang yang beriman! Mohonlah pertolongan (kepada '
+        'Allah) dengan sabar dan salat. Sungguh, Allah beserta orang-orang '
+        'yang sabar.',
     languageName: 'indonesian',
     resourceID: 33,
   ),
@@ -1673,7 +1674,8 @@ List<VerseTranslation> idIndonesianIslamicAffairsMinistry = [
     verseKey: '2:161',
     text:
         'Sungguh, orang-orang yang kafir dan mati dalam keadaan kafir, '
-        'mereka itu mendapat laknat Allah, para malaikat dan manusia seluruhnya,',
+        'mereka itu mendapat laknat Allah, para malaikat dan manusia '
+        'seluruhnya,',
     languageName: 'indonesian',
     resourceID: 33,
   ),

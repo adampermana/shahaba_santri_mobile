@@ -70,7 +70,7 @@ class FirebaseMessagingService {
     }
 
     _onMessageOpenedAppSubscription ??= FirebaseMessaging.onMessageOpenedApp
-        .listen((RemoteMessage message) {
+        .listen((message) {
           debugPrint('App opened from background via notification');
           _handleMessageTap(message);
         });

@@ -9,7 +9,7 @@ import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/injector.dart';
-import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
+import 'package:sahaba_mobile/presentation/enum/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/home/calendar/calendar_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/qibla_screen/qibla_screen.dart';

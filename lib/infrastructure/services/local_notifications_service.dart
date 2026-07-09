@@ -28,12 +28,6 @@ class LocalNotificationsService {
     requestAlertPermission: false,
     requestSoundPermission: false,
     requestBadgePermission: false,
-    requestCriticalPermission: false,
-    defaultPresentAlert: true,
-    defaultPresentSound: true,
-    defaultPresentBadge: true,
-    defaultPresentBanner: true,
-    defaultPresentList: true,
   );
 
   //Android notification channel configuration
