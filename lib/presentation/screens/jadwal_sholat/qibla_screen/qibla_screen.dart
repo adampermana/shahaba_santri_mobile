@@ -43,7 +43,7 @@ class _QiblaViewState extends State<_QiblaView> {
 
   double? _lastHapticAngle;
   DateTime? _lastHapticAt;
-  bool _wasFacingQibla = false;
+  bool _wasAlignedWithKabah = false;
 
   @override
   Widget build(BuildContext context) {
@@ -137,21 +137,26 @@ class _QiblaViewState extends State<_QiblaView> {
   }
 
   void _handleHaptic(QiblaLoaded state) {
-    final arrowAngle = _normalizeAngle(state.qiblaDirection - state.heading);
+    final qiblaAngle = _normalizeAngle(state.qiblaDirection - state.heading);
+    final isAlignedWithKabah =
+        _shortestAngle(qiblaAngle) <= _hapticAngleThreshold;
 
-    if (state.isFacingQibla && !_wasFacingQibla) {
-      unawaited(HapticFeedback.mediumImpact());
-      _lastHapticAngle = arrowAngle;
-      _lastHapticAt = DateTime.now();
-      _wasFacingQibla = true;
+    if (isAlignedWithKabah) {
+      if (!_wasAlignedWithKabah) {
+        unawaited(HapticFeedback.heavyImpact());
+        _lastHapticAngle = qiblaAngle;
+        _lastHapticAt = DateTime.now();
+      }
+
+      _wasAlignedWithKabah = true;
       return;
     }
 
-    _wasFacingQibla = state.isFacingQibla;
+    _wasAlignedWithKabah = false;
 
-    if (_shouldTriggerRotationHaptic(arrowAngle)) {
+    if (_shouldTriggerRotationHaptic(qiblaAngle)) {
       unawaited(HapticFeedback.selectionClick());
-      _lastHapticAngle = arrowAngle;
+      _lastHapticAngle = qiblaAngle;
       _lastHapticAt = DateTime.now();
     }
   }
@@ -176,7 +181,7 @@ class _QiblaViewState extends State<_QiblaView> {
   void _resetHapticState() {
     _lastHapticAngle = null;
     _lastHapticAt = null;
-    _wasFacingQibla = false;
+    _wasAlignedWithKabah = false;
   }
 
   double _normalizeAngle(double angle) => (angle % 360 + 360) % 360;
@@ -292,6 +297,10 @@ class _CompassWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final kabahSize = size * 0.18;
     final topOffset = kabahSize + size * 0.07;
+    final kabahOffset = _kabahOffset(
+      kabahSize: kabahSize,
+      topOffset: topOffset,
+    );
 
     return SizedBox(
       width: size,
@@ -302,11 +311,12 @@ class _CompassWidget extends StatelessWidget {
           Positioned(
             top: topOffset,
             left: 0,
-            child: _compassFace(),
+            child: _rotatingCompassFace(),
           ),
-          Positioned(
-            top: 0,
-            left: size / 2 - kabahSize / 2,
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 160),
+            top: kabahOffset.dy,
+            left: kabahOffset.dx,
             child: _kabahIcon(
               size: kabahSize,
             ),
@@ -314,17 +324,34 @@ class _CompassWidget extends StatelessWidget {
           Positioned(
             top: topOffset,
             left: 0,
-            child: _compassPointer(),
+            child: _compassNeedle(),
           ),
         ],
       ),
     );
   }
 
-  Widget _compassFace() {
-    return CustomPaint(
-      size: Size.square(size),
-      painter: _CompassFacePainter(isFacingQibla: isFacingQibla),
+  Offset _kabahOffset({
+    required double kabahSize,
+    required double topOffset,
+  }) {
+    final relativeAngle = _toRadians(qiblaDirection - heading - 90);
+    final center = Offset(size / 2, topOffset + size / 2);
+    final radius = size / 2 + kabahSize / 2 + size * 0.07;
+
+    return Offset(
+      center.dx + radius * cos(relativeAngle) - kabahSize / 2,
+      center.dy + radius * sin(relativeAngle) - kabahSize / 2,
+    );
+  }
+
+  Widget _rotatingCompassFace() {
+    return Transform.rotate(
+      angle: _toRadians(-heading),
+      child: CustomPaint(
+        size: Size.square(size),
+        painter: _CompassFacePainter(isFacingQibla: isFacingQibla),
+      ),
     );
   }
 
@@ -351,25 +378,27 @@ class _CompassWidget extends StatelessWidget {
     );
   }
 
-  Widget _compassPointer() {
-    final arrowTurns = (qiblaDirection - heading) / 360;
+  Widget _compassNeedle() {
+    final needleHeight = size * 0.46;
+    final needleWidth = needleHeight * 62 / 93;
 
     return SizedBox.square(
       dimension: size,
-      child: AnimatedRotation(
-        turns: arrowTurns,
-        duration: const Duration(milliseconds: 160),
-        child: CustomPaint(
-          size: Size.square(size),
-          painter: _CompassPointerPainter(
-            color: isFacingQibla
-                ? ColorPalette.primaryColor
-                : const Color(0xFFE71545),
+      child: Center(
+        child: SvgPicture.asset(
+          QiblaIcons.jarum,
+          width: needleWidth,
+          height: needleHeight,
+          colorFilter: ColorFilter.mode(
+            isFacingQibla ? ColorPalette.primaryColor : const Color(0xFFE71545),
+            BlendMode.srcIn,
           ),
         ),
       ),
     );
   }
+
+  double _toRadians(double degree) => degree * pi / 180;
 }
 
 class _CompassFacePainter extends CustomPainter {
@@ -458,35 +487,6 @@ class _CompassFacePainter extends CustomPainter {
   }
 }
 
-class _CompassPointerPainter extends CustomPainter {
-  const _CompassPointerPainter({required this.color});
-
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final path = Path()
-      ..moveTo(center.dx, center.dy - size.height * 0.24)
-      ..lineTo(center.dx + size.width * 0.13, center.dy + size.height * 0.15)
-      ..lineTo(center.dx, center.dy + size.height * 0.1)
-      ..lineTo(center.dx - size.width * 0.13, center.dy + size.height * 0.15)
-      ..close();
-
-    canvas.drawPath(
-      path,
-      Paint()
-        ..style = PaintingStyle.fill
-        ..color = color,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_CompassPointerPainter oldDelegate) {
-    return oldDelegate.color != color;
-  }
-}
-
 class _DirectionInfo extends StatelessWidget {
   const _DirectionInfo({
     required this.heading,
@@ -528,6 +528,8 @@ class _DirectionInfo extends StatelessWidget {
   }
 
   Widget _degreeBadge(TextTheme textTheme) {
+    final qiblaAngle = (qiblaDirection - heading) * pi / 180;
+
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 8,
@@ -540,13 +542,16 @@ class _DirectionInfo extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SvgPicture.asset(
-            AppIcons.compass3Line,
-            width: 16,
-            height: 16,
-            colorFilter: const ColorFilter.mode(
-              ColorPalette.primaryColor,
-              BlendMode.srcIn,
+          Transform.rotate(
+            angle: qiblaAngle,
+            child: SvgPicture.asset(
+              AppIcons.compass3Line,
+              width: 16,
+              height: 16,
+              colorFilter: const ColorFilter.mode(
+                ColorPalette.primaryColor,
+                BlendMode.srcIn,
+              ),
             ),
           ),
           const SizedBox(width: 6),
