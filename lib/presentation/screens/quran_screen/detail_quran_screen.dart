@@ -9,6 +9,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_state.dart';
 import 'package:sahaba_mobile/domains/quran/juz_model.dart';
@@ -20,6 +21,7 @@ import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/enum_widget/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart';
+import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
 typedef _SurahGroup = ({
@@ -72,6 +74,14 @@ double _scaledTextSize(
   return normal + ((max - normal) * clamped);
 }
 
+String _cleanQuranText(String value) {
+  return value
+      .replaceAll('&#39;', "'")
+      .replaceAll('&apos;', "'")
+      .replaceAll('&quot;', '"')
+      .replaceAll('&amp;', '&');
+}
+
 class DetailQuranScreen extends HookWidget {
   const DetailQuranScreen({super.key, this.args});
 
@@ -106,12 +116,18 @@ class DetailQuranScreen extends HookWidget {
           initialVerseNumber: surahs[index].index == args!.surah?.index
               ? args!.initialVerseNumber
               : null,
+          initialVerseKey: surahs[index].index == args!.surah?.index
+              ? args!.initialVerseKey
+              : null,
         );
       }
 
       return QuranDetailArgs.juz(
         juzList[index],
         allJuz: juzList,
+        initialVerseKey: juzList[index].index == args!.juz?.index
+            ? args!.initialVerseKey
+            : null,
       );
     }
 
@@ -229,14 +245,23 @@ class DetailQuranScreen extends HookWidget {
 
     Widget pageAt(int index) {
       final detail = details.value[index];
+      final currentArgs = argsAt(index);
       if (detail != null) {
         return detail.type == QuranDetailType.juz
-            ? _juzContent(context, detail, textSizeSetting.value)
+            ? _juzContent(
+                context,
+                detail,
+                textSizeSetting.value,
+                detailArgs: currentArgs,
+                initialVerseKey: currentArgs?.initialVerseKey,
+              )
             : _surahContent(
                 context,
                 detail,
                 textSizeSetting.value,
-                initialVerseNumber: argsAt(index)?.initialVerseNumber,
+                detailArgs: currentArgs,
+                initialVerseNumber: currentArgs?.initialVerseNumber,
+                initialVerseKey: currentArgs?.initialVerseKey,
               );
       }
 
@@ -287,7 +312,7 @@ class DetailQuranScreen extends HookWidget {
     }
 
     final tabLabels = isSurah
-        ? surahs.map((s) => s.title ?? '').toList()
+        ? surahs.map((s) => _cleanQuranText(s.title ?? '')).toList()
         : juzList.map((j) => 'Juz ${j.index}').toList();
 
     return _detailScaffold(
@@ -525,48 +550,42 @@ Widget _scrollableTabBar(
   required List<String> labels,
   required ValueChanged<int> onTap,
 }) {
-  return Container(
-    decoration: const BoxDecoration(
-      color: ColorPalette.kWhite,
-      boxShadow: [
-        BoxShadow(
-          color: Color(0x14000000),
-          blurRadius: 1,
-          offset: Offset(0, 1),
-        ),
-        BoxShadow(
-          color: Color(0x12000000),
-          blurRadius: 2,
-          offset: Offset(0, 2),
-        ),
-        BoxShadow(
-          color: Color(0x0A000000),
-          blurRadius: 3,
-          offset: Offset(0, 5),
-        ),
-        BoxShadow(
-          color: Color(0x03000000),
-          blurRadius: 4,
-          offset: Offset(0, 10),
-        ),
-      ],
-    ),
-    child: SingleChildScrollView(
-      controller: controller,
-      scrollDirection: Axis.horizontal,
-      reverse: true,
-      child: Row(
-        textDirection: TextDirection.rtl,
-        children: List.generate(
-          labels.length,
-          (index) => _tabItem(
-            context,
-            label: labels[index],
-            isActive: index == selectedIndex,
-            onTap: () => onTap(index),
+  return ColoredBox(
+    color: ColorPalette.kWhite,
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SingleChildScrollView(
+          controller: controller,
+          scrollDirection: Axis.horizontal,
+          reverse: true,
+          child: Row(
+            textDirection: TextDirection.rtl,
+            children: List.generate(
+              labels.length,
+              (index) => _tabItem(
+                context,
+                label: labels[index],
+                isActive: index == selectedIndex,
+                onTap: () => onTap(index),
+              ),
+            ),
           ),
         ),
-      ),
+        Container(
+          height: 3,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                ColorPalette.kBlack.withValues(alpha: 0.14),
+                Colors.transparent,
+              ],
+            ),
+          ),
+        ),
+      ],
     ),
   );
 }
@@ -619,11 +638,23 @@ Widget _surahContent(
   BuildContext context,
   QuranDetailModel detail,
   double textSizeSetting, {
+  QuranDetailArgs? detailArgs,
   int? initialVerseNumber,
+  String? initialVerseKey,
 }) {
-  final targetIndex = initialVerseNumber == null
-      ? -1
-      : detail.verses.indexWhere((v) => v.verseNumber == initialVerseNumber);
+  final targetIndex = initialVerseKey == null
+      ? initialVerseNumber == null
+            ? -1
+            : detail.verses.indexWhere(
+                (v) => v.verseNumber == initialVerseNumber,
+              )
+      : detail.verses.indexWhere((v) => v.verseKey == initialVerseKey);
+  bool isHighlighted(QuranVerseModel verse) {
+    return initialVerseKey == null
+        ? verse.verseNumber == initialVerseNumber
+        : verse.verseKey == initialVerseKey;
+  }
+
   if (targetIndex < 1) {
     return CustomScrollView(
       slivers: [
@@ -637,11 +668,16 @@ Widget _surahContent(
               thickness: 1,
               color: ColorPalette.borderTransparent,
             ),
-            itemBuilder: (context, index) => _verseRow(
-              context,
-              detail.verses[index],
-              textSizeSetting,
-            ),
+            itemBuilder: (context, index) {
+              final verse = detail.verses[index];
+              return _verseRow(
+                context,
+                verse,
+                textSizeSetting,
+                detailArgs: detailArgs,
+                isHighlighted: isHighlighted(verse),
+              );
+            },
           ),
         ),
       ],
@@ -660,7 +696,13 @@ Widget _surahContent(
               .map(
                 (verse) => Column(
                   children: [
-                    _verseRow(context, verse, textSizeSetting),
+                    _verseRow(
+                      context,
+                      verse,
+                      textSizeSetting,
+                      detailArgs: detailArgs,
+                      isHighlighted: isHighlighted(verse),
+                    ),
                     const Divider(
                       height: 1,
                       thickness: 1,
@@ -681,11 +723,16 @@ Widget _surahContent(
             thickness: 1,
             color: ColorPalette.borderTransparent,
           ),
-          itemBuilder: (context, index) => _verseRow(
-            context,
-            detail.verses[targetIndex + index],
-            textSizeSetting,
-          ),
+          itemBuilder: (context, index) {
+            final verse = detail.verses[targetIndex + index];
+            return _verseRow(
+              context,
+              verse,
+              textSizeSetting,
+              detailArgs: detailArgs,
+              isHighlighted: isHighlighted(verse),
+            );
+          },
         ),
       ),
     ],
@@ -695,8 +742,10 @@ Widget _surahContent(
 Widget _juzContent(
   BuildContext context,
   QuranDetailModel detail,
-  double textSizeSetting,
-) {
+  double textSizeSetting, {
+  QuranDetailArgs? detailArgs,
+  String? initialVerseKey,
+}) {
   final groups = _groupBySurah(detail.verses);
 
   return ListView.builder(
@@ -716,7 +765,13 @@ Widget _juzContent(
             final isLast = e.key == group.verses.length - 1;
             return Column(
               children: [
-                _verseRow(context, e.value, textSizeSetting),
+                _verseRow(
+                  context,
+                  e.value,
+                  textSizeSetting,
+                  detailArgs: detailArgs,
+                  isHighlighted: e.value.verseKey == initialVerseKey,
+                ),
                 if (!isLast || gi < groups.length - 1)
                   const Divider(
                     height: 1,
@@ -758,40 +813,43 @@ Widget _surahBanner(
   final textTheme = Theme.of(context).textTheme;
 
   return Container(
-    height: 49,
-    margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-    child: Stack(
-      fit: StackFit.expand,
-      children: [
-        Image.asset(
-          'assets/images/motif-header.png',
-        ),
-        Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (detail.titleAr != null && detail.titleAr!.trim().isNotEmpty)
-                Text(
-                  detail.titleAr!,
-                  style: textTheme.titleMedium?.copyWith(
-                    fontFamily: 'Markazi Text',
-                    color: ColorPalette.arabicText,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w400,
-                  ),
-                )
-              else
-                Text(
-                  detail.title,
-                  style: textTheme.titleSmall?.copyWith(
-                    color: ColorPalette.kWhite,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-            ],
+    color: ColorPalette.kWhite,
+    padding: const EdgeInsets.all(16),
+    child: SizedBox(
+      height: 49,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            'assets/images/motif-header.png',
           ),
-        ),
-      ],
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (detail.titleAr != null && detail.titleAr!.trim().isNotEmpty)
+                  Text(
+                    _cleanQuranText(detail.titleAr!),
+                    style: textTheme.titleMedium?.copyWith(
+                      fontFamily: 'Markazi Text',
+                      color: ColorPalette.arabicText,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  )
+                else
+                  Text(
+                    _cleanQuranText(detail.title),
+                    style: textTheme.titleSmall?.copyWith(
+                      color: ColorPalette.kWhite,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -804,26 +862,31 @@ Widget _surahBannerInJuz(
   final textTheme = Theme.of(context).textTheme;
 
   return Container(
-    height: 49,
-    margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-    child: Stack(
-      fit: StackFit.expand,
-      children: [
-        Image.asset(
-          'assets/images/motif-header.png',
-        ),
-        Center(
-          child: Text(
-            surahNameAr.trim().isNotEmpty ? surahNameAr : surahName,
-            style: textTheme.titleMedium?.copyWith(
-              fontFamily: 'Markazi Text',
-              color: ColorPalette.arabicText,
-              fontSize: 24,
-              fontWeight: FontWeight.w400,
+    color: ColorPalette.kWhite,
+    padding: const EdgeInsets.all(16),
+    child: SizedBox(
+      height: 49,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            'assets/images/motif-header.png',
+          ),
+          Center(
+            child: Text(
+              _cleanQuranText(
+                surahNameAr.trim().isNotEmpty ? surahNameAr : surahName,
+              ),
+              style: textTheme.titleMedium?.copyWith(
+                fontFamily: 'Markazi Text',
+                color: ColorPalette.arabicText,
+                fontSize: 24,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }
@@ -831,14 +894,16 @@ Widget _surahBannerInJuz(
 Widget _verseRow(
   BuildContext context,
   QuranVerseModel verse,
-  double textSizeSetting,
-) {
+  double textSizeSetting, {
+  QuranDetailArgs? detailArgs,
+  bool isHighlighted = false,
+}) {
   final textTheme = Theme.of(context).textTheme;
 
   return Material(
     color: ColorPalette.kWhite,
     child: InkWell(
-      onTap: () => _openVerseDialog(context, verse),
+      onTap: () => _openVerseDialog(context, verse, detailArgs),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -848,7 +913,11 @@ Widget _verseRow(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                _verseNumberBadge(context, verse.verseNumber),
+                _verseNumberBadge(
+                  context,
+                  verse.verseNumber,
+                  isSelected: isHighlighted,
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text.rich(
@@ -875,7 +944,7 @@ Widget _verseRow(
                         ),
                       ],
                     ),
-                    textAlign: TextAlign.right,
+                    textAlign: TextAlign.justify,
                     textDirection: TextDirection.rtl,
                     style: textTheme.displaySmall?.copyWith(
                       fontFamily: 'Markazi Text',
@@ -891,7 +960,8 @@ Widget _verseRow(
             if (verse.transliteration.trim().isNotEmpty) ...[
               const SizedBox(height: 22),
               Text(
-                verse.transliteration,
+                _cleanQuranText(verse.transliteration),
+                textAlign: TextAlign.justify,
                 style: textTheme.titleMedium?.copyWith(
                   color: ColorPalette.primaryColor,
                   fontSize: _latinTextSize(textSizeSetting),
@@ -903,7 +973,8 @@ Widget _verseRow(
             if (verse.translation.trim().isNotEmpty) ...[
               const SizedBox(height: 10),
               Text(
-                verse.translation,
+                _cleanQuranText(verse.translation),
+                textAlign: TextAlign.justify,
                 style: textTheme.bodyLarge?.copyWith(
                   color: ColorPalette.kBlack,
                   fontSize: _latinTextSize(textSizeSetting),
@@ -919,7 +990,11 @@ Widget _verseRow(
   );
 }
 
-void _openVerseDialog(BuildContext context, QuranVerseModel verse) {
+void _openVerseDialog(
+  BuildContext context,
+  QuranVerseModel verse,
+  QuranDetailArgs? detailArgs,
+) {
   unawaited(
     showCustomDialog<void>(
       context: context,
@@ -931,6 +1006,8 @@ void _openVerseDialog(BuildContext context, QuranVerseModel verse) {
           verse,
           onShare: () => unawaited(_shareQuranVerse(context, verse)),
           onCopy: () => unawaited(_copyQuranVerse(context, verse)),
+          onBookmark: () =>
+              unawaited(_saveLastRead(context, verse, detailArgs)),
         ),
       ),
     ),
@@ -942,6 +1019,7 @@ Widget _verseDialogContent(
   QuranVerseModel verse, {
   VoidCallback? onShare,
   VoidCallback? onCopy,
+  VoidCallback? onBookmark,
 }) {
   final textTheme = Theme.of(context).textTheme;
 
@@ -951,8 +1029,7 @@ Widget _verseDialogContent(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'QS ${verse.surahName} ${verse.surahIndex} '
-          ': Ayat ${verse.verseNumber}',
+          _quranVerseTitle(verse),
           textAlign: TextAlign.center,
           style: textTheme.titleMedium?.copyWith(
             color: ColorPalette.kBlack,
@@ -977,6 +1054,7 @@ Widget _verseDialogContent(
           context,
           icon: AppIcons.flag2Line,
           label: 'Tandai terakhir baca',
+          onTap: onBookmark,
         ),
       ],
     ),
@@ -1030,6 +1108,25 @@ Widget _verseDialogOption(
   );
 }
 
+Future<void> _saveLastRead(
+  BuildContext context,
+  QuranVerseModel verse,
+  QuranDetailArgs? detailArgs,
+) async {
+  final lastRead = QuranLastReadModel(
+    verse: verse,
+    type: detailArgs?.type ?? QuranDetailType.surah,
+    juzIndex: detailArgs?.juz?.index,
+  );
+  await context.read<LastReadCubit>().save(lastRead);
+  if (!context.mounted) return;
+
+  _showQuranSnackBar(
+    context,
+    '${_quranVerseTitle(verse)} ditandai sebagai terakhir baca',
+  );
+}
+
 Future<void> _copyQuranVerse(
   BuildContext context,
   QuranVerseModel verse,
@@ -1037,8 +1134,9 @@ Future<void> _copyQuranVerse(
   await Clipboard.setData(ClipboardData(text: _quranVerseText(verse)));
   if (!context.mounted) return;
 
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Ayat berhasil disalin')),
+  _showQuranSnackBar(
+    context,
+    '${_quranVerseTitle(verse)} berhasil disalin',
   );
 }
 
@@ -1053,17 +1151,38 @@ Future<void> _shareQuranVerse(
       'bytes': bytes,
       'text': _quranVerseText(verse),
     });
+    if (!context.mounted) return;
+    _showQuranSnackBar(
+      context,
+      '${_quranVerseTitle(verse)} berhasil dibagikan',
+    );
   } on Object {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Gagal membagikan ayat')),
+      CustomSnackBar.failure(message: 'Gagal membagikan ayat'),
     );
   }
 }
 
+void _showQuranSnackBar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      CustomSnackBar.quran(
+        message: message,
+        margin: const EdgeInsets.fromLTRB(6, 0, 6, 24),
+      ),
+    );
+}
+
+String _quranVerseTitle(QuranVerseModel verse) {
+  return 'QS ${_cleanQuranText(verse.surahName)} ${verse.surahIndex} '
+      ': Ayat ${verse.verseNumber}';
+}
+
 String _quranVerseText(QuranVerseModel verse) {
   final lines = <String>[
-    'QS ${verse.surahName} ${verse.surahIndex} : Ayat ${verse.verseNumber}',
+    _quranVerseTitle(verse),
     '',
     '${verse.arabic} ${toArabicNumber(verse.verseNumber)}',
   ];
@@ -1071,13 +1190,13 @@ String _quranVerseText(QuranVerseModel verse) {
   if (verse.transliteration.trim().isNotEmpty) {
     lines
       ..add('')
-      ..add(verse.transliteration.trim());
+      ..add(_cleanQuranText(verse.transliteration.trim()));
   }
 
   if (verse.translation.trim().isNotEmpty) {
     lines
       ..add('')
-      ..add(verse.translation.trim());
+      ..add(_cleanQuranText(verse.translation.trim()));
   }
 
   return lines.join('\n');
@@ -1148,8 +1267,7 @@ Widget _quranShareCard(BuildContext context, QuranVerseModel verse) {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'QS ${verse.surahName} ${verse.surahIndex} '
-                ': Ayat ${verse.verseNumber}',
+                _quranVerseTitle(verse),
                 textAlign: TextAlign.center,
                 style: textTheme.titleMedium?.copyWith(
                   color: ColorPalette.primaryColor,
@@ -1195,7 +1313,7 @@ Widget _quranShareCard(BuildContext context, QuranVerseModel verse) {
                 SizedBox(
                   width: double.infinity,
                   child: Text(
-                    verse.transliteration.trim(),
+                    _cleanQuranText(verse.transliteration.trim()),
                     textAlign: TextAlign.justify,
                     style: textTheme.titleMedium?.copyWith(
                       color: ColorPalette.primaryColor,
@@ -1211,7 +1329,7 @@ Widget _quranShareCard(BuildContext context, QuranVerseModel verse) {
                 SizedBox(
                   width: double.infinity,
                   child: Text(
-                    verse.translation.trim(),
+                    _cleanQuranText(verse.translation.trim()),
                     textAlign: TextAlign.justify,
                     style: textTheme.bodyLarge?.copyWith(
                       color: ColorPalette.kBlack,
@@ -1254,7 +1372,11 @@ Widget _arabicVerseNumber(BuildContext context, int number, double size) {
   );
 }
 
-Widget _verseNumberBadge(BuildContext context, int number) {
+Widget _verseNumberBadge(
+  BuildContext context,
+  int number, {
+  bool isSelected = false,
+}) {
   final textTheme = Theme.of(context).textTheme;
 
   return SizedBox.square(
@@ -1263,14 +1385,16 @@ Widget _verseNumberBadge(BuildContext context, int number) {
       alignment: Alignment.center,
       children: [
         SvgPicture.asset(
-          AppIcons.motifBorderUnselected,
+          isSelected
+              ? AppIcons.motifBorderSelected
+              : AppIcons.motifBorderUnselected,
           width: 36,
           height: 36,
         ),
         Text(
           '$number',
           style: textTheme.labelSmall?.copyWith(
-            color: ColorPalette.primaryColor,
+            color: isSelected ? ColorPalette.kWhite : ColorPalette.primaryColor,
             fontWeight: FontWeight.w700,
           ),
         ),

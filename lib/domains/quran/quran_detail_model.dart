@@ -11,29 +11,34 @@ class QuranDetailArgs {
     this.allSurahs = const [],
     this.allJuz = const [],
     this.initialVerseNumber,
+    this.initialVerseKey,
   });
 
   factory QuranDetailArgs.surah(
     SurahModel surah, {
     List<SurahModel> allSurahs = const [],
     int? initialVerseNumber,
+    String? initialVerseKey,
   }) {
     return QuranDetailArgs._(
       type: QuranDetailType.surah,
       surah: surah,
       allSurahs: allSurahs,
       initialVerseNumber: initialVerseNumber,
+      initialVerseKey: initialVerseKey,
     );
   }
 
   factory QuranDetailArgs.juz(
     JuzModel juz, {
     List<JuzModel> allJuz = const [],
+    String? initialVerseKey,
   }) {
     return QuranDetailArgs._(
       type: QuranDetailType.juz,
       juz: juz,
       allJuz: allJuz,
+      initialVerseKey: initialVerseKey,
     );
   }
 
@@ -43,6 +48,38 @@ class QuranDetailArgs {
   final List<SurahModel> allSurahs;
   final List<JuzModel> allJuz;
   final int? initialVerseNumber;
+  final String? initialVerseKey;
+}
+
+class QuranLastReadModel {
+  const QuranLastReadModel({
+    required this.verse,
+    required this.type,
+    this.juzIndex,
+  });
+
+  factory QuranLastReadModel.fromJson(Map<String, dynamic> json) {
+    final verseJson = json['verse'];
+    return QuranLastReadModel(
+      verse: QuranVerseModel.fromJson(
+        verseJson is Map<String, dynamic> ? verseJson : json,
+      ),
+      type: json['type'] is String
+          ? QuranDetailType.values.byName(json['type'] as String)
+          : QuranDetailType.surah,
+      juzIndex: json['juzIndex'] as String?,
+    );
+  }
+
+  final QuranVerseModel verse;
+  final QuranDetailType type;
+  final String? juzIndex;
+
+  Map<String, dynamic> toJson() => {
+    'verse': verse.toJson(),
+    'type': type.name,
+    'juzIndex': juzIndex,
+  };
 }
 
 class QuranDetailModel {
@@ -73,6 +110,19 @@ class QuranVerseModel {
     required this.translation,
   });
 
+  factory QuranVerseModel.fromJson(Map<String, dynamic> json) {
+    return QuranVerseModel(
+      surahIndex: json['surahIndex'] as String,
+      surahName: json['surahName'] as String,
+      surahNameAr: json['surahNameAr'] as String,
+      verseNumber: json['verseNumber'] as int,
+      verseKey: json['verseKey'] as String,
+      arabic: json['arabic'] as String,
+      transliteration: json['transliteration'] as String,
+      translation: json['translation'] as String,
+    );
+  }
+
   final String surahIndex;
   final String surahName;
   final String surahNameAr;
@@ -81,4 +131,15 @@ class QuranVerseModel {
   final String arabic;
   final String transliteration;
   final String translation;
+
+  Map<String, dynamic> toJson() => {
+    'surahIndex': surahIndex,
+    'surahName': surahName,
+    'surahNameAr': surahNameAr,
+    'verseNumber': verseNumber,
+    'verseKey': verseKey,
+    'arabic': arabic,
+    'transliteration': transliteration,
+    'translation': translation,
+  };
 }

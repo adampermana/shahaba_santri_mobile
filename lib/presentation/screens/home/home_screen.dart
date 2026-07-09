@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +8,12 @@ import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart'
 import 'package:sahaba_mobile/business_logic/location_cubit/location_state.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_state.dart';
+import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
+import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_state.dart';
+import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
+import 'package:sahaba_mobile/domains/quran/juz_model.dart';
+import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
+import 'package:sahaba_mobile/domains/quran/surah_model.dart';
 import 'package:sahaba_mobile/infrastructure/extension/datetime_extension.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
@@ -133,7 +141,13 @@ class _FeatureCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: ColorPalette.kWhite,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: _cardShadow,
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x3F000000),
+              blurRadius: 4,
+              offset: Offset(0, 4),
+            ),
+          ],
         ),
         child: Stack(
           children: [
@@ -223,20 +237,78 @@ class _ContinueReadingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<LastReadCubit, LastReadState>(
+      builder: (context, lastReadState) {
+        final lastRead = lastReadState is LastReadLoaded
+            ? lastReadState.lastRead
+            : null;
+        final verse = lastRead?.verse;
+        return BlocBuilder<QuranBloc, QuranState>(
+          builder: (context, quranState) {
+            return _ContinueReadingContent(
+              lastRead: lastRead,
+              surah: _findSurah(quranState.surahs, verse?.surahIndex),
+              juz: _findJuz(quranState.juzList, lastRead?.juzIndex),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  SurahModel? _findSurah(List<SurahModel> surahs, String? index) {
+    if (index == null) return null;
+    for (final surah in surahs) {
+      if (surah.index == index) return surah;
+    }
+    return null;
+  }
+
+  JuzModel? _findJuz(List<JuzModel> juzList, String? index) {
+    if (index == null) return null;
+    for (final juz in juzList) {
+      if (juz.index == index) return juz;
+    }
+    return null;
+  }
+}
+
+class _ContinueReadingContent extends StatelessWidget {
+  const _ContinueReadingContent({
+    required this.lastRead,
+    required this.surah,
+    required this.juz,
+  });
+
+  final QuranLastReadModel? lastRead;
+  final SurahModel? surah;
+  final JuzModel? juz;
+
+  @override
+  Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final verse = lastRead?.verse;
+    final hasHistory = verse != null;
+    final canOpen = lastRead?.type == QuranDetailType.juz
+        ? juz != null
+        : surah != null;
 
     return Container(
       width: double.infinity,
-      // ← hapus padding dari sini
       decoration: BoxDecoration(
         color: ColorPalette.kWhite,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: _cardShadow,
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x3F000000),
+            blurRadius: 4,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
       clipBehavior: Clip.hardEdge,
       child: Stack(
         children: [
-          //  Motif
           Positioned(
             bottom: 0,
             left: 0,
@@ -250,74 +322,81 @@ class _ContinueReadingCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
             child: Column(
               children: [
-                Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Al-Baqarah',
-                              style: textTheme.headlineSmall?.copyWith(
-                                color: ColorPalette.kBlack,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20,
-                              ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            hasHistory ? verse.surahName : 'Belum ada riwayat',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: textTheme.headlineSmall?.copyWith(
+                              color: ColorPalette.kBlack,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Ayat 255',
-                              style: textTheme.bodySmall?.copyWith(
-                                color: ColorPalette.contentTertiary,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: 0.6,
-                              ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            hasHistory
+                                ? 'Ayat ${verse.verseNumber}'
+                                : 'Tandai ayat terakhir dibaca',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: textTheme.bodySmall?.copyWith(
+                              color: ColorPalette.contentTertiary,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 0.6,
                             ),
-                          ],
-                        ),
-                        Text(
-                          'البقرة',
-                          textDirection: TextDirection.rtl,
-                          style: textTheme.displaySmall?.copyWith(
-                            color: ColorPalette.arabicText,
-                            fontFamily: 'Markazi Text',
-                            fontSize: 32,
-                            height: 1.4,
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: ColorPalette.primaryColor,
-                          foregroundColor: ColorPalette.kWhite,
-                          elevation: 1,
-                          shadowColor: ColorPalette.kBlack.withValues(
-                            alpha: 0.05,
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(9999),
-                          ),
-                        ),
-                        child: Text(
-                          'Lanjutkan',
-                          style: textTheme.bodySmall?.copyWith(
-                            color: ColorPalette.kWhite,
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: 0.6,
-                          ),
-                        ),
+                        ],
                       ),
                     ),
+                    if (hasHistory) ...[
+                      const SizedBox(width: 16),
+                      Text(
+                        verse.surahNameAr,
+                        textDirection: TextDirection.rtl,
+                        style: textTheme.displaySmall?.copyWith(
+                          color: ColorPalette.arabicText,
+                          fontFamily: 'Markazi Text',
+                          fontSize: 32,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
                   ],
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: !hasHistory || !canOpen
+                        ? null
+                        : () => _openLastRead(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ColorPalette.primaryColor,
+                      foregroundColor: ColorPalette.kWhite,
+                      elevation: 1,
+                      shadowColor: ColorPalette.kBlack.withValues(alpha: 0.05),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9999),
+                      ),
+                    ),
+                    child: Text(
+                      'Lanjutkan',
+                      style: textTheme.bodySmall?.copyWith(
+                        color: ColorPalette.kWhite,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.6,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -326,23 +405,28 @@ class _ContinueReadingCard extends StatelessWidget {
       ),
     );
   }
-}
 
-List<BoxShadow> get _cardShadow => [
-  BoxShadow(
-    color: ColorPalette.kBlack.withValues(alpha: 0.08),
-    blurRadius: 2,
-  ),
-  BoxShadow(
-    color: ColorPalette.kBlack.withValues(alpha: 0.07),
-    blurRadius: 4,
-  ),
-  BoxShadow(
-    color: ColorPalette.kBlack.withValues(alpha: 0.04),
-    blurRadius: 5,
-  ),
-  BoxShadow(
-    color: ColorPalette.kBlack.withValues(alpha: 0.01),
-    blurRadius: 6,
-  ),
-];
+  void _openLastRead(BuildContext context) {
+    final quranState = context.read<QuranBloc>().state;
+    final args = lastRead?.type == QuranDetailType.juz
+        ? QuranDetailArgs.juz(
+            juz!,
+            allJuz: quranState.juzList,
+            initialVerseKey: lastRead!.verse.verseKey,
+          )
+        : QuranDetailArgs.surah(
+            surah!,
+            allSurahs: quranState.surahs,
+            initialVerseNumber: lastRead!.verse.verseNumber,
+            initialVerseKey: lastRead!.verse.verseKey,
+          );
+
+    unawaited(
+      context.push(
+        '${RouterPath.mainPath}/${RouterPath.quranPath}/'
+        '${RouterPath.detailQuranPath}',
+        extra: args,
+      ),
+    );
+  }
+}

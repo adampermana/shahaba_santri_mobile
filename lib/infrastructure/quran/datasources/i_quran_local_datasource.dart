@@ -7,4 +7,6 @@ abstract class IQuranLocalDatasource {
   Future<List<JuzModel>> getAllJuz();
   Future<QuranDetailModel> getSurahDetail(SurahModel surah);
   Future<QuranDetailModel> getJuzDetail(JuzModel juz);
+  Future<void> saveLastRead(QuranLastReadModel lastRead);
+  Future<QuranLastReadModel?> getLastRead();
 }

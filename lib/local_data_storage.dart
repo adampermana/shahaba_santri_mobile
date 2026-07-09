@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sahaba_mobile/infrastructure/calendar/datasources/calendar_local_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/core/datasources/i_core_local_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/prayer_schedule/datasources/prayer_local_datasource.dart';
+import 'package:sahaba_mobile/infrastructure/quran/datasources/quran_local_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/services/adzan_service.dart';
 import 'package:sahaba_mobile/infrastructure/streak/datasources/streak_local_datasource.dart';
 
@@ -37,4 +38,7 @@ Future<void> initHiveBox() async {
 
   // Calendar box
   await Hive.openBox<String>(CalendarLocalDatasource.calendarBox);
+
+  // Quran box
+  await Hive.openBox<String>(QuranLocalDatasource.lastReadBox);
 }

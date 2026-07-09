@@ -48,11 +48,24 @@ class _SearchQuranScreenState extends State<SearchQuranScreen> {
   }
 
   void _onSearchChanged(String value) {
-    setState(() => _query = value.trim());
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 180), () {
       if (!mounted) return;
-      setState(() => _verseResults = _searchVerses(_query));
+      _searchNow(value);
+    });
+  }
+
+  void _searchNow(String value) {
+    final query = value.trim();
+    if (_controller.text != query) {
+      _controller.value = TextEditingValue(
+        text: query,
+        selection: TextSelection.collapsed(offset: query.length),
+      );
+    }
+    setState(() {
+      _query = query;
+      _verseResults = _searchVerses(query);
     });
   }
 
@@ -86,6 +99,7 @@ class _SearchQuranScreenState extends State<SearchQuranScreen> {
                     allSurahs: widget.args.surahs,
                     allJuz: widget.args.juzList,
                     verses: _verseResults,
+                    onSuggestionTap: () => _searchNow(_query),
                   )
                 : const SizedBox.shrink(),
           ),
@@ -137,6 +151,7 @@ class _SearchResultList extends StatelessWidget {
     required this.allSurahs,
     required this.allJuz,
     required this.verses,
+    required this.onSuggestionTap,
   });
 
   final String query;
@@ -145,6 +160,7 @@ class _SearchResultList extends StatelessWidget {
   final List<SurahModel> allSurahs;
   final List<JuzModel> allJuz;
   final List<QuranVerseModel> verses;
+  final VoidCallback onSuggestionTap;
 
   @override
   Widget build(BuildContext context) {
@@ -211,24 +227,28 @@ class _SearchResultList extends StatelessWidget {
   Widget _resultTitle(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return Text.rich(
-      TextSpan(
-        text: 'Hasil pencarian ',
-        children: [
-          TextSpan(
-            text: query,
-            style: const TextStyle(
-              color: ColorPalette.primaryColor,
-              fontWeight: FontWeight.w700,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onSuggestionTap,
+      child: Text.rich(
+        TextSpan(
+          text: 'Hasil pencarian ',
+          children: [
+            TextSpan(
+              text: query,
+              style: const TextStyle(
+                color: ColorPalette.primaryColor,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-          ),
-        ],
-      ),
-      style: textTheme.labelMedium?.copyWith(
-        color: ColorPalette.kBlack,
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.6,
+          ],
+        ),
+        style: textTheme.labelMedium?.copyWith(
+          color: ColorPalette.kBlack,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.6,
+        ),
       ),
     );
   }
@@ -509,7 +529,7 @@ List<JuzModel> _filterJuz(List<JuzModel> juzList, String query) {
 
 List<QuranVerseModel> _searchVerses(String query) {
   if (query.isEmpty) return const [];
-  final lower = query.toLowerCase();
+  final normalizedQuery = _normalizeSearchText(query);
   final translationByKey = {
     for (final translation in idIndonesianIslamicAffairsMinistry)
       translation.verseKey: translation,
@@ -522,11 +542,16 @@ List<QuranVerseModel> _searchVerses(String query) {
 
   return versesIndopak
       .where((verse) {
-        final translation = translationByKey[verse.verseKey]?.text ?? '';
-        final transliteration =
-            transliterationByKey[verse.verseKey]?.text ?? '';
-        return translation.toLowerCase().contains(lower) ||
-            transliteration.toLowerCase().contains(lower) ||
+        final translation = _stripHtml(
+          translationByKey[verse.verseKey]?.text ?? '',
+        );
+        final transliteration = _stripHtml(
+          transliterationByKey[verse.verseKey]?.text ?? '',
+        );
+        final arabic = _stripUnsupportedArabicMarks(verse.text);
+        return _normalizeSearchText(translation).contains(normalizedQuery) ||
+            _normalizeSearchText(transliteration).contains(normalizedQuery) ||
+            arabic.contains(query) ||
             verse.verseKey == query;
       })
       .map((verse) {
@@ -544,7 +569,6 @@ List<QuranVerseModel> _searchVerses(String query) {
           translation: _stripHtml(translationByKey[verse.verseKey]?.text ?? ''),
         );
       })
-      .take(30)
       .toList();
 }
 
@@ -594,5 +618,13 @@ String _stripHtml(String text) {
       .replaceAll('&amp;', '&')
       .replaceAll(RegExp('<sup foot_note=[^>]*>.*?</sup>'), '')
       .replaceAll(RegExp('<[^>]*>'), '')
+      .trim();
+}
+
+String _normalizeSearchText(String text) {
+  return _stripHtml(text)
+      .toLowerCase()
+      .replaceAll(RegExp(r'[^a-z0-9\s:]'), ' ')
+      .replaceAll(RegExp(r'\s+'), ' ')
       .trim();
 }

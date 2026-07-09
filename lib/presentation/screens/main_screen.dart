@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_state.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
+import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/injector.dart';
@@ -21,6 +22,9 @@ class MainProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lastReadCubit = sl<LastReadCubit>();
+    unawaited(lastReadCubit.load());
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -37,6 +41,7 @@ class MainProvider extends StatelessWidget {
             ..add(const QuranEvent.loadSurahs())
             ..add(const QuranEvent.loadJuz()),
         ),
+        BlocProvider.value(value: lastReadCubit),
       ],
       child: const _MainScreen(),
     );

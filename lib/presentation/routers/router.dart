@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
+import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/injector.dart';
@@ -87,12 +88,17 @@ final GoRouter router = GoRouter(
           builder: (context, state) {
             final args = state.extra;
             if (args is QuranDetailArgs) {
-              return BlocProvider(
-                create: (_) {
-                  final cubit = sl<QuranDetailCubit>();
-                  unawaited(cubit.load(args));
-                  return cubit;
-                },
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (_) {
+                      final cubit = sl<QuranDetailCubit>();
+                      unawaited(cubit.load(args));
+                      return cubit;
+                    },
+                  ),
+                  BlocProvider.value(value: sl<LastReadCubit>()),
+                ],
                 child: DetailQuranScreen(args: args),
               );
             }

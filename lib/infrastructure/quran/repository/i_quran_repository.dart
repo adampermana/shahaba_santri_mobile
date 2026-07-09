@@ -9,4 +9,6 @@ abstract class IQuranRepository {
   Future<Either<Failure, List<JuzModel>>> getAllJuz();
   Future<Either<Failure, QuranDetailModel>> getSurahDetail(SurahModel surah);
   Future<Either<Failure, QuranDetailModel>> getJuzDetail(JuzModel juz);
+  Future<Either<Failure, void>> saveLastRead(QuranLastReadModel lastRead);
+  Future<Either<Failure, QuranLastReadModel?>> getLastRead();
 }

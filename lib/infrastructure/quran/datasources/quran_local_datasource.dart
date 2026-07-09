@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:sahaba_mobile/domains/quran/chapter.dart';
 import 'package:sahaba_mobile/domains/quran/juz.dart';
 import 'package:sahaba_mobile/domains/quran/juz_model.dart';
@@ -10,6 +13,9 @@ import 'package:sahaba_mobile/domains/quran/verses/indopak.dart';
 import 'package:sahaba_mobile/infrastructure/quran/datasources/i_quran_local_datasource.dart';
 
 class QuranLocalDatasource implements IQuranLocalDatasource {
+  static const lastReadBox = 'quran_last_read';
+  static const _lastReadKey = 'last_read';
+
   // ponytail: maps built once on first access; O(1) replaces O(n) firstWhere
   late final Map<String, VerseTranslation> _translationByKey = {
     for (final t in idIndonesianIslamicAffairsMinistry) t.verseKey: t,
@@ -63,6 +69,21 @@ class QuranLocalDatasource implements IQuranLocalDatasource {
           ' - ${juz.end?.name ?? '-'} ${_verseNumber(juz.end?.verse)}',
       verses: juzVerses.map(_verseToDetail).toList(),
     );
+  }
+
+  @override
+  Future<void> saveLastRead(QuranLastReadModel lastRead) async {
+    await Hive.box<String>(lastReadBox).put(
+      _lastReadKey,
+      jsonEncode(lastRead.toJson()),
+    );
+  }
+
+  @override
+  Future<QuranLastReadModel?> getLastRead() async {
+    final raw = Hive.box<String>(lastReadBox).get(_lastReadKey);
+    if (raw == null) return null;
+    return QuranLastReadModel.fromJson(jsonDecode(raw) as Map<String, dynamic>);
   }
 
   SurahModel _chapterToSurah(Chapter chapter) {
@@ -142,9 +163,11 @@ class QuranLocalDatasource implements IQuranLocalDatasource {
 
   QuranVerseModel _verseToDetail(Verse verse) {
     final chapter = _chapterById[verse.chapterID]!;
-    final translation = _translationByKey[verse.verseKey] ??
+    final translation =
+        _translationByKey[verse.verseKey] ??
         VerseTranslation(verseKey: verse.verseKey);
-    final transliteration = _transliterationByKey[verse.verseKey] ??
+    final transliteration =
+        _transliterationByKey[verse.verseKey] ??
         Transliteration(id: verse.verseKey);
 
     return QuranVerseModel(

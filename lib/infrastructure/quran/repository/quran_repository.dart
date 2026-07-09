@@ -52,4 +52,26 @@ class QuranRepository implements IQuranRepository {
       return Left(CacheFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> saveLastRead(
+    QuranLastReadModel lastRead,
+  ) async {
+    try {
+      await _localDatasource.saveLastRead(lastRead);
+      return const Right(null);
+    } on Exception catch (e) {
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, QuranLastReadModel?>> getLastRead() async {
+    try {
+      final lastRead = await _localDatasource.getLastRead();
+      return Right(lastRead);
+    } on Exception catch (e) {
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
 }
