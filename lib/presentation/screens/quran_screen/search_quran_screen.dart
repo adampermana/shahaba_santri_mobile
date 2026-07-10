@@ -215,6 +215,7 @@ class _SearchResultList extends StatelessWidget {
                   query: query,
                   group: group,
                   allSurahs: allSurahs,
+                  allJuz: allJuz,
                 ),
               ),
             ),
@@ -270,7 +271,11 @@ class _SearchResultList extends StatelessWidget {
       context.push(
         '${RouterPath.mainPath}/${RouterPath.quranPath}/'
         '${RouterPath.detailQuranPath}',
-        extra: QuranDetailArgs.surah(surah, allSurahs: allSurahs),
+        extra: QuranDetailArgs.surah(
+          surah,
+          allSurahs: allSurahs,
+          allJuz: allJuz,
+        ),
       ),
     );
   }
@@ -280,7 +285,11 @@ class _SearchResultList extends StatelessWidget {
       context.push(
         '${RouterPath.mainPath}/${RouterPath.quranPath}/'
         '${RouterPath.detailQuranPath}',
-        extra: QuranDetailArgs.juz(juz, allJuz: allJuz),
+        extra: QuranDetailArgs.juz(
+          juz,
+          allSurahs: allSurahs,
+          allJuz: allJuz,
+        ),
       ),
     );
   }
@@ -303,11 +312,13 @@ class _VerseResultCard extends StatefulWidget {
     required this.query,
     required this.group,
     required this.allSurahs,
+    required this.allJuz,
   });
 
   final String query;
   final _VerseGroup group;
   final List<SurahModel> allSurahs;
+  final List<JuzModel> allJuz;
 
   @override
   State<_VerseResultCard> createState() => _VerseResultCardState();
@@ -427,6 +438,7 @@ class _VerseResultCardState extends State<_VerseResultCard> {
         extra: QuranDetailArgs.surah(
           surah,
           allSurahs: widget.allSurahs,
+          allJuz: widget.allJuz,
           initialVerseNumber: verse.verseNumber,
         ),
       ),

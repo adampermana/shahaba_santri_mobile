@@ -17,6 +17,7 @@ class QuranDetailArgs {
   factory QuranDetailArgs.surah(
     SurahModel surah, {
     List<SurahModel> allSurahs = const [],
+    List<JuzModel> allJuz = const [],
     int? initialVerseNumber,
     String? initialVerseKey,
   }) {
@@ -24,6 +25,7 @@ class QuranDetailArgs {
       type: QuranDetailType.surah,
       surah: surah,
       allSurahs: allSurahs,
+      allJuz: allJuz,
       initialVerseNumber: initialVerseNumber,
       initialVerseKey: initialVerseKey,
     );
@@ -31,12 +33,14 @@ class QuranDetailArgs {
 
   factory QuranDetailArgs.juz(
     JuzModel juz, {
+    List<SurahModel> allSurahs = const [],
     List<JuzModel> allJuz = const [],
     String? initialVerseKey,
   }) {
     return QuranDetailArgs._(
       type: QuranDetailType.juz,
       juz: juz,
+      allSurahs: allSurahs,
       allJuz: allJuz,
       initialVerseKey: initialVerseKey,
     );

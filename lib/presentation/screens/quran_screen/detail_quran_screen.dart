@@ -20,6 +20,7 @@ import 'package:sahaba_mobile/infrastructure/helpers/helper.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/enum/enum_widget.dart';
+import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/bottom_sheet_widgets.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
@@ -89,50 +90,58 @@ class DetailQuranScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surahs = _surahsFromArgs(args);
-    final juzList = _juzListFromArgs(args);
-    final isSurah = args?.type == QuranDetailType.surah;
+    final activeArgs = useState<QuranDetailArgs?>(args);
+    final currentArgs = activeArgs.value;
+    final surahs = _surahsFromArgs(currentArgs);
+    final juzList = _juzListFromArgs(currentArgs);
+    final isSurah = currentArgs?.type == QuranDetailType.surah;
     final itemCount = isSurah ? surahs.length : juzList.length;
 
     int initialIndex() {
-      if (args == null) return 0;
+      if (currentArgs == null) return 0;
 
-      if (args!.type == QuranDetailType.surah) {
-        final index = surahs.indexWhere((s) => s.index == args!.surah?.index);
+      if (currentArgs.type == QuranDetailType.surah) {
+        final index = surahs.indexWhere(
+          (s) => s.index == currentArgs.surah?.index,
+        );
         return index < 0 ? 0 : index;
       }
 
-      final index = juzList.indexWhere((j) => j.index == args!.juz?.index);
+      final index = juzList.indexWhere(
+        (j) => j.index == currentArgs.juz?.index,
+      );
       return index < 0 ? 0 : index;
     }
 
     QuranDetailArgs? argsAt(int index) {
-      if (args == null || index < 0 || index >= itemCount) return null;
+      if (currentArgs == null || index < 0 || index >= itemCount) return null;
 
-      if (args!.type == QuranDetailType.surah) {
+      if (currentArgs.type == QuranDetailType.surah) {
         return QuranDetailArgs.surah(
           surahs[index],
           allSurahs: surahs,
-          initialVerseNumber: surahs[index].index == args!.surah?.index
-              ? args!.initialVerseNumber
+          allJuz: juzList,
+          initialVerseNumber: surahs[index].index == currentArgs.surah?.index
+              ? currentArgs.initialVerseNumber
               : null,
-          initialVerseKey: surahs[index].index == args!.surah?.index
-              ? args!.initialVerseKey
+          initialVerseKey: surahs[index].index == currentArgs.surah?.index
+              ? currentArgs.initialVerseKey
               : null,
         );
       }
 
       return QuranDetailArgs.juz(
         juzList[index],
+        allSurahs: surahs,
         allJuz: juzList,
-        initialVerseKey: juzList[index].index == args!.juz?.index
-            ? args!.initialVerseKey
+        initialVerseKey: juzList[index].index == currentArgs.juz?.index
+            ? currentArgs.initialVerseKey
             : null,
       );
     }
 
     int indexForArgs(QuranDetailArgs? value) {
-      if (value == null || value.type != args?.type) return -1;
+      if (value == null || value.type != currentArgs?.type) return -1;
 
       if (value.type == QuranDetailType.surah) {
         return surahs.indexWhere((s) => s.index == value.surah?.index);
@@ -163,6 +172,39 @@ class DetailQuranScreen extends HookWidget {
             ),
           ),
         ),
+      );
+    }
+
+    Future<void> openQuranSelectSheet() async {
+      final selectedArgs = argsAt(selectedIndex.value) ?? currentArgs;
+      final result = await showModalBottomSheet<QuranSelectionResult>(
+        context: context,
+        backgroundColor: ColorPalette.kWhite,
+        barrierColor: ColorPalette.kBlack.withValues(alpha: 0.58),
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+        ),
+        builder: (context) => BottomSheetSelectQuran(
+          surahs: surahs,
+          juzList: juzList,
+          initialJuzIndex: selectedArgs?.juz?.index,
+          initialSurahIndex:
+              selectedArgs?.surah?.index ?? selectedArgs?.juz?.start?.index,
+          initialVerseNumber:
+              selectedArgs?.initialVerseNumber ??
+              _verseNumberFromVerseKey(selectedArgs?.initialVerseKey) ??
+              _verseNumberFromJuz(selectedArgs?.juz),
+        ),
+      );
+
+      if (result == null || !context.mounted) return;
+
+      activeArgs.value = QuranDetailArgs.surah(
+        result.surah,
+        allSurahs: surahs,
+        allJuz: juzList,
+        initialVerseNumber: result.verseNumber,
       );
     }
 
@@ -277,6 +319,14 @@ class DetailQuranScreen extends HookWidget {
 
     useEffect(
       () {
+        activeArgs.value = args;
+        return null;
+      },
+      [args],
+    );
+
+    useEffect(
+      () {
         final index = initialIndex();
         details.value = <int, QuranDetailModel>{};
         errors.value = <int, String>{};
@@ -291,7 +341,7 @@ class DetailQuranScreen extends HookWidget {
         });
         return null;
       },
-      [args],
+      [currentArgs, surahs, juzList],
     );
 
     final safeSelectedIndex = selectedIndex.value >= itemCount
@@ -299,7 +349,7 @@ class DetailQuranScreen extends HookWidget {
         : selectedIndex.value;
     final selectedArgs = argsAt(safeSelectedIndex);
 
-    if (args == null || selectedArgs == null || itemCount == 0) {
+    if (currentArgs == null || selectedArgs == null || itemCount == 0) {
       return _detailScaffold(
         context,
         child: Center(
@@ -318,6 +368,7 @@ class DetailQuranScreen extends HookWidget {
     return _detailScaffold(
       context,
       onSettingTap: openSettingDialog,
+      onQuranSelectTap: () => unawaited(openQuranSelectSheet()),
       tabBar: _scrollableTabBar(
         context,
         controller: tabScrollController,
@@ -470,15 +521,32 @@ List<JuzModel> _juzListFromArgs(QuranDetailArgs? args) {
   return args.juz == null ? const [] : [args.juz!];
 }
 
+int? _verseNumberFromVerseKey(String? verseKey) {
+  if (verseKey == null) return null;
+  final parts = verseKey.split(':');
+  if (parts.length < 2) return null;
+  return int.tryParse(parts[1]);
+}
+
+int? _verseNumberFromJuz(JuzModel? juz) {
+  if (juz == null) return null;
+  return int.tryParse(juz.verseStartNumber);
+}
+
 Widget _detailScaffold(
   BuildContext context, {
   required Widget child,
   VoidCallback? onSettingTap,
+  VoidCallback? onQuranSelectTap,
   Widget? tabBar,
 }) {
   return Scaffold(
     backgroundColor: const Color(0xFFF3F3F3),
-    appBar: _detailAppBar(context, onSettingTap: onSettingTap),
+    appBar: _detailAppBar(
+      context,
+      onSettingTap: onSettingTap,
+      onQuranSelectTap: onQuranSelectTap,
+    ),
     body: Column(
       children: [
         ?tabBar,
@@ -491,6 +559,7 @@ Widget _detailScaffold(
 PreferredSizeWidget _detailAppBar(
   BuildContext context, {
   VoidCallback? onSettingTap,
+  VoidCallback? onQuranSelectTap,
 }) {
   final textTheme = Theme.of(context).textTheme;
 
@@ -524,10 +593,13 @@ PreferredSizeWidget _detailAppBar(
       ),
     ),
     actions: [
-      SvgPicture.asset(
-        AppIcons.arrowGoForwardLine,
-        width: 24,
-        height: 24,
+      GestureDetector(
+        onTap: onQuranSelectTap,
+        child: SvgPicture.asset(
+          AppIcons.arrowGoForwardLine,
+          width: 24,
+          height: 24,
+        ),
       ),
       const SizedBox(width: 16),
       GestureDetector(

@@ -126,6 +126,7 @@ class _SurahList extends StatelessWidget {
               extra: QuranDetailArgs.surah(
                 surah,
                 allSurahs: state.surahs,
+                allJuz: state.juzList,
               ),
             ),
           ),
@@ -170,6 +171,7 @@ class _JuzList extends StatelessWidget {
               '${RouterPath.detailQuranPath}',
               extra: QuranDetailArgs.juz(
                 juz,
+                allSurahs: state.surahs,
                 allJuz: state.juzList,
               ),
             ),

@@ -419,12 +419,14 @@ class _ContinueReadingContent extends StatelessWidget {
     final args = lastRead?.type == QuranDetailType.juz
         ? QuranDetailArgs.juz(
             juz!,
+            allSurahs: quranState.surahs,
             allJuz: quranState.juzList,
             initialVerseKey: lastRead!.verse.verseKey,
           )
         : QuranDetailArgs.surah(
             surah!,
             allSurahs: quranState.surahs,
+            allJuz: quranState.juzList,
             initialVerseNumber: lastRead!.verse.verseNumber,
             initialVerseKey: lastRead!.verse.verseKey,
           );
