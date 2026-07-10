@@ -8,6 +8,15 @@ class StreakCubit extends Cubit<StreakState> {
 
   final IStreakRepository _repository;
 
+  // Sholat wajib yang harus lengkap agar streak +1
+  static const _requiredPrayers = [
+    'subuh',
+    'dzuhur',
+    'ashar',
+    'maghrib',
+    'isya',
+  ];
+
   Future<void> loadStreak(DateTime date) async {
     final dateKey = _dateKey(date);
     emit(StreakLoading());
@@ -46,20 +55,39 @@ class StreakCubit extends Cubit<StreakState> {
 
     if (!isInWindow || !isBeforeEnd) return;
 
-    if (currentState.isPrayerChecked(prayerName)) return;
-
+    final isCurrentlyChecked = currentState.isPrayerChecked(prayerName);
     final updated = Map<String, bool>.from(currentState.checkedPrayers);
-    updated[prayerName] = true;
+    updated[prayerName] = !isCurrentlyChecked;
+
+    // Streak +1 hanya ketika semua 5 sholat wajib baru saja lengkap
+    // Streak -1 jika uncheck menyebabkan hari tidak lengkap lagi
+    final wasComplete = _requiredPrayers.every(
+      (p) => currentState.checkedPrayers[p] == true,
+    );
+    final isNowComplete = _requiredPrayers.every((p) => updated[p] == true);
+
+    int streakDelta;
+    if (isNowComplete && !wasComplete) {
+      streakDelta = 1;
+    } else if (!isNowComplete && wasComplete) {
+      streakDelta = -1;
+    } else {
+      streakDelta = 0;
+    }
 
     emit(
       StreakLoaded(
-        currentStreak: currentState.currentStreak + 1,
+        currentStreak: currentState.currentStreak + streakDelta,
         checkedPrayers: updated,
         date: currentState.date,
       ),
     );
 
-    await _repository.updateStreak(currentState.date, prayerName, true);
+    await _repository.updateStreak(
+      currentState.date,
+      prayerName,
+      !isCurrentlyChecked,
+    );
   }
 
   _PrayerWindow? _getPrayerWindow({
@@ -116,9 +144,6 @@ class StreakCubit extends Cubit<StreakState> {
     final day = date.day.toString().padLeft(2, '0');
     return '${date.year}-$month-$day';
   }
-
-  int _checkedPrayerCount(Map<String, bool> checkedPrayers) =>
-      checkedPrayers.values.where((isChecked) => isChecked).length;
 }
 
 class _PrayerWindow {

@@ -196,11 +196,9 @@ class _LoadedViewState extends State<_LoadedView> {
                   streakState.isPrayerChecked(
                     item.name.toLowerCase(),
                   );
-              final isFuture = _isPrayerInFuture(
-                time,
-                widget.state.date,
-              );
               final isPastDay = _isPastDate(widget.state.date);
+              final isFutureDay = _isFutureDate(widget.state.date);
+              final canInteract = !isPastDay && !isFutureDay && isActive;
 
               return PrayerTimeTile(
                 icon: item.icon,
@@ -208,15 +206,17 @@ class _LoadedViewState extends State<_LoadedView> {
                 time: _formatTime(time),
                 isActive: isActive,
                 isChecked: isChecked,
-                isHistory: isPastDay,
-                isEnabled: !isChecked && !isFuture && !isPastDay,
+                isHistory: isPastDay || (!isFutureDay && !isActive),
+                isEnabled: canInteract,
                 showCheckbox: item.showCheckbox,
                 showVolume: item.showVolume,
                 isVolumeMuted: item.showVolume && !_isAdzanEnabled(item.name),
-                onVolumeTap: item.showVolume
+                onVolumeTap: canInteract && item.showVolume
                     ? () => _onVolumeTap(context, item)
                     : null,
-                onCheck: () => _onCheck(context, item.name, time),
+                onCheck: canInteract
+                    ? () => _onCheck(context, item.name, time)
+                    : null,
               );
             },
           ),
@@ -278,22 +278,7 @@ class _LoadedViewState extends State<_LoadedView> {
     return target.isBefore(today);
   }
 
-  bool _isPrayerInFuture(String? time, DateTime date) {
-    if (time == null) return true;
-    final parts = time.split(':');
-    if (parts.length != 2) return true;
-    final h = int.tryParse(parts[0].trim()) ?? 0;
-    final m = int.tryParse(parts[1].trim()) ?? 0;
-    final now = DateTime.now();
-    final prayerTime = DateTime(
-      date.year,
-      date.month,
-      date.day,
-      h,
-      m,
-    );
-    return now.isBefore(prayerTime);
-  }
+
 
   void _onCheck(
     BuildContext context,

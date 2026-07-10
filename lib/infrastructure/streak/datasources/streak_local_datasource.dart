@@ -6,15 +6,27 @@ import 'package:sahaba_mobile/infrastructure/streak/datasources/i_streak_local_d
 
 class StreakLocalDatasource implements IStreakLocalDatasource {
   static const String streakBox = 'streak_data';
+  static const _requiredPrayers = [
+    'subuh',
+    'dzuhur',
+    'ashar',
+    'maghrib',
+    'isya',
+  ];
 
   @override
   Future<StreakModel> getStreak(String date) async {
     final box = Hive.box<String>(streakBox);
     final model = _readModel(box, date) ?? StreakModel.empty();
-    final currentStreak = _totalCheckedPrayerCount(box);
+    final currentStreak = _countConsecutiveCompleteDays(
+      box,
+      overrideDate: date,
+      overrideModel: model,
+    );
     final shouldBackfill =
         box.containsKey(date) &&
-        (model.lastCheckedDate != date || model.currentStreak != currentStreak);
+        (model.lastCheckedDate != date ||
+            model.currentStreak != currentStreak);
 
     model
       ..currentStreak = currentStreak
@@ -40,7 +52,7 @@ class StreakLocalDatasource implements IStreakLocalDatasource {
     final updatedModel = model
       ..checkedPrayers = checkedPrayers
       ..lastCheckedDate = date;
-    final currentStreak = _totalCheckedPrayerCount(
+    final currentStreak = _countConsecutiveCompleteDays(
       box,
       overrideDate: date,
       overrideModel: updatedModel,
@@ -77,37 +89,54 @@ class StreakLocalDatasource implements IStreakLocalDatasource {
     }
   }
 
-  int _totalCheckedPrayerCount(
+  /// Hitung streak = jumlah hari consecutive (mundur dari hari terakhir)
+  /// di mana SEMUA 5 sholat wajib sudah di-check.
+  /// Berhenti mundur saat menemui hari yang belum lengkap.
+  int _countConsecutiveCompleteDays(
     Box<String> box, {
     String? overrideDate,
     StreakModel? overrideModel,
   }) {
-    var total = 0;
-    var hasOverrideDate = false;
-
+    var latestDate = overrideDate;
     for (final key in box.keys) {
-      final date = key.toString();
-      if (!_isDateKey(date)) continue;
+      final k = key.toString();
+      if (!_isDateKey(k)) continue;
+      if (latestDate == null || k.compareTo(latestDate) > 0) {
+        latestDate = k;
+      }
+    }
+    if (latestDate == null) return 0;
 
-      final model = date == overrideDate
+    var streak = 0;
+    String? date = latestDate;
+
+    while (date != null) {
+      final isOverride = date == overrideDate;
+      final model = isOverride
           ? overrideModel
           : _readModel(box, date);
-      if (model == null) continue;
 
-      if (date == overrideDate) {
-        hasOverrideDate = true;
-      }
-      total += model.checkedPrayerCount;
+      if (model == null) break;
+      if (!_isDayComplete(model)) break;
+      streak++;
+      date = _prevDateKey(date);
     }
 
-    if (!hasOverrideDate &&
-        overrideDate != null &&
-        overrideModel != null &&
-        _isDateKey(overrideDate)) {
-      total += overrideModel.checkedPrayerCount;
-    }
+    return streak;
+  }
 
-    return total;
+  bool _isDayComplete(StreakModel model) =>
+      _requiredPrayers.every((p) => model.isPrayerChecked(p));
+
+  String? _prevDateKey(String dateKey) {
+    final parts = dateKey.split('-');
+    if (parts.length != 3) return null;
+    final d = DateTime.tryParse(dateKey);
+    if (d == null) return null;
+    final prev = d.subtract(const Duration(days: 1));
+    final m = prev.month.toString().padLeft(2, '0');
+    final day = prev.day.toString().padLeft(2, '0');
+    return '${prev.year}-$m-$day';
   }
 
   bool _isDateKey(String key) {

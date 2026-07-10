@@ -60,13 +60,37 @@ class PrayerTimeTile extends StatelessWidget {
             height: 32,
             child: showCheckbox
                 ? Center(
-                    child: _PrayerCheckbox(
-                      isActive: isActive,
-                      isChecked: isChecked,
-                      isEnabled: isEnabled,
-                      isHistory: isHistory,
-                      onTap: onCheck,
-                    ),
+                    child: isEnabled
+                        ? _PrayerCheckbox(
+                            isActive: isActive,
+                            isChecked: isChecked,
+                            isEnabled: true,
+                            isHistory: isHistory,
+                            onTap: onCheck,
+                          )
+                        : Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: isChecked
+                                  ? ColorPalette.primaryColor
+                                  : Colors.transparent,
+                              border: Border.all(
+                                color: isChecked
+                                    ? ColorPalette.primaryColor
+                                    : ColorPalette.contentDisabled,
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: isChecked
+                                ? const Icon(
+                                    Icons.check_rounded,
+                                    color: ColorPalette.kWhite,
+                                    size: 20,
+                                  )
+                                : null,
+                          ),
                   )
                 : const SizedBox.shrink(),
           ),
@@ -110,24 +134,42 @@ class PrayerTimeTile extends StatelessWidget {
           if (showVolume)
             Padding(
               padding: const EdgeInsets.only(left: 16),
-              child: InkWell(
-                onTap: onVolumeTap,
-                borderRadius: BorderRadius.circular(20),
-                child: Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: SvgPicture.asset(
-                    isVolumeMuted
-                        ? AppIcons.volumeMuteLine
-                        : AppIcons.volumeUpLine,
-                    width: 24,
-                    height: 24,
-                    colorFilter: ColorFilter.mode(
-                      isActive ? ColorPalette.kWhite : contentColor,
-                      BlendMode.srcIn,
+              child: isEnabled
+                  ? InkWell(
+                      onTap: onVolumeTap,
+                      borderRadius: BorderRadius.circular(20),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: SvgPicture.asset(
+                          isVolumeMuted
+                              ? AppIcons.volumeMuteLine
+                              : AppIcons.volumeUpLine,
+                          width: 24,
+                          height: 24,
+                          colorFilter: ColorFilter.mode(
+                            isActive ? ColorPalette.kWhite : contentColor,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
+                    )
+                  : SizedBox(
+                      width: 32,
+                      height: 32,
+                      child: Center(
+                        child: SvgPicture.asset(
+                          isVolumeMuted
+                              ? AppIcons.volumeMuteLine
+                              : AppIcons.volumeUpLine,
+                          width: 24,
+                          height: 24,
+                          colorFilter: ColorFilter.mode(
+                            ColorPalette.contentDisabled,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
             ),
         ],
       ),
@@ -160,40 +202,46 @@ class _PrayerCheckbox extends StatelessWidget {
         ? ColorPalette.kWhite
         : ColorPalette.contentDisabled;
 
-    return InkWell(
-      onTap: isEnabled ? onTap : null,
-      borderRadius: BorderRadius.circular(6),
-      child: Container(
-        width: 24,
-        height: 24,
-        decoration: BoxDecoration(
-          color: isHistory
-              ? Colors.transparent
-              : isChecked
-              ? ColorPalette.primaryColor
-              : Colors.transparent,
-          border: Border.all(
-            color: borderColor,
-            width: 2,
-          ),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: isHistory
-            ? (isChecked
-                  ? const Icon(
-                      Icons.check_rounded,
-                      color: ColorPalette.contentDisabled,
-                      size: 20,
-                    )
-                  : null)
+    final checkbox = Container(
+      width: 24,
+      height: 24,
+      decoration: BoxDecoration(
+        color: isHistory
+            ? Colors.transparent
             : isChecked
-            ? const Icon(
-                Icons.check_rounded,
-                color: ColorPalette.kWhite,
-                size: 20,
-              )
-            : null,
+            ? (isActive ? ColorPalette.kWhite : ColorPalette.primaryColor)
+            : Colors.transparent,
+        border: Border.all(
+          color: borderColor,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(4),
       ),
+      child: isHistory
+          ? (isChecked
+                ? const Icon(
+                    Icons.check_rounded,
+                    color: ColorPalette.contentDisabled,
+                    size: 20,
+                  )
+                : null)
+          : isChecked
+          ? Icon(
+              Icons.check_rounded,
+              color: isActive
+                  ? ColorPalette.primaryColor
+                  : ColorPalette.kWhite,
+              size: 20,
+            )
+          : null,
+    );
+
+    if (!isEnabled) return checkbox;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(6),
+      child: checkbox,
     );
   }
 }

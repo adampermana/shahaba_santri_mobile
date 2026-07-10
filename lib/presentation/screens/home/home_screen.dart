@@ -309,6 +309,7 @@ class _ContinueReadingContent extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       child: Stack(
         children: [
+          // Background layer — motif behind content
           Positioned(
             bottom: 0,
             left: 0,
@@ -318,6 +319,7 @@ class _ContinueReadingContent extends StatelessWidget {
               fit: BoxFit.fitWidth,
             ),
           ),
+          // Foreground layer — content on top of motif
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
             child: Column(
@@ -381,6 +383,12 @@ class _ContinueReadingContent extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: ColorPalette.primaryColor,
                       foregroundColor: ColorPalette.kWhite,
+                      disabledBackgroundColor: const Color(
+                        0xFFE0E0E0,
+                      ),
+                      disabledForegroundColor: const Color(
+                        0xFF9E9E9E,
+                      ),
                       elevation: 1,
                       shadowColor: ColorPalette.kBlack.withValues(alpha: 0.05),
                       padding: const EdgeInsets.symmetric(vertical: 16),
