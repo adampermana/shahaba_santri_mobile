@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +12,7 @@ import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedu
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_state.dart';
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
+import 'package:sahaba_mobile/infrastructure/extension/datetime_extension.dart';
 import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 import 'package:sahaba_mobile/infrastructure/services/adzan_service.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
@@ -20,7 +22,6 @@ import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/home/widgets/card_jadwal_sholat.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/prayer_time_tile.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/streak_indicator.dart';
-import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
 class JadwalSholatScreen extends StatelessWidget {
@@ -30,17 +31,21 @@ class JadwalSholatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
       builder: (context, scheduleState) {
-        return Scaffold(
-          appBar: CustomAppBar.buildJadwalSholatAppBar(
-            date: scheduleState is PrayerScheduleLoaded
-                ? scheduleState.date
-                : DateTime.now(),
-            onPrevious: () => context.read<PrayerScheduleCubit>().previousDay(),
-            onNext: () => context.read<PrayerScheduleCubit>().nextDay(),
-          ),
-          backgroundColor: ColorPalette.scaffoldBackground,
-          body: SafeArea(
-            child: BlocListener<PrayerScheduleCubit, PrayerScheduleState>(
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: scheduleState is PrayerScheduleLoaded
+              ? const SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness: Brightness.light,
+                  statusBarBrightness: Brightness.dark,
+                )
+              : const SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness: Brightness.dark,
+                  statusBarBrightness: Brightness.light,
+                ),
+          child: Scaffold(
+            backgroundColor: ColorPalette.scaffoldBackground,
+            body: BlocListener<PrayerScheduleCubit, PrayerScheduleState>(
               listenWhen: (previous, current) {
                 if (current is! PrayerScheduleLoaded) return false;
                 if (previous is! PrayerScheduleLoaded) return true;
@@ -48,36 +53,44 @@ class JadwalSholatScreen extends StatelessWidget {
               },
               listener: (context, state) {
                 if (state is PrayerScheduleLoaded) {
-                  unawaited(context.read<StreakCubit>().loadStreak(state.date));
+                  unawaited(
+                    context.read<StreakCubit>().loadStreak(state.date),
+                  );
                 }
               },
               child: BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
                 builder: (context, state) {
                   if (state is PrayerScheduleLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: ColorPalette.primaryColor,
+                    return const SafeArea(
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: ColorPalette.primaryColor,
+                        ),
                       ),
                     );
                   }
                   if (state is PrayerScheduleError) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(state.message),
-                          const SizedBox(height: 16),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 32),
-                            child: SubmitButtonStylesWidget(
-                              textButton: 'Coba Lagi',
-                              height: 50,
-                              primaryColor: ColorPalette.primaryColor,
-                              style: SubmitButtonStyle.elevated,
-                              onPressed: () => _reload(context),
+                    return SafeArea(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(state.message),
+                            const SizedBox(height: 16),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32,
+                              ),
+                              child: SubmitButtonStylesWidget(
+                                textButton: 'Coba Lagi',
+                                height: 50,
+                                primaryColor: ColorPalette.primaryColor,
+                                style: SubmitButtonStyle.elevated,
+                                onPressed: () => _reload(context),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   }
@@ -85,6 +98,10 @@ class JadwalSholatScreen extends StatelessWidget {
                     return _LoadedView(
                       state: state,
                       schedule: state.response.jadwal,
+                      onPrevious: () =>
+                          context.read<PrayerScheduleCubit>().previousDay(),
+                      onNext: () =>
+                          context.read<PrayerScheduleCubit>().nextDay(),
                     );
                   }
                   return const SizedBox.shrink();
@@ -112,10 +129,17 @@ class JadwalSholatScreen extends StatelessWidget {
 }
 
 class _LoadedView extends StatefulWidget {
-  const _LoadedView({required this.state, required this.schedule});
+  const _LoadedView({
+    required this.state,
+    required this.schedule,
+    required this.onPrevious,
+    required this.onNext,
+  });
 
   final PrayerScheduleLoaded state;
   final PrayerScheduleModel? schedule;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
 
   @override
   State<_LoadedView> createState() => _LoadedViewState();
@@ -147,20 +171,20 @@ class _LoadedViewState extends State<_LoadedView> {
 
     return CustomScrollView(
       slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
-          sliver: SliverToBoxAdapter(
-            child: _NextPrayerCard(
-              textTheme: textTheme,
-              nextPrayer: widget.state.nextPrayer,
-              schedule: _isFutureDate(widget.state.date)
-                  ? (widget.state.todaySchedule ?? widget.schedule)
-                  : widget.schedule,
-            ),
+        SliverToBoxAdapter(
+          child: _NextPrayerCard(
+            textTheme: textTheme,
+            date: widget.state.date,
+            nextPrayer: widget.state.nextPrayer,
+            schedule: _isFutureDate(widget.state.date)
+                ? (widget.state.todaySchedule ?? widget.schedule)
+                : widget.schedule,
+            onPrevious: widget.onPrevious,
+            onNext: widget.onNext,
           ),
         ),
         SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+          padding: const EdgeInsets.fromLTRB(16, 32, 16, 0),
           sliver: SliverToBoxAdapter(
             child: _InfoRow(
               textTheme: textTheme,
@@ -278,8 +302,6 @@ class _LoadedViewState extends State<_LoadedView> {
     return target.isBefore(today);
   }
 
-
-
   void _onCheck(
     BuildContext context,
     String name,
@@ -365,129 +387,202 @@ class _PrayerItem {
 class _NextPrayerCard extends StatelessWidget {
   const _NextPrayerCard({
     required this.textTheme,
+    required this.date,
     required this.nextPrayer,
     required this.schedule,
+    required this.onPrevious,
+    required this.onNext,
   });
 
   final TextTheme textTheme;
+  final DateTime date;
   final WaktuSholat? nextPrayer;
   final PrayerScheduleModel? schedule;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
+
+  static const _mosqueColor = Color(0xFF474747);
 
   @override
   Widget build(BuildContext context) {
     final w = nextPrayer ?? WaktuSholat.subuh;
     final time = schedule?.getTimeByPrayerName(w.label.toLowerCase()) ?? w.time;
-
-    final isNight = w == WaktuSholat.maghrib || w == WaktuSholat.isya;
-    final masjidAsset = isNight
-        ? AppIcons.jadwalSholatMasjidMalam
-        : AppIcons.jadwalSholatMasjidSiang;
-    final celestialAsset = isNight
-        ? AppIcons.jadwalSholatMoon
-        : AppIcons.jadwalSholatSubuhCapa1; // using subuh capa for sun
+    const headerHeight = 327.0;
+    final mosqueAsset = _mosqueAsset();
+    final celestialAsset = _celestialAsset(w);
+    final cloudWidth = _cloudWidth(context.mediaQuerySize.width);
+    final cloudPosition = _cloudPosition(w, cloudWidth);
+    final celestial = _celestialPosition(w);
+    final mosqueSize = _mosqueSize(context.mediaQuerySize.width);
 
     return AnimatedContainer(
       duration: const Duration(seconds: 1),
       curve: Curves.easeInOut,
       width: double.infinity,
-      height: 201,
+      height: headerHeight,
       decoration: BoxDecoration(
         gradient: w.gradient.toLinearGradient(),
       ),
       clipBehavior: Clip.hardEdge,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final cardWidth = constraints.maxWidth;
-          final cloudWidth = _cloudWidth(cardWidth);
-          final cloudPosition = _cloudPosition(w, cloudWidth);
+      child: Stack(
+        children: [
+          Positioned(
+            left: cloudPosition.left,
+            top: cloudPosition.leftTop,
+            child: SvgPicture.asset(
+              w.vectorL,
+              width: cloudWidth,
+            ),
+          ),
+          Positioned(
+            right: cloudPosition.right,
+            top: cloudPosition.rightTop,
+            child: SvgPicture.asset(
+              w.vectorR,
+              width: cloudWidth,
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: celestial.top,
+            child: Center(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 760),
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                transitionBuilder: (child, animation) {
+                  final offset = Tween<Offset>(
+                    begin: _celestialEntryOffset(w),
+                    end: Offset.zero,
+                  ).animate(animation);
 
-          return Stack(
-            children: [
-              // Celestial body (Sun / Moon)
-              Positioned(
-                top: isNight ? -20 : -90,
-                left: 0,
-                right: 0,
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 700),
-                  child: SvgPicture.asset(
-                    celestialAsset,
-                    key: ValueKey(celestialAsset),
-                    height: 151,
+                  return FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(
+                      position: offset,
+                      child: child,
+                    ),
+                  );
+                },
+                child: SvgPicture.asset(
+                  celestialAsset,
+                  key: ValueKey('${w.name}-$celestialAsset'),
+                  width: celestial.size,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -mosqueSize.height * 0.6,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: SizedBox(
+                width: mosqueSize.width,
+                height: mosqueSize.height,
+                child: SvgPicture.asset(
+                  mosqueAsset,
+                  fit: BoxFit.fill,
+                  colorFilter: const ColorFilter.mode(
+                    _mosqueColor,
+                    BlendMode.srcIn,
                   ),
                 ),
               ),
-              // Masjid
-              Positioned(
-                bottom: context.isTabletLarge
-                    ? -350
-                    : context.isTabletMedium
-                    ? -200
-                    : context.isTabletSmall
-                    ? -200
-                    : context.isPhoneLarge
-                    ? -110
-                    : context.isPhoneMedium
-                    ? -100
-                    : context.isPhoneSmall
-                    ? -100
-                    : -100,
-                left: -10,
-                right: -10,
-                child: SvgPicture.asset(
-                  masjidAsset,
-                  fit: BoxFit.cover,
+            ),
+          ),
+          Positioned(
+            top: 80,
+            left: 16,
+            right: 16,
+            child: _HeaderDateNavigator(
+              date: date,
+              textTheme: textTheme,
+              onPrevious: onPrevious,
+              onNext: onNext,
+            ),
+          ),
+          Positioned(
+            top: 164,
+            left: 16,
+            right: 16,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  w.label,
+                  style: textTheme.titleLarge?.copyWith(
+                    color: ColorPalette.kWhite,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-              Positioned(
-                left: cloudPosition.left,
-                top: cloudPosition.leftTop,
-                child: SvgPicture.asset(
-                  w.vectorL,
-                  width: cloudWidth,
+                Text(
+                  _formatTime(time),
+                  style: textTheme.displayLarge?.copyWith(
+                    color: ColorPalette.kWhite,
+                    fontSize: 48,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-              Positioned(
-                right: cloudPosition.right,
-                top: cloudPosition.rightTop,
-                child: SvgPicture.asset(
-                  w.vectorR,
-                  width: cloudWidth,
-                ),
-              ),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 20),
-                    Text(
-                      w.label,
-                      style: textTheme.titleLarge?.copyWith(
-                        color: ColorPalette.kWhite,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      _formatTime(time),
-                      style: textTheme.displayLarge?.copyWith(
-                        color: ColorPalette.kWhite,
-                        fontSize: 48,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
   double _cloudWidth(double cardWidth) =>
       (cardWidth * 0.62).clamp(154.0, 210.0);
+
+  String _mosqueAsset() => AppIcons.jadwalSholatMasjidMalam;
+
+  String _celestialAsset(WaktuSholat prayer) {
+    return switch (prayer) {
+      WaktuSholat.terbit => AppIcons.jadwalSholatTerbitCapa1,
+      WaktuSholat.maghrib => AppIcons.jadwalSholatMaghribFlat,
+      WaktuSholat.isya => AppIcons.jadwalSholatMoon,
+      _ => AppIcons.jadwalSholatSubuhCapa1,
+    };
+  }
+
+  Offset _celestialEntryOffset(WaktuSholat prayer) {
+    return switch (prayer) {
+      WaktuSholat.maghrib => const Offset(0, -0.20),
+      _ => const Offset(0, 0.28),
+    };
+  }
+
+  _CelestialPosition _celestialPosition(WaktuSholat prayer) {
+    return switch (prayer) {
+      WaktuSholat.maghrib => const _CelestialPosition(
+        top: 204,
+        size: 178,
+      ),
+      WaktuSholat.isya => const _CelestialPosition(
+        top: 209,
+        size: 118,
+      ),
+      WaktuSholat.terbit => const _CelestialPosition(
+        top: 227,
+        size: 184,
+      ),
+      _ => const _CelestialPosition(
+        top: 227,
+        size: 184,
+      ),
+    };
+  }
+
+  Size _mosqueSize(double screenWidth) {
+    const figmaMosqueWidth = 593.563;
+    const figmaMosqueHeight = 249.053;
+    final width = screenWidth * (figmaMosqueWidth / 402);
+    final height = width * (figmaMosqueHeight / figmaMosqueWidth);
+    return Size(width, height);
+  }
 
   _CloudPosition _cloudPosition(WaktuSholat prayer, double cloudWidth) {
     switch (prayer) {
@@ -516,10 +611,10 @@ class _NextPrayerCard extends StatelessWidget {
       case WaktuSholat.dzuhur:
       case WaktuSholat.ashar:
         return _CloudPosition(
-          left: -cloudWidth * 0.74,
-          leftTop: 0,
-          right: -cloudWidth * 0.58,
-          rightTop: -4,
+          left: -cloudWidth * 0.62,
+          leftTop: 118,
+          right: -cloudWidth * 0.5,
+          rightTop: 145,
         );
     }
   }
@@ -530,6 +625,112 @@ class _NextPrayerCard extends StatelessWidget {
     if (parts.length != 2) return time;
     return '${parts[0].trim()} : ${parts[1].trim()}';
   }
+}
+
+class _HeaderDateNavigator extends StatelessWidget {
+  const _HeaderDateNavigator({
+    required this.date,
+    required this.textTheme,
+    required this.onPrevious,
+    required this.onNext,
+  });
+
+  final DateTime date;
+  final TextTheme textTheme;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
+
+  @override
+  Widget build(BuildContext context) {
+    final monthName = IndoDateTimeX.bulan[date.month - 1];
+    final formatted = '${date.day} $monthName ${date.year}';
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _HeaderDateArrowButton(
+          quarterTurns: 2,
+          onTap: onPrevious,
+        ),
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                formatted,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.titleMedium?.copyWith(
+                  color: ColorPalette.kWhite,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                date.hijriDateId(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.bodySmall?.copyWith(
+                  color: ColorPalette.kWhite,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ),
+        _HeaderDateArrowButton(
+          onTap: onNext,
+        ),
+      ],
+    );
+  }
+}
+
+class _HeaderDateArrowButton extends StatelessWidget {
+  const _HeaderDateArrowButton({required this.onTap, this.quarterTurns = 0});
+
+  final VoidCallback onTap;
+  final int quarterTurns;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 32,
+      height: 48,
+      decoration: BoxDecoration(
+        color: ColorPalette.kWhite.withValues(alpha: 0.38),
+        borderRadius: BorderRadius.circular(1000),
+      ),
+      child: IconButton(
+        onPressed: onTap,
+        padding: EdgeInsets.zero,
+        icon: RotatedBox(
+          quarterTurns: quarterTurns,
+          child: SvgPicture.asset(
+            AppIcons.arrowDropRightLine,
+            width: 24,
+            height: 24,
+            colorFilter: const ColorFilter.mode(
+              ColorPalette.kWhite,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CelestialPosition {
+  const _CelestialPosition({
+    required this.top,
+    required this.size,
+  });
+
+  final double top;
+  final double size;
 }
 
 class _CloudPosition {
