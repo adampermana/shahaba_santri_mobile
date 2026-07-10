@@ -407,13 +407,13 @@ class _NextPrayerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final w = nextPrayer ?? WaktuSholat.subuh;
     final time = schedule?.getTimeByPrayerName(w.label.toLowerCase()) ?? w.time;
-    const headerHeight = 327.0;
+    final headerHeight = _headerHeight(context);
     final mosqueAsset = _mosqueAsset();
     final celestialAsset = _celestialAsset(w);
     final cloudWidth = _cloudWidth(context.mediaQuerySize.width);
     final cloudPosition = _cloudPosition(w, cloudWidth);
-    final celestial = _celestialPosition(w);
-    final mosqueSize = _mosqueSize(context.mediaQuerySize.width);
+    final celestial = _celestialPosition(context, w);
+    final mosqueSize = _mosqueSize(context);
 
     return AnimatedContainer(
       duration: const Duration(seconds: 1),
@@ -537,6 +537,16 @@ class _NextPrayerCard extends StatelessWidget {
   double _cloudWidth(double cardWidth) =>
       (cardWidth * 0.62).clamp(154.0, 210.0);
 
+  double _headerHeight(BuildContext context) {
+    return context.isTabletLarge
+        ? 430
+        : context.isTabletMedium
+        ? 410
+        : context.isTabletSmall
+        ? 380
+        : 327;
+  }
+
   String _mosqueAsset() => AppIcons.jadwalSholatMasjidMalam;
 
   String _celestialAsset(WaktuSholat prayer) {
@@ -555,31 +565,88 @@ class _NextPrayerCard extends StatelessWidget {
     };
   }
 
-  _CelestialPosition _celestialPosition(WaktuSholat prayer) {
+  _CelestialPosition _celestialPosition(
+    BuildContext context,
+    WaktuSholat prayer,
+  ) {
     return switch (prayer) {
-      WaktuSholat.maghrib => const _CelestialPosition(
-        top: 204,
-        size: 178,
+      WaktuSholat.maghrib => _CelestialPosition(
+        top: context.isTabletLarge
+            ? 230
+            : context.isTabletMedium
+            ? 218
+            : context.isTabletSmall
+            ? 208
+            : 204,
+        size: context.isTabletLarge
+            ? 210
+            : context.isTabletMedium
+            ? 198
+            : context.isTabletSmall
+            ? 188
+            : 178,
       ),
-      WaktuSholat.isya => const _CelestialPosition(
-        top: 209,
-        size: 118,
+      WaktuSholat.isya => _CelestialPosition(
+        top: context.isTabletLarge
+            ? 230
+            : context.isTabletMedium
+            ? 220
+            : context.isTabletSmall
+            ? 214
+            : 209,
+        size: context.isTabletLarge
+            ? 150
+            : context.isTabletMedium
+            ? 140
+            : context.isTabletSmall
+            ? 130
+            : 118,
       ),
-      WaktuSholat.terbit => const _CelestialPosition(
-        top: 227,
-        size: 184,
+      WaktuSholat.terbit => _CelestialPosition(
+        top: context.isTabletLarge
+            ? 236
+            : context.isTabletMedium
+            ? 224
+            : context.isTabletSmall
+            ? 214
+            : 227,
+        size: context.isTabletLarge
+            ? 210
+            : context.isTabletMedium
+            ? 198
+            : context.isTabletSmall
+            ? 188
+            : 184,
       ),
-      _ => const _CelestialPosition(
-        top: 227,
-        size: 184,
+      _ => _CelestialPosition(
+        top: context.isTabletLarge
+            ? 236
+            : context.isTabletMedium
+            ? 224
+            : context.isTabletSmall
+            ? 214
+            : 227,
+        size: context.isTabletLarge
+            ? 210
+            : context.isTabletMedium
+            ? 198
+            : context.isTabletSmall
+            ? 188
+            : 184,
       ),
     };
   }
 
-  Size _mosqueSize(double screenWidth) {
+  Size _mosqueSize(BuildContext context) {
     const figmaMosqueWidth = 593.563;
     const figmaMosqueHeight = 249.053;
-    final width = screenWidth * (figmaMosqueWidth / 402);
+    final width = context.isTabletLarge
+        ? (context.width * 0.62).clamp(680.0, 920.0)
+        : context.isTabletMedium
+        ? (context.width * 0.72).clamp(560.0, 760.0)
+        : context.isTabletSmall
+        ? (context.width * 0.92).clamp(560.0, 660.0)
+        : context.width * (figmaMosqueWidth / 402);
     final height = width * (figmaMosqueHeight / figmaMosqueWidth);
     return Size(width, height);
   }
@@ -596,9 +663,9 @@ class _NextPrayerCard extends StatelessWidget {
       case WaktuSholat.isya:
         return _CloudPosition(
           left: -cloudWidth * 0.66,
-          leftTop: -6,
+          leftTop: 80,
           right: -cloudWidth * 0.62,
-          rightTop: -6,
+          rightTop: 80,
         );
       case WaktuSholat.terbit:
         return _CloudPosition(
