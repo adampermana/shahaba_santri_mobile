@@ -17,6 +17,7 @@ import 'package:sahaba_mobile/infrastructure/failures/failures.dart';
 import 'package:sahaba_mobile/infrastructure/services/adzan_service.dart';
 import 'package:sahaba_mobile/infrastructure/services/firebase_messaging_service.dart';
 import 'package:sahaba_mobile/infrastructure/services/local_notifications_service.dart';
+import 'package:sahaba_mobile/infrastructure/services/native_navigation_service.dart';
 import 'package:sahaba_mobile/injector.dart';
 
 class AppBlocObserver extends BlocObserver {
@@ -93,6 +94,7 @@ Future<void> bootstrap(
       await initApp();
       await Alarm.init();
       await AdzanService.instance().init(sl());
+      await NativeNavigationService.init();
 
       // Setup BLoC observer for debugging
       if (kDebugMode) Bloc.observer = const AppBlocObserver();

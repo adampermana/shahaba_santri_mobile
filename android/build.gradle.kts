@@ -20,6 +20,16 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+gradle.projectsEvaluated {
+    subprojects {
+        if (name == "alarm") {
+            tasks.matching { it.name.startsWith("lint") }.configureEach {
+                enabled = false
+            }
+        }
+    }
+}
+
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }

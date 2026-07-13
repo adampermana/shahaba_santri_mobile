@@ -10,6 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
+import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_state.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_state.dart';
 import 'package:sahaba_mobile/domains/quran/juz_model.dart';
@@ -985,10 +986,17 @@ Widget _verseRow(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                _verseNumberBadge(
-                  context,
-                  verse.verseNumber,
-                  isSelected: isHighlighted,
+                BlocBuilder<LastReadCubit, LastReadState>(
+                  builder: (context, state) {
+                    final isLastRead =
+                        state is LastReadLoaded &&
+                        state.lastRead?.verse.verseKey == verse.verseKey;
+                    return _verseNumberBadge(
+                      context,
+                      verse.verseNumber,
+                      isSelected: isHighlighted || isLastRead,
+                    );
+                  },
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -1325,11 +1333,10 @@ Widget _quranShareCard(BuildContext context, QuranVerseModel verse) {
         Positioned(
           top: 0,
           left: -30,
-          bottom: 0,
           child: Image.asset(
-            'assets/images/motif-short.png',
-            width: 200,
-            fit: BoxFit.fitHeight,
+            'assets/images/motif-share.png',
+            width: 240,
+            fit: BoxFit.contain,
           ),
         ),
         Padding(

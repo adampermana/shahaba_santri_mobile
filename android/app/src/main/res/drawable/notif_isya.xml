@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="72"
+    android:viewportHeight="72">
+    <path
+        android:fillColor="@color/adzan_notification_night"
+        android:pathData="M36,2C54.8,2 70,17.2 70,36C70,54.8 54.8,70 36,70C17.2,70 2,54.8 2,36C2,17.2 17.2,2 36,2Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:fillAlpha="0.7"
+        android:pathData="M43,15C38,19 36,25 38,31C40,38 46,42 53,42C49,47 42,50 35,48C25,45 19,35 22,25C25,16 34,11 43,15Z" />
+    <path
+        android:fillColor="@color/adzan_notification_sky_soft"
+        android:fillAlpha="0.5"
+        android:pathData="M17,52C26,45 36,44 45,49C51,52 55,59 55,67C49,69 43,70 36,70C28,70 21,67 17,52Z" />
+</vector>

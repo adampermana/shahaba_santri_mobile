@@ -260,6 +260,7 @@ class _LoadedViewState extends State<_LoadedView> {
     await _adzanService.syncSchedule(
       date: widget.state.date,
       cityId: widget.state.cityId,
+      locationName: _locationName(context),
     );
   }
 
@@ -271,6 +272,7 @@ class _LoadedViewState extends State<_LoadedView> {
       prayerName: item.name,
       date: widget.state.date,
       cityId: widget.state.cityId,
+      locationName: _locationName(context),
     );
 
     if (!mounted) return;
@@ -284,6 +286,23 @@ class _LoadedViewState extends State<_LoadedView> {
 
   bool _isAdzanEnabled(String prayerName) =>
       _adzanEnabled[prayerName.toLowerCase()] ?? true;
+
+  String _locationName(BuildContext context) {
+    final responseLocation = widget.state.response.lokasi?.trim();
+    if (responseLocation != null && responseLocation.isNotEmpty) {
+      return responseLocation;
+    }
+
+    final locationState = context.read<LocationCubit>().state;
+    if (locationState is LocationLoaded) {
+      final cityLocation = locationState.city.lokasi?.trim();
+      if (cityLocation != null && cityLocation.isNotEmpty) {
+        return cityLocation;
+      }
+    }
+
+    return 'Anda';
+  }
 
   bool _isSameDate(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
@@ -474,13 +493,13 @@ class _NextPrayerCard extends StatelessWidget {
             ),
           ),
           Positioned(
-            bottom: -mosqueSize.height * 0.6,
+            bottom: -mosqueSize.height * 0.4,
             left: 0,
             right: 0,
             child: Center(
               child: SizedBox(
-                width: mosqueSize.width,
-                height: mosqueSize.height,
+                // width: mosqueSize.width,
+                // height: mosqueSize.height,
                 child: SvgPicture.asset(
                   mosqueAsset,
                   fit: BoxFit.fill,
@@ -655,10 +674,10 @@ class _NextPrayerCard extends StatelessWidget {
     switch (prayer) {
       case WaktuSholat.maghrib:
         return _CloudPosition(
-          left: -cloudWidth * 0.74,
-          leftTop: -2,
+          left: -cloudWidth * 0.7,
+          leftTop: 70,
           right: -cloudWidth * 0.56,
-          rightTop: 0,
+          rightTop: 70,
         );
       case WaktuSholat.isya:
         return _CloudPosition(

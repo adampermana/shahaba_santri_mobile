@@ -28,8 +28,6 @@ class CalendarGrid extends StatelessWidget {
 
     final cells = <Widget>[];
     Widget disabledDayCell(DateTime date) {
-      if (date.year != focusedMonth.year) return const SizedBox.shrink();
-
       return Center(
         child: Text(
           '${date.day}',
@@ -88,9 +86,10 @@ class CalendarGrid extends StatelessWidget {
       );
     }
 
-    // Trailing cells to complete last row
+    // Trailing cells to complete 6 rows of dates (42 date cells)
+    // + 1 header row = 49 cells total
     final totalCells = cells.length;
-    final remaining = (7 - (totalCells % 7)) % 7;
+    final remaining = 49 - totalCells;
     for (var i = 1; i <= remaining; i++) {
       final nextDate = lastDay.add(Duration(days: i));
       cells.add(disabledDayCell(nextDate));

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:alarm/alarm.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_ce/hive_ce.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
@@ -18,6 +19,9 @@ class AdzanService {
   static const String _assetAudioPath = 'assets/audio/adzan-default.mp3';
   static const String _payloadType = 'adzan';
   static const String _qiblaPath = '/main/qibla';
+  static const MethodChannel _androidAlarmChannel = MethodChannel(
+    'sahaba/adzan_alarm',
+  );
 
   late Box<bool> _preferenceBox;
   late IPrayerLocalDatasource _local;
@@ -52,6 +56,7 @@ class AdzanService {
     required String prayerName,
     required DateTime date,
     required String cityId,
+    String? locationName,
   }) async {
     _ensureInitialized();
     final normalizedPrayerName = _normalizePrayerName(prayerName);
@@ -70,6 +75,7 @@ class AdzanService {
       prayerName: normalizedPrayerName,
       date: date,
       cityId: cityId,
+      locationName: locationName,
     );
     return nextEnabled;
   }
@@ -77,6 +83,7 @@ class AdzanService {
   Future<void> syncSchedule({
     required DateTime date,
     required String cityId,
+    String? locationName,
   }) async {
     _ensureInitialized();
 
@@ -86,6 +93,7 @@ class AdzanService {
           prayerName: prayerName,
           date: date,
           cityId: cityId,
+          locationName: locationName,
         );
       } else {
         await cancelPrayer(prayerName);
@@ -97,6 +105,7 @@ class AdzanService {
     required String prayerName,
     required DateTime date,
     required String cityId,
+    String? locationName,
   }) async {
     _ensureInitialized();
 
@@ -115,14 +124,30 @@ class AdzanService {
 
     final alarmId = _alarmId(normalizedPrayerName, date);
     if (!prayerTime.isAfter(DateTime.now())) {
-      await Alarm.stop(alarmId);
+      await _cancelAlarmById(alarmId);
       return;
     }
     final prayerLabel = _label(normalizedPrayerName);
+    final normalizedLocation = _locationLabel(locationName);
     final notificationTitle = 'Waktu $prayerLabel Telah Tiba';
     final notificationBody =
-        'Telah masuk waktu sholat $prayerLabel untuk wilayah Anda '
+        'Telah masuk waktu sholat $prayerLabel untuk wilayah '
+        '$normalizedLocation '
         'dan sekitarnya.';
+
+    if (Platform.isAndroid) {
+      await _scheduleAndroidAlarm(
+        alarmId: alarmId,
+        prayerName: normalizedPrayerName,
+        prayerLabel: prayerLabel,
+        notificationTitle: notificationTitle,
+        notificationBody: notificationBody,
+        prayerTime: prayerTime,
+        locationName: normalizedLocation,
+        dateKey: _dateKey(date),
+      );
+      return;
+    }
 
     await Alarm.set(
       alarmSettings: AlarmSettings(
@@ -157,11 +182,72 @@ class AdzanService {
   Future<void> cancelPrayer(String prayerName) async {
     _ensureInitialized();
     final normalizedPrayerName = _normalizePrayerName(prayerName);
+    if (Platform.isAndroid) {
+      await _cancelAndroidPrayer(normalizedPrayerName);
+      return;
+    }
+
     final alarms = await Alarm.getAlarms();
     for (final alarm in alarms) {
       if (_isAdzanPrayerAlarm(alarm, normalizedPrayerName)) {
         await Alarm.stop(alarm.id);
       }
+    }
+  }
+
+  Future<void> _cancelAlarmById(int alarmId) async {
+    if (Platform.isAndroid) {
+      await _cancelAndroidAlarm(alarmId);
+      return;
+    }
+
+    await Alarm.stop(alarmId);
+  }
+
+  Future<void> _scheduleAndroidAlarm({
+    required int alarmId,
+    required String prayerName,
+    required String prayerLabel,
+    required String notificationTitle,
+    required String notificationBody,
+    required DateTime prayerTime,
+    required String locationName,
+    required String dateKey,
+  }) async {
+    try {
+      await _androidAlarmChannel.invokeMethod<void>('scheduleAdzanAlarm', {
+        'alarmId': alarmId,
+        'prayerName': prayerName,
+        'prayerLabel': prayerLabel,
+        'title': notificationTitle,
+        'body': notificationBody,
+        'triggerAtMillis': prayerTime.millisecondsSinceEpoch,
+        'locationName': locationName,
+        'date': dateKey,
+        'qiblaPath': _qiblaPath,
+      });
+    } on PlatformException catch (e) {
+      debugPrint('Failed to schedule native adzan alarm: $e');
+    }
+  }
+
+  Future<void> _cancelAndroidPrayer(String prayerName) async {
+    try {
+      await _androidAlarmChannel.invokeMethod<void>('cancelAdzanPrayer', {
+        'prayerName': prayerName,
+      });
+    } on PlatformException catch (e) {
+      debugPrint('Failed to cancel native adzan prayer: $e');
+    }
+  }
+
+  Future<void> _cancelAndroidAlarm(int alarmId) async {
+    try {
+      await _androidAlarmChannel.invokeMethod<void>('cancelAdzanAlarm', {
+        'alarmId': alarmId,
+      });
+    } on PlatformException catch (e) {
+      debugPrint('Failed to cancel native adzan alarm: $e');
     }
   }
 
@@ -228,6 +314,12 @@ class AdzanService {
 
   String _normalizePrayerName(String prayerName) =>
       prayerName.trim().toLowerCase();
+
+  String _locationLabel(String? locationName) {
+    final value = locationName?.trim();
+    if (value == null || value.isEmpty) return 'Anda';
+    return value;
+  }
 
   String _label(String prayerName) {
     switch (prayerName) {

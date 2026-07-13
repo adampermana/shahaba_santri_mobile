@@ -273,6 +273,7 @@ class _BottomSheetSelectQuranState extends State<BottomSheetSelectQuran> {
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: textTheme.labelSmall?.copyWith(
+              fontSize: isSelected ? 16 : null,
               color: isSelected
                   ? ColorPalette.kBlack
                   : ColorPalette.contentSecondary,
