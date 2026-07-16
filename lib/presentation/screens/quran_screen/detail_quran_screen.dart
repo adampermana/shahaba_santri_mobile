@@ -1332,10 +1332,10 @@ Widget _quranShareCard(BuildContext context, QuranVerseModel verse) {
       children: [
         Positioned(
           top: 0,
-          left: -30,
+          left: -14,
           child: Image.asset(
             'assets/images/motif-share.png',
-            width: 240,
+            width: 300,
             fit: BoxFit.contain,
           ),
         ),
