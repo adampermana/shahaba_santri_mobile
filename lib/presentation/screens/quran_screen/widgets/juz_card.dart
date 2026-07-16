@@ -23,7 +23,7 @@ class JuzCard extends StatelessWidget {
         height: 88,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: ColorPalette.kWhite,
+          color: ColorPalette.scaffoldBackground,
           borderRadius: BorderRadius.circular(16),
           boxShadow: const [
             BoxShadow(
@@ -41,11 +41,6 @@ class JuzCard extends StatelessWidget {
             BoxShadow(
               color: Color(0x02000000),
               blurRadius: 6,
-            ),
-            BoxShadow(
-              color: Color(0x00000000),
-              blurRadius: 6,
-              offset: Offset(1, 0),
             ),
           ],
         ),
@@ -76,6 +71,7 @@ class JuzCard extends StatelessWidget {
                     style: textTheme.titleLarge?.copyWith(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
+                      color: ColorPalette.kWhite,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -84,7 +80,7 @@ class JuzCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: textTheme.labelSmall?.copyWith(
-                      color: ColorPalette.contentTertiary,
+                      color: ColorPalette.inverseSecondary,
                     ),
                   ),
                 ],

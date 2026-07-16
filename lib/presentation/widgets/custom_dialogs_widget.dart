@@ -230,7 +230,7 @@ class CustomDialog extends StatelessWidget {
         backgroundColor: Colors.transparent,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: ColorPalette.kWhite,
+            color: const Color(0xffF0E9E0),
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           child:

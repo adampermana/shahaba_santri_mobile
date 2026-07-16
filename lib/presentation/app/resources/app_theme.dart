@@ -308,9 +308,9 @@ class AppTheme {
   static TextTheme _buildTextTheme(ThemeData base) {
     final textTheme = base.textTheme.apply(
       fontFamily: _fontFamily,
-      displayColor: ColorPalette.kBlack,
-      bodyColor: ColorPalette.kBlack,
-      decorationColor: ColorPalette.kBlack,
+      displayColor: ColorPalette.kWhite,
+      bodyColor: ColorPalette.kWhite,
+      decorationColor: ColorPalette.kWhite,
     );
 
     return textTheme.copyWith(
@@ -318,67 +318,67 @@ class AppTheme {
         fontWeight: FontWeight.w800,
         fontSize: 36,
         height: 1.2,
-        color: ColorPalette.kBlack,
+        color: ColorPalette.kWhite,
       ),
       displayMedium: textTheme.displayMedium?.copyWith(
         fontWeight: FontWeight.w800,
         fontSize: 36,
         height: 1.2,
-        color: ColorPalette.kBlack,
+        color: ColorPalette.kWhite,
       ),
       displaySmall: textTheme.displaySmall?.copyWith(
         fontWeight: FontWeight.w800,
         fontSize: 36,
         height: 1.2,
-        color: ColorPalette.kBlack,
+        color: ColorPalette.kWhite,
       ),
       headlineLarge: textTheme.headlineLarge?.copyWith(
         fontWeight: FontWeight.w700,
         fontSize: 28,
         height: 1.3,
-        color: ColorPalette.kBlack,
+        color: ColorPalette.kWhite,
       ),
       headlineMedium: textTheme.headlineMedium?.copyWith(
         fontWeight: FontWeight.w700,
         fontSize: 22,
         height: 1.4,
-        color: ColorPalette.kBlack,
+        color: ColorPalette.kWhite,
       ),
       headlineSmall: textTheme.headlineSmall?.copyWith(
         fontWeight: FontWeight.w700,
         fontSize: 22,
         height: 1.4,
-        color: ColorPalette.kBlack,
+        color: ColorPalette.kWhite,
       ),
       titleLarge: textTheme.titleLarge?.copyWith(
         fontWeight: FontWeight.w700,
         fontSize: 22,
         height: 1.4,
-        color: ColorPalette.kBlack,
+        color: ColorPalette.kWhite,
       ),
       titleMedium: textTheme.titleMedium?.copyWith(
         fontWeight: FontWeight.w700,
         fontSize: 16,
         height: 1.4,
-        color: ColorPalette.kBlack,
+        color: ColorPalette.kWhite,
       ),
       titleSmall: textTheme.titleSmall?.copyWith(
         fontWeight: FontWeight.w600,
         fontSize: 14,
         height: 1.4,
-        color: ColorPalette.kBlack,
+        color: ColorPalette.kWhite,
       ),
       bodyLarge: textTheme.bodyLarge?.copyWith(
         fontWeight: FontWeight.w500,
         fontSize: 18,
         height: 1.6,
-        color: ColorPalette.kBlack,
+        color: ColorPalette.kWhite,
       ),
       bodyMedium: textTheme.bodyMedium?.copyWith(
         fontWeight: FontWeight.w400,
         fontSize: 16,
         height: 1.6,
-        color: ColorPalette.kBlack,
+        color: ColorPalette.kWhite,
       ),
       bodySmall: textTheme.bodySmall?.copyWith(
         fontWeight: FontWeight.w400,
@@ -390,20 +390,20 @@ class AppTheme {
         fontWeight: FontWeight.w600,
         fontSize: 16,
         height: 1.2,
-        color: ColorPalette.kBlack,
+        color: ColorPalette.kWhite,
       ),
       labelMedium: textTheme.labelMedium?.copyWith(
         fontWeight: FontWeight.w600,
         fontSize: 14,
         height: 1.2,
-        color: ColorPalette.kBlack,
+        color: ColorPalette.kWhite,
       ),
       labelSmall: textTheme.labelSmall?.copyWith(
         fontWeight: FontWeight.w500,
         fontSize: 12,
         height: 1,
         letterSpacing: 0.6,
-        color: ColorPalette.kBlack,
+        color: ColorPalette.kWhite,
       ),
     );
   }

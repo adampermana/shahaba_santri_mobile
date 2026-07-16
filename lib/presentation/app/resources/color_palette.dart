@@ -42,7 +42,7 @@ class ColorPalette {
   static const Color surfaceContainerHighest = Color(0xFFDCE5D9);
   static const Color surfaceTertiary = Color(0xFFE8E8E8);
   static const Color surfaceTint = Color(0xFF1B8354);
-  static const Color background = Color(0xFFFFFFFF);
+  static const Color background = Color(0xFF0F172A);
   static const Color scaffoldBackground = background;
   static const Color scaffoldBackgroundAppBar = background;
 
@@ -64,6 +64,16 @@ class ColorPalette {
   static const Color outline = Color(0xFF6D7B6C);
   static const Color outlineVariant = Color(0xFFBCCBBA);
   static const Color borderTransparent = Color(0x14000000); // rgba(0,0,0,0.08)
+  static const Color surfaceTranslucent = Color(
+    0x14FFFFFF,
+  ); // rgba(255,255,255,0.08)
+  static const Color surfaceTranslucentStrong = Color(
+    0x4DFFFFFF,
+  ); // rgba(255,255,255,0.30)
+  static const Color rowDividerOnDark = Color(
+    0x14FFFFFF,
+  ); // rgba(255,255,255,0.08)
+  static const Color shadowDarkSoft = Color(0x26333333); // rgba(51,51,51,0.15)
   // Surface variant (legacy)
   static const Color surfaceVariant = Color(0xFFDCE5D9);
 

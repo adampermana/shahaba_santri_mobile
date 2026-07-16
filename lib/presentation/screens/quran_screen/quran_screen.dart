@@ -108,13 +108,16 @@ class _SurahList extends StatelessWidget {
     final surahs = state.surahs;
 
     if (surahs.isEmpty) {
-      return const Center(child: Text('Tidak ada surat ditemukan'));
+      return const Center(child: Text('Tidak ada surah ditemukan'));
     }
 
     return ListView.separated(
-      padding: const EdgeInsets.all(16),
       itemCount: surahs.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 16),
+      separatorBuilder: (_, _) => const Divider(
+        height: 1,
+        thickness: 1,
+        color: Color(0x33E8E8E8),
+      ),
       itemBuilder: (context, index) {
         final surah = surahs[index];
         return SurahCard(
@@ -158,9 +161,13 @@ class _JuzList extends StatelessWidget {
     }
 
     return ListView.separated(
-      padding: const EdgeInsets.all(16),
+      // padding: const EdgeInsets.all(16),
       itemCount: juzList.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 16),
+      separatorBuilder: (_, _) => const Divider(
+        height: 1,
+        thickness: 1,
+        color: Color(0x33E8E8E8),
+      ),
       itemBuilder: (context, index) {
         final juz = juzList[index];
         return JuzCard(

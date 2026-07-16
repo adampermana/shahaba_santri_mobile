@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 
 class StreakIndicator extends StatelessWidget {
   const StreakIndicator({required this.count, super.key});
@@ -23,6 +24,7 @@ class StreakIndicator extends StatelessWidget {
           style: textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
             fontSize: 16,
+            color: ColorPalette.kWhite,
           ),
         ),
       ],

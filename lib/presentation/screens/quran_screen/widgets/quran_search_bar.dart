@@ -54,7 +54,7 @@ class QuranSearchBar extends StatelessWidget {
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
-                hintText: 'Cari ayat atau surat disini',
+                hintText: 'Cari ayat atau surah disini',
                 hintStyle: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,

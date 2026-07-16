@@ -11,7 +11,7 @@ class QuranTabBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTabChanged;
 
-  static const _tabs = ['Surat', 'Juz'];
+  static const _tabs = ['Surah', 'Juz'];
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class QuranTabBar extends StatelessWidget {
                       fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
                       color: isActive
                           ? ColorPalette.primaryColor
-                          : ColorPalette.kBlack,
+                          : ColorPalette.contentDisabled,
                     ),
                   ),
                 ),

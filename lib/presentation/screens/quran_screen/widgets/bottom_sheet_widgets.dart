@@ -123,7 +123,7 @@ class _BottomSheetSelectQuranState extends State<BottomSheetSelectQuran> {
             Row(
               children: [
                 _header(context, 'Juz', flex: 2),
-                _header(context, 'Surat', flex: 5),
+                _header(context, 'Surah', flex: 5),
                 _header(context, 'Ayat', flex: 2),
               ],
             ),
@@ -216,7 +216,7 @@ class _BottomSheetSelectQuranState extends State<BottomSheetSelectQuran> {
         final surah = widget.surahs[index];
         final label =
             '${_readableIndex(surah.index)}. '
-            '${_cleanQuranText(surah.title ?? 'Surat')}';
+            '${_cleanQuranText(surah.title ?? 'Surah')}';
 
         return _pickerItem(
           context,

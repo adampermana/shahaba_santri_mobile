@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -166,7 +167,9 @@ class _LoadedViewState extends State<_LoadedView> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(
+    BuildContext context,
+  ) {
     final textTheme = Theme.of(context).textTheme;
 
     return CustomScrollView(
@@ -184,7 +187,18 @@ class _LoadedViewState extends State<_LoadedView> {
           ),
         ),
         SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 32, 16, 0),
+          padding: const EdgeInsets.fromLTRB(16, 23, 16, 16),
+          sliver: SliverToBoxAdapter(
+            child: _HeaderDateNavigator(
+              date: widget.state.date,
+              textTheme: textTheme,
+              onPrevious: widget.onPrevious,
+              onNext: widget.onNext,
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           sliver: SliverToBoxAdapter(
             child: _InfoRow(
               textTheme: textTheme,
@@ -202,7 +216,7 @@ class _LoadedViewState extends State<_LoadedView> {
           ),
         ),
         SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
           sliver: SliverList.builder(
             itemCount: _prayers.length,
             itemBuilder: (context, index) {
@@ -420,7 +434,7 @@ class _NextPrayerCard extends StatelessWidget {
   final VoidCallback onPrevious;
   final VoidCallback onNext;
 
-  static const _mosqueColor = Color(0xFF474747);
+  static const _mosqueColor = Color(0xFF0F172A);
 
   @override
   Widget build(BuildContext context) {
@@ -446,6 +460,30 @@ class _NextPrayerCard extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(
+            top: 80,
+            left: 16,
+            right: 16,
+            child: Row(
+              spacing: 8,
+              children: [
+                GestureDetector(
+                  onTap: onPrevious,
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: ColorPalette.kWhite,
+                    size: 20,
+                  ),
+                ),
+                Text(
+                  'Jadwal Solat',
+                  style: textTheme.labelSmall?.copyWith(
+                    color: ColorPalette.kWhite,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
             left: cloudPosition.left,
             top: cloudPosition.leftTop,
             child: SvgPicture.asset(
@@ -461,6 +499,8 @@ class _NextPrayerCard extends StatelessWidget {
               width: cloudWidth,
             ),
           ),
+
+          // matahari & bulan
           Positioned(
             left: 0,
             right: 0,
@@ -492,8 +532,10 @@ class _NextPrayerCard extends StatelessWidget {
               ),
             ),
           ),
+
+          // mashid
           Positioned(
-            bottom: -mosqueSize.height * 0.4,
+            bottom: -mosqueSize.height * 0.56,
             left: 0,
             right: 0,
             child: Center(
@@ -511,19 +553,10 @@ class _NextPrayerCard extends StatelessWidget {
               ),
             ),
           ),
+
+          // label
           Positioned(
-            top: 80,
-            left: 16,
-            right: 16,
-            child: _HeaderDateNavigator(
-              date: date,
-              textTheme: textTheme,
-              onPrevious: onPrevious,
-              onNext: onNext,
-            ),
-          ),
-          Positioned(
-            top: 164,
+            top: 120,
             left: 16,
             right: 16,
             child: Column(
@@ -596,7 +629,7 @@ class _NextPrayerCard extends StatelessWidget {
             ? 218
             : context.isTabletSmall
             ? 208
-            : 204,
+            : 198,
         size: context.isTabletLarge
             ? 210
             : context.isTabletMedium
@@ -612,7 +645,7 @@ class _NextPrayerCard extends StatelessWidget {
             ? 220
             : context.isTabletSmall
             ? 214
-            : 209,
+            : 210,
         size: context.isTabletLarge
             ? 150
             : context.isTabletMedium
@@ -628,7 +661,7 @@ class _NextPrayerCard extends StatelessWidget {
             ? 224
             : context.isTabletSmall
             ? 214
-            : 227,
+            : 190,
         size: context.isTabletLarge
             ? 210
             : context.isTabletMedium
@@ -644,7 +677,7 @@ class _NextPrayerCard extends StatelessWidget {
             ? 224
             : context.isTabletSmall
             ? 214
-            : 227,
+            : 200,
         size: context.isTabletLarge
             ? 210
             : context.isTabletMedium
@@ -689,12 +722,19 @@ class _NextPrayerCard extends StatelessWidget {
       case WaktuSholat.terbit:
         return _CloudPosition(
           left: -cloudWidth * 0.74,
-          leftTop: 0,
+          leftTop: 130,
           right: -cloudWidth * 0.60,
-          rightTop: -4,
+          rightTop: 130,
         );
       case WaktuSholat.subuh:
       case WaktuSholat.dzuhur:
+        return _CloudPosition(
+          left: -cloudWidth * 0.74,
+          leftTop: 130,
+          right: -cloudWidth * 0.60,
+          rightTop: 130,
+        );
+
       case WaktuSholat.ashar:
         return _CloudPosition(
           left: -cloudWidth * 0.62,
@@ -775,32 +815,68 @@ class _HeaderDateNavigator extends StatelessWidget {
 }
 
 class _HeaderDateArrowButton extends StatelessWidget {
-  const _HeaderDateArrowButton({required this.onTap, this.quarterTurns = 0});
+  const _HeaderDateArrowButton({
+    required this.onTap,
+    this.quarterTurns = 0,
+  });
 
   final VoidCallback onTap;
   final int quarterTurns;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 32,
-      height: 48,
-      decoration: BoxDecoration(
-        color: ColorPalette.kWhite.withValues(alpha: 0.38),
-        borderRadius: BorderRadius.circular(1000),
-      ),
-      child: IconButton(
-        onPressed: onTap,
-        padding: EdgeInsets.zero,
-        icon: RotatedBox(
-          quarterTurns: quarterTurns,
-          child: SvgPicture.asset(
-            AppIcons.arrowDropRightLine,
-            width: 24,
-            height: 24,
-            colorFilter: const ColorFilter.mode(
-              ColorPalette.kWhite,
-              BlendMode.srcIn,
+    const borderRadius = BorderRadius.all(
+      Radius.circular(16),
+    );
+
+    return ClipRRect(
+      borderRadius: borderRadius,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 24,
+          sigmaY: 24,
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: borderRadius,
+            child: Container(
+              width: 40,
+              height: 40,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.30),
+                borderRadius: borderRadius,
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.20),
+                  width: 0.8,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.white.withValues(alpha: 0.12),
+                    blurRadius: 2,
+                    offset: const Offset(-1, -1),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 4,
+                    offset: const Offset(1, 2),
+                  ),
+                ],
+              ),
+              child: RotatedBox(
+                quarterTurns: quarterTurns,
+                child: SvgPicture.asset(
+                  AppIcons.arrowDropRightLine,
+                  width: 24,
+                  height: 24,
+                  colorFilter: const ColorFilter.mode(
+                    ColorPalette.kWhite,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -884,29 +960,81 @@ class _InfoRow extends StatelessWidget {
 }
 
 class _InfoChip extends StatelessWidget {
-  const _InfoChip({required this.icon, required this.onTap});
+  const _InfoChip({
+    required this.icon,
+    required this.onTap,
+  });
 
   final String icon;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: ColorPalette.surfaceTertiary,
-          borderRadius: BorderRadius.circular(16),
+    final textTheme = Theme.of(context).textTheme;
+
+    const borderRadius = BorderRadius.all(
+      Radius.circular(40),
+    );
+
+    return ClipRRect(
+      borderRadius: borderRadius,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 24,
+          sigmaY: 24,
         ),
-        child: SvgPicture.asset(
-          icon,
-          width: 24,
-          height: 24,
-          colorFilter: const ColorFilter.mode(
-            ColorPalette.primaryColor,
-            BlendMode.srcIn,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: borderRadius,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 4,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.30),
+                borderRadius: borderRadius,
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.20),
+                  width: 0.8,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.white.withValues(alpha: 0.12),
+                    blurRadius: 2,
+                    offset: const Offset(-1, -1),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 4,
+                    offset: const Offset(1, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                spacing: 4,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    icon,
+                    width: 24,
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(
+                      ColorPalette.kWhite,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  Text(
+                    'Kiblat',
+                    style: textTheme.bodySmall?.copyWith(
+                      color: ColorPalette.kWhite,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -915,7 +1043,10 @@ class _InfoChip extends StatelessWidget {
 }
 
 class _LocationChip extends StatelessWidget {
-  const _LocationChip({required this.label, required this.onTap});
+  const _LocationChip({
+    required this.label,
+    required this.onTap,
+  });
 
   final String label;
   final VoidCallback onTap;
@@ -924,53 +1055,89 @@ class _LocationChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 4,
+    const borderRadius = BorderRadius.all(
+      Radius.circular(16),
+    );
+
+    return ClipRRect(
+      borderRadius: borderRadius,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 24,
+          sigmaY: 24,
         ),
-        decoration: BoxDecoration(
-          color: ColorPalette.surfaceTertiary,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SvgPicture.asset(
-              AppIcons.mapPin2Line,
-              width: 24,
-              height: 24,
-              colorFilter: const ColorFilter.mode(
-                ColorPalette.primaryColor,
-                BlendMode.srcIn,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: borderRadius,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 4,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.30),
+                borderRadius: borderRadius,
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.20),
+                  width: 0.8,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.white.withValues(alpha: 0.12),
+                    blurRadius: 2,
+                    offset: const Offset(-1, -1),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 4,
+                    offset: const Offset(1, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    AppIcons.mapPin2Line,
+                    width: 24,
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(
+                      ColorPalette.kWhite,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth: 120,
+                    ),
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.bodySmall?.copyWith(
+                        fontSize: 12,
+                        color: ColorPalette.kWhite,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  SvgPicture.asset(
+                    AppIcons.arrowDropDownLine,
+                    width: 24,
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(
+                      ColorPalette.kWhite,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: 8),
-            // ConstrainedBox(
-            //   constraints: const BoxConstraints(maxWidth: 90),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: textTheme.bodySmall?.copyWith(
-                fontSize: 12,
-                color: ColorPalette.contentSecondary,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SvgPicture.asset(
-              AppIcons.arrowDropDownLine,
-              width: 24,
-              height: 24,
-              colorFilter: const ColorFilter.mode(
-                ColorPalette.primaryColor,
-                BlendMode.srcIn,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

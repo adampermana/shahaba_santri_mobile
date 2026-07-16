@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,7 +51,7 @@ class _QiblaViewState extends State<_QiblaView> {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      backgroundColor: ColorPalette.kWhite,
+      backgroundColor: ColorPalette.scaffoldBackground,
       appBar: _buildAppBar(context),
       body: SafeArea(
         child: BlocConsumer<QiblaCubit, QiblaState>(
@@ -114,25 +115,12 @@ class _QiblaViewState extends State<_QiblaView> {
           fontWeight: FontWeight.w600,
         ),
       ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 16),
-          child: _QiblaInfoButton(onTap: _showQiblaInfoModal),
-        ),
-      ],
-    );
-  }
-
-  void _showQiblaInfoModal() {
-    unawaited(
-      showDialog<void>(
-        context: context,
-        builder: (context) {
-          return _QiblaInfoModal(
-            onClose: () => Navigator.of(context).pop(),
-          );
-        },
-      ),
+      // actions: [
+      //   Padding(
+      //     padding: const EdgeInsets.only(right: 16),
+      //     child: _QiblaInfoButton(onTap: _showQiblaInfoModal),
+      //   ),
+      // ],
     );
   }
 
@@ -242,8 +230,8 @@ class _QiblaViewState extends State<_QiblaView> {
       builder: (context, constraints) {
         final availableWidth = constraints.maxWidth - 32;
         var compassSize = availableWidth;
-        if (compassSize < 184) compassSize = 184;
-        if (compassSize > 204) compassSize = 204;
+        if (compassSize < 300) compassSize = 300;
+        if (compassSize > 230) compassSize = 230;
 
         return SingleChildScrollView(
           child: ConstrainedBox(
@@ -255,15 +243,20 @@ class _QiblaViewState extends State<_QiblaView> {
                   vertical: 32,
                 ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  spacing: 70,
                   children: [
-                    _CompassWidget(
-                      heading: state.heading,
-                      qiblaDirection: state.qiblaDirection,
-                      isFacingQibla: state.isFacingQibla,
-                      size: compassSize,
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Image.asset('assets/images/motif-qiblat.png'),
+                        _CompassWidget(
+                          heading: state.heading,
+                          qiblaDirection: state.qiblaDirection,
+                          isFacingQibla: state.isFacingQibla,
+                          size: compassSize,
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 54),
                     _DirectionInfo(
                       heading: state.heading,
                       qiblaDirection: state.qiblaDirection,
@@ -321,6 +314,7 @@ class _CompassWidget extends StatelessWidget {
               size: kabahSize,
             ),
           ),
+          // jarum
           Positioned(
             top: topOffset,
             left: 0,
@@ -348,9 +342,25 @@ class _CompassWidget extends StatelessWidget {
   Widget _rotatingCompassFace() {
     return Transform.rotate(
       angle: _toRadians(-heading),
-      child: CustomPaint(
-        size: Size.square(size),
-        painter: _CompassFacePainter(isFacingQibla: isFacingQibla),
+      child: SizedBox.square(
+        dimension: size,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            SvgPicture.asset(
+              QiblaIcons.indicatorCompas,
+              width: size,
+              height: size,
+            ),
+            Positioned.fill(
+              child: Image.asset(
+                width: size,
+                height: size,
+                'assets/images/motif-qibla.png',
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -379,7 +389,7 @@ class _CompassWidget extends StatelessWidget {
   }
 
   Widget _compassNeedle() {
-    final needleHeight = size * 0.46;
+    final needleHeight = size * 0.36;
     final needleWidth = needleHeight * 62 / 93;
 
     return SizedBox.square(
@@ -401,92 +411,6 @@ class _CompassWidget extends StatelessWidget {
   double _toRadians(double degree) => degree * pi / 180;
 }
 
-class _CompassFacePainter extends CustomPainter {
-  const _CompassFacePainter({required this.isFacingQibla});
-
-  final bool isFacingQibla;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - 2;
-    final ringColor = isFacingQibla
-        ? ColorPalette.primaryColor
-        : ColorPalette.surfaceTertiary;
-
-    final ringPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3
-      ..color = ringColor;
-    canvas.drawCircle(center, radius, ringPaint);
-
-    final tickPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.square
-      ..strokeWidth = 3.4
-      ..color = ColorPalette.primaryColor;
-
-    for (final degree in const [30, 60, 120, 150, 210, 240, 300, 330]) {
-      final angle = _toRadians(degree - 90);
-      final outerRadius = radius * 0.84;
-      final innerRadius = radius * 0.78;
-      canvas.drawLine(
-        Offset(
-          center.dx + innerRadius * cos(angle),
-          center.dy + innerRadius * sin(angle),
-        ),
-        Offset(
-          center.dx + outerRadius * cos(angle),
-          center.dy + outerRadius * sin(angle),
-        ),
-        tickPaint,
-      );
-    }
-
-    _drawLabel(canvas, center, radius * 0.76, 'N', -90);
-    _drawLabel(canvas, center, radius * 0.76, 'E', 0);
-    _drawLabel(canvas, center, radius * 0.76, 'S', 90);
-    _drawLabel(canvas, center, radius * 0.76, 'W', 180);
-  }
-
-  void _drawLabel(
-    Canvas canvas,
-    Offset center,
-    double radius,
-    String label,
-    double degree,
-  ) {
-    final angle = _toRadians(degree);
-    final painter = TextPainter(
-      text: TextSpan(
-        text: label,
-        style: const TextStyle(
-          color: ColorPalette.kBlack,
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-          height: 1,
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-
-    painter.paint(
-      canvas,
-      Offset(
-        center.dx + radius * cos(angle) - painter.width / 2,
-        center.dy + radius * sin(angle) - painter.height / 2,
-      ),
-    );
-  }
-
-  double _toRadians(double degree) => degree * pi / 180;
-
-  @override
-  bool shouldRepaint(_CompassFacePainter oldDelegate) {
-    return oldDelegate.isFacingQibla != isFacingQibla;
-  }
-}
-
 class _DirectionInfo extends StatelessWidget {
   const _DirectionInfo({
     required this.heading,
@@ -503,6 +427,7 @@ class _DirectionInfo extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           _directionText(),
@@ -511,11 +436,11 @@ class _DirectionInfo extends StatelessWidget {
             fontWeight: FontWeight.w700,
             fontSize: 22,
             height: 1.25,
-            color: ColorPalette.onSurface,
+            color: ColorPalette.kWhite,
           ),
         ),
         const SizedBox(height: 20),
-        _degreeBadge(textTheme),
+        _degreeBadge(textTheme, context),
       ],
     );
   }
@@ -527,43 +452,133 @@ class _DirectionInfo extends StatelessWidget {
     return diff > 180 ? 'Belok ke kiri' : 'Belok ke kanan';
   }
 
-  Widget _degreeBadge(TextTheme textTheme) {
+  Widget _degreeBadge(
+    TextTheme textTheme,
+    BuildContext context,
+  ) {
     final qiblaAngle = (qiblaDirection - heading) * pi / 180;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 4,
-      ),
-      decoration: BoxDecoration(
-        color: ColorPalette.surfaceTertiary,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Transform.rotate(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _GlassBadgeButton(
+          icon: Transform.rotate(
             angle: qiblaAngle,
             child: SvgPicture.asset(
               AppIcons.compass3Line,
-              width: 16,
-              height: 16,
+              width: 24,
+              height: 24,
               colorFilter: const ColorFilter.mode(
-                ColorPalette.primaryColor,
+                ColorPalette.kWhite,
                 BlendMode.srcIn,
               ),
             ),
           ),
-          const SizedBox(width: 6),
-          Text(
-            '${qiblaDirection.toStringAsFixed(0)}°',
-            style: textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: 11,
-              color: ColorPalette.contentSecondary,
+          label: '${qiblaDirection.toStringAsFixed(0)}°',
+          textTheme: textTheme,
+        ),
+        const SizedBox(width: 16),
+        _GlassBadgeButton(
+          onTap: () async {
+            await showDialog<void>(
+              context: context,
+              builder: (context) => _QiblaInfoModal(
+                onClose: () => Navigator.of(context).pop(),
+              ),
+            );
+          },
+          icon: SvgPicture.asset(
+            AppIcons.information2Line,
+            width: 24,
+            height: 24,
+            colorFilter: const ColorFilter.mode(
+              ColorPalette.kWhite,
+              BlendMode.srcIn,
             ),
           ),
-        ],
+          label: 'Panduan',
+          textTheme: textTheme,
+        ),
+      ],
+    );
+  }
+}
+
+class _GlassBadgeButton extends StatelessWidget {
+  const _GlassBadgeButton({
+    required this.icon,
+    required this.label,
+    required this.textTheme,
+    this.onTap,
+  });
+
+  final Widget icon;
+  final String label;
+  final TextTheme textTheme;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    const borderRadius = BorderRadius.all(
+      Radius.circular(20),
+    );
+
+    return ClipRRect(
+      borderRadius: borderRadius,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 24,
+          sigmaY: 24,
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: borderRadius,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 6,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.30),
+                borderRadius: borderRadius,
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.20),
+                  width: 0.8,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.white.withValues(alpha: 0.12),
+                    blurRadius: 2,
+                    offset: const Offset(-1, -1),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 4,
+                    offset: const Offset(1, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  icon,
+                  const SizedBox(width: 6),
+                  Text(
+                    label,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: ColorPalette.kWhite,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      height: 1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -612,69 +627,72 @@ class _QiblaInfoModal extends StatelessWidget {
 
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-      backgroundColor: ColorPalette.kWhite,
+      backgroundColor: ColorPalette.scaffoldBackground,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(28, 32, 28, 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SvgPicture.asset(
-              QiblaIcons.kalibrasi,
-              width: 128,
-              height: 96,
-            ),
-            const SizedBox(height: 18),
-            Text(
-              'Tips Akurasi Kompas',
-              textAlign: TextAlign.center,
-              style: textTheme.titleLarge?.copyWith(
-                color: ColorPalette.kBlack,
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                height: 1.2,
-              ),
-            ),
-            const SizedBox(height: 22),
-            Text(
-              'Untuk mendapatkan arah kiblat yang lebih presisi, gerakkan '
-              'ponsel Anda membentuk pola angka 8 di udara beberapa kali.',
-              textAlign: TextAlign.justify,
-              style: textTheme.bodyLarge?.copyWith(
-                color: ColorPalette.kBlack,
-                fontSize: 16,
-                height: 1.35,
-              ),
-            ),
-            const SizedBox(height: 28),
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: onClose,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorPalette.primaryColor,
-                  foregroundColor: ColorPalette.kWhite,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(28),
-                  ),
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(28, 32, 28, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
+                  QiblaIcons.kalibrasi,
+                  width: 128,
+                  height: 96,
                 ),
-                child: Text(
-                  'Tutup',
-                  style: textTheme.bodyMedium?.copyWith(
+                const SizedBox(height: 18),
+                Text(
+                  'Tips Akurasi Kompas',
+                  textAlign: TextAlign.center,
+                  style: textTheme.titleLarge?.copyWith(
                     color: ColorPalette.kWhite,
-                    fontSize: 14,
+                    fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    letterSpacing: 1.2,
+                    height: 1.2,
                   ),
                 ),
-              ),
+                const SizedBox(height: 22),
+                Text(
+                  'Untuk mendapatkan arah kiblat yang lebih presisi, gerakkan '
+                  'ponsel Anda membentuk pola angka 8 di udara beberapa kali.',
+                  textAlign: TextAlign.justify,
+                  style: textTheme.bodyLarge?.copyWith(
+                    color: ColorPalette.inverseSecondary,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 28),
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: onClose,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ColorPalette.primaryColor,
+                      foregroundColor: ColorPalette.kWhite,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(28),
+                      ),
+                    ),
+                    child: Text(
+                      'Tutup',
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: ColorPalette.kWhite,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

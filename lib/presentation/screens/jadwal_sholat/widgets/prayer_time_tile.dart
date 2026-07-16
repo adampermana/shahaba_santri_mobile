@@ -36,93 +36,81 @@ class PrayerTimeTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final backgroundColor = isActive ? ColorPalette.primaryColor : null;
-    final contentColor = isActive
+    final iconColor = isActive
         ? ColorPalette.kWhite
-        : ColorPalette.contentSecondary;
-    final timeColor = isActive ? ColorPalette.kWhite : ColorPalette.kBlack;
+        : ColorPalette.kWhite.withValues(alpha: 0.87);
+    final labelColor = isActive
+        ? ColorPalette.kWhite
+        : ColorPalette.kWhite.withValues(alpha: 0.87);
+    final timeColor = isActive ? ColorPalette.kWhite : ColorPalette.kWhite;
+    final volumeColor = isEnabled
+        ? (isActive
+              ? ColorPalette.kWhite
+              : ColorPalette.kWhite.withValues(alpha: 0.87))
+        : ColorPalette.kWhite.withValues(alpha: 0.45);
 
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOut,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: isActive ? BorderRadius.circular(8) : BorderRadius.zero,
-        border: const Border(
-          bottom: BorderSide(
-            color: ColorPalette.borderTransparent,
-          ),
-        ),
+        color: isActive
+            ? ColorPalette.primaryColor
+            : ColorPalette.scaffoldBackground,
+        borderRadius: BorderRadius.circular(isActive ? 8 : 0),
+        boxShadow: isActive
+            ? const [
+                BoxShadow(
+                  color: ColorPalette.shadowDarkSoft,
+                  blurRadius: 8,
+                ),
+              ]
+            : null,
       ),
       child: Row(
         children: [
-          SizedBox(
-            width: 32,
-            height: 32,
-            child: showCheckbox
-                ? Center(
-                    child: isEnabled
-                        ? _PrayerCheckbox(
-                            isActive: isActive,
-                            isChecked: isChecked,
-                            isEnabled: true,
-                            isHistory: isHistory,
-                            onTap: onCheck,
-                          )
-                        : Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              color: isChecked
-                                  ? ColorPalette.primaryColor
-                                  : Colors.transparent,
-                              border: Border.all(
-                                color: isChecked
-                                    ? ColorPalette.primaryColor
-                                    : ColorPalette.contentDisabled,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: isChecked
-                                ? const Icon(
-                                    Icons.check_rounded,
-                                    color: ColorPalette.kWhite,
-                                    size: 20,
-                                  )
-                                : null,
-                          ),
-                  )
-                : const SizedBox.shrink(),
-          ),
-          const SizedBox(width: 10),
-          // Prayer icon + name
+          if (showCheckbox) ...[
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: _PrayerCheckbox(
+                isActive: isActive,
+                isChecked: isChecked,
+                isEnabled: isEnabled,
+                isHistory: isHistory,
+                onTap: onCheck,
+              ),
+            ),
+            const SizedBox(width: 10),
+          ],
           Expanded(
             child: Row(
               children: [
                 SvgPicture.asset(
                   icon,
-                  width: 24,
-                  height: 24,
+                  width: 25.33,
+                  height: 25.6,
                   colorFilter: ColorFilter.mode(
-                    contentColor,
+                    iconColor,
                     BlendMode.srcIn,
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  name,
-                  style: textTheme.labelMedium?.copyWith(
-                    color: isActive
-                        ? const Color(0xFFDDDDDD)
-                        : ColorPalette.contentSecondary,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
+                Flexible(
+                  child: Text(
+                    name,
+                    overflow: TextOverflow.ellipsis,
+                    style: textTheme.labelMedium?.copyWith(
+                      color: labelColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          // Time + Volume
+          const SizedBox(width: 16),
           Text(
             time,
             style: textTheme.titleMedium?.copyWith(
@@ -131,31 +119,15 @@ class PrayerTimeTile extends StatelessWidget {
               fontSize: 16,
             ),
           ),
-          if (showVolume)
-            Padding(
-              padding: const EdgeInsets.only(left: 16),
+          if (showVolume) ...[
+            const SizedBox(width: 16),
+            SizedBox(
+              width: 24,
+              height: 24,
               child: isEnabled
                   ? InkWell(
                       onTap: onVolumeTap,
                       borderRadius: BorderRadius.circular(20),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: SvgPicture.asset(
-                          isVolumeMuted
-                              ? AppIcons.volumeMuteLine
-                              : AppIcons.volumeUpLine,
-                          width: 24,
-                          height: 24,
-                          colorFilter: ColorFilter.mode(
-                            isActive ? ColorPalette.kWhite : contentColor,
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                      ),
-                    )
-                  : SizedBox(
-                      width: 32,
-                      height: 32,
                       child: Center(
                         child: SvgPicture.asset(
                           isVolumeMuted
@@ -164,13 +136,27 @@ class PrayerTimeTile extends StatelessWidget {
                           width: 24,
                           height: 24,
                           colorFilter: ColorFilter.mode(
-                            ColorPalette.contentDisabled,
+                            volumeColor,
                             BlendMode.srcIn,
                           ),
                         ),
                       ),
+                    )
+                  : Center(
+                      child: SvgPicture.asset(
+                        isVolumeMuted
+                            ? AppIcons.volumeMuteLine
+                            : AppIcons.volumeUpLine,
+                        width: 24,
+                        height: 24,
+                        colorFilter: ColorFilter.mode(
+                          volumeColor,
+                          BlendMode.srcIn,
+                        ),
+                      ),
                     ),
             ),
+          ],
         ],
       ),
     );
@@ -195,43 +181,39 @@ class _PrayerCheckbox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final borderColor = isHistory
-        ? ColorPalette.contentDisabled
+        ? ColorPalette.kWhite.withValues(alpha: 0.38)
         : isChecked
         ? (isActive ? ColorPalette.kWhite : ColorPalette.primaryColor)
         : isActive
         ? ColorPalette.kWhite
-        : ColorPalette.contentDisabled;
+        : ColorPalette.kWhite.withValues(alpha: 0.65);
+    final fillColor = isHistory
+        ? Colors.transparent
+        : isChecked
+        ? (isActive ? ColorPalette.kWhite : ColorPalette.primaryColor)
+        : Colors.transparent;
+    final checkColor = isHistory
+        ? ColorPalette.kWhite.withValues(alpha: 0.45)
+        : isActive
+        ? ColorPalette.primaryColor
+        : ColorPalette.kWhite;
 
     final checkbox = Container(
-      width: 24,
-      height: 24,
+      width: 20,
+      height: 20,
       decoration: BoxDecoration(
-        color: isHistory
-            ? Colors.transparent
-            : isChecked
-            ? (isActive ? ColorPalette.kWhite : ColorPalette.primaryColor)
-            : Colors.transparent,
+        color: fillColor,
         border: Border.all(
           color: borderColor,
           width: 2,
         ),
         borderRadius: BorderRadius.circular(4),
       ),
-      child: isHistory
-          ? (isChecked
-                ? const Icon(
-                    Icons.check_rounded,
-                    color: ColorPalette.contentDisabled,
-                    size: 20,
-                  )
-                : null)
-          : isChecked
+      child: isChecked
           ? Icon(
               Icons.check_rounded,
-              color: isActive
-                  ? ColorPalette.primaryColor
-                  : ColorPalette.kWhite,
-              size: 20,
+              color: checkColor,
+              size: 16,
             )
           : null,
     );

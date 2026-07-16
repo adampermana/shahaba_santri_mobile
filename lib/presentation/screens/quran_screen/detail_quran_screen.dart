@@ -454,7 +454,7 @@ Widget _settingDialogContent(
             const SizedBox(height: 16),
             Container(
               decoration: BoxDecoration(
-                color: ColorPalette.surfaceTertiary,
+                color: const Color(0xFFE1D3C1),
                 borderRadius: BorderRadius.circular(8),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -542,7 +542,7 @@ Widget _detailScaffold(
   Widget? tabBar,
 }) {
   return Scaffold(
-    backgroundColor: const Color(0xFFF3F3F3),
+    backgroundColor: const Color(0xffF0E9E0),
     appBar: _detailAppBar(
       context,
       onSettingTap: onSettingTap,
@@ -567,7 +567,7 @@ PreferredSizeWidget _detailAppBar(
   return AppBar(
     toolbarHeight: 50,
     automaticallyImplyLeading: false,
-    backgroundColor: ColorPalette.kWhite,
+    backgroundColor: const Color(0xffF0E9E0),
     elevation: 0,
     scrolledUnderElevation: 0,
     surfaceTintColor: Colors.transparent,
@@ -624,7 +624,8 @@ Widget _scrollableTabBar(
   required ValueChanged<int> onTap,
 }) {
   return ColoredBox(
-    color: ColorPalette.kWhite,
+    // TODO: Use Color TAB
+    color: Colors.black.withValues(alpha: 0.08),
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -671,37 +672,46 @@ Widget _tabItem(
 }) {
   final textTheme = Theme.of(context).textTheme;
 
-  return GestureDetector(
-    onTap: onTap,
-    child: Container(
-      width: context.mediaQuerySize.width * 0.34,
-      decoration: BoxDecoration(
-        color: ColorPalette.kWhite,
-        border: Border(
-          bottom: BorderSide(
-            color: isActive ? ColorPalette.primaryColor : Colors.transparent,
-            width: 2,
-          ),
-        ),
+  return Material(
+    color: Colors.transparent,
+    child: InkWell(
+      onTap: onTap,
+      hoverColor: Colors.black.withValues(alpha: 0.08),
+      splashColor: Colors.black.withValues(alpha: 0.08),
+      highlightColor: Colors.black.withValues(alpha: 0.08),
+      customBorder: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
       ),
-      padding: const EdgeInsets.only(top: 16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: textTheme.labelSmall?.copyWith(
-              color: isActive
-                  ? ColorPalette.primaryColor
-                  : ColorPalette.onSurface,
-              fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
+      child: Ink(
+        width: context.mediaQuerySize.width * 0.34,
+        padding: const EdgeInsets.only(top: 16),
+        decoration: BoxDecoration(
+          color: const Color(0xffF0E9E0),
+          border: Border(
+            bottom: BorderSide(
+              color: isActive ? ColorPalette.primaryColor : Colors.transparent,
+              width: 2,
             ),
           ),
-          const SizedBox(height: 16),
-        ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: textTheme.labelSmall?.copyWith(
+                color: isActive
+                    ? ColorPalette.primaryColor
+                    : ColorPalette.onSurface,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
     ),
   );
@@ -886,7 +896,7 @@ Widget _surahBanner(
   final textTheme = Theme.of(context).textTheme;
 
   return Container(
-    color: ColorPalette.kWhite,
+    color: const Color(0xffF0E9E0),
     padding: const EdgeInsets.all(16),
     child: SizedBox(
       height: 49,
@@ -973,9 +983,13 @@ Widget _verseRow(
 }) {
   final textTheme = Theme.of(context).textTheme;
 
+  // TODO: Use Color Verse Row
   return Material(
-    color: ColorPalette.kWhite,
+    color: const Color(0xffF0E9E0),
     child: InkWell(
+      hoverColor: Colors.black.withValues(alpha: 0.08),
+      splashColor: Colors.black.withValues(alpha: 0.08),
+      highlightColor: Colors.black.withValues(alpha: 0.08),
       onTap: () => _openVerseDialog(context, verse, detailArgs),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -1317,6 +1331,7 @@ Future<Uint8List> _quranVerseImageBytes(
   }
 }
 
+// TODO: Use Color Share Card
 Widget _quranShareCard(BuildContext context, QuranVerseModel verse) {
   final textTheme = Theme.of(context).textTheme;
 
@@ -1324,7 +1339,7 @@ Widget _quranShareCard(BuildContext context, QuranVerseModel verse) {
     width: 360,
     clipBehavior: Clip.hardEdge,
     decoration: BoxDecoration(
-      color: ColorPalette.kWhite,
+      color: const Color(0xffF0E9E0),
       borderRadius: BorderRadius.circular(16),
       border: Border.all(color: ColorPalette.borderTransparent),
     ),

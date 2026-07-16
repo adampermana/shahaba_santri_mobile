@@ -22,7 +22,7 @@ class SurahCard extends StatelessWidget {
         height: 88,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: ColorPalette.kWhite,
+          color: ColorPalette.scaffoldBackground,
           borderRadius: BorderRadius.circular(16),
           boxShadow: const [
             BoxShadow(
@@ -40,11 +40,6 @@ class SurahCard extends StatelessWidget {
             BoxShadow(
               color: Color(0x02000000),
               blurRadius: 6,
-            ),
-            BoxShadow(
-              color: Color(0x00000000),
-              blurRadius: 6,
-              offset: Offset(1, 0),
             ),
           ],
         ),
@@ -75,6 +70,7 @@ class SurahCard extends StatelessWidget {
                     style: textTheme.titleLarge?.copyWith(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
+                      color: ColorPalette.kWhite,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -83,7 +79,7 @@ class SurahCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: textTheme.labelSmall?.copyWith(
-                      color: ColorPalette.contentTertiary,
+                      color: ColorPalette.inverseSecondary,
                     ),
                   ),
                 ],
@@ -95,7 +91,7 @@ class SurahCard extends StatelessWidget {
                 fontFamily: 'Markazi Text',
                 fontSize: 32,
                 fontWeight: FontWeight.w400,
-                color: ColorPalette.arabicText,
+                color: const Color(0xFFB39164),
                 height: 1.75,
               ),
             ),
