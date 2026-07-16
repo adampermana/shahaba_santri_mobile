@@ -945,7 +945,7 @@ Widget _surahBannerInJuz(
   final textTheme = Theme.of(context).textTheme;
 
   return Container(
-    color: ColorPalette.kWhite,
+    color: const Color(0xffF0E9E0),
     padding: const EdgeInsets.all(16),
     child: SizedBox(
       height: 49,
@@ -1163,40 +1163,42 @@ Widget _verseDialogOption(
 }) {
   final textTheme = Theme.of(context).textTheme;
 
-  return InkWell(
-    hoverColor: ColorPalette.surfaceTertiary,
-    highlightColor: ColorPalette.surfaceTertiary,
-    splashColor: ColorPalette.surfaceTertiary,
-    onTap: () {
-      Navigator.of(context).pop();
-      onTap?.call();
-    },
-    child: Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            icon,
-            width: 24,
-            height: 24,
-            colorFilter: const ColorFilter.mode(
-              ColorPalette.primaryColor,
-              BlendMode.srcIn,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              label,
-              style: textTheme.titleMedium?.copyWith(
-                color: ColorPalette.contentSecondary,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+  return Material(
+    child: InkWell(
+      hoverColor: ColorPalette.surfaceTertiary,
+      highlightColor: ColorPalette.surfaceTertiary,
+      splashColor: ColorPalette.surfaceTertiary,
+      onTap: () {
+        Navigator.of(context).pop();
+        onTap?.call();
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Row(
+          children: [
+            SvgPicture.asset(
+              icon,
+              width: 24,
+              height: 24,
+              colorFilter: const ColorFilter.mode(
+                ColorPalette.primaryColor,
+                BlendMode.srcIn,
               ),
             ),
-          ),
-        ],
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                label,
+                style: textTheme.titleMedium?.copyWith(
+                  color: ColorPalette.contentSecondary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );
