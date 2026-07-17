@@ -50,66 +50,63 @@ class HomeScreen extends StatelessWidget {
           );
         },
       ),
-      body: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 16),
-              BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
-                builder: (context, scheduleState) {
-                  final schedule = scheduleState is PrayerScheduleLoaded
-                      ? scheduleState.response.jadwal
-                      : null;
-                  return CardJadwalSholat(
-                    schedule: schedule,
-                    isLoading: scheduleState is PrayerScheduleLoading,
-                    onTap: onPrayerScheduleTap,
-                  );
-                },
-              ),
-              const SizedBox(height: 32),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _FeatureCard(
-                      icon: AppIcons.compass3Line,
-                      title: 'Kiblat',
-                      subtitle: 'Temukan arah akurat',
-                      onTap: () => context.push(
-                        '${RouterPath.mainPath}/${RouterPath.qiblaPath}',
-                      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 16),
+            BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
+              builder: (context, scheduleState) {
+                final schedule = scheduleState is PrayerScheduleLoaded
+                    ? scheduleState.response.jadwal
+                    : null;
+                return CardJadwalSholat(
+                  schedule: schedule,
+                  isLoading: scheduleState is PrayerScheduleLoading,
+                  onTap: onPrayerScheduleTap,
+                );
+              },
+            ),
+            const SizedBox(height: 32),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: _FeatureCard(
+                    icon: AppIcons.compass3Line,
+                    title: 'Kiblat',
+                    subtitle: 'Temukan arah akurat',
+                    onTap: () => context.push(
+                      '${RouterPath.mainPath}/${RouterPath.qiblaPath}',
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _FeatureCard(
-                      icon: AppIcons.calendarLine,
-                      title: 'Kalender Hijriah',
-                      subtitle: 'Lihat hari penting',
-                      onTap: () => context.push(
-                        '${RouterPath.mainPath}/${RouterPath.calendarPath}',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
-              Text(
-                'Lanjutkan baca',
-                style: textTheme.titleMedium?.copyWith(
-                  color: ColorPalette.contentTertiary,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.6,
                 ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _FeatureCard(
+                    icon: AppIcons.calendarLine,
+                    title: 'Kalender Hijriah',
+                    subtitle: 'Lihat hari penting',
+                    onTap: () => context.push(
+                      '${RouterPath.mainPath}/${RouterPath.calendarPath}',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 32),
+            Text(
+              'Lanjutkan baca',
+              style: textTheme.titleMedium?.copyWith(
+                color: ColorPalette.contentTertiary,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.6,
               ),
-              const SizedBox(height: 12),
-              const _ContinueReadingCard(),
-            ],
-          ),
+            ),
+            const SizedBox(height: 12),
+            const _ContinueReadingCard(),
+          ],
         ),
       ),
     );

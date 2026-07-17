@@ -85,18 +85,36 @@ class _MainScreenState extends State<_MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LocationCubit, LocationState>(
-      listener: _onLocationChanged,
-      child: Scaffold(
-        backgroundColor: ColorPalette.scaffoldBackground,
-        body: IndexedStack(
-          index: _selectedIndex,
-          children: _screens,
-        ),
-        bottomNavigationBar: SafeArea(
-          top: false,
-          child: BottomNavigationItemsBar(
+    const navigationColor = Color(0xFF111A30);
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+        systemNavigationBarColor: navigationColor,
+        systemNavigationBarIconBrightness: Brightness.light,
+        systemNavigationBarDividerColor: navigationColor,
+        systemNavigationBarContrastEnforced: false,
+      ),
+      child: BlocListener<LocationCubit, LocationState>(
+        listener: _onLocationChanged,
+        child: Scaffold(
+          backgroundColor: ColorPalette.scaffoldBackground,
+
+          // Konten boleh terlihat di belakang bagian atas navbar.
+          extendBody: true,
+
+          body: IndexedStack(
+            index: _selectedIndex,
+            children: _screens,
+          ),
+
+          // Jangan dibungkus SafeArea lagi.
+          bottomNavigationBar: BottomNavigationItemsBar(
             initialIndex: _selectedIndex,
+            backgroundColor: navigationColor,
+            featuredColor: ColorPalette.primaryColor,
             items: const [
               NavBarItem(
                 defaultSvgPath: AppIcons.home9Line,
@@ -107,6 +125,7 @@ class _MainScreenState extends State<_MainScreen> {
                 defaultSvgPath: AppIcons.timeLine,
                 selectedSvgPath: AppIcons.timeLine,
                 title: 'Jadwal Solat',
+                isFeatured: true,
               ),
               NavBarItem(
                 defaultSvgPath: AppIcons.bookOpenLine,

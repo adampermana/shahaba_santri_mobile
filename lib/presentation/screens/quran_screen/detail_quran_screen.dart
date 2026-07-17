@@ -180,7 +180,7 @@ class DetailQuranScreen extends HookWidget {
       final selectedArgs = argsAt(selectedIndex.value) ?? currentArgs;
       final result = await showModalBottomSheet<QuranSelectionResult>(
         context: context,
-        backgroundColor: ColorPalette.kWhite,
+        backgroundColor: const Color(0xffF0E9E0),
         barrierColor: ColorPalette.kBlack.withValues(alpha: 0.58),
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
@@ -1164,16 +1164,18 @@ Widget _verseDialogOption(
   final textTheme = Theme.of(context).textTheme;
 
   return Material(
+    color: Colors.transparent,
     child: InkWell(
-      hoverColor: ColorPalette.surfaceTertiary,
-      highlightColor: ColorPalette.surfaceTertiary,
-      splashColor: ColorPalette.surfaceTertiary,
+      hoverColor: Colors.black.withValues(alpha: 0.08),
+      splashColor: Colors.black.withValues(alpha: 0.08),
+      highlightColor: Colors.black.withValues(alpha: 0.08),
       onTap: () {
         Navigator.of(context).pop();
         onTap?.call();
       },
-      child: Container(
+      child: Ink(
         width: double.infinity,
+        color: const Color(0xffF0E9E0),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Row(
           children: [
