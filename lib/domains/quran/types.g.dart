@@ -8,8 +8,8 @@ part of 'types.dart';
 
 _TranslatedName _$TranslatedNameFromJson(Map<String, dynamic> json) =>
     _TranslatedName(
-      name: json['name'] as String? ?? "",
-      languageName: json['languageName'] as String? ?? "",
+      name: json['name'] as String? ?? '',
+      languageName: json['languageName'] as String? ?? '',
     );
 
 Map<String, dynamic> _$TranslatedNameToJson(_TranslatedName instance) =>
@@ -20,8 +20,8 @@ Map<String, dynamic> _$TranslatedNameToJson(_TranslatedName instance) =>
 
 _Verse _$VerseFromJson(Map<String, dynamic> json) => _Verse(
   id: (json['id'] as num?)?.toInt() ?? 0,
-  verseKey: json['verseKey'] as String? ?? "",
-  text: json['text'] as String? ?? "",
+  verseKey: json['verseKey'] as String? ?? '',
+  text: json['text'] as String? ?? '',
   chapterID: (json['chapterID'] as num?)?.toInt() ?? 0,
   pageNumber: (json['pageNumber'] as num?)?.toInt() ?? 0,
   juzNumber: (json['juzNumber'] as num?)?.toInt() ?? 0,
@@ -39,10 +39,10 @@ Map<String, dynamic> _$VerseToJson(_Verse instance) => <String, dynamic>{
 _VerseTranslation _$VerseTranslationFromJson(Map<String, dynamic> json) =>
     _VerseTranslation(
       id: (json['id'] as num?)?.toInt() ?? 0,
-      verseKey: json['verseKey'] as String? ?? "",
-      text: json['text'] as String? ?? "",
+      verseKey: json['verseKey'] as String? ?? '',
+      text: json['text'] as String? ?? '',
       resourceID: (json['resourceID'] as num?)?.toInt() ?? 0,
-      languageName: json['languageName'] as String? ?? "",
+      languageName: json['languageName'] as String? ?? '',
     );
 
 Map<String, dynamic> _$VerseTranslationToJson(_VerseTranslation instance) =>
@@ -57,9 +57,9 @@ Map<String, dynamic> _$VerseTranslationToJson(_VerseTranslation instance) =>
 _Chapter _$ChapterFromJson(Map<String, dynamic> json) => _Chapter(
   id: (json['id'] as num?)?.toInt() ?? 0,
   bismillahPre: json['bismillahPre'] as bool? ?? false,
-  nameArabic: json['nameArabic'] as String? ?? "",
-  nameComplex: json['nameComplex'] as String? ?? "",
-  nameSimple: json['nameSimple'] as String? ?? "",
+  nameArabic: json['nameArabic'] as String? ?? '',
+  nameComplex: json['nameComplex'] as String? ?? '',
+  nameSimple: json['nameSimple'] as String? ?? '',
   pages:
       (json['pages'] as List<dynamic>?)
           ?.map((e) => (e as num).toInt())
@@ -132,10 +132,10 @@ _Translation _$TranslationFromJson(Map<String, dynamic> json) => _Translation(
   verse: TranslatedName.fromJson(json['verse'] as Map<String, dynamic>),
   id: (json['id'] as num?)?.toInt() ?? 0,
   number: (json['number'] as num?)?.toInt() ?? 0,
-  name: json['name'] as String? ?? "",
-  authorName: json['authorName'] as String? ?? "",
-  slug: json['slug'] as String? ?? "",
-  languageName: json['languageName'] as String? ?? "",
+  name: json['name'] as String? ?? '',
+  authorName: json['authorName'] as String? ?? '',
+  slug: json['slug'] as String? ?? '',
+  languageName: json['languageName'] as String? ?? '',
 );
 
 Map<String, dynamic> _$TranslationToJson(_Translation instance) =>
@@ -151,8 +151,8 @@ Map<String, dynamic> _$TranslationToJson(_Translation instance) =>
 
 _Transliteration _$TransliterationFromJson(Map<String, dynamic> json) =>
     _Transliteration(
-      id: json['id'] as String? ?? "",
-      text: json['text'] as String? ?? "",
+      id: json['id'] as String? ?? '',
+      text: json['text'] as String? ?? '',
     );
 
 Map<String, dynamic> _$TransliterationToJson(_Transliteration instance) =>

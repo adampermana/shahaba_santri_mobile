@@ -34,7 +34,7 @@ class CalendarGrid extends StatelessWidget {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: ColorPalette.contentDisabled,
+            color: ColorPalette.contentTertiary,
           ),
         ),
       );
@@ -49,7 +49,7 @@ class CalendarGrid extends StatelessWidget {
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: ColorPalette.primaryColor,
+              color: Color(0xffB39164),
             ),
           ),
         ),
@@ -134,7 +134,7 @@ class _CalendarDayCell extends StatelessWidget {
               color: isSelected
                   ? ColorPalette.primaryColor
                   : isToday
-                  ? ColorPalette.surfaceTertiary
+                  ? Colors.white.withValues(alpha: 0.20)
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
             ),
@@ -144,9 +144,7 @@ class _CalendarDayCell extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: isSelected
-                    ? ColorPalette.kWhite
-                    : ColorPalette.contentSecondary,
+                color: isSelected ? ColorPalette.kWhite : ColorPalette.kWhite,
               ),
             ),
           ),

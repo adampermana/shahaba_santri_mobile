@@ -35,6 +35,7 @@ class CalendarNavHeader extends StatelessWidget {
               style: textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
                 fontSize: 16,
+                color: ColorPalette.kWhite,
               ),
             ),
             const SizedBox(height: 4),
@@ -43,7 +44,7 @@ class CalendarNavHeader extends StatelessWidget {
               style: textTheme.bodySmall?.copyWith(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
-                color: ColorPalette.contentSecondary,
+                color: ColorPalette.contentDisabled,
               ),
             ),
           ],

@@ -24,4 +24,17 @@ class RouterPath {
 
   // Select City
   static const String selectCityPath = 'select-city';
+
+  // News
+  static const String detailNewsPath = 'detail-news';
+  static const String newsPath = 'news';
+
+  // Camera
+  static const String cameraPath = 'camera';
+
+  // Jadwal Sholat (push from featured nav)
+  static const String jadwalSholatPath = 'jadwal-sholat';
+
+  // Product Detail
+  static const String productDetailPath = 'product-detail';
 }

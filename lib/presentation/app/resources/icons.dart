@@ -16,10 +16,13 @@ abstract class AppIcons {
   static const String flag2Line = '$_path/flag-line.svg';
   static const String foggyLine = '$_path/foggy-line.svg';
   static const String hazeLine = '$_path/haze-line.svg';
-  static const String home9Line = '$_path/home-9-line.svg';
+  static const String homeUnselected = '$_path/home-unselected.svg';
+  static const String homeSelected = '$_path/home-selected.svg';
   static const String indeterminateCircleLine =
       '$_path/indeterminate-circle-line.svg';
   static const String information2Line = '$_path/information-2-line.svg';
+  static const String quranUnselected = '$_path/quran-unselected.svg';
+  static const String quranSelected = '$_path/quran-selected.svg';
   static const String mapPin2Line = '$_path/map-pin-line.svg';
   static const String motifBorderSelected = '$_path/motif/border-selected.svg';
   static const String motifBorderUnselected =
@@ -28,6 +31,7 @@ abstract class AppIcons {
   static const String moonLine = '$_path/moon-line.svg';
   static const String notification2Line = '$_path/notification-line.svg';
   static const String searchLine = '$_path/search-line.svg';
+  static const String searchScan = '$_path/search-eye-fill.svg';
   static const String settings4Line = '$_path/settings-line.svg';
   static const String shareLine = '$_path/share-line.svg';
   static const String sunFoggyLine = '$_path/sun-foggy-line.svg';

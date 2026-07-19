@@ -8,6 +8,7 @@ import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/screens/home/calendar/widgets/calendar_event_list.dart';
 import 'package:sahaba_mobile/presentation/screens/home/calendar/widgets/calendar_grid.dart';
 import 'package:sahaba_mobile/presentation/screens/home/calendar/widgets/calendar_nav_header.dart';
+import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 
 class CalendarScreen extends StatelessWidget {
@@ -28,17 +29,20 @@ class _CalendarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorPalette.scaffoldBackground,
+    return AppScaffold(
       appBar: CustomAppBar.buildAppBarSimple(
-        backgroundColor: ColorPalette.scaffoldBackground,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leadingWidth: 40,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(30),
+          child: SizedBox.shrink(),
+        ),
         leading: IconButton(
           onPressed: () => Navigator.of(context).maybePop(),
           icon: const Icon(
             Icons.arrow_back_rounded,
-            color: ColorPalette.contentSecondary,
+            color: ColorPalette.kWhite,
             size: 22,
           ),
           padding: const EdgeInsets.only(left: 16),
@@ -46,9 +50,9 @@ class _CalendarView extends StatelessWidget {
           splashRadius: 20,
         ),
         titleWidget: Text(
-          'Kembali',
+          'Kalendar Hijriah',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: ColorPalette.contentSecondary,
+            color: ColorPalette.kWhite,
             fontSize: 14,
             fontWeight: FontWeight.w600,
           ),
@@ -68,52 +72,76 @@ class _CalendarView extends StatelessWidget {
               state.focusedMonth.month == DateTime.december;
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: ColorPalette.kWhite,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x14000000),
-                        blurRadius: 2,
-                      ),
-                      BoxShadow(
-                        color: Color(0x11000000),
-                        blurRadius: 4,
-                      ),
-                    ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 24,
                   ),
-                  child: Column(
-                    children: [
-                      CalendarNavHeader(
-                        hijriDate: hijriHeader,
-                        gregorianDate: gregorianHeader,
-                        onPrevious: isFirstMonthInYear
-                            ? null
-                            : () => context.read<CalendarBloc>().add(
-                                const CalendarEvent.changeMonth(-1),
-                              ),
-                        onNext: isLastMonthInYear
-                            ? null
-                            : () => context.read<CalendarBloc>().add(
-                                const CalendarEvent.changeMonth(1),
-                              ),
-                      ),
-                      const SizedBox(height: 24),
-                      CalendarGrid(
-                        focusedMonth: state.focusedMonth,
-                        selectedDate: state.selectedDate,
-                        eventDays: state.eventDaysInMonth,
-                        onDayTap: (date) => context.read<CalendarBloc>().add(
-                          CalendarEvent.selectDate(date),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: ShapeDecoration(
+                      color: Colors.white.withValues(alpha: 0.10),
+                      shape: RoundedRectangleBorder(
+                        side: const BorderSide(
+                          color: Color(0x33E8E8E8),
                         ),
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                    ],
+                      shadows: const [
+                        BoxShadow(
+                          color: Color(0x14000000),
+                          blurRadius: 32,
+                        ),
+                        BoxShadow(
+                          color: Color(0x11000000),
+                          blurRadius: 16,
+                        ),
+                        BoxShadow(
+                          color: Color(0x0A000000),
+                          blurRadius: 5,
+                        ),
+                        BoxShadow(
+                          color: Color(0x02000000),
+                          blurRadius: 6,
+                        ),
+                        BoxShadow(
+                          color: Color(0x00000000),
+                          blurRadius: 6,
+                          offset: Offset(1, 0),
+                          spreadRadius: 8,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        CalendarNavHeader(
+                          hijriDate: hijriHeader,
+                          gregorianDate: gregorianHeader,
+                          onPrevious: isFirstMonthInYear
+                              ? null
+                              : () => context.read<CalendarBloc>().add(
+                                  const CalendarEvent.changeMonth(-1),
+                                ),
+                          onNext: isLastMonthInYear
+                              ? null
+                              : () => context.read<CalendarBloc>().add(
+                                  const CalendarEvent.changeMonth(1),
+                                ),
+                        ),
+                        CalendarGrid(
+                          focusedMonth: state.focusedMonth,
+                          selectedDate: state.selectedDate,
+                          eventDays: state.eventDaysInMonth,
+                          onDayTap: (date) => context.read<CalendarBloc>().add(
+                            CalendarEvent.selectDate(date),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),

@@ -1,5 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sahaba_mobile/infrastructure/failures/failures.dart';
 
@@ -59,6 +61,48 @@ class LocationPermissionService {
       return Right(position);
     } on LocationError catch (e) {
       return Left(LocationFailure('Failed to get current location', '$e'));
+    }
+  }
+
+  Future<Map<String, String>> getAddressFromCoordinates(
+    Map<String, double> position,
+  ) async {
+    final placemarks = await placemarkFromCoordinates(
+      position['latitude']!,
+      position['longitude']!,
+    );
+
+    if (placemarks.isNotEmpty) {
+      final placemark = placemarks.first;
+      return {
+        'province': placemark.administrativeArea ?? 'Unknown Province',
+        'district': placemark.subAdministrativeArea ?? 'Unknown District',
+        'name': placemark.name ?? 'Unknown Name',
+        'street': placemark.thoroughfare ?? 'Unknown Street',
+        'locality': placemark.locality ?? 'Unknown Locality',
+        'postalCode': placemark.postalCode ?? 'Unknown PostalCode',
+      };
+    } else {
+      return {
+        'province': 'Unknown Province',
+        'district': 'Unknown District',
+        'name': 'Unknown Name',
+        'street': 'Unknown Street',
+        'locality': 'Unknown Locality',
+        'postalCode': 'Unknown PostalCode',
+      };
+    }
+  }
+
+  Future<String> getLocationPlaceMark(double latitude, double longitude) async {
+    try {
+      final response = await placemarkFromCoordinates(latitude, longitude);
+      final province = response.first.subLocality;
+      final country = response.first.administrativeArea;
+
+      return '$province, $country';
+    } on PlatformException {
+      return 'Unknown place, try again';
     }
   }
 }

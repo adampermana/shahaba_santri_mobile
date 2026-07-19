@@ -1,4 +1,4 @@
-package com.solu.sahaba.adzan
+package com.eprisi.sah.adzan
 
 import android.app.AlarmManager
 import android.app.PendingIntent

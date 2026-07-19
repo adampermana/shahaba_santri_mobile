@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
@@ -21,13 +22,17 @@ import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/home/widgets/card_jadwal_sholat.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends HookWidget {
   const HomeScreen({super.key, this.onPrayerScheduleTap});
 
   final VoidCallback? onPrayerScheduleTap;
 
   @override
   Widget build(BuildContext context) {
+    // useEffect() => () {
+    //   context.read<LocationCubit>().fetchCurrentLocation();
+    //   return null;
+    // } const [];
     final textTheme = Theme.of(context).textTheme;
     final today = DateTime.now();
 

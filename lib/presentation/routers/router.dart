@@ -4,17 +4,24 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
+import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
+import 'package:sahaba_mobile/domains/product/product_response.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
+import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/injector.dart';
-import 'package:sahaba_mobile/presentation/enum/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
+import 'package:sahaba_mobile/presentation/screens/camera_screen/camera_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/calendar/calendar_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/home/news/detail_news_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/jadwal_sholat_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/qibla_screen/qibla_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/select_city_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/main_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/product/product_page.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/detail_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
@@ -22,7 +29,6 @@ import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 final GoRouter router = GoRouter(
   debugLogDiagnostics: kDebugMode,
   initialLocation: RouterPath.rootPath,
-
   redirect: (context, state) {
     final location = state.matchedLocation;
 
@@ -53,6 +59,7 @@ final GoRouter router = GoRouter(
   },
   routes: [
     GoRoute(
+      // Main path
       path: RouterPath.mainPath,
       builder: (context, state) => MainProvider(
         key: state.pageKey,
@@ -84,6 +91,22 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const CalendarScreen(),
         ),
         GoRoute(
+          path: RouterPath.jadwalSholatPath,
+          builder: (context, state) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) {
+                  final cubit = sl<LocationCubit>();
+                  unawaited(cubit.loadSavedCity());
+                  return cubit;
+                },
+              ),
+              BlocProvider.value(value: sl<StreakCubit>()),
+            ],
+            child: const JadwalSholatScreen(),
+          ),
+        ),
+        GoRoute(
           path: '${RouterPath.quranPath}/${RouterPath.detailQuranPath}',
           builder: (context, state) {
             final args = state.extra;
@@ -106,6 +129,35 @@ final GoRouter router = GoRouter(
             return const DetailQuranScreen();
           },
         ),
+
+        // Camera
+        GoRoute(
+          path: RouterPath.cameraPath,
+          builder: (context, state) => BlocProvider.value(
+            value: sl<LocationBloc>(),
+            child: const CameraScanScreen(),
+          ),
+          routes: [
+            GoRoute(
+              path: RouterPath.productDetailPath,
+              builder: (context, state) {
+                final extra = state.extra as Map<String, dynamic>?;
+                return ProductDetailPage(
+                  id: extra?['id'] as int? ?? 0,
+                  ad: extra?['ad'] as ProductData?,
+                  isAds: extra?['isAds'] as bool? ?? false,
+                );
+              },
+            ),
+          ],
+        ),
+        // Detail News
+        GoRoute(
+          path: RouterPath.detailNewsPath,
+          builder: (context, state) => const DetailNewsScreen(),
+        ),
+
+        // Detail Quran
         GoRoute(
           path: '${RouterPath.quranPath}/${RouterPath.searchQuranPath}',
           builder: (context, state) {

@@ -23,8 +23,8 @@ class CalendarEventList extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: ColorPalette.kWhite,
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.white.withValues(alpha: 0.08),
+        // borderRadius: BorderRadius.circular(16),
         boxShadow: const [
           BoxShadow(
             color: Color(0x14000000),
@@ -36,7 +36,7 @@ class CalendarEventList extends StatelessWidget {
           ),
         ],
       ),
-      clipBehavior: Clip.antiAlias,
+      // clipBehavior: Clip.antiAlias,
       child: Column(
         children: List.generate(events.length, (index) {
           final event = events[index];
@@ -90,7 +90,9 @@ class _EventRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? ColorPalette.primaryColor : ColorPalette.kWhite,
+          color: isSelected
+              ? Colors.white.withValues(alpha: 0.08)
+              : ColorPalette.scaffoldBackground,
           border: isLast
               ? null
               : const Border(
@@ -98,11 +100,11 @@ class _EventRow extends StatelessWidget {
                     color: ColorPalette.borderTransparent,
                   ),
                 ),
-          borderRadius: isFirst
-              ? const BorderRadius.vertical(top: Radius.circular(8))
-              : isLast
-              ? BorderRadius.zero
-              : BorderRadius.zero,
+          // borderRadius: isFirst
+          //     ? const BorderRadius.vertical(top: Radius.circular(8))
+          //     : isLast
+          //     ? BorderRadius.zero
+          //     : BorderRadius.zero,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -146,7 +148,7 @@ class _EventRow extends StatelessWidget {
                           : 14,
                       color: isSelected
                           ? ColorPalette.kWhite
-                          : ColorPalette.kBlack,
+                          : ColorPalette.kWhite,
                     ),
                   ),
                   Text(
@@ -155,9 +157,10 @@ class _EventRow extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: textTheme.bodySmall?.copyWith(
                       fontSize: 12,
+                      fontWeight: FontWeight.w400,
                       color: isSelected
                           ? const Color(0xFFDDDDDD)
-                          : ColorPalette.contentTertiary,
+                          : ColorPalette.inverseSecondary,
                     ),
                   ),
                 ],
@@ -181,9 +184,10 @@ class _EventRow extends StatelessWidget {
                   hijriDateStr,
                   style: textTheme.bodySmall?.copyWith(
                     fontSize: 12,
+                    fontWeight: FontWeight.w400,
                     color: isSelected
                         ? const Color(0xFFDDDDDD)
-                        : ColorPalette.contentTertiary,
+                        : ColorPalette.inverseSecondary,
                   ),
                 ),
               ],

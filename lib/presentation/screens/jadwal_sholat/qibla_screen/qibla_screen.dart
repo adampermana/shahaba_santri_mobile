@@ -8,10 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sahaba_mobile/business_logic/qibla_cubit/qibla_cubit.dart';
 import 'package:sahaba_mobile/business_logic/qibla_cubit/qibla_state.dart';
+import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
-import 'package:sahaba_mobile/presentation/enum/enum_widget.dart';
+import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
@@ -50,8 +51,8 @@ class _QiblaViewState extends State<_QiblaView> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return Scaffold(
-      backgroundColor: ColorPalette.scaffoldBackground,
+    return AppScaffold(
+      // backgroundColor: ColorPalette.scaffoldBackground,
       appBar: _buildAppBar(context),
       body: SafeArea(
         child: BlocConsumer<QiblaCubit, QiblaState>(
@@ -93,14 +94,18 @@ class _QiblaViewState extends State<_QiblaView> {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return CustomAppBar.buildAppBarSimple(
-      backgroundColor: ColorPalette.kWhite,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       leadingWidth: 40,
+      bottom: const PreferredSize(
+        preferredSize: Size.fromHeight(30),
+        child: SizedBox.shrink(),
+      ),
       leading: IconButton(
         onPressed: () => Navigator.of(context).maybePop(),
         icon: const Icon(
           Icons.arrow_back_rounded,
-          color: ColorPalette.contentSecondary,
+          color: ColorPalette.kWhite,
           size: 22,
         ),
         padding: const EdgeInsets.only(left: 16),
@@ -110,7 +115,7 @@ class _QiblaViewState extends State<_QiblaView> {
       titleWidget: Text(
         'Kembali',
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: ColorPalette.contentSecondary,
+          color: ColorPalette.kWhite,
           fontSize: 14,
           fontWeight: FontWeight.w600,
         ),

@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '100290353508',
     projectId: 'sahaba-c7ee7',
     storageBucket: 'sahaba-c7ee7.firebasestorage.app',
-    iosBundleId: 'com.solu.sahaba',
+    iosBundleId: 'com.eprisi.sah',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

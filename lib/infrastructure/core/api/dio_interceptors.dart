@@ -1,12 +1,46 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:sahaba_mobile/infrastructure/auth/datasources/auth_local_datasource.dart';
+import 'package:sahaba_mobile/injector.dart';
 
 class RequestInterceptor extends Interceptor {
+  final IAuthLocalDatasource _authLocalDatasource = sl<IAuthLocalDatasource>();
+
   @override
   Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    // If cache is empty, fetch from Isar database
+
+    var token =
+        _authLocalDatasource.authGuestDataHive?.accessToken ??
+        _authLocalDatasource.authUserDataHive?.accessToken;
+
+    debugPrint(
+      '=== RequestInterceptor: Cached '
+      'token: ${token != null ? 'Present' : 'Null'}',
+    );
+    if (token == null) {
+      final authUser = _authLocalDatasource.authUserDataHive?.accessToken;
+      final authGuest = _authLocalDatasource.authGuestDataHive?.accessToken;
+      token = authUser ?? authGuest;
+
+      debugPrint(
+        '=== RequestInterceptor: Fetched from HIve'
+        'User token: $authUser, Guest token: $authGuest',
+      );
+    }
+    if (token != null) {
+      options.headers['Authorization'] = token;
+      debugPrint(
+        '=== RequestInterceptor: Token added to header for ${options.uri}',
+      );
+    } else {
+      debugPrint(
+        '=== RequestInterceptor: WARNING - No token found for ${options.uri}',
+      );
+    }
     return handler.next(options);
   }
 }

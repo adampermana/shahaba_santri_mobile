@@ -1,9 +1,9 @@
-package com.solu.sahaba
+package com.eprisi.sah
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.FileProvider
-import com.solu.sahaba.adzan.AdzanAlarmScheduler
+import com.eprisi.sah.adzan.AdzanAlarmScheduler
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel

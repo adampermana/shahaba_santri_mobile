@@ -13,12 +13,13 @@ import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedu
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_state.dart';
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
+import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/infrastructure/extension/datetime_extension.dart';
 import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 import 'package:sahaba_mobile/infrastructure/services/adzan_service.dart';
+import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
-import 'package:sahaba_mobile/presentation/enum/enum_widget.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/home/widgets/card_jadwal_sholat.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/prayer_time_tile.dart';
@@ -30,88 +31,115 @@ class JadwalSholatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
-      builder: (context, scheduleState) {
-        return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: scheduleState is PrayerScheduleLoaded
-              ? const SystemUiOverlayStyle(
-                  statusBarColor: Colors.transparent,
-                  statusBarIconBrightness: Brightness.light,
-                  statusBarBrightness: Brightness.dark,
-                )
-              : const SystemUiOverlayStyle(
-                  statusBarColor: Colors.transparent,
-                  statusBarIconBrightness: Brightness.dark,
-                  statusBarBrightness: Brightness.light,
-                ),
-          child: Scaffold(
-            backgroundColor: ColorPalette.scaffoldBackground,
-            body: BlocListener<PrayerScheduleCubit, PrayerScheduleState>(
-              listenWhen: (previous, current) {
-                if (current is! PrayerScheduleLoaded) return false;
-                if (previous is! PrayerScheduleLoaded) return true;
-                return !_isSameDate(previous.date, current.date);
-              },
-              listener: (context, state) {
-                if (state is PrayerScheduleLoaded) {
-                  unawaited(
-                    context.read<StreakCubit>().loadStreak(state.date),
-                  );
-                }
-              },
-              child: BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
-                builder: (context, state) {
-                  if (state is PrayerScheduleLoading) {
-                    return const SafeArea(
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: ColorPalette.primaryColor,
-                        ),
-                      ),
-                    );
-                  }
-                  if (state is PrayerScheduleError) {
-                    return SafeArea(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(state.message),
-                            const SizedBox(height: 16),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 32,
-                              ),
-                              child: SubmitButtonStylesWidget(
-                                textButton: 'Coba Lagi',
-                                height: 50,
-                                primaryColor: ColorPalette.primaryColor,
-                                style: SubmitButtonStyle.elevated,
-                                onPressed: () => _reload(context),
-                              ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => sl<LocationCubit>()..loadSavedCity(),
+        ),
+        BlocProvider(
+          create: (_) => sl<PrayerScheduleCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => sl<StreakCubit>(),
+        ),
+      ],
+      child: BlocListener<LocationCubit, LocationState>(
+        listener: (context, state) {
+          if (state is LocationLoaded) {
+            final cityId = state.city.id;
+            if (cityId != null) {
+              final now = DateTime.now();
+              context.read<PrayerScheduleCubit>().loadSchedule(cityId, now);
+              context.read<StreakCubit>().loadStreak(now);
+            }
+          }
+        },
+        child: BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
+          builder: (context, scheduleState) {
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: scheduleState is PrayerScheduleLoaded
+                  ? const SystemUiOverlayStyle(
+                      statusBarColor: Colors.transparent,
+                      statusBarIconBrightness: Brightness.light,
+                      statusBarBrightness: Brightness.dark,
+                    )
+                  : const SystemUiOverlayStyle(
+                      statusBarColor: Colors.transparent,
+                      statusBarIconBrightness: Brightness.dark,
+                      statusBarBrightness: Brightness.light,
+                    ),
+              child: Scaffold(
+                backgroundColor: ColorPalette.scaffoldBackground,
+                body: BlocListener<PrayerScheduleCubit, PrayerScheduleState>(
+                  listenWhen: (previous, current) {
+                    if (current is! PrayerScheduleLoaded) return false;
+                    if (previous is! PrayerScheduleLoaded) return true;
+                    return !_isSameDate(previous.date, current.date);
+                  },
+                  listener: (context, state) {
+                    if (state is PrayerScheduleLoaded) {
+                      unawaited(
+                        context.read<StreakCubit>().loadStreak(state.date),
+                      );
+                    }
+                  },
+                  child: BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
+                    builder: (context, state) {
+                      if (state is PrayerScheduleLoading) {
+                        return const SafeArea(
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: ColorPalette.primaryColor,
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  if (state is PrayerScheduleLoaded) {
-                    return _LoadedView(
-                      state: state,
-                      schedule: state.response.jadwal,
-                      onPrevious: () =>
-                          context.read<PrayerScheduleCubit>().previousDay(),
-                      onNext: () =>
-                          context.read<PrayerScheduleCubit>().nextDay(),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
+                          ),
+                        );
+                      }
+                      if (state is PrayerScheduleError) {
+                        return Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  state.message,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                                const SizedBox(height: 16),
+                                SubmitButtonStylesWidget(
+                                  textButton: 'Coba Lagi',
+                                  height: 50,
+                                  textButtonColor: ColorPalette.kWhite,
+                                  primaryColor: ColorPalette.primaryColor,
+                                  style: SubmitButtonStyle.elevated,
+                                  onPressed: () => _reload(context),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      if (state is PrayerScheduleLoaded) {
+                        return _LoadedView(
+                          state: state,
+                          schedule: state.response.jadwal,
+                          onPrevious: () =>
+                              context.read<PrayerScheduleCubit>().previousDay(),
+                          onNext: () =>
+                              context.read<PrayerScheduleCubit>().nextDay(),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ),
               ),
-            ),
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -460,24 +488,26 @@ class _NextPrayerCard extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(
-            top: 80,
+            top: 60,
             left: 16,
             right: 16,
             child: Row(
               spacing: 8,
               children: [
                 GestureDetector(
-                  onTap: onPrevious,
+                  onTap: () => context.pop(),
                   child: const Icon(
-                    Icons.arrow_back,
+                    Icons.arrow_back_rounded,
                     color: ColorPalette.kWhite,
-                    size: 20,
+                    size: 22,
                   ),
                 ),
                 Text(
-                  'Jadwal Solat',
-                  style: textTheme.labelSmall?.copyWith(
+                  'Jadwal Sholat',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: ColorPalette.kWhite,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],

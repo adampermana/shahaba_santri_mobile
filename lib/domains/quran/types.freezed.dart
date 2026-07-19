@@ -210,7 +210,7 @@ return $default(_that.name,_that.languageName);case _:
 @JsonSerializable()
 
 class _TranslatedName implements TranslatedName {
-   _TranslatedName({this.name = "", this.languageName = ""});
+   _TranslatedName({this.name = '', this.languageName = ''});
   factory _TranslatedName.fromJson(Map<String, dynamic> json) => _$TranslatedNameFromJson(json);
 
 @override@JsonKey() final  String name;
@@ -480,7 +480,7 @@ return $default(_that.id,_that.verseKey,_that.text,_that.chapterID,_that.pageNum
 @JsonSerializable()
 
 class _Verse implements Verse {
-   _Verse({this.id = 0, this.verseKey = "", this.text = "", this.chapterID = 0, this.pageNumber = 0, this.juzNumber = 0});
+   _Verse({this.id = 0, this.verseKey = '', this.text = '', this.chapterID = 0, this.pageNumber = 0, this.juzNumber = 0});
   factory _Verse.fromJson(Map<String, dynamic> json) => _$VerseFromJson(json);
 
 @override@JsonKey() final  int id;
@@ -757,7 +757,7 @@ return $default(_that.id,_that.verseKey,_that.text,_that.resourceID,_that.langua
 @JsonSerializable()
 
 class _VerseTranslation implements VerseTranslation {
-   _VerseTranslation({this.id = 0, this.verseKey = "", this.text = "", this.resourceID = 0, this.languageName = ""});
+   _VerseTranslation({this.id = 0, this.verseKey = '', this.text = '', this.resourceID = 0, this.languageName = ''});
   factory _VerseTranslation.fromJson(Map<String, dynamic> json) => _$VerseTranslationFromJson(json);
 
 @override@JsonKey() final  int id;
@@ -1037,7 +1037,7 @@ return $default(_that.id,_that.bismillahPre,_that.nameArabic,_that.nameComplex,_
 @JsonSerializable()
 
 class _Chapter implements Chapter {
-   _Chapter({this.id = 0, this.bismillahPre = false, this.nameArabic = "", this.nameComplex = "", this.nameSimple = "", final  List<int> pages = const [], this.revelationOrder = 0, this.revelationPlace = ChapterRevelationPlace.makkah, final  ChapterTranslatedName translatedName = const {}, this.versesCount = 0}): _pages = pages,_translatedName = translatedName;
+   _Chapter({this.id = 0, this.bismillahPre = false, this.nameArabic = '', this.nameComplex = '', this.nameSimple = '', final  List<int> pages = const [], this.revelationOrder = 0, this.revelationPlace = ChapterRevelationPlace.makkah, final  ChapterTranslatedName translatedName = const {}, this.versesCount = 0}): _pages = pages,_translatedName = translatedName;
   factory _Chapter.fromJson(Map<String, dynamic> json) => _$ChapterFromJson(json);
 
 @override@JsonKey() final  int id;
@@ -1910,7 +1910,7 @@ return $default(_that.verse,_that.id,_that.number,_that.name,_that.authorName,_t
 @JsonSerializable()
 
 class _Translation implements Translation {
-   _Translation({required this.verse, this.id = 0, this.number = 0, this.name = "", this.authorName = "", this.slug = "", this.languageName = ""});
+   _Translation({required this.verse, this.id = 0, this.number = 0, this.name = '', this.authorName = '', this.slug = '', this.languageName = ''});
   factory _Translation.fromJson(Map<String, dynamic> json) => _$TranslationFromJson(json);
 
 @override final  TranslatedName verse;
@@ -2195,7 +2195,7 @@ return $default(_that.id,_that.text);case _:
 @JsonSerializable()
 
 class _Transliteration implements Transliteration {
-   _Transliteration({this.id = "", this.text = ""});
+   _Transliteration({this.id = '', this.text = ''});
   factory _Transliteration.fromJson(Map<String, dynamic> json) => _$TransliterationFromJson(json);
 
 @override@JsonKey() final  String id;

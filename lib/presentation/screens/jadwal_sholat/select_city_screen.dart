@@ -11,6 +11,7 @@ import 'package:sahaba_mobile/domains/city_model/city_model.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 
@@ -145,8 +146,7 @@ class _SelectCityViewState extends State<_SelectCityView> {
 
     return BlocListener<LocationCubit, LocationState>(
       listener: _onLocationChanged,
-      child: Scaffold(
-        backgroundColor: ColorPalette.scaffoldBackground,
+      child: AppScaffold(
         appBar: _buildAppBar(context, textTheme),
         body: Column(
           children: [
@@ -324,16 +324,20 @@ class _SelectCityViewState extends State<_SelectCityView> {
     TextTheme textTheme,
   ) {
     return CustomAppBar.buildAppBarSimple(
-      backgroundColor: ColorPalette.scaffoldBackgroundAppBar,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       leadingWidth: 0,
       leading: const SizedBox.shrink(),
+      bottom: const PreferredSize(
+        preferredSize: Size.fromHeight(30),
+        child: SizedBox.shrink(),
+      ),
       titleWidget: Text(
         'Pilih Kota',
         style: textTheme.titleLarge?.copyWith(
           fontSize: 16,
           fontWeight: FontWeight.w500,
-          color: ColorPalette.contentSecondary,
+          color: ColorPalette.kWhite,
         ),
       ),
       actions: [
@@ -344,7 +348,7 @@ class _SelectCityViewState extends State<_SelectCityView> {
             width: 24,
             height: 24,
             colorFilter: const ColorFilter.mode(
-              ColorPalette.kBlack,
+              ColorPalette.kWhite,
               BlendMode.srcIn,
             ),
           ),
@@ -397,7 +401,7 @@ class _UseCurrentLocationRow extends StatelessWidget {
                   'Gunakan lokasi saat ini',
                   style: textTheme.bodyMedium?.copyWith(
                     fontSize: 14,
-                    color: ColorPalette.contentSecondary,
+                    color: ColorPalette.kWhite,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -432,7 +436,7 @@ class _CityTile extends StatelessWidget {
               city.lokasi ?? '-',
               style: textTheme.bodyMedium?.copyWith(
                 fontSize: 14,
-                color: ColorPalette.contentSecondary,
+                color: ColorPalette.kWhite,
                 fontWeight: FontWeight.w400,
               ),
             ),

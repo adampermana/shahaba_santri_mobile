@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 
 // Jarak label (title) dari tepi bawah area konten bar.
 // Dipakai bareng oleh _RegularNavBarItem dan _FeaturedNavBarItem
@@ -314,14 +315,11 @@ class _RegularNavBarItem extends StatelessWidget {
                       duration: const Duration(milliseconds: 180),
                       curve: Curves.easeOut,
                       scale: isSelected ? 1.05 : 1,
-                      child: SvgPicture.asset(
-                        svgPath,
+                      child: CacheImageOrSvg(
+                        source: svgPath,
                         width: iconSize,
                         height: iconSize,
-                        colorFilter: ColorFilter.mode(
-                          color,
-                          BlendMode.srcIn,
-                        ),
+                        colorAsset: color,
                       ),
                     ),
                   ),

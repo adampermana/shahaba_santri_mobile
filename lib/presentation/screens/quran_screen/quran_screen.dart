@@ -5,13 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
-import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/juz_card.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/quran_search_bar.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/quran_tab_bar.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/surah_card.dart';
+import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
 
 class QuranScreen extends StatelessWidget {
   const QuranScreen({super.key});
@@ -27,9 +27,9 @@ class _QuranView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AppScaffold(
       appBar: _buildAppBar(context),
-      backgroundColor: ColorPalette.scaffoldBackground,
+      // backgroundColor: ColorPalette.scaffoldBackground,
       body: Column(
         children: [
           BlocBuilder<QuranBloc, QuranState>(
@@ -56,15 +56,49 @@ class _QuranView extends StatelessWidget {
         ],
       ),
     );
+
+    // Scaffold(
+    //   appBar: _buildAppBar(context),
+    //   backgroundColor: ColorPalette.scaffoldBackground,
+    //   body: Column(
+    //     children: [
+    //       BlocBuilder<QuranBloc, QuranState>(
+    //         buildWhen: (prev, curr) => prev.currentTab != curr.currentTab,
+    //         builder: (context, state) {
+    //           return QuranTabBar(
+    //             currentIndex: state.currentTab,
+    //             onTabChanged: (index) {
+    //               context.read<QuranBloc>().add(QuranEvent.changeTab(index));
+    //             },
+    //           );
+    //         },
+    //       ),
+    //       Expanded(
+    //         child: BlocBuilder<QuranBloc, QuranState>(
+    //           builder: (context, state) {
+    //             if (state.currentTab == 0) {
+    //               return _SurahList(state: state);
+    //             }
+    //             return _JuzList(state: state);
+    //           },
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       toolbarHeight: 88,
       automaticallyImplyLeading: false,
-      backgroundColor: ColorPalette.scaffoldBackgroundAppBar,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
+      bottom: const PreferredSize(
+        preferredSize: Size.fromHeight(30),
+        child: SizedBox.shrink(),
+      ),
       surfaceTintColor: Colors.transparent,
       titleSpacing: 16,
       title: QuranSearchBar(

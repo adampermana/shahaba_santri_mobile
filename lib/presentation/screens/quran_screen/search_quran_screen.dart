@@ -16,6 +16,7 @@ import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/juz_card.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/quran_search_bar.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/surah_card.dart';
+import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 
 class SearchQuranArgs {
@@ -77,8 +78,8 @@ class _SearchQuranScreenState extends State<SearchQuranScreen> {
 
     final textTheme = Theme.of(context).textTheme;
 
-    return Scaffold(
-      backgroundColor: ColorPalette.kWhite,
+    return AppScaffold(
+      // backgroundColor: ColorPalette.kWhite,
       appBar: _buildAppBar(context, textTheme),
       body: Column(
         children: [
@@ -113,16 +114,20 @@ class _SearchQuranScreenState extends State<SearchQuranScreen> {
     TextTheme textTheme,
   ) {
     return CustomAppBar.buildAppBarSimple(
-      backgroundColor: ColorPalette.scaffoldBackgroundAppBar,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       leadingWidth: 0,
       leading: const SizedBox.shrink(),
+      bottom: const PreferredSize(
+        preferredSize: Size.fromHeight(30),
+        child: SizedBox.shrink(),
+      ),
       titleWidget: Text(
         'Pencarian',
         style: textTheme.titleLarge?.copyWith(
           fontSize: 16,
           fontWeight: FontWeight.w500,
-          color: ColorPalette.contentSecondary,
+          color: ColorPalette.kWhite,
         ),
       ),
       actions: [
@@ -133,7 +138,7 @@ class _SearchQuranScreenState extends State<SearchQuranScreen> {
             width: 24,
             height: 24,
             colorFilter: const ColorFilter.mode(
-              ColorPalette.kBlack,
+              ColorPalette.kWhite,
               BlendMode.srcIn,
             ),
           ),
@@ -245,7 +250,7 @@ class _SearchResultList extends StatelessWidget {
           ],
         ),
         style: textTheme.labelMedium?.copyWith(
-          color: ColorPalette.kBlack,
+          color: ColorPalette.kWhite,
           fontSize: 14,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.6,
@@ -258,7 +263,7 @@ class _SearchResultList extends StatelessWidget {
     return Text(
       title,
       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-        color: ColorPalette.contentTertiary,
+        color: ColorPalette.kWhite,
         fontSize: 16,
         fontWeight: FontWeight.w500,
         letterSpacing: 0.6,
@@ -337,7 +342,7 @@ class _VerseResultCardState extends State<_VerseResultCard> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: ColorPalette.kWhite,
+        color: ColorPalette.scaffoldBackground,
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
           BoxShadow(color: Color(0x14000000), blurRadius: 2),
@@ -388,7 +393,7 @@ class _VerseResultCardState extends State<_VerseResultCard> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: textTheme.labelSmall?.copyWith(
-                          color: ColorPalette.contentTertiary,
+                          color: ColorPalette.kWhite,
                         ),
                       ),
                     ],
@@ -476,7 +481,7 @@ class _VerseResultItem extends StatelessWidget {
           Text(
             '${verse.verseNumber}.',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: ColorPalette.contentSecondary,
+              color: ColorPalette.kWhite,
               fontSize: 14,
               fontWeight: FontWeight.w400,
             ),
@@ -486,7 +491,7 @@ class _VerseResultItem extends StatelessWidget {
             child: Text.rich(
               _highlight(verse.translation, query),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: ColorPalette.contentSecondary,
+                color: ColorPalette.kWhite,
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
               ),
