@@ -147,7 +147,7 @@ class _SurahList extends StatelessWidget {
 
     return ListView.separated(
       itemCount: surahs.length,
-      separatorBuilder: (_, _) => const Divider(
+      separatorBuilder: (_, __) => const Divider(
         height: 1,
         thickness: 1,
         color: Color(0x33E8E8E8),
@@ -197,7 +197,7 @@ class _JuzList extends StatelessWidget {
     return ListView.separated(
       // padding: const EdgeInsets.all(16),
       itemCount: juzList.length,
-      separatorBuilder: (_, _) => const Divider(
+      separatorBuilder: (_, __) => const Divider(
         height: 1,
         thickness: 1,
         color: Color(0x33E8E8E8),

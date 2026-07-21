@@ -28,12 +28,20 @@ class ProductSearchResultSheet extends StatelessWidget {
 
           const Text(
             'Hasil Pencocokan Produk',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: ColorPalette.kWhite,
+            ),
           ),
           const SizedBox(height: 4),
           const Text(
             'Daftar produk yang paling mirip',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: ColorPalette.inverseOnSurface,
+            ),
           ),
           const SizedBox(height: 16),
 
@@ -147,8 +155,7 @@ class ProductSearchResultSheet extends StatelessWidget {
                                                 else
                                                   DecoratedBox(
                                                     decoration: BoxDecoration(
-                                                      color: ColorPalette
-                                                          .kPurple800,
+                                                      color: Colors.deepPurple,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                             10000,
@@ -174,6 +181,7 @@ class ProductSearchResultSheet extends StatelessWidget {
                                                   style: const TextStyle(
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.w600,
+                                                    color: ColorPalette.kWhite,
                                                   ),
                                                 ),
                                                 const SizedBox(height: 4),
@@ -184,7 +192,7 @@ class ProductSearchResultSheet extends StatelessWidget {
                                                         item.status ?? '',
                                                         style: const TextStyle(
                                                           color: ColorPalette
-                                                              .kRed500,
+                                                              .kTeal,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           fontSize: 12,
@@ -205,7 +213,8 @@ class ProductSearchResultSheet extends StatelessWidget {
                                                       Text(
                                                         item.expireDate ?? '',
                                                         style: const TextStyle(
-                                                          color: Colors.black54,
+                                                          color: ColorPalette
+                                                              .inverseOnSurface,
                                                           fontSize: 12,
                                                         ),
                                                       ),
@@ -228,6 +237,7 @@ class ProductSearchResultSheet extends StatelessWidget {
                                           const Icon(
                                             Icons.arrow_forward_ios,
                                             size: 16,
+                                            color: ColorPalette.kWhite,
                                           ),
                                         ],
                                       ),
@@ -253,7 +263,7 @@ class ProductSearchResultSheet extends StatelessWidget {
                       const Text(
                         'Tidak Ditemukan Produk yang cocok?',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: ColorPalette.inverseOnSurface,
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
                         ),

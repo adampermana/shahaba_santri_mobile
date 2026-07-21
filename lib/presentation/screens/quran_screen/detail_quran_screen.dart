@@ -746,7 +746,7 @@ Widget _surahContent(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
           sliver: SliverList.separated(
             itemCount: detail.verses.length,
-            separatorBuilder: (_, _) => const Divider(
+            separatorBuilder: (_, __) => const Divider(
               height: 1,
               thickness: 1,
               color: ColorPalette.borderTransparent,
@@ -801,7 +801,7 @@ Widget _surahContent(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
         sliver: SliverList.separated(
           itemCount: detail.verses.length - targetIndex,
-          separatorBuilder: (_, _) => const Divider(
+          separatorBuilder: (_, __) => const Divider(
             height: 1,
             thickness: 1,
             color: ColorPalette.borderTransparent,

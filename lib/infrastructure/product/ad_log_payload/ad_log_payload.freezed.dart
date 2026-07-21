@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AdLogPayload {
 
-@JsonKey(name: 'product_id') int get productId;@JsonKey(name: 'creative_id') int get creativeId;@JsonKey(name: 'campaign_id') int get campaignId;@JsonKey(name: 'subdistrict') String get kecamatan;@JsonKey(name: 'city') String get kelurahan;@JsonKey(name: 'lat') double get lat;@JsonKey(name: 'long') double get long;@JsonKey(name: 'phone_number') String get phoneNumber;@JsonKey(name: 'user') String get user;@JsonKey(name: 'province') String get provinsi;@JsonKey(name: 'event_type') String get eventType;
+@JsonKey(name: 'product_id') int? get productId;@JsonKey(name: 'creative_id') int? get creativeId;@JsonKey(name: 'campaign_id') int? get campaignId;@JsonKey(name: 'subdistrict') String get kecamatan;@JsonKey(name: 'city') String get kelurahan;@JsonKey(name: 'lat') double get lat;@JsonKey(name: 'long') double get long;@JsonKey(name: 'phone_number') String get phoneNumber;@JsonKey(name: 'user') String get user;@JsonKey(name: 'province') String get provinsi;@JsonKey(name: 'event_type') String get eventType;
 /// Create a copy of AdLogPayload
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -47,7 +47,7 @@ abstract mixin class $AdLogPayloadCopyWith<$Res>  {
   factory $AdLogPayloadCopyWith(AdLogPayload value, $Res Function(AdLogPayload) _then) = _$AdLogPayloadCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'product_id') int productId,@JsonKey(name: 'creative_id') int creativeId,@JsonKey(name: 'campaign_id') int campaignId,@JsonKey(name: 'subdistrict') String kecamatan,@JsonKey(name: 'city') String kelurahan,@JsonKey(name: 'lat') double lat,@JsonKey(name: 'long') double long,@JsonKey(name: 'phone_number') String phoneNumber,@JsonKey(name: 'user') String user,@JsonKey(name: 'province') String provinsi,@JsonKey(name: 'event_type') String eventType
+@JsonKey(name: 'product_id') int? productId,@JsonKey(name: 'creative_id') int? creativeId,@JsonKey(name: 'campaign_id') int? campaignId,@JsonKey(name: 'subdistrict') String kecamatan,@JsonKey(name: 'city') String kelurahan,@JsonKey(name: 'lat') double lat,@JsonKey(name: 'long') double long,@JsonKey(name: 'phone_number') String phoneNumber,@JsonKey(name: 'user') String user,@JsonKey(name: 'province') String provinsi,@JsonKey(name: 'event_type') String eventType
 });
 
 
@@ -64,12 +64,12 @@ class _$AdLogPayloadCopyWithImpl<$Res>
 
 /// Create a copy of AdLogPayload
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? productId = null,Object? creativeId = null,Object? campaignId = null,Object? kecamatan = null,Object? kelurahan = null,Object? lat = null,Object? long = null,Object? phoneNumber = null,Object? user = null,Object? provinsi = null,Object? eventType = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? productId = freezed,Object? creativeId = freezed,Object? campaignId = freezed,Object? kecamatan = null,Object? kelurahan = null,Object? lat = null,Object? long = null,Object? phoneNumber = null,Object? user = null,Object? provinsi = null,Object? eventType = null,}) {
   return _then(_self.copyWith(
-productId: null == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
-as int,creativeId: null == creativeId ? _self.creativeId : creativeId // ignore: cast_nullable_to_non_nullable
-as int,campaignId: null == campaignId ? _self.campaignId : campaignId // ignore: cast_nullable_to_non_nullable
-as int,kecamatan: null == kecamatan ? _self.kecamatan : kecamatan // ignore: cast_nullable_to_non_nullable
+productId: freezed == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
+as int?,creativeId: freezed == creativeId ? _self.creativeId : creativeId // ignore: cast_nullable_to_non_nullable
+as int?,campaignId: freezed == campaignId ? _self.campaignId : campaignId // ignore: cast_nullable_to_non_nullable
+as int?,kecamatan: null == kecamatan ? _self.kecamatan : kecamatan // ignore: cast_nullable_to_non_nullable
 as String,kelurahan: null == kelurahan ? _self.kelurahan : kelurahan // ignore: cast_nullable_to_non_nullable
 as String,lat: null == lat ? _self.lat : lat // ignore: cast_nullable_to_non_nullable
 as double,long: null == long ? _self.long : long // ignore: cast_nullable_to_non_nullable
@@ -162,7 +162,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'product_id')  int productId, @JsonKey(name: 'creative_id')  int creativeId, @JsonKey(name: 'campaign_id')  int campaignId, @JsonKey(name: 'subdistrict')  String kecamatan, @JsonKey(name: 'city')  String kelurahan, @JsonKey(name: 'lat')  double lat, @JsonKey(name: 'long')  double long, @JsonKey(name: 'phone_number')  String phoneNumber, @JsonKey(name: 'user')  String user, @JsonKey(name: 'province')  String provinsi, @JsonKey(name: 'event_type')  String eventType)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'product_id')  int? productId, @JsonKey(name: 'creative_id')  int? creativeId, @JsonKey(name: 'campaign_id')  int? campaignId, @JsonKey(name: 'subdistrict')  String kecamatan, @JsonKey(name: 'city')  String kelurahan, @JsonKey(name: 'lat')  double lat, @JsonKey(name: 'long')  double long, @JsonKey(name: 'phone_number')  String phoneNumber, @JsonKey(name: 'user')  String user, @JsonKey(name: 'province')  String provinsi, @JsonKey(name: 'event_type')  String eventType)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AdLogPayload() when $default != null:
 return $default(_that.productId,_that.creativeId,_that.campaignId,_that.kecamatan,_that.kelurahan,_that.lat,_that.long,_that.phoneNumber,_that.user,_that.provinsi,_that.eventType);case _:
@@ -183,7 +183,7 @@ return $default(_that.productId,_that.creativeId,_that.campaignId,_that.kecamata
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'product_id')  int productId, @JsonKey(name: 'creative_id')  int creativeId, @JsonKey(name: 'campaign_id')  int campaignId, @JsonKey(name: 'subdistrict')  String kecamatan, @JsonKey(name: 'city')  String kelurahan, @JsonKey(name: 'lat')  double lat, @JsonKey(name: 'long')  double long, @JsonKey(name: 'phone_number')  String phoneNumber, @JsonKey(name: 'user')  String user, @JsonKey(name: 'province')  String provinsi, @JsonKey(name: 'event_type')  String eventType)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'product_id')  int? productId, @JsonKey(name: 'creative_id')  int? creativeId, @JsonKey(name: 'campaign_id')  int? campaignId, @JsonKey(name: 'subdistrict')  String kecamatan, @JsonKey(name: 'city')  String kelurahan, @JsonKey(name: 'lat')  double lat, @JsonKey(name: 'long')  double long, @JsonKey(name: 'phone_number')  String phoneNumber, @JsonKey(name: 'user')  String user, @JsonKey(name: 'province')  String provinsi, @JsonKey(name: 'event_type')  String eventType)  $default,) {final _that = this;
 switch (_that) {
 case _AdLogPayload():
 return $default(_that.productId,_that.creativeId,_that.campaignId,_that.kecamatan,_that.kelurahan,_that.lat,_that.long,_that.phoneNumber,_that.user,_that.provinsi,_that.eventType);case _:
@@ -203,7 +203,7 @@ return $default(_that.productId,_that.creativeId,_that.campaignId,_that.kecamata
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'product_id')  int productId, @JsonKey(name: 'creative_id')  int creativeId, @JsonKey(name: 'campaign_id')  int campaignId, @JsonKey(name: 'subdistrict')  String kecamatan, @JsonKey(name: 'city')  String kelurahan, @JsonKey(name: 'lat')  double lat, @JsonKey(name: 'long')  double long, @JsonKey(name: 'phone_number')  String phoneNumber, @JsonKey(name: 'user')  String user, @JsonKey(name: 'province')  String provinsi, @JsonKey(name: 'event_type')  String eventType)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'product_id')  int? productId, @JsonKey(name: 'creative_id')  int? creativeId, @JsonKey(name: 'campaign_id')  int? campaignId, @JsonKey(name: 'subdistrict')  String kecamatan, @JsonKey(name: 'city')  String kelurahan, @JsonKey(name: 'lat')  double lat, @JsonKey(name: 'long')  double long, @JsonKey(name: 'phone_number')  String phoneNumber, @JsonKey(name: 'user')  String user, @JsonKey(name: 'province')  String provinsi, @JsonKey(name: 'event_type')  String eventType)?  $default,) {final _that = this;
 switch (_that) {
 case _AdLogPayload() when $default != null:
 return $default(_that.productId,_that.creativeId,_that.campaignId,_that.kecamatan,_that.kelurahan,_that.lat,_that.long,_that.phoneNumber,_that.user,_that.provinsi,_that.eventType);case _:
@@ -221,9 +221,9 @@ class _AdLogPayload implements AdLogPayload {
    _AdLogPayload({@JsonKey(name: 'product_id') required this.productId, @JsonKey(name: 'creative_id') required this.creativeId, @JsonKey(name: 'campaign_id') required this.campaignId, @JsonKey(name: 'subdistrict') required this.kecamatan, @JsonKey(name: 'city') required this.kelurahan, @JsonKey(name: 'lat') required this.lat, @JsonKey(name: 'long') required this.long, @JsonKey(name: 'phone_number') required this.phoneNumber, @JsonKey(name: 'user') required this.user, @JsonKey(name: 'province') required this.provinsi, @JsonKey(name: 'event_type') required this.eventType});
   
 
-@override@JsonKey(name: 'product_id') final  int productId;
-@override@JsonKey(name: 'creative_id') final  int creativeId;
-@override@JsonKey(name: 'campaign_id') final  int campaignId;
+@override@JsonKey(name: 'product_id') final  int? productId;
+@override@JsonKey(name: 'creative_id') final  int? creativeId;
+@override@JsonKey(name: 'campaign_id') final  int? campaignId;
 @override@JsonKey(name: 'subdistrict') final  String kecamatan;
 @override@JsonKey(name: 'city') final  String kelurahan;
 @override@JsonKey(name: 'lat') final  double lat;
@@ -266,7 +266,7 @@ abstract mixin class _$AdLogPayloadCopyWith<$Res> implements $AdLogPayloadCopyWi
   factory _$AdLogPayloadCopyWith(_AdLogPayload value, $Res Function(_AdLogPayload) _then) = __$AdLogPayloadCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'product_id') int productId,@JsonKey(name: 'creative_id') int creativeId,@JsonKey(name: 'campaign_id') int campaignId,@JsonKey(name: 'subdistrict') String kecamatan,@JsonKey(name: 'city') String kelurahan,@JsonKey(name: 'lat') double lat,@JsonKey(name: 'long') double long,@JsonKey(name: 'phone_number') String phoneNumber,@JsonKey(name: 'user') String user,@JsonKey(name: 'province') String provinsi,@JsonKey(name: 'event_type') String eventType
+@JsonKey(name: 'product_id') int? productId,@JsonKey(name: 'creative_id') int? creativeId,@JsonKey(name: 'campaign_id') int? campaignId,@JsonKey(name: 'subdistrict') String kecamatan,@JsonKey(name: 'city') String kelurahan,@JsonKey(name: 'lat') double lat,@JsonKey(name: 'long') double long,@JsonKey(name: 'phone_number') String phoneNumber,@JsonKey(name: 'user') String user,@JsonKey(name: 'province') String provinsi,@JsonKey(name: 'event_type') String eventType
 });
 
 
@@ -283,12 +283,12 @@ class __$AdLogPayloadCopyWithImpl<$Res>
 
 /// Create a copy of AdLogPayload
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? productId = null,Object? creativeId = null,Object? campaignId = null,Object? kecamatan = null,Object? kelurahan = null,Object? lat = null,Object? long = null,Object? phoneNumber = null,Object? user = null,Object? provinsi = null,Object? eventType = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? productId = freezed,Object? creativeId = freezed,Object? campaignId = freezed,Object? kecamatan = null,Object? kelurahan = null,Object? lat = null,Object? long = null,Object? phoneNumber = null,Object? user = null,Object? provinsi = null,Object? eventType = null,}) {
   return _then(_AdLogPayload(
-productId: null == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
-as int,creativeId: null == creativeId ? _self.creativeId : creativeId // ignore: cast_nullable_to_non_nullable
-as int,campaignId: null == campaignId ? _self.campaignId : campaignId // ignore: cast_nullable_to_non_nullable
-as int,kecamatan: null == kecamatan ? _self.kecamatan : kecamatan // ignore: cast_nullable_to_non_nullable
+productId: freezed == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
+as int?,creativeId: freezed == creativeId ? _self.creativeId : creativeId // ignore: cast_nullable_to_non_nullable
+as int?,campaignId: freezed == campaignId ? _self.campaignId : campaignId // ignore: cast_nullable_to_non_nullable
+as int?,kecamatan: null == kecamatan ? _self.kecamatan : kecamatan // ignore: cast_nullable_to_non_nullable
 as String,kelurahan: null == kelurahan ? _self.kelurahan : kelurahan // ignore: cast_nullable_to_non_nullable
 as String,lat: null == lat ? _self.lat : lat // ignore: cast_nullable_to_non_nullable
 as double,long: null == long ? _self.long : long // ignore: cast_nullable_to_non_nullable

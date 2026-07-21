@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
 import 'package:sahaba_mobile/business_logic/product_bloc/product_bloc.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/screens/camera_screen/widget/form_sheet.dart';
@@ -9,12 +10,13 @@ class NotFoundSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locationBloc = context.read<LocationBloc>();
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         return Container(
           padding: const EdgeInsets.fromLTRB(34, 13, 34, 34),
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: ColorPalette.scaffoldBackground,
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
@@ -38,7 +40,7 @@ class NotFoundSheet extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: Colors.black,
+                  color: ColorPalette.kWhite,
                 ),
               ),
 
@@ -56,6 +58,34 @@ class NotFoundSheet extends StatelessWidget {
               ),
 
               const SizedBox(height: 27),
+
+              SizedBox(
+                width: 175,
+                height: 44,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // kembali ke camera
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorPalette.primary,
+                    padding: EdgeInsets.zero,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                  ),
+                  child: const Text(
+                    'Coba Lagi',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
 
               SizedBox(
                 width: 175,
@@ -86,14 +116,16 @@ class NotFoundSheet extends StatelessWidget {
                           expand: false,
                           shouldCloseOnMinExtent: false,
                           // snapSizes: [0.33, 0.45],
-                          builder: (_, scrollController) =>
-                              FormSheet(image: state.imagePath),
+                          builder: (_, scrollController) => BlocProvider.value(
+                            value: locationBloc,
+                            child: FormSheet(image: state.imagePath),
+                          ),
                         ),
                       ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorPalette.primary,
+                    backgroundColor: const Color(0xFFB39164),
                     padding: EdgeInsets.zero,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -102,34 +134,6 @@ class NotFoundSheet extends StatelessWidget {
                   ),
                   child: const Text(
                     'Laporkan Produk',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              SizedBox(
-                width: 175,
-                height: 44,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context); // kembali ke camera
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorPalette.primary,
-                    padding: EdgeInsets.zero,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                  ),
-                  child: const Text(
-                    'Coba Lagi',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

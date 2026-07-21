@@ -1,216 +1,187 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
-import 'package:sahaba_mobile/presentation/screens/product/product_page.dart';
-
-// // Ini Existing dan nanti ga akan saya gunakan
-
-// class SearchHistory extends StatelessWidget {
-//   const SearchHistory({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocProvider<ProductBloc>.value(
-//       value: context.read<ProductBloc>()..add(const ProductEvent.getHistory()),
-//       child: SingleChildScrollView(
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           mainAxisAlignment: MainAxisAlignment.start,
-//           children: [
-//             BlocBuilder<ProductBloc, ProductState>(
-//               builder: (context, state) {
-//                 if (state.isLoading) {
-//                   return Center(
-//                     child: CircularProgressIndicator(color: Colors.grey[400]),
-//                   );
-//                 } else if (state.dataHistory.isEmpty) {
-//                   return SizedBox(
-//                     height: 64,
-//                     child: const Center(
-//                       child: Text('Belum ada riwayat pencarian'),
-//                     ),
-//                   );
-//                 } else {
-//                   return ListView.builder(
-//                     shrinkWrap: true,
-//                     physics: const NeverScrollableScrollPhysics(),
-//                     itemCount: state.dataHistory.length,
-//                     itemBuilder: (context, index) {
-//                       final item = state.dataHistory[index];
-//                       debugPrint('ini item ${item.name}');
-//                       return HistoryItems(
-//                         type: '',
-//                         id: item.id ?? 0,
-//                         namaProduk: item.name ?? '',
-//                         status: item.status ?? '',
-//                         expDate: item.expireDate ?? '',
-//                         imagePath: item.images.isNotEmpty
-//                             ? item.images.first.image
-//                             : '',
-//                       );
-//                     },
-//                   );
-//                 }
-//               },
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+import 'package:sahaba_mobile/presentation/routers/router_path.dart';
+import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 
 class HistoryItems extends StatelessWidget {
-  final String namaProduk;
-  final String status;
-  final String expDate;
-  final String imagePath;
-  final String type;
-  final int id;
-  final Function()? onTap;
-
   const HistoryItems({
-    super.key,
     required this.namaProduk,
     required this.status,
-    required this.expDate,
+    required this.registerDate,
     required this.imagePath,
     required this.id,
     required this.type,
+    super.key,
+    this.lat,
+    this.long,
+    this.eventTime,
+    this.productId,
     this.onTap,
   });
+  final String namaProduk;
+  final String status;
+  final String registerDate;
+  final String imagePath;
+  final String type;
+  final int id;
+  final double? lat;
+  final double? long;
+  final String? eventTime;
+  final int? productId;
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.fromSize(
-      size: const Size.fromHeight(100),
+    final isHalal = status == 'Halal';
+
+    return InkWell(
+      onTap:
+          onTap ??
+          () async {
+            final location = GoRouterState.of(context).uri.toString();
+            await context.push(
+              '$location/${RouterPath.productDetailPath}',
+              extra: {
+                'id': productId,
+                'lat': lat,
+                'long': long,
+                'eventTime': eventTime != null
+                    ? DateFormat(
+                        'dd MMM yyyy HH:mm',
+                      ).format(DateTime.parse(eventTime!))
+                    : null,
+              },
+            );
+          },
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: type.toLowerCase() != 'iklan'
               ? Colors.transparent
-              : ColorPalette.kPurple800.withValues(alpha: 0.2),
+              : Colors.white.withValues(alpha: 0.08),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+          child: Row(
             children: [
-              InkWell(
-                onTap:
-                    onTap ??
-                    () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              ProductDetailPage(id: id, isAds: type == 'Iklan'),
-                        ),
-                      );
-                    },
-                child: Row(
+              //  Gambar produk
+              CacheImageOrSvg(
+                source: imagePath,
+                width: 106,
+                height: 72,
+                autoCache: true,
+                errorBuilder: (_, __, ___) => Container(
+                  width: 106,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: ColorPalette.kGray100,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.image_outlined,
+                    color: ColorPalette.primary,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+
+              //  Info produk
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      width: 106,
-                      height: 72,
-                      child: DecoratedBox(
+                    if (type.toLowerCase() == 'iklan')
+                      DecoratedBox(
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.deepPurple,
+                          borderRadius: BorderRadius.circular(10000),
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(imagePath, fit: BoxFit.contain),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (type.toLowerCase() != 'iklan')
-                            const SizedBox.shrink()
-                          else
-                            DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: ColorPalette.kPurple800,
-                                borderRadius: BorderRadius.circular(10000),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 2,
-                                ),
-                                child: Text(
-                                  type,
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          Text(
-                            namaProduk,
-                            overflow: TextOverflow.clip,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
+                          child: Text(
+                            type,
                             style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Colors.white,
                             ),
                           ),
-                          if (status == 'Halal')
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '$status ',
-                                    style: const TextStyle(
-                                      color: ColorPalette.primary,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  // TextSpan(
-                                  //   text: '| ',
-                                  //   style: TextStyle(
-                                  //     color: ColorPalette.kGray200,
-                                  //     fontSize: 12,
-                                  //     fontWeight: FontWeight.bold,
-                                  //   ),
-                                  // ),
-                                  // TextSpan(
-                                  //   text: 'Sampai $expDate',
-                                  //   style: const TextStyle(
-                                  //     color: ColorPalette.kGray600,
-                                  //     fontSize: 12,
-                                  //     fontWeight: FontWeight.bold,
-                                  //   ),
-                                  // ),
-                                ],
-                              ),
-                            )
-                          else
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '$status ',
-                                    style: const TextStyle(
-                                      color: ColorPalette.kGray200,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                        ],
+                        ),
+                      ),
+                    Text(
+                      namaProduk,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: ColorPalette.kWhite,
                       ),
                     ),
-                    const Icon(Icons.arrow_forward_ios, size: 16),
+                    const SizedBox(height: 6),
+                    Row(
+                      spacing: 4,
+                      children: [
+                        // Badge halal / belum terdaftar
+                        Text(
+                          isHalal ? 'Halal' : 'Belum Terdaftar',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: isHalal
+                                ? ColorPalette.kTeal
+                                : ColorPalette.kRed400,
+                          ),
+                        ),
+
+                        const SizedBox(
+                          height: 12,
+                          child: VerticalDivider(
+                            width: 1,
+                            thickness: 1,
+                            color: ColorPalette.contentTertiary,
+                          ),
+                        ),
+                        //  TAMBAHIN Devide HEight
+                        if (!isHalal && registerDate.isNotEmpty)
+                          const SizedBox(width: 6),
+                        Text(
+                          registerDate,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: ColorPalette.contentTertiary,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 12),
+
+              //  Arrow
+              Icon(
+                Icons.keyboard_arrow_right,
+
+                color: ColorPalette.kWhite,
+                size: context.isTabletLarge
+                    ? 20
+                    : context.isTabletMedium
+                    ? 20
+                    : context.isTabletSmall
+                    ? 20
+                    : context.isPhoneLarge
+                    ? 20
+                    : context.isPhoneMedium
+                    ? 18
+                    : context.isPhoneSmall
+                    ? 18
+                    : 18,
+              ),
             ],
           ),
         ),

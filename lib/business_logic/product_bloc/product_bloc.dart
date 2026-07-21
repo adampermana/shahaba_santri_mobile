@@ -252,7 +252,15 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           emit(state.copyWith(dataHistory: result));
         },
         started: (value) async {
-          // final data = await _localDataSource.checkData();
+          // Ensure auth token available before API calls
+          final authData =
+              _localDataSource.authUserDataHive ??
+              _localDataSource.authGuestDataHive;
+          if (authData == null) {
+            debugPrint(
+              '=== ProductBloc.started: No auth data, waiting for auth...',
+            );
+          }
           final result = await _repo.getAds('5');
           final carousel = await _repo.getAds('6');
           result.fold((l) => emit(state.copyWith(isLoading: false)), (r) {

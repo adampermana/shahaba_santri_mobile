@@ -111,7 +111,7 @@ class DetailNewsScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                     child: const CacheImageOrSvg(
                       source:
-                          'https://cdns.dream.co.id/resources/news/2018/05/02/83351/664xauto-di-dalam-kabah-ada-emas-minyak-benarkah-180502r.jpg',
+                          'https://serikatnews.com/wp-content/uploads/2022/06/15330053455b5fce219e239.jpg',
                     ),
                   ),
                   const SizedBox(height: 16),

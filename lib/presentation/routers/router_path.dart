@@ -37,4 +37,16 @@ class RouterPath {
 
   // Product Detail
   static const String productDetailPath = 'product-detail';
+
+  // Product Halal
+  static const String productHalalPath = 'product-halal';
+
+  // Global Search Product Halal
+  static const String searchProductHalalPath = 'search-product-halal';
+
+  // Product History
+  static const String historyProductPath = 'history-product';
+
+  // Category Product
+  static const String categoryProductPath = 'category-product';
 }

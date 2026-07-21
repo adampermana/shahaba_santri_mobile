@@ -33,7 +33,7 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
       (l) => emit(state.copyWith(errorMessage: l.message, isLoading: false)),
       (r) {
         final random = Random();
-        int number = random.nextInt(r.length);
+        final number = random.nextInt(r.length);
         emit(state.copyWith(adsCarousel: r[number], isLoading: false));
       },
     );

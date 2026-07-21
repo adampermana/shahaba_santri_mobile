@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class ValidationWidget<T> extends FormField<T> {
   ValidationWidget({
+    required Widget child,
     super.key,
     super.initialValue,
     super.autovalidateMode,
     super.validator,
-    required Widget child,
   }) : super(
          builder: (state) {
            return Column(

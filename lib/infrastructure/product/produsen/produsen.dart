@@ -17,7 +17,7 @@ abstract class Brand with _$Brand {
   const factory Brand({
     required int id,
     @JsonKey(name: 'image_path') required String image,
-    @JsonKey(name: 'partner_name') required String name,
+    @JsonKey(name: 'name') required String name,
   }) = _Brand;
   factory Brand.fromJson(Map<String, dynamic> json) => _$BrandFromJson(json);
 }

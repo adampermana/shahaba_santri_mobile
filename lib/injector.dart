@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_it/get_it.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/business_logic/calendar_bloc/calendar_bloc.dart';
+import 'package:sahaba_mobile/business_logic/category_product/category_product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/city_search_bloc/city_search_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
@@ -11,12 +12,15 @@ import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedu
 import 'package:sahaba_mobile/business_logic/product_bloc/product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/product_detail/product_detail_bloc.dart';
 import 'package:sahaba_mobile/business_logic/product_form/product_form_bloc.dart';
+import 'package:sahaba_mobile/business_logic/product_search/product_search_bloc.dart';
 import 'package:sahaba_mobile/business_logic/qibla_cubit/qibla_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
+import 'package:sahaba_mobile/business_logic/special_product/special_product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/infrastructure/auth/datasources/auth_local_datasource.dart';
+import 'package:sahaba_mobile/infrastructure/auth/datasources/i_auth_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/auth/repositories/i_auth_repositories.dart';
 import 'package:sahaba_mobile/infrastructure/calendar/datasources/calendar_local_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/calendar/datasources/calendar_remote_datasource.dart';
@@ -94,6 +98,9 @@ Future<void> _initAuthFeature() async {
     ..registerLazySingleton<IAuthLocalDatasource>(
       HiveAuthLocalDatasource.new,
     )
+    ..registerLazySingleton<IAuthRemoteDatasource>(
+      () => AuthRemoteDatasource(sl<Dio>(instanceName: 'main')),
+    )
     ..registerLazySingleton<IAuthRepositories>(
       () => AuthRepositories(sl(), sl()),
     )
@@ -124,9 +131,9 @@ Future<void> _initProductFeature() async {
     ..registerFactory(() => ProductFormBloc(sl(), sl(), sl()))
     // ..registerFactory(() => PersonalDataFormBloc(sl()))
     ..registerFactory(() => ProductDetailBloc(sl()))
-    // ..registerFactory(() => ProductSearchBloc(sl(), sl(), sl()))
-    // ..registerFactory(() => SpecialProductBloc(sl(), sl(), sl()))
-    // ..registerFactory(() => CategoryProductBloc(sl(), sl()))
+    ..registerFactory(() => ProductSearchBloc(sl(), sl(), sl()))
+    ..registerFactory(() => SpecialProductBloc(sl(), sl(), sl()))
+    ..registerFactory(() => CategoryProductBloc(sl(), sl(), sl()))
     ..registerFactory(() => ProductBloc(sl(), sl(), sl()));
 }
 
@@ -162,7 +169,7 @@ Future<void> _initStreakFeature() async {
     ..registerLazySingleton<IStreakRepository>(
       () => StreakRepository(sl()),
     )
-    ..registerFactory(() => StreakCubit(sl()));
+    ..registerLazySingleton(() => StreakCubit(sl()));
 }
 
 Future<void> _initCalendarFeature() async {

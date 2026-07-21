@@ -17,5 +17,5 @@ _ListBrand _$ListBrandFromJson(Map<String, dynamic> json) => _ListBrand(
 _Brand _$BrandFromJson(Map<String, dynamic> json) => _Brand(
   id: (json['id'] as num).toInt(),
   image: json['image_path'] as String,
-  name: json['partner_name'] as String,
+  name: json['name'] as String,
 );

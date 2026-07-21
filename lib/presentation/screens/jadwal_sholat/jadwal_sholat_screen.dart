@@ -39,9 +39,7 @@ class JadwalSholatScreen extends StatelessWidget {
         BlocProvider(
           create: (_) => sl<PrayerScheduleCubit>(),
         ),
-        BlocProvider(
-          create: (_) => sl<StreakCubit>(),
-        ),
+        BlocProvider.value(value: sl<StreakCubit>()),
       ],
       child: BlocListener<LocationCubit, LocationState>(
         listener: (context, state) {
@@ -264,7 +262,14 @@ class _LoadedViewState extends State<_LoadedView> {
                   );
               final isPastDay = _isPastDate(widget.state.date);
               final isFutureDay = _isFutureDate(widget.state.date);
-              final canInteract = !isPastDay && !isFutureDay && isActive;
+              final isCurrentDay = !isPastDay && !isFutureDay;
+
+              // Checkbox: cuma bisa dicentang untuk prayer yang sedang aktif
+              final canCheck = isCurrentDay && isActive;
+
+              // Volume: bisa di-toggle untuk semua prayer di hari ini,
+              // gak peduli isActive atau bukan
+              final canToggleVolume = isCurrentDay;
 
               return PrayerTimeTile(
                 icon: item.icon,
@@ -273,14 +278,14 @@ class _LoadedViewState extends State<_LoadedView> {
                 isActive: isActive,
                 isChecked: isChecked,
                 isHistory: isPastDay || (!isFutureDay && !isActive),
-                isEnabled: canInteract,
+                isEnabled: canToggleVolume,
                 showCheckbox: item.showCheckbox,
                 showVolume: item.showVolume,
                 isVolumeMuted: item.showVolume && !_isAdzanEnabled(item.name),
-                onVolumeTap: canInteract && item.showVolume
+                onVolumeTap: canToggleVolume && item.showVolume
                     ? () => _onVolumeTap(context, item)
                     : null,
-                onCheck: canInteract
+                onCheck: canCheck
                     ? () => _onCheck(context, item.name, time)
                     : null,
               );

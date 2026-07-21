@@ -11,9 +11,9 @@ abstract class AdLogPayload with _$AdLogPayload {
     explicitToJson: true,
   )
   factory AdLogPayload({
-    @JsonKey(name: 'product_id') required int productId,
-    @JsonKey(name: 'creative_id') required int creativeId,
-    @JsonKey(name: 'campaign_id') required int campaignId,
+    @JsonKey(name: 'product_id') required int? productId,
+    @JsonKey(name: 'creative_id') required int? creativeId,
+    @JsonKey(name: 'campaign_id') required int? campaignId,
     @JsonKey(name: 'subdistrict') required String kecamatan,
     @JsonKey(name: 'city') required String kelurahan,
     @JsonKey(name: 'lat') required double lat,

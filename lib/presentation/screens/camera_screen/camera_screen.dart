@@ -17,6 +17,7 @@ import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/camera_screen/widget/not_found_sheet.dart';
 import 'package:sahaba_mobile/presentation/screens/camera_screen/widget/result_bottom_sheet.dart';
 import 'package:sahaba_mobile/presentation/screens/camera_screen/widget/single_item_sheet.dart';
+import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/loading_screen.dart';
@@ -124,14 +125,13 @@ class CameraScanScreen extends HookWidget {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
-        statusBarColor: ColorPalette.primaryColor,
+        statusBarColor: ColorPalette.scaffoldBackground,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: ColorPalette.primaryColor,
+        systemNavigationBarColor: ColorPalette.scaffoldBackground,
         systemNavigationBarIconBrightness: Brightness.light,
       ),
-      child: Scaffold(
-        backgroundColor: ColorPalette.primaryColor,
+      child: AppScaffold(
         body: SafeArea(
           child: MultiBlocListener(
             listeners: [
@@ -183,14 +183,19 @@ class CameraScanScreen extends HookWidget {
                   if (state.isLoading == false &&
                       state.data.isEmpty &&
                       state.isCamera == true) {
+                    final locationBloc = context.read<LocationBloc>();
                     await showModalBottomSheet<void>(
+                      backgroundColor: ColorPalette.scaffoldBackground,
                       context: context,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(
                           top: Radius.circular(20),
                         ),
                       ),
-                      builder: (_) => const NotFoundSheet(),
+                      builder: (_) => BlocProvider.value(
+                        value: locationBloc,
+                        child: const NotFoundSheet(),
+                      ),
                     );
                     return;
                   } else if (state.isLoading == false &&
@@ -256,6 +261,7 @@ class CameraScanScreen extends HookWidget {
                     final locationBloc = context.read<LocationBloc>();
                     final productBloc = context.read<ProductBloc>();
                     await showModalBottomSheet<void>(
+                      backgroundColor: ColorPalette.scaffoldBackground,
                       context: context,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(
@@ -586,13 +592,13 @@ class CameraScanScreen extends HookWidget {
                     width: _scanButtonInnerSize,
                     height: _scanButtonInnerSize,
                     decoration: const BoxDecoration(
-                      color: ColorPalette.kWhite,
+                      color: ColorPalette.primary,
                       shape: BoxShape.circle,
                     ),
                     child: const Center(
                       child: CacheImageOrSvg(
                         source: 'assets/svg/search-eye-fill.svg',
-                        colorAsset: ColorPalette.primaryColor,
+                        colorAsset: ColorPalette.kWhite,
                         width: 32,
                         height: 32,
                       ),

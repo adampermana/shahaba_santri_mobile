@@ -68,7 +68,10 @@ class _BottomNavigationItemsBarState extends State<BottomNavigationItemsBar> {
   void _onTap(int index) {
     if (_currentIndex == index) return;
 
-    setState(() => _currentIndex = index);
+    // Featured item (index 1) should not update nav bar selection
+    if (index != 1) {
+      setState(() => _currentIndex = index);
+    }
     widget.onChanged(index);
   }
 

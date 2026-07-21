@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
+import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
+import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
@@ -19,20 +22,21 @@ class MainProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final lastReadCubit = sl<LastReadCubit>();
-    // unawaited(lastReadCubit.load());
-
     return MultiBlocProvider(
       providers: [
-        // BlocProvider(
-        //   create: (_) => sl<LocationCubit>()..loadSavedCity(),
-        // ),
-        // BlocProvider(
-        //   create: (_) => sl<PrayerScheduleCubit>(),
-        // ),
-        // BlocProvider(
-        //   create: (_) => sl<StreakCubit>(),
-        // ),
+        BlocProvider(
+          create: (_) => sl<LocationCubit>()..loadSavedCity(),
+        ),
+        BlocProvider(
+          create: (_) => sl<PrayerScheduleCubit>(),
+        ),
+        BlocProvider(
+          create: (_) {
+            final cubit = sl<StreakCubit>();
+            unawaited(cubit.loadStreak(DateTime.now()));
+            return cubit;
+          },
+        ),
         BlocProvider(
           create: (_) => sl<QuranBloc>()
             ..add(const QuranEvent.loadSurahs())
@@ -56,9 +60,8 @@ class _MainScreenState extends State<_MainScreen> {
   int _selectedIndex = 0;
 
   List<Widget> get _screens => [
-    // NewHomeScreen(onPrayerScheduleTap: () => _onTabChanged(1)),
     const NewHomeScreen(),
-    const SizedBox.shrink(), // placeholder jadwal sholat (featured item)
+    const SizedBox.shrink(),
     const QuranScreen(),
   ];
 
@@ -66,20 +69,6 @@ class _MainScreenState extends State<_MainScreen> {
     unawaited(HapticFeedback.selectionClick());
     setState(() => _selectedIndex = index);
   }
-
-  // void _onLocationChanged(
-  //   BuildContext context,
-  //   LocationState state,
-  // ) {
-  //   if (state is LocationLoaded) {
-  //     final cityId = state.city.id;
-  //     if (cityId != null) {
-  //       final now = DateTime.now();
-  //       context.read<PrayerScheduleCubit>().loadSchedule(cityId, now);
-  //       context.read<StreakCubit>().loadStreak(now);
-  //     }
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +110,7 @@ class _MainScreenState extends State<_MainScreen> {
             NavBarItem(
               defaultSvgPath: AppIcons.searchScan,
               selectedSvgPath: AppIcons.searchScan,
-              title: 'Jadwal Sholat',
+              title: 'Pindai Produk',
               isFeatured: true,
             ),
             NavBarItem(
@@ -130,10 +119,10 @@ class _MainScreenState extends State<_MainScreen> {
               title: "Qur'an",
             ),
           ],
-          onChanged: (index) {
+          onChanged: (index) async {
             if (index == 1) {
-              // Featured item: push via router
-              context.push('$currentLocation/${RouterPath.cameraPath}');
+              // Featured item (Pindai): push route only, don't change index
+              await context.push('$currentLocation/${RouterPath.cameraPath}');
             } else {
               _onTabChanged(index);
             }

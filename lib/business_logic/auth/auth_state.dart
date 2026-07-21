@@ -1,7 +1,7 @@
 part of 'auth_bloc.dart';
 
 @freezed
-class AuthState with _$AuthState {
+abstract class AuthState with _$AuthState {
   const factory AuthState({
     required String email,
     required String password,
@@ -36,6 +36,7 @@ class AuthState with _$AuthState {
     required RegisterResponse? registerResponse,
     required VerifyOtpResponse? verifyOtpResponse,
     required CompleteProfileResponse? completeProfileResponse,
+    required AuthDataHive? authDataHive,
     required Alert? alert,
   }) = _Initial;
 
@@ -73,6 +74,7 @@ class AuthState with _$AuthState {
     registerResponse: null,
     verifyOtpResponse: null,
     completeProfileResponse: null,
+    authDataHive: null,
     alert: null,
   );
 }

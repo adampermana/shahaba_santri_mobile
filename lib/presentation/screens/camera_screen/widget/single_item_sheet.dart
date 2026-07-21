@@ -307,7 +307,7 @@ class SingleItemSheet extends StatelessWidget {
                             HistoryItems(
                               namaProduk: ad!.name!,
                               status: ad!.status!,
-                              expDate: ad!.expireDate!,
+                              registerDate: ad!.expireDate!,
                               imagePath: ad!.image!,
                               id: ad!.id!,
                               type: 'Iklan',

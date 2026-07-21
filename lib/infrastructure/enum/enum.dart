@@ -14,4 +14,4 @@ enum SnackBarType { success, failure, networkInfo }
 
 enum PrayerKey { subuh, terbit, dzuhur, ashar, maghrib, isya }
 
-enum SubmitButtonStyle { elevated, outlined, text }
+enum SubmitButtonStyle { elevated, elevatedGlass, outlined, text }

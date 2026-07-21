@@ -4,30 +4,33 @@ import 'package:sahaba_mobile/infrastructure/auth/datasources/auth_local_datasou
 import 'package:sahaba_mobile/injector.dart';
 
 class RequestInterceptor extends Interceptor {
-  final IAuthLocalDatasource _authLocalDatasource = sl<IAuthLocalDatasource>();
+  IAuthLocalDatasource? _authLocalDatasource;
+
+  IAuthLocalDatasource get _authLocal => _authLocalDatasource ??= sl();
 
   @override
   Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // If cache is empty, fetch from Isar database
+    // Lazy resolve auth datasource to avoid init order issues
+    final authLocal = _authLocal;
 
     var token =
-        _authLocalDatasource.authGuestDataHive?.accessToken ??
-        _authLocalDatasource.authUserDataHive?.accessToken;
+        authLocal.authGuestDataHive?.accessToken ??
+        authLocal.authUserDataHive?.accessToken;
 
     debugPrint(
       '=== RequestInterceptor: Cached '
       'token: ${token != null ? 'Present' : 'Null'}',
     );
     if (token == null) {
-      final authUser = _authLocalDatasource.authUserDataHive?.accessToken;
-      final authGuest = _authLocalDatasource.authGuestDataHive?.accessToken;
+      final authUser = authLocal.authUserDataHive?.accessToken;
+      final authGuest = authLocal.authGuestDataHive?.accessToken;
       token = authUser ?? authGuest;
 
       debugPrint(
-        '=== RequestInterceptor: Fetched from HIve'
+        '=== RequestInterceptor: Fetched from Hive'
         'User token: $authUser, Guest token: $authGuest',
       );
     }

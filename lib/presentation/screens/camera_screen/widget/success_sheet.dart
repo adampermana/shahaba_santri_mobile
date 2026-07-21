@@ -37,7 +37,7 @@ class SuccessSheet extends StatelessWidget {
           const Icon(
             Icons.check_circle,
             size: 170,
-            color: ColorPalette.kRed500,
+            color: Color(0xFF14B8A6),
           ),
 
           const Text(

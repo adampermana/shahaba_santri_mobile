@@ -41,48 +41,52 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCXzCWqH2RIwi1N-8NOOr5WooPaws7U7fE',
-    appId: '1:100290353508:web:bcdbb8da17a90f34340271',
-    messagingSenderId: '100290353508',
-    projectId: 'sahaba-c7ee7',
-    authDomain: 'sahaba-c7ee7.firebaseapp.com',
-    storageBucket: 'sahaba-c7ee7.firebasestorage.app',
-    measurementId: 'G-TYBRGKZZX0',
+    apiKey: 'AIzaSyCaqfRGg7DxJe10W8FmVz0o-isGC-TTK3o',
+    appId: '1:871004635003:web:0729f6744570aecce487de',
+    messagingSenderId: '871004635003',
+    projectId: 'sah-app-fb757',
+    authDomain: 'sah-app-fb757.firebaseapp.com',
+    storageBucket: 'sah-app-fb757.firebasestorage.app',
+    measurementId: 'G-6ECCGVE1F9',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyC4xFnypz1Xs1VJ_i8-ACYqaHFaRq_BzVc',
-    appId: '1:100290353508:android:4d341a7bb6477e1a340271',
-    messagingSenderId: '100290353508',
-    projectId: 'sahaba-c7ee7',
-    storageBucket: 'sahaba-c7ee7.firebasestorage.app',
+    apiKey: 'AIzaSyCzo76tPY0jl8xGVlOjUucK01NwvnT78pI',
+    appId: '1:871004635003:android:be7269340250bf57e487de',
+    messagingSenderId: '871004635003',
+    projectId: 'sah-app-fb757',
+    storageBucket: 'sah-app-fb757.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBqYjiYP2OwXkTvy4VQGD_tnaZETvtkVbM',
-    appId: '1:100290353508:ios:b645270f628a9989340271',
-    messagingSenderId: '100290353508',
-    projectId: 'sahaba-c7ee7',
-    storageBucket: 'sahaba-c7ee7.firebasestorage.app',
+    apiKey: 'AIzaSyCy2jsca7YLZnHwez-m-l1lmP9naVL2Ghg',
+    appId: '1:871004635003:ios:6bf21e52cd6ff226e487de',
+    messagingSenderId: '871004635003',
+    projectId: 'sah-app-fb757',
+    storageBucket: 'sah-app-fb757.firebasestorage.app',
+    androidClientId:
+        '871004635003-932i93r2qsp0ch8edfml3ffg3srgupq8.apps.googleusercontent.com',
     iosBundleId: 'com.eprisi.sah',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBqYjiYP2OwXkTvy4VQGD_tnaZETvtkVbM',
-    appId: '1:100290353508:ios:91749458178f8006340271',
-    messagingSenderId: '100290353508',
-    projectId: 'sahaba-c7ee7',
-    storageBucket: 'sahaba-c7ee7.firebasestorage.app',
-    iosBundleId: 'com.example.myApp',
+    apiKey: 'AIzaSyCy2jsca7YLZnHwez-m-l1lmP9naVL2Ghg',
+    appId: '1:871004635003:ios:337198ffc24399e9e487de',
+    messagingSenderId: '871004635003',
+    projectId: 'sah-app-fb757',
+    storageBucket: 'sah-app-fb757.firebasestorage.app',
+    androidClientId:
+        '871004635003-932i93r2qsp0ch8edfml3ffg3srgupq8.apps.googleusercontent.com',
+    iosBundleId: 'com.example.halalCam',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCXzCWqH2RIwi1N-8NOOr5WooPaws7U7fE',
-    appId: '1:100290353508:web:140ccef8bad36d00340271',
-    messagingSenderId: '100290353508',
-    projectId: 'sahaba-c7ee7',
-    authDomain: 'sahaba-c7ee7.firebaseapp.com',
-    storageBucket: 'sahaba-c7ee7.firebasestorage.app',
-    measurementId: 'G-F2TE4KJJB9',
+    apiKey: 'AIzaSyCaqfRGg7DxJe10W8FmVz0o-isGC-TTK3o',
+    appId: '1:871004635003:web:60e6be02f2d156c1e487de',
+    messagingSenderId: '871004635003',
+    projectId: 'sah-app-fb757',
+    authDomain: 'sah-app-fb757.firebaseapp.com',
+    storageBucket: 'sah-app-fb757.firebasestorage.app',
+    measurementId: 'G-7MGH8R7ZBV',
   );
 }

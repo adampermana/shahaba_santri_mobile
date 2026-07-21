@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:glass_kit/glass_kit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/city_search_bloc/city_search_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
@@ -152,74 +153,96 @@ class _SelectCityViewState extends State<_SelectCityView> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: CustomTextFormFieldWidget(
-                controller: _searchController,
-                textInputAction: TextInputAction.search,
-                hintText: 'Cari Kota',
-                fillColor: ColorPalette.surfaceTertiary,
-                borderRadius: 22,
-                // colorBorder: Colors.transparent,
-                // focusedBorderColor: Colors.transparent,
-                textStyle: const TextStyle(
-                  color: ColorPalette.kBlack,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+              child: GlassContainer.clearGlass(
+                height: 56,
+                width: double.infinity,
+                blur: 18,
+                borderRadius: BorderRadius.circular(28),
+                borderColor: Colors.white.withValues(alpha: .35),
+                borderWidth: 1,
+                shadowColor: Colors.black.withValues(alpha: .1),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withValues(alpha: .10),
+                    Colors.white.withValues(alpha: .08),
+                  ],
                 ),
-                hintStyle: const TextStyle(
-                  color: ColorPalette.kGrayHintText,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 17, 16, 17),
-                  child: SvgPicture.asset(
-                    AppIcons.searchLine,
-                    colorFilter: const ColorFilter.mode(
-                      ColorPalette.primaryColor,
-                      BlendMode.srcIn,
+                child: Row(
+                  children: [
+                    const SizedBox(width: 18),
+                    SvgPicture.asset(
+                      AppIcons.searchLine,
+                      width: 24,
+                      height: 24,
+                      colorFilter: ColorFilter.mode(
+                        Colors.white.withValues(alpha: .85),
+                        BlendMode.srcIn,
+                      ),
                     ),
-                  ),
-                ),
-                suffixIconConstraints: const BoxConstraints(
-                  minWidth: 56,
-                  minHeight: 50,
-                ),
-                suffixIcon: ValueListenableBuilder<TextEditingValue>(
-                  valueListenable: _searchController,
-                  builder: (_, value, _) {
-                    if (value.text.isEmpty) {
-                      return const SizedBox.shrink();
-                    }
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextField(
+                        controller: _searchController,
+                        textInputAction: TextInputAction.search,
+                        textAlignVertical: TextAlignVertical.center,
+                        cursorColor: Colors.white,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                          hintText: 'Cari Kota',
+                          hintStyle: TextStyle(
+                            color: Color(0xFFA6A6A6),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          context.read<CitySearchBloc>().add(
+                                CitySearchEvent.searchCity(value),
+                              );
+                        },
+                      ),
+                    ),
+                    ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: _searchController,
+                      builder: (_, value, __) {
+                        if (value.text.isEmpty) {
+                          return const SizedBox(width: 18);
+                        }
 
-                    return IconButton(
-                      onPressed: () {
-                        _searchController.clear();
-                        context.read<CitySearchBloc>().add(
-                          const CitySearchEvent.clearSearch(),
+                        return IconButton(
+                          splashRadius: 20,
+                          onPressed: () {
+                            _searchController.clear();
+                            context.read<CitySearchBloc>().add(
+                                  const CitySearchEvent.clearSearch(),
+                                );
+                          },
+                          icon: SvgPicture.asset(
+                            AppIcons.closeLine,
+                            width: 20,
+                            height: 20,
+                            colorFilter: ColorFilter.mode(
+                              Colors.white.withValues(alpha: .75),
+                              BlendMode.srcIn,
+                            ),
+                          ),
                         );
                       },
-                      icon: SvgPicture.asset(
-                        AppIcons.closeLine,
-                        width: 24,
-                        height: 24,
-                        colorFilter: const ColorFilter.mode(
-                          ColorPalette.kGrayHintText,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(
-                        minWidth: 56,
-                        minHeight: 50,
-                      ),
-                    );
-                  },
+                    ),
+                    const SizedBox(width: 8),
+                  ],
                 ),
-                onChanged: (value) {
-                  context.read<CitySearchBloc>().add(
-                    CitySearchEvent.searchCity(value),
-                  );
-                },
               ),
             ),
             const SizedBox(height: 4),
@@ -232,19 +255,16 @@ class _SelectCityViewState extends State<_SelectCityView> {
                 builder: (context, state) {
                   final isLoading =
                       state.getAllCitiesLoading || state.searchCityLoading;
-                  final hasError =
-                      state.getAllCitiesErrorMessage.isNotEmpty ||
+                  final hasError = state.getAllCitiesErrorMessage.isNotEmpty ||
                       state.searchCityErrorMessage.isNotEmpty;
                   final errorMessage = state.getAllCitiesErrorMessage.isNotEmpty
                       ? state.getAllCitiesErrorMessage
                       : state.searchCityErrorMessage;
 
-                  final hasSearchQuery = _searchController.text
-                      .trim()
-                      .isNotEmpty;
-                  final cities = hasSearchQuery
-                      ? state.searchResults
-                      : state.cities;
+                  final hasSearchQuery =
+                      _searchController.text.trim().isNotEmpty;
+                  final cities =
+                      hasSearchQuery ? state.searchResults : state.cities;
 
                   if (isLoading) {
                     return Center(
@@ -297,7 +317,7 @@ class _SelectCityViewState extends State<_SelectCityView> {
                   }
                   return ListView.separated(
                     itemCount: cities.length,
-                    separatorBuilder: (_, _) => const Divider(
+                    separatorBuilder: (_, __) => const Divider(
                       height: 1,
                       color: ColorPalette.borderTransparent,
                     ),

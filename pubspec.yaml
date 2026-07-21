@@ -1,6 +1,6 @@
 name: sahaba_mobile
 description: Sahaba mobile application
-version: 1.15.0+17
+version: 1.15.1+18
 publish_to: none
 
 environment:
@@ -33,9 +33,11 @@ dependencies:
   geocoding: ^4.0.0
   geolocator: ^13.0.1
   get_it: ^9.2.1
+  glass_kit: ^4.0.2
   go_router: ^17.3.0
   google_fonts: ^8.1.0
   # google_sign_in: ^7.2.0
+  google_maps_flutter: ^2.17.1
   google_mlkit_text_recognition: ^0.15.0
   hive_ce: ^2.19.3
   hive_ce_flutter: ^2.3.4
@@ -45,6 +47,7 @@ dependencies:
   # isar_community_flutter_libs: ^3.3.2
   json_annotation: ^4.9.0
   lottie: ^3.5.1
+  marquee: ^2.3.0
   meta: ^1.18.0
   path_provider: ^2.1.6
   permission_handler: ^11.3.1
@@ -56,7 +59,7 @@ dev_dependencies:
   build_runner: ^2.15.0
   device_preview_plus: ^2.8.3
   flutter_launcher_icons: ^0.14.4
-  flutter_native_splash: ^2.4.6
+  flutter_native_splash: 2.3.3
   flutter_test:
     sdk: flutter
   freezed: ^3.2.6-dev.1

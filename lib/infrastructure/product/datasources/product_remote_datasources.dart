@@ -100,7 +100,6 @@ class ProductRemoteDatasource implements IProductRemoteDatasource {
       final response = await _dio.get<Map<String, dynamic>>(
         '/api/v1/product/creative-product?creative_id=$id',
       );
-
       final data = response.data;
       return ListProductResponse.fromJson(data!);
     } on DioException catch (e) {
@@ -130,7 +129,8 @@ class ProductRemoteDatasource implements IProductRemoteDatasource {
       final response = await _dio.get<Map<String, dynamic>>(
         '/api/v1/product/$id',
       );
-      return ProductData.fromJson(response.data!);
+      final data = response.data!['data'] as Map<String, dynamic>;
+      return ProductData.fromJson(data);
     } on DioException catch (e) {
       throw ServerException.withError(e);
     }

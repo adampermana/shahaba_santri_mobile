@@ -113,7 +113,7 @@ class _QiblaViewState extends State<_QiblaView> {
         splashRadius: 20,
       ),
       titleWidget: Text(
-        'Kembali',
+        'Qiblat',
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           color: ColorPalette.kWhite,
           fontSize: 14,

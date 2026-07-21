@@ -21,7 +21,11 @@ import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/jadwal_sholat_s
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/qibla_screen/qibla_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/select_city_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/main_screen.dart';
-import 'package:sahaba_mobile/presentation/screens/product/product_page.dart';
+import 'package:sahaba_mobile/presentation/screens/product/category_product_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/product/detail_product_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/product/global_search_halal_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/product/history_product_detail_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/product/product_halal_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/detail_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
@@ -91,6 +95,57 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const CalendarScreen(),
         ),
         GoRoute(
+          path: RouterPath.productHalalPath,
+          builder: (context, state) => const ProductHalalScreen(),
+          routes: [
+            GoRoute(
+              path: RouterPath.historyProductPath,
+              builder: (context, state) {
+                final extra = state.extra as Map<String, dynamic>?;
+                return HistoryProductDetailScreen(
+                  id: extra?['id'] as int? ?? 0,
+                  lat: extra?['lat'] as double?,
+                  long: extra?['long'] as double?,
+                  eventTime: extra?['eventTime'] as String?,
+                );
+              },
+            ),
+
+            //  Global Search Product Halal
+            GoRoute(
+              path: RouterPath.searchProductHalalPath,
+              builder: (context, state) => const SearchProductHalalScreen(),
+            ),
+
+            // Category Product
+            GoRoute(
+              path: RouterPath.categoryProductPath,
+              builder: (context, state) {
+                final extra = state.extra as Map<String, dynamic>?;
+                return CategoryProductScreen(
+                  key: state.pageKey,
+                  id: extra?['id'] as int? ?? 0,
+                  name: extra?['name'] as String? ?? '',
+                );
+              },
+
+              routes: [
+                GoRoute(
+                  path: RouterPath.productDetailPath,
+                  builder: (context, state) {
+                    final extra = state.extra as Map<String, dynamic>?;
+                    return DetailProductScreen(
+                      id: extra?['id'] as int? ?? 0,
+                      ad: extra?['ad'] as ProductData?,
+                      isAds: extra?['isAds'] as bool? ?? false,
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+        GoRoute(
           path: RouterPath.jadwalSholatPath,
           builder: (context, state) => MultiBlocProvider(
             providers: [
@@ -142,7 +197,7 @@ final GoRouter router = GoRouter(
               path: RouterPath.productDetailPath,
               builder: (context, state) {
                 final extra = state.extra as Map<String, dynamic>?;
-                return ProductDetailPage(
+                return DetailProductScreen(
                   id: extra?['id'] as int? ?? 0,
                   ad: extra?['ad'] as ProductData?,
                   isAds: extra?['isAds'] as bool? ?? false,

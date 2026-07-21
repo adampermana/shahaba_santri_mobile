@@ -187,6 +187,9 @@ class ColorPalette {
   static const Color kPurple800 = kGreen800;
   static const Color kPurple900 = kGreen900;
 
+  static const Color kTeal = Color(0xFF14B8A6);
+  static const Color kTealLight = Color(0xFF66B9A2);
+
   // Gradients
   static const LinearGradient kGradient = LinearGradient(
     begin: Alignment(0, 0.50),

@@ -43,10 +43,11 @@ class PrayerTimeTile extends StatelessWidget {
         ? ColorPalette.kWhite
         : ColorPalette.kWhite.withValues(alpha: 0.87);
     final timeColor = isActive ? ColorPalette.kWhite : ColorPalette.kWhite;
-    final volumeColor = isEnabled
-        ? (isActive
-              ? ColorPalette.kWhite
-              : ColorPalette.kWhite.withValues(alpha: 0.87))
+
+    // Warna speaker ikut isActive (gray kalau non-aktif),
+    // tapi tap-ability tetap independen lewat isEnabled.
+    final volumeColor = isActive
+        ? ColorPalette.kWhite
         : ColorPalette.kWhite.withValues(alpha: 0.45);
 
     return AnimatedContainer(

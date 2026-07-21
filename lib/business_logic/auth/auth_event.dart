@@ -47,4 +47,7 @@ class AuthEvent with _$AuthEvent {
 
   const factory AuthEvent.postRestoreAccount({required String jwt}) =
       _PostRestoreAccount;
+
+  // Method Ini Hanya sementara
+  const factory AuthEvent.getLocalUser() = _GetLocalUser;
 }

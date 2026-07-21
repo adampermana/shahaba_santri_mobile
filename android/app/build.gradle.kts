@@ -64,18 +64,18 @@ android {
         create("production") {
             dimension = "default"
             applicationIdSuffix = ""
-            manifestPlaceholders["appName"] = "Sahaba Mobile"
+            manifestPlaceholders["appName"] = "SAH"
         }
         create("staging") {
             dimension = "default"
             applicationIdSuffix = ".stg"
-            manifestPlaceholders["appName"] = "[STG] Sahaba Mobile"
+            manifestPlaceholders["appName"] = "[STG] SAH"
         }
         create("development") {
             dimension = "default"
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
-            manifestPlaceholders["appName"] = "[DEV] Sahaba Mobile"
+            manifestPlaceholders["appName"] = "[DEV] SAH"
         }
     }
 

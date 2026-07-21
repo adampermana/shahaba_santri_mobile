@@ -279,7 +279,7 @@ as List<Brand>,
 /// @nodoc
 mixin _$Brand {
 
- int get id;@JsonKey(name: 'image_path') String get image;@JsonKey(name: 'partner_name') String get name;
+ int get id;@JsonKey(name: 'image_path') String get image;@JsonKey(name: 'name') String get name;
 /// Create a copy of Brand
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -310,7 +310,7 @@ abstract mixin class $BrandCopyWith<$Res>  {
   factory $BrandCopyWith(Brand value, $Res Function(Brand) _then) = _$BrandCopyWithImpl;
 @useResult
 $Res call({
- int id,@JsonKey(name: 'image_path') String image,@JsonKey(name: 'partner_name') String name
+ int id,@JsonKey(name: 'image_path') String image,@JsonKey(name: 'name') String name
 });
 
 
@@ -417,7 +417,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'image_path')  String image, @JsonKey(name: 'partner_name')  String name)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'image_path')  String image, @JsonKey(name: 'name')  String name)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Brand() when $default != null:
 return $default(_that.id,_that.image,_that.name);case _:
@@ -438,7 +438,7 @@ return $default(_that.id,_that.image,_that.name);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'image_path')  String image, @JsonKey(name: 'partner_name')  String name)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'image_path')  String image, @JsonKey(name: 'name')  String name)  $default,) {final _that = this;
 switch (_that) {
 case _Brand():
 return $default(_that.id,_that.image,_that.name);case _:
@@ -458,7 +458,7 @@ return $default(_that.id,_that.image,_that.name);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id, @JsonKey(name: 'image_path')  String image, @JsonKey(name: 'partner_name')  String name)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id, @JsonKey(name: 'image_path')  String image, @JsonKey(name: 'name')  String name)?  $default,) {final _that = this;
 switch (_that) {
 case _Brand() when $default != null:
 return $default(_that.id,_that.image,_that.name);case _:
@@ -473,12 +473,12 @@ return $default(_that.id,_that.image,_that.name);case _:
 
 @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class _Brand implements Brand {
-  const _Brand({required this.id, @JsonKey(name: 'image_path') required this.image, @JsonKey(name: 'partner_name') required this.name});
+  const _Brand({required this.id, @JsonKey(name: 'image_path') required this.image, @JsonKey(name: 'name') required this.name});
   factory _Brand.fromJson(Map<String, dynamic> json) => _$BrandFromJson(json);
 
 @override final  int id;
 @override@JsonKey(name: 'image_path') final  String image;
-@override@JsonKey(name: 'partner_name') final  String name;
+@override@JsonKey(name: 'name') final  String name;
 
 /// Create a copy of Brand
 /// with the given fields replaced by the non-null parameter values.
@@ -510,7 +510,7 @@ abstract mixin class _$BrandCopyWith<$Res> implements $BrandCopyWith<$Res> {
   factory _$BrandCopyWith(_Brand value, $Res Function(_Brand) _then) = __$BrandCopyWithImpl;
 @override @useResult
 $Res call({
- int id,@JsonKey(name: 'image_path') String image,@JsonKey(name: 'partner_name') String name
+ int id,@JsonKey(name: 'image_path') String image,@JsonKey(name: 'name') String name
 });
 
 

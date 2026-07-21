@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:sahaba_mobile/domains/auth/complete_profile/complete_profile_response.dart';
+import 'package:sahaba_mobile/domains/auth/hive/auth_data_hive.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_response.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_sso_response.dart';
 import 'package:sahaba_mobile/domains/auth/register/register_response.dart';
@@ -30,6 +31,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<_PostCompleteSsoProfile>(_onPostCompleteSsoProfile);
     on<_PostCompleteAppleSsoProfile>(_onPostCompleteAppleSsoProfile);
     on<_PostRestoreAccount>(_onPostRestoreAccount);
+    on<_GetLocalUser>(_onGetLocalUser);
   }
 
   final IAuthRepositories _authRepositories;
@@ -441,5 +443,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       ),
     );
+  }
+
+  Future<void> _onGetLocalUser(
+    _GetLocalUser event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        loading: true,
+      ),
+    );
+    final result = _authRepositories.fetchDataLoginGuest();
+    if (result == null) {
+      emit(
+        state.copyWith(
+          loading: false,
+        ),
+      );
+      add(const AuthEvent.postloginGuest());
+      return;
+    }
+    emit(state.copyWith(authDataHive: result, loading: false));
   }
 }
