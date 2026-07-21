@@ -16,6 +16,7 @@ import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/camera_screen/camera_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/calendar/calendar_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/home/chat/sahaba_ai_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/news/detail_news_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/jadwal_sholat_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/qibla_screen/qibla_screen.dart';
@@ -89,6 +90,10 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: RouterPath.qiblaPath,
           builder: (context, state) => const QiblaScreen(),
+        ),
+        GoRoute(
+          path: RouterPath.sahabaAiPath,
+          builder: (context, state) => const SahabaAiScreen(),
         ),
         GoRoute(
           path: RouterPath.calendarPath,

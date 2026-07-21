@@ -56,14 +56,17 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
         SliverToBoxAdapter(
           child: Transform.translate(
             offset: const Offset(0, -_cardOverlap + _contentTopGap),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                spacing: 16,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildJadwalSholat(context),
-                  _featureSection(
+            child: Column(
+              spacing: 16,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _buildJadwalSholat(context),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _featureSection(
                     context,
                     onQiblatTap: () => context.push(
                       '$currentLocation/${RouterPath.qiblaPath}',
@@ -81,11 +84,14 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                     //   '$currentLocation/${RouterPath.calendarPath}',
                     // ),
                   ),
-                  _buildContinueReading(context),
-                  _buildBeritaIslam(context),
-                  SizedBox(height: bottomInset),
-                ],
-              ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _buildContinueReading(context),
+                ),
+                _buildBeritaIslam(context),
+                SizedBox(height: bottomInset),
+              ],
             ),
           ),
         ),
@@ -98,6 +104,7 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     double height,
     double shrinkProgress,
   ) {
+    final currentLocation = GoRouterState.of(context).uri.toString();
     // TODO: Replace with actual carousel data source
     const hasContent = true;
     const title = 'Pasang Iklan Sekarang';
@@ -187,30 +194,32 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                     ),
                   ),
                 ),
-                // SubmitButtonStylesWidget(
-                //   style: SubmitButtonStyle.elevatedGlass,
-                //   width: 150,
-                //   height: 32,
-                //   radius: 24,
-                //   padding: const EdgeInsets.symmetric(
-                //     horizontal: 12,
-                //     vertical: 6,
-                //   ),
-                //   textButton: 'Tanya Sahaba',
-                //   textStyle: const TextStyle(
-                //     color: ColorPalette.kWhite,
-                //     fontSize: 12,
-                //     fontFamily: 'Synonym Variable',
-                //     fontWeight: FontWeight.w600,
-                //     height: -0.4,
-                //   ),
-                //   icon: const CacheImageOrSvg(
-                //     source: 'assets/images/icon-images/icon-ai.png',
-                //     width: 32,
-                //     height: 32,
-                //   ),
-                //   onPressed: () {},
-                // ),
+                SubmitButtonStylesWidget(
+                  style: SubmitButtonStyle.elevatedGlass,
+                  width: 150,
+                  height: 32,
+                  radius: 24,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  textButton: 'Tanya Sahaba',
+                  textStyle: const TextStyle(
+                    color: ColorPalette.kWhite,
+                    fontSize: 12,
+                    fontFamily: 'Synonym Variable',
+                    fontWeight: FontWeight.w600,
+                    height: -0.4,
+                  ),
+                  icon: const CacheImageOrSvg(
+                    source: 'assets/images/icon-images/icon-ai.png',
+                    width: 32,
+                    height: 32,
+                  ),
+                  onPressed: () => context.push(
+                    '$currentLocation/${RouterPath.sahabaAiPath}',
+                  ),
+                ),
               ],
             ),
           ),
@@ -518,12 +527,12 @@ Widget _featureSection(
       'onTap': onProdukHalalTap,
       'badgeType': 'ai',
     },
-    // {
-    //   'label': 'Kisah',
-    //   'icon': 'assets/images/icon-images/icon-kisah.png',
-    //   'iconRatio': 0.9,
-    //   'onTap': onKisahTap,
-    // },
+    {
+      'label': 'Kisah',
+      'icon': 'assets/images/icon-images/icon-kisah.png',
+      'iconRatio': 0.9,
+      'onTap': onKisahTap,
+    },
   ];
 
   return Column(
@@ -732,62 +741,102 @@ Widget _buildBeritaIslam(BuildContext context) {
   final textTheme = Theme.of(context).textTheme;
 
   return Column(
+    spacing: 16,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Berita Islami',
-            style: textTheme.titleMedium?.copyWith(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              height: 1.75,
+      Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Berita Islami',
+              style: textTheme.titleMedium?.copyWith(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                height: 1.75,
+              ),
             ),
+            // GestureDetector(
+            //   onTap: () {},
+            //   child: Row(
+            //     mainAxisSize: MainAxisSize.min,
+            //     children: [
+            //       Text(
+            //         'Lihat semua',
+            //         style: textTheme.bodySmall?.copyWith(
+            //           color: const Color(0xFFB39164),
+            //           fontSize: 12,
+            //           fontWeight: FontWeight.w600,
+            //         ),
+            //       ),
+            //       const Icon(
+            //         Icons.keyboard_arrow_right_outlined,
+            //         color: Color(0xFFB39164),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+          ],
+        ),
+      ),
+      InkWell(
+        onTap: () {
+          unawaited(
+            context.push(
+              '${RouterPath.mainPath}/${RouterPath.detailNewsPath}',
+            ),
+          );
+        },
+        splashColor: Colors.white.withValues(alpha: 0.06),
+        highlightColor: Colors.white.withValues(alpha: 0.04),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: _buildNewsCard(
+            context: context,
+            imagePath:
+                'https://akcdn.detik.net.id/visual/2015/03/31/8c04ef5b-2678-4230-bd4e-b10f20d8e252_169.jpg?w=1200',
+            title:
+                'Doa Khutbah Jumat oleh Ustadz Ahmad Fauzi: Memohon Rahmat dan Kekuatan',
+            date: '14 Jul 2026',
+            showViewCount: false,
           ),
-          // GestureDetector(
-          //   onTap: () {},
-          //   child: Row(
-          //     mainAxisSize: MainAxisSize.min,
-          //     children: [
-          //       Text(
-          //         'Lihat semua',
-          //         style: textTheme.bodySmall?.copyWith(
-          //           color: const Color(0xFFB39164),
-          //           fontSize: 12,
-          //           fontWeight: FontWeight.w600,
-          //         ),
-          //       ),
-          //       const Icon(
-          //         Icons.keyboard_arrow_right_outlined,
-          //         color: Color(0xFFB39164),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-        ],
+        ),
       ),
-      const SizedBox(height: 16),
-      _buildNewsCard(
-        context: context,
-        imagePath:
-            'https://akcdn.detik.net.id/visual/2015/03/31/8c04ef5b-2678-4230-bd4e-b10f20d8e252_169.jpg?w=1200',
-        title:
-            'Doa Khutbah Jumat oleh Ustadz Ahmad Fauzi: Memohon Rahmat dan Kekuatan',
-        date: '14 Jul 2026',
-        showViewCount: false,
+      const SizedBox(
+        width: double.infinity,
+        height: 4,
+        child: Divider(
+          color: Color(
+            0x33E8E8E8,
+          ) /* semantic-content-inverse-tertiary */,
+          thickness: 2,
+        ),
       ),
-      const SizedBox(height: 16),
-      _buildNewsCard(
-        context: context,
-        imagePath:
-            'https://serikatnews.com/wp-content/uploads/2022/06/15330053455b5fce219e239.jpg',
-        title:
-            "Pesan Khutbah Jum'at H. Agus Salim Tahun 1928: Persatuan Lahir dan Batin",
-        date: '14 Jul 2026',
-        showViewCount: true,
-        viewCount: 40,
+      InkWell(
+        onTap: () {
+          unawaited(
+            context.push(
+              '${RouterPath.mainPath}/${RouterPath.detailNewsPath}',
+            ),
+          );
+        },
+        splashColor: Colors.white.withValues(alpha: 0.06),
+        highlightColor: Colors.white.withValues(alpha: 0.04),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: _buildNewsCard(
+            context: context,
+            imagePath:
+                'https://serikatnews.com/wp-content/uploads/2022/06/15330053455b5fce219e239.jpg',
+            title:
+                "Pesan Khutbah Jum'at H. Agus Salim Tahun 1928: Persatuan Lahir dan Batin",
+            date: '14 Jul 2026',
+            showViewCount: true,
+            viewCount: 40,
+          ),
+        ),
       ),
     ],
   );
@@ -803,57 +852,49 @@ Widget _buildNewsCard({
 }) {
   final textTheme = Theme.of(context).textTheme;
 
-  return InkWell(
-    onTap: () {
-      unawaited(
-        context.push(
-          '${RouterPath.mainPath}/${RouterPath.detailNewsPath}',
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: CacheImageOrSvg(
+          source: imagePath,
+          width: double.infinity,
+          height: 160,
         ),
-      );
-    },
-    borderRadius: BorderRadius.circular(16),
-    splashColor: Colors.white.withValues(alpha: 0.06),
-    highlightColor: Colors.white.withValues(alpha: 0.04),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: CacheImageOrSvg(source: imagePath),
+      ),
+      const SizedBox(height: 16),
+      Text(
+        title,
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+        style: textTheme.bodyMedium?.copyWith(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          height: 1.4,
         ),
-        const SizedBox(height: 16),
-        Text(
-          title,
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-          style: textTheme.bodyMedium?.copyWith(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            height: 1.4,
+      ),
+      const SizedBox(height: 12),
+      Row(
+        children: [
+          const Icon(
+            Icons.calendar_month_outlined,
+            color: Color(0xFFDDDDDD),
+            size: 16,
           ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            const Icon(
-              Icons.calendar_month_outlined,
-              color: Color(0xFFDDDDDD),
-              size: 16,
+          const SizedBox(width: 6),
+          Text(
+            date,
+            style: textTheme.bodySmall?.copyWith(
+              color: const Color(0xFFDDDDDD),
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
             ),
-            const SizedBox(width: 6),
-            Text(
-              date,
-              style: textTheme.bodySmall?.copyWith(
-                color: const Color(0xFFDDDDDD),
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
+          ),
+        ],
+      ),
+    ],
   );
 }
 

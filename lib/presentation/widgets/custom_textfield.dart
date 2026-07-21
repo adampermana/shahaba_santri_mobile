@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:glass_kit/glass_kit.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 
 class CustomTextFormFieldWidget extends StatelessWidget {
@@ -1285,5 +1286,547 @@ class _IndonesianPhoneNumberFormatter extends TextInputFormatter {
       text: formatted,
       selection: TextSelection.collapsed(offset: formatted.length),
     );
+  }
+}
+
+/// Widget TextFormField reusable dengan dukungan:
+/// - Style default (border/fill biasa, opsional shadow)
+/// - Style glassmorphism (`useGlass: true`) menggunakan `GlassContainer.clearGlass`
+///
+/// Contoh pemakaian glass (search bar):
+/// ```dart
+/// CustomTextFormFieldWidget(
+///   controller: controller,
+///   useGlass: true,
+///   hintText: 'Cari ayat atau surah disini',
+///   prefixIcon: SvgPicture.asset(AppIcons.searchLine, ...),
+/// )
+/// ```
+class CustomTextFormFieldGlassWidget extends StatelessWidget {
+  const CustomTextFormFieldGlassWidget({
+    super.key,
+    this.controller,
+    this.initialValue,
+    this.textStyle,
+    this.requiredMarking = false,
+    this.obscureText = false,
+    this.readOnly = false,
+    this.keyboardType,
+    this.textInputAction,
+    this.textCapitalization = TextCapitalization.none,
+    this.hintText,
+    this.hintStyle,
+    this.labelText,
+    this.colorLabelText,
+    this.fillColor,
+    this.prefixIcon,
+    this.onsubmit,
+    this.suffixIcon,
+    this.manualError = false,
+    this.clearText = false,
+    this.inputFormatters,
+    this.onTap,
+    this.onChanged,
+    this.validator,
+    this.error,
+    this.errorText,
+    this.errorStyle,
+    this.errorMaxLines,
+    this.colorBorder,
+    this.focusedBorderColor,
+    this.useBorder = false,
+    this.showShadow = false,
+    this.borderRadius,
+    this.contentPadding,
+    this.suffixIconConstraints,
+    this.focusNode,
+    this.minLines,
+    this.maxLines = 1,
+    // ── Glassmorphism ──
+    this.useGlass = false,
+    this.glassHeight,
+    this.glassBlur = 18,
+    this.glassColor,
+    this.glassBorderColor,
+    this.glassBorderWidth = 1,
+    this.glassShadowColor,
+    this.glassCursorColor,
+    this.glassIconSpacing = 12,
+    this.glassContentPaddingStart = 18,
+    this.glassContentPaddingEnd = 18,
+  }) : assert(
+         error == null || errorText == null,
+         'Only one of error and errorText can be specified.',
+       );
+
+  final TextEditingController? controller;
+  final String? initialValue;
+  final TextStyle? textStyle;
+  final bool requiredMarking;
+  final bool obscureText;
+  final bool readOnly;
+
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final TextCapitalization textCapitalization;
+  final String? hintText;
+  final TextStyle? hintStyle;
+  final String? labelText;
+  final Color? colorLabelText;
+  final Color? fillColor;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final bool manualError;
+  final bool clearText;
+  final List<TextInputFormatter>? inputFormatters;
+  final VoidCallback? onTap;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onsubmit;
+  final FormFieldValidator<String>? validator;
+  final Widget? error;
+  final String? errorText;
+  final TextStyle? errorStyle;
+  final int? errorMaxLines;
+  final Color? colorBorder;
+  final Color? focusedBorderColor;
+  final bool useBorder;
+  final bool showShadow;
+  final double? borderRadius;
+  final EdgeInsetsGeometry? contentPadding;
+  final BoxConstraints? suffixIconConstraints;
+  final FocusNode? focusNode;
+  final int? minLines;
+  final int? maxLines;
+
+  // ── Glassmorphism config ──
+  /// Aktifkan style glassmorphism (mis. search bar transparan di atas gambar/gradient).
+  final bool useGlass;
+  final double? glassHeight;
+  final double glassBlur;
+  final Color? glassColor;
+  final Color? glassBorderColor;
+  final double glassBorderWidth;
+  final Color? glassShadowColor;
+  final Color? glassCursorColor;
+  final double glassIconSpacing;
+  final double glassContentPaddingStart;
+  final double glassContentPaddingEnd;
+
+  // ── Warna fill default ──────
+  static const Color _kFillColor = ColorPalette.kGray;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    // ── suffix builder (dipakai di kedua mode: default & glass) ────────────
+    Widget? buildSuffix({required bool showClear, Color? iconColor}) {
+      final widgets = <Widget>[];
+
+      if (suffixIcon != null) widgets.add(suffixIcon!);
+
+      if (clearText && showClear && !readOnly && controller != null) {
+        widgets.add(
+          GestureDetector(
+            onTap: () {
+              controller!.clear();
+              onChanged?.call('');
+            },
+            child: Icon(Icons.clear, size: 18, color: iconColor),
+          ),
+        );
+      }
+
+      if (widgets.isEmpty) return null;
+      if (widgets.length == 1) return widgets.first;
+      return Row(mainAxisSize: MainAxisSize.min, children: widgets);
+    }
+
+    // ════════════════════════════════════════════════════════════════════
+    // MODE GLASSMORPHIC
+    // ════════════════════════════════════════════════════════════════════
+    if (useGlass) {
+      final effectiveGlassRadius = BorderRadius.circular(borderRadius ?? 28);
+      final effectiveGlassHeight = glassHeight ?? 56;
+
+      Widget glassField({required Widget? suffix}) {
+        return GlassContainer.clearGlass(
+          height: effectiveGlassHeight,
+          width: double.infinity,
+          blur: glassBlur,
+          borderRadius: effectiveGlassRadius,
+          borderColor: glassBorderColor ?? Colors.white.withValues(alpha: 0.35),
+          borderWidth: glassBorderWidth,
+          color: glassColor ?? Colors.white.withValues(alpha: 0.08),
+          shadowColor: glassShadowColor ?? Colors.black.withValues(alpha: 0.1),
+          child: Row(
+            children: [
+              SizedBox(width: glassContentPaddingStart),
+              if (prefixIcon != null) ...[
+                prefixIcon!,
+                SizedBox(width: glassIconSpacing),
+              ],
+              Expanded(
+                child: TextField(
+                  focusNode: focusNode,
+                  controller: controller,
+                  obscureText: obscureText,
+                  readOnly: readOnly,
+                  onSubmitted: onsubmit,
+                  keyboardType: keyboardType,
+                  textInputAction: textInputAction,
+                  textCapitalization: textCapitalization,
+                  minLines: obscureText ? null : minLines,
+                  maxLines: obscureText ? 1 : maxLines,
+                  inputFormatters: inputFormatters,
+                  cursorColor: glassCursorColor ?? Colors.white,
+                  textAlignVertical: TextAlignVertical.center,
+                  style:
+                      textStyle ??
+                      const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
+                    hintText: hintText,
+                    hintStyle:
+                        hintStyle ??
+                        const TextStyle(
+                          color: Color(0xFFA6A6A6),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                    suffixIcon: suffix,
+                    suffixIconConstraints: suffixIconConstraints,
+                  ),
+                  onTap: onTap,
+                  onChanged: onChanged,
+                ),
+              ),
+              SizedBox(width: glassContentPaddingEnd),
+            ],
+          ),
+        );
+      }
+
+      Widget labeledGlass(Widget field) {
+        if (labelText == null) return field;
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text.rich(
+              TextSpan(
+                text: labelText,
+                style: TextStyle(
+                  color: colorLabelText ?? Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+                children: !requiredMarking
+                    ? null
+                    : [
+                        TextSpan(
+                          text: ' *',
+                          style: TextStyle(
+                            color: colorLabelText ?? Colors.white,
+                          ),
+                        ),
+                      ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            field,
+          ],
+        );
+      }
+
+      if (controller != null) {
+        return ValueListenableBuilder<TextEditingValue>(
+          valueListenable: controller!,
+          builder: (context, value, _) {
+            final hasText = value.text.isNotEmpty;
+            return labeledGlass(
+              glassField(
+                suffix: buildSuffix(
+                  showClear: hasText,
+                  iconColor: Colors.white70,
+                ),
+              ),
+            );
+          },
+        );
+      }
+
+      return labeledGlass(glassField(suffix: buildSuffix(showClear: false)));
+    }
+
+    // ════════════════════════════════════════════════════════════════════
+    // MODE DEFAULT (border/fill biasa)
+    // ════════════════════════════════════════════════════════════════════
+
+    // ── border helpers ───────────────────────────────────────────────────────
+    final effectiveBorderRadius = BorderRadius.circular(borderRadius ?? 8);
+    final effectiveContentPadding =
+        contentPadding ??
+        const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 14,
+        );
+    final effectiveMinLines = obscureText ? null : minLines;
+    final effectiveMaxLines = obscureText ? 1 : maxLines;
+
+    OutlineInputBorder border(Color color, [double width = 1.5]) =>
+        OutlineInputBorder(
+          borderRadius: effectiveBorderRadius,
+          borderSide: BorderSide(color: color, width: width),
+        );
+
+    final noBorder = OutlineInputBorder(
+      borderRadius: effectiveBorderRadius,
+      borderSide: const BorderSide(color: Colors.transparent, width: 0),
+    );
+
+    final InputBorder enabledBorder = manualError
+        ? border(theme.colorScheme.error, 2)
+        : (useBorder
+              ? border(colorBorder ?? const Color(0xFF231F20))
+              : readOnly
+              ? border(const Color(0xFFCCCCCC))
+              : noBorder);
+
+    final InputBorder focusedBorder = manualError
+        ? border(theme.colorScheme.error, 2)
+        : border(
+            focusedBorderColor ?? colorBorder ?? theme.colorScheme.primary,
+            2,
+          );
+
+    final InputBorder errorBorder = border(theme.colorScheme.error, 2);
+    final InputBorder focusedErrorBorder = border(theme.colorScheme.error, 2);
+
+    final InputBorder disabledBorder = useBorder
+        ? border(theme.disabledColor.withValues(alpha: 0.2))
+        : noBorder;
+
+    // ── shadow decoration helper ───────────────────────────────────────────
+    const shadowDecoration = BoxDecoration(
+      borderRadius: BorderRadius.all(Radius.circular(12)),
+      boxShadow: [
+        BoxShadow(
+          color: Color(0x19000000),
+          blurRadius: 6,
+          offset: Offset(0, 4),
+          spreadRadius: -1,
+        ),
+        BoxShadow(
+          color: Color(0x0F000000),
+          blurRadius: 4,
+          offset: Offset(0, 2),
+          spreadRadius: -1,
+        ),
+      ],
+    );
+
+    // ── InputDecoration builder (reused below) ────────────────────────────
+    InputDecoration inputDecoration({bool hideError = false}) =>
+        InputDecoration(
+          filled: true,
+          fillColor: fillColor ?? (readOnly ? _kFillColor : _kFillColor),
+          hintText: hintText,
+          hintStyle:
+              hintStyle ?? TextStyle(color: theme.disabledColor, fontSize: 14),
+          prefixIcon: prefixIcon,
+          contentPadding: effectiveContentPadding,
+          border: enabledBorder,
+          enabledBorder: enabledBorder,
+          focusedBorder: focusedBorder,
+          disabledBorder: disabledBorder,
+          errorBorder: errorBorder,
+          focusedErrorBorder: focusedErrorBorder,
+          error: error,
+          errorText: errorText,
+          errorStyle: hideError
+              ? const TextStyle(fontSize: 0, height: 0)
+              : errorStyle ??
+                    TextStyle(color: theme.colorScheme.error, fontSize: 12),
+          errorMaxLines: errorMaxLines,
+          suffixIconConstraints: suffixIconConstraints,
+        );
+
+    // ── core TextFormField ───────────────────────────────────────────────────
+    Widget textField({required Widget? suffix}) {
+      // Tanpa shadow → pakai TextFormField biasa
+      if (!showShadow) {
+        return TextFormField(
+          key: key,
+          focusNode: focusNode,
+          controller: controller,
+          initialValue: controller == null ? initialValue : null,
+          obscureText: obscureText,
+          readOnly: readOnly,
+          onFieldSubmitted: onsubmit,
+          keyboardType: keyboardType,
+          textInputAction: textInputAction,
+          textCapitalization: textCapitalization,
+          minLines: effectiveMinLines,
+          maxLines: effectiveMaxLines,
+          inputFormatters: inputFormatters,
+          style: textStyle ?? DefaultTextStyle.of(context).style,
+          decoration: inputDecoration().copyWith(suffixIcon: suffix),
+          onTap: onTap,
+          onChanged: onChanged,
+          validator: validator,
+        );
+      }
+
+      // Dengan shadow → pisah input (shadow) dan error text (di bawah)
+      return FormField<String>(
+        initialValue: controller?.text ?? initialValue ?? '',
+        validator: validator != null
+            ? (value) => validator!(controller?.text ?? value)
+            : null,
+        builder: (state) {
+          // Sync error dari FormField ke InputDecoration border
+          final validationErrorText = state.errorText;
+          final hasError =
+              validationErrorText != null || error != null || errorText != null;
+          final inputBorder = hasError ? errorBorder : enabledBorder;
+          final inputFocusedBorder = hasError
+              ? focusedErrorBorder
+              : focusedBorder;
+          final effectiveErrorStyle =
+              errorStyle ??
+              TextStyle(color: theme.colorScheme.error, fontSize: 12);
+          final errorWidget =
+              error ??
+              (validationErrorText != null || errorText != null
+                  ? Text(
+                      validationErrorText ?? errorText!,
+                      style: effectiveErrorStyle,
+                      maxLines: errorMaxLines,
+                      overflow: errorMaxLines == null
+                          ? null
+                          : TextOverflow.ellipsis,
+                    )
+                  : null);
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Shadow hanya di sekitar input ──
+              DecoratedBox(
+                decoration: hasError
+                    ? const BoxDecoration() // tanpa shadow saat error
+                    : shadowDecoration,
+                child: TextField(
+                  focusNode: focusNode,
+                  controller: controller,
+                  obscureText: obscureText,
+                  readOnly: readOnly,
+                  onSubmitted: onsubmit,
+                  keyboardType: keyboardType,
+                  textInputAction: textInputAction,
+                  textCapitalization: textCapitalization,
+                  minLines: effectiveMinLines,
+                  maxLines: effectiveMaxLines,
+                  inputFormatters: inputFormatters,
+                  style: textStyle ?? DefaultTextStyle.of(context).style,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor:
+                        fillColor ?? (readOnly ? _kFillColor : _kFillColor),
+                    hintText: hintText,
+                    hintStyle:
+                        hintStyle ??
+                        TextStyle(color: theme.disabledColor, fontSize: 14),
+                    prefixIcon: prefixIcon,
+                    suffixIcon: suffix,
+                    contentPadding: effectiveContentPadding,
+                    border: inputBorder,
+                    enabledBorder: inputBorder,
+                    focusedBorder: inputFocusedBorder,
+                    disabledBorder: disabledBorder,
+                    errorBorder: errorBorder,
+                    focusedErrorBorder: focusedErrorBorder,
+                    suffixIconConstraints: suffixIconConstraints,
+                  ),
+                  onTap: onTap,
+                  onChanged: (value) {
+                    state.didChange(value);
+                    onChanged?.call(value);
+                  },
+                ),
+              ),
+              // ── Error text di bawah shadow ──
+              if (errorWidget != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 6, left: 12),
+                  child: DefaultTextStyle.merge(
+                    style: effectiveErrorStyle,
+                    maxLines: errorMaxLines,
+                    overflow: errorMaxLines == null
+                        ? TextOverflow.clip
+                        : TextOverflow.ellipsis,
+                    child: errorWidget,
+                  ),
+                ),
+            ],
+          );
+        },
+      );
+    }
+
+    // ── label + field ────────────────────────────────────────────────────────
+    Widget labeledField(Widget field) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (labelText != null) ...[
+            Text.rich(
+              TextSpan(
+                text: labelText,
+                style: TextStyle(
+                  color: colorLabelText ?? ColorPalette.kBlack,
+                  fontWeight: FontWeight.w500,
+                ),
+                children: !requiredMarking
+                    ? null
+                    : [
+                        TextSpan(
+                          text: ' *',
+                          style: TextStyle(
+                            color: colorLabelText ?? ColorPalette.kBlack,
+                          ),
+                        ),
+                      ],
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+          field,
+        ],
+      );
+    }
+
+    // ── build dengan ValueListenableBuilder bila ada controller ──────────────
+    if (controller != null) {
+      return ValueListenableBuilder<TextEditingValue>(
+        valueListenable: controller!,
+        builder: (context, value, _) {
+          final hasText = value.text.isNotEmpty;
+          return labeledField(
+            textField(suffix: buildSuffix(showClear: hasText)),
+          );
+        },
+      );
+    }
+
+    return labeledField(textField(suffix: buildSuffix(showClear: false)));
   }
 }

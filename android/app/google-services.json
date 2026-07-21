@@ -45,6 +45,49 @@
             {
               "client_id": "871004635003-c0e500rimqfir7prpuo210fcog3juu4d.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "871004635003-0u5qjn9h4kdj8ndg6v5m5pekgie302qu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.eprisi.sah"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:871004635003:android:a101671c1420bfabe487de",
+        "android_client_info": {
+          "package_name": "com.eprisi.sah.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "871004635003-c0e500rimqfir7prpuo210fcog3juu4d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzo76tPY0jl8xGVlOjUucK01NwvnT78pI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "871004635003-c0e500rimqfir7prpuo210fcog3juu4d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "871004635003-0u5qjn9h4kdj8ndg6v5m5pekgie302qu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.eprisi.sah"
+              }
             }
           ]
         }
