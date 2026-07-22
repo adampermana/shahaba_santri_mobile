@@ -54,40 +54,38 @@ class _QiblaViewState extends State<_QiblaView> {
     return AppScaffold(
       // backgroundColor: ColorPalette.scaffoldBackground,
       appBar: _buildAppBar(context),
-      body: SafeArea(
-        child: BlocConsumer<QiblaCubit, QiblaState>(
-          listenWhen: (previous, current) {
-            if (current is QiblaError) return true;
-            return current is QiblaLoaded;
-          },
-          listener: (context, state) {
-            if (state is QiblaError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
-              _resetHapticState();
-            }
+      body: BlocConsumer<QiblaCubit, QiblaState>(
+        listenWhen: (previous, current) {
+          if (current is QiblaError) return true;
+          return current is QiblaLoaded;
+        },
+        listener: (context, state) {
+          if (state is QiblaError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+            _resetHapticState();
+          }
 
-            if (state is QiblaLoaded) {
-              _handleHaptic(state);
-            }
-          },
-          builder: (context, state) {
-            if (state is QiblaLoading || state is QiblaInitial) {
-              return _loadingState();
-            }
+          if (state is QiblaLoaded) {
+            _handleHaptic(state);
+          }
+        },
+        builder: (context, state) {
+          if (state is QiblaLoading || state is QiblaInitial) {
+            return _loadingState();
+          }
 
-            if (state is QiblaError) {
-              return _errorState(context, state.message, textTheme);
-            }
+          if (state is QiblaError) {
+            return _errorState(context, state.message, textTheme);
+          }
 
-            if (state is QiblaLoaded) {
-              return _loadedState(state, textTheme);
-            }
+          if (state is QiblaLoaded) {
+            return _loadedState(state, textTheme);
+          }
 
-            return const SizedBox.shrink();
-          },
-        ),
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
@@ -232,40 +230,46 @@ class _QiblaViewState extends State<_QiblaView> {
         if (compassSize < 300) compassSize = 300;
         if (compassSize > 230) compassSize = 230;
 
-        return SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 32,
-                ),
-                child: Column(
-                  spacing: 70,
-                  children: [
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Image.asset('assets/images/motif-qiblat.png'),
-                        _CompassWidget(
-                          heading: state.heading,
-                          qiblaDirection: state.qiblaDirection,
-                          isFacingQibla: state.isFacingQibla,
-                          size: compassSize,
-                        ),
-                      ],
-                    ),
-                    _DirectionInfo(
-                      heading: state.heading,
-                      qiblaDirection: state.qiblaDirection,
-                      isFacingQibla: state.isFacingQibla,
-                    ),
-                  ],
+        return Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 32,
+                  ),
+                  child: Column(
+                    spacing: 70,
+                    children: [
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Image.asset('assets/images/motif-qiblat.png'),
+                          _CompassWidget(
+                            heading: state.heading,
+                            qiblaDirection: state.qiblaDirection,
+                            isFacingQibla: state.isFacingQibla,
+                            size: compassSize,
+                          ),
+                        ],
+                      ),
+                      _DirectionInfo(
+                        heading: state.heading,
+                        qiblaDirection: state.qiblaDirection,
+                        isFacingQibla: state.isFacingQibla,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
+            Image.asset(
+              'assets/images/masjid-qibla.png',
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ],
         );
       },
     );
