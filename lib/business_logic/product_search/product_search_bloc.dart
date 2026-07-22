@@ -87,7 +87,11 @@ class ProductSearchBloc extends Bloc<ProductSearchEvent, ProductSearchState> {
       deviceId: dataLocal?.phoneNumber ?? 'Guest',
       user: dataLocal?.name ?? 'Guest',
       brandId: event.item.brandId ?? 0,
-      image: '',
+      image:
+          event.item.image ??
+          (event.item.images?.isNotEmpty == true
+              ? event.item.images!.first.image
+              : ''),
       disctrict: locationDetail['district']!,
       kecamatan: locationDetail['locality']!,
       province: locationDetail['province']!,

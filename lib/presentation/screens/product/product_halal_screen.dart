@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
 import 'package:sahaba_mobile/business_logic/special_product/special_product_bloc.dart';
 import 'package:sahaba_mobile/domains/ads/ads_response.dart';
-import 'package:sahaba_mobile/infrastructure/product/produsen/produsen.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
@@ -21,9 +21,18 @@ class ProductHalalScreen extends HookWidget {
   Widget build(BuildContext context) {
     final currentLocation = GoRouterState.of(context).uri.toString();
 
-    return BlocProvider(
-      create: (context) =>
-          sl<SpecialProductBloc>()..add(const SpecialProductEvent.started()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SpecialProductBloc>(
+          create: (context) =>
+              sl<SpecialProductBloc>()
+                ..add(const SpecialProductEvent.started()),
+        ),
+        BlocProvider<LocationBloc>(
+          create: (context) => sl<LocationBloc>()
+            ..add(const LocationEvent.getCurrentLocation(isGetPosition: true)),
+        ),
+      ],
       child: AppScaffold(
         appBar: CustomAppBar.buildAppBarSimple(
           backgroundColor: Colors.transparent,
@@ -163,6 +172,8 @@ class ProductHalalScreen extends HookWidget {
   }
 
   Widget _menuBrand(BuildContext context) {
+    final currentLocation = GoRouterState.of(context).uri.toString();
+
     return BlocBuilder<SpecialProductBloc, SpecialProductState>(
       buildWhen: (prev, curr) =>
           prev.getBrandDataLoading != curr.getBrandDataLoading ||
@@ -204,37 +215,67 @@ class ProductHalalScreen extends HookWidget {
                             child: SizedBox(
                               height: 80,
                               child: Center(
-                                child: Container(
-                                  width: 64,
-                                  height: 64,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: const Color(0xFFE8E8E8),
-                                    shape: RoundedRectangleBorder(
-                                      side: const BorderSide(
-                                        width: 4,
-                                        color: Color(0xFFB39164),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(80),
+                                    onTap: () async {
+                                      final loc = context
+                                          .read<LocationBloc>()
+                                          .state;
+                                      // Skip jika GPS belum ready
+                                      if (loc.latitude != 0.0 ||
+                                          loc.longitude != 0.0) {
+                                        context.read<SpecialProductBloc>().add(
+                                          SpecialProductEvent.adLog(
+                                            brand.productId,
+                                            brand.campaignId,
+                                            brand.id,
+                                            'Click',
+                                          ),
+                                        );
+                                      }
+                                      await context.push(
+                                        '$currentLocation/${RouterPath.listDetailBrandByProductPath}',
+                                        extra: {
+                                          'id': brand.id,
+                                          'campaignName': brand.campaignName,
+                                          'image': brand.image,
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      width: 64,
+                                      height: 64,
+                                      clipBehavior: Clip.antiAlias,
+                                      decoration: ShapeDecoration(
+                                        color: const Color(0xFFE8E8E8),
+                                        shape: RoundedRectangleBorder(
+                                          side: const BorderSide(
+                                            width: 4,
+                                            color: Color(0xFFB39164),
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            80,
+                                          ),
+                                        ),
                                       ),
-                                      borderRadius: BorderRadius.circular(80),
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(6),
-                                    child: CacheImageOrSvg(
-                                      source:
-                                          data
-                                              .firstWhere(
-                                                (element) =>
-                                                    element.id == brand.id,
-                                              )
-                                              .image ??
-                                          '',
-                                      width: 52,
-                                      height: 52,
-                                      isCircle: true,
-                                      autoCache: true,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(6),
+                                        child: CacheImageOrSvg(
+                                          source:
+                                              data
+                                                  .firstWhere(
+                                                    (element) =>
+                                                        element.id == brand.id,
+                                                  )
+                                                  .image ??
+                                              '',
+                                          width: 52,
+                                          height: 52,
+                                          isCircle: true,
+                                          autoCache: true,
+                                          errorBuilder: (context, error, stackTrace) {
                                             debugPrint(
                                               'Gagal load image brand: $error',
                                             );
@@ -244,6 +285,8 @@ class ProductHalalScreen extends HookWidget {
                                               color: Colors.black38,
                                             );
                                           },
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),

@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:sahaba_mobile/infrastructure/core/converter.dart';
 
 part 'product_log_payload.freezed.dart';
 part 'product_log_payload.g.dart';
@@ -14,7 +13,7 @@ abstract class ProductLogPayload with _$ProductLogPayload {
   factory ProductLogPayload({
     @JsonKey(name: 'device_id') required String deviceId,
     @JsonKey(name: 'user') required String user,
-    @JsonKey(name: 'image', toJson: parseToBase64) required String image,
+    @JsonKey(name: 'image') required String image,
     @JsonKey(name: 'subdistrict') required String kecamatan,
     @JsonKey(name: 'city') required String disctrict,
     @JsonKey(name: 'lat') required double lat,

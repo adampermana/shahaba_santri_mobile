@@ -34,12 +34,12 @@ class SingleItemSheet extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Text(
-              "Hasil Pencocokan Produk",
+              'Hasil Pencocokan Produk',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 4),
             const Text(
-              "Daftar produk yang paling mirip",
+              'Daftar produk yang paling mirip',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 14),
@@ -180,7 +180,7 @@ class SingleItemSheet extends StatelessWidget {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            'Berlaku ${product.registerDate}',
+                                            'Terbit ${product.registerDate}',
                                             // - ${product.expireDate}',
                                             style: const TextStyle(
                                               color: ColorPalette.kGray200,
@@ -331,7 +331,7 @@ class SingleItemSheet extends StatelessWidget {
 
 int getDateLeft(String date) {
   final now = DateTime.now();
-  final formatter = DateFormat("dd MMM yyyy");
+  final formatter = DateFormat('dd MMM yyyy');
   final targetDate = formatter.parse(date);
 
   final days = targetDate.difference(now).inDays;

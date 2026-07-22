@@ -13,6 +13,7 @@ import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_state.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_state.dart';
+import 'package:sahaba_mobile/domains/quran/chapter.dart';
 import 'package:sahaba_mobile/domains/quran/juz_model.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/domains/quran/surah_model.dart';
@@ -22,6 +23,7 @@ import 'package:sahaba_mobile/infrastructure/helpers/helper.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/bottom_sheet_widgets.dart';
+import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
@@ -725,13 +727,17 @@ Widget _surahContent(
   int? initialVerseNumber,
   String? initialVerseKey,
 }) {
+  final showBismillahAsset = _shouldShowBismillahAsset(detail);
+  final verses = showBismillahAsset &&
+          detail.verses.isNotEmpty &&
+          _isBismillahVerse(detail.verses.first)
+      ? detail.verses.skip(1).toList(growable: false)
+      : detail.verses;
   final targetIndex = initialVerseKey == null
       ? initialVerseNumber == null
             ? -1
-            : detail.verses.indexWhere(
-                (v) => v.verseNumber == initialVerseNumber,
-              )
-      : detail.verses.indexWhere((v) => v.verseKey == initialVerseKey);
+            : verses.indexWhere((v) => v.verseNumber == initialVerseNumber)
+      : verses.indexWhere((v) => v.verseKey == initialVerseKey);
   bool isHighlighted(QuranVerseModel verse) {
     return initialVerseKey == null
         ? verse.verseNumber == initialVerseNumber
@@ -742,17 +748,29 @@ Widget _surahContent(
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(child: _surahBanner(context, detail: detail)),
+        if (showBismillahAsset)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/svg/icon-bismillah.svg',
+                  width: 135,
+                ),
+              ),
+            ),
+          ),
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
           sliver: SliverList.separated(
-            itemCount: detail.verses.length,
+            itemCount: verses.length,
             separatorBuilder: (_, __) => const Divider(
               height: 1,
               thickness: 1,
               color: ColorPalette.borderTransparent,
             ),
             itemBuilder: (context, index) {
-              final verse = detail.verses[index];
+              final verse = verses[index];
               return _verseRow(
                 context,
                 verse,
@@ -774,40 +792,48 @@ Widget _surahContent(
       SliverList(
         delegate: SliverChildListDelegate.fixed([
           _surahBanner(context, detail: detail),
-          ...detail.verses
-              .take(targetIndex)
-              .map(
-                (verse) => Column(
-                  children: [
-                    _verseRow(
-                      context,
-                      verse,
-                      textSizeSetting,
-                      detailArgs: detailArgs,
-                      isHighlighted: isHighlighted(verse),
-                    ),
-                    const Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: ColorPalette.borderTransparent,
-                    ),
-                  ],
+          if (showBismillahAsset)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/svg/icon-bismillah.svg',
+                  width: 135,
                 ),
               ),
+            ),
+          ...verses.take(targetIndex).map(
+            (verse) => Column(
+              children: [
+                _verseRow(
+                  context,
+                  verse,
+                  textSizeSetting,
+                  detailArgs: detailArgs,
+                  isHighlighted: isHighlighted(verse),
+                ),
+                const Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: ColorPalette.borderTransparent,
+                ),
+              ],
+            ),
+          ),
         ]),
       ),
       SliverPadding(
         key: centerKey,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
         sliver: SliverList.separated(
-          itemCount: detail.verses.length - targetIndex,
+          itemCount: verses.length - targetIndex,
           separatorBuilder: (_, __) => const Divider(
             height: 1,
             thickness: 1,
             color: ColorPalette.borderTransparent,
           ),
           itemBuilder: (context, index) {
-            final verse = detail.verses[targetIndex + index];
+            final verse = verses[targetIndex + index];
             return _verseRow(
               context,
               verse,
@@ -821,6 +847,27 @@ Widget _surahContent(
     ],
   );
 }
+
+bool _shouldShowBismillahAsset(QuranDetailModel detail) {
+  if (detail.type != QuranDetailType.surah || detail.verses.isEmpty) {
+    return false;
+  }
+
+  final surahNumber = int.tryParse(detail.verses.first.surahIndex);
+  if (surahNumber == null) return false;
+
+  for (final chapter in chapters) {
+    if (chapter.id == surahNumber) return chapter.bismillahPre;
+  }
+
+  return false;
+}
+
+bool _isBismillahVerse(QuranVerseModel verse) {
+  final arabic = _cleanQuranText(verse.arabic).trim();
+  return arabic.startsWith('بِسْمِ');
+}
+
 
 Widget _juzContent(
   BuildContext context,

@@ -49,6 +49,8 @@ class RouterPath {
 
   // Category Product
   static const String categoryProductPath = 'category-product';
+  static const String listDetailBrandByProductPath =
+      'list-detail-brand-by-product';
 
   // Sahaba AI
   static const String sahabaAiPath = 'sahaba-ai';

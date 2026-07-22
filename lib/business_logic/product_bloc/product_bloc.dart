@@ -93,6 +93,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
                     state.copyWith(
                       isLoading: false,
                       data: r.sublist(0, r.length > 4 ? 4 : r.length),
+                      imagePath: state.imagePath,
                       productBody: payload,
                     ),
                   );
@@ -168,7 +169,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
             brandId: state.tempProduct!.brandId!,
             deviceId: state.productBody!.deviceId,
             user: state.productBody!.person,
-            image: state.productBody!.image,
+            image:
+                value.val.image ??
+                (value.val.images?.isNotEmpty == true
+                    ? value.val.images!.first.image
+                    : state.productBody!.image),
             disctrict: state.productBody!.kelurahan,
             kecamatan: state.productBody!.kecamatan,
             lat: state.productBody!.lat,

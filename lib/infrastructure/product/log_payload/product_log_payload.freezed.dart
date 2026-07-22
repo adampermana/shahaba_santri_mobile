@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProductLogPayload {
 
-@JsonKey(name: 'device_id') String get deviceId;@JsonKey(name: 'user') String get user;@JsonKey(name: 'image', toJson: parseToBase64) String get image;@JsonKey(name: 'subdistrict') String get kecamatan;@JsonKey(name: 'city') String get disctrict;@JsonKey(name: 'lat') double get lat;@JsonKey(name: 'long') double get long;@JsonKey(name: 'province') String get province;@JsonKey(name: 'event_type') String get eventType;@JsonKey(name: 'partner_id') int get partnerId;@JsonKey(name: 'brand_id') int get brandId;@JsonKey(name: 'product_category_id') int get categoryId;@JsonKey(name: 'product_id') int get productId;@JsonKey(name: 'status_halal') String get statusHalal;
+@JsonKey(name: 'device_id') String get deviceId;@JsonKey(name: 'user') String get user;@JsonKey(name: 'image') String get image;@JsonKey(name: 'subdistrict') String get kecamatan;@JsonKey(name: 'city') String get disctrict;@JsonKey(name: 'lat') double get lat;@JsonKey(name: 'long') double get long;@JsonKey(name: 'province') String get province;@JsonKey(name: 'event_type') String get eventType;@JsonKey(name: 'partner_id') int get partnerId;@JsonKey(name: 'brand_id') int get brandId;@JsonKey(name: 'product_category_id') int get categoryId;@JsonKey(name: 'product_id') int get productId;@JsonKey(name: 'status_halal') String get statusHalal;
 /// Create a copy of ProductLogPayload
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -47,7 +47,7 @@ abstract mixin class $ProductLogPayloadCopyWith<$Res>  {
   factory $ProductLogPayloadCopyWith(ProductLogPayload value, $Res Function(ProductLogPayload) _then) = _$ProductLogPayloadCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'device_id') String deviceId,@JsonKey(name: 'user') String user,@JsonKey(name: 'image', toJson: parseToBase64) String image,@JsonKey(name: 'subdistrict') String kecamatan,@JsonKey(name: 'city') String disctrict,@JsonKey(name: 'lat') double lat,@JsonKey(name: 'long') double long,@JsonKey(name: 'province') String province,@JsonKey(name: 'event_type') String eventType,@JsonKey(name: 'partner_id') int partnerId,@JsonKey(name: 'brand_id') int brandId,@JsonKey(name: 'product_category_id') int categoryId,@JsonKey(name: 'product_id') int productId,@JsonKey(name: 'status_halal') String statusHalal
+@JsonKey(name: 'device_id') String deviceId,@JsonKey(name: 'user') String user,@JsonKey(name: 'image') String image,@JsonKey(name: 'subdistrict') String kecamatan,@JsonKey(name: 'city') String disctrict,@JsonKey(name: 'lat') double lat,@JsonKey(name: 'long') double long,@JsonKey(name: 'province') String province,@JsonKey(name: 'event_type') String eventType,@JsonKey(name: 'partner_id') int partnerId,@JsonKey(name: 'brand_id') int brandId,@JsonKey(name: 'product_category_id') int categoryId,@JsonKey(name: 'product_id') int productId,@JsonKey(name: 'status_halal') String statusHalal
 });
 
 
@@ -165,7 +165,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'device_id')  String deviceId, @JsonKey(name: 'user')  String user, @JsonKey(name: 'image', toJson: parseToBase64)  String image, @JsonKey(name: 'subdistrict')  String kecamatan, @JsonKey(name: 'city')  String disctrict, @JsonKey(name: 'lat')  double lat, @JsonKey(name: 'long')  double long, @JsonKey(name: 'province')  String province, @JsonKey(name: 'event_type')  String eventType, @JsonKey(name: 'partner_id')  int partnerId, @JsonKey(name: 'brand_id')  int brandId, @JsonKey(name: 'product_category_id')  int categoryId, @JsonKey(name: 'product_id')  int productId, @JsonKey(name: 'status_halal')  String statusHalal)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'device_id')  String deviceId, @JsonKey(name: 'user')  String user, @JsonKey(name: 'image')  String image, @JsonKey(name: 'subdistrict')  String kecamatan, @JsonKey(name: 'city')  String disctrict, @JsonKey(name: 'lat')  double lat, @JsonKey(name: 'long')  double long, @JsonKey(name: 'province')  String province, @JsonKey(name: 'event_type')  String eventType, @JsonKey(name: 'partner_id')  int partnerId, @JsonKey(name: 'brand_id')  int brandId, @JsonKey(name: 'product_category_id')  int categoryId, @JsonKey(name: 'product_id')  int productId, @JsonKey(name: 'status_halal')  String statusHalal)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProductLogPayload() when $default != null:
 return $default(_that.deviceId,_that.user,_that.image,_that.kecamatan,_that.disctrict,_that.lat,_that.long,_that.province,_that.eventType,_that.partnerId,_that.brandId,_that.categoryId,_that.productId,_that.statusHalal);case _:
@@ -186,7 +186,7 @@ return $default(_that.deviceId,_that.user,_that.image,_that.kecamatan,_that.disc
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'device_id')  String deviceId, @JsonKey(name: 'user')  String user, @JsonKey(name: 'image', toJson: parseToBase64)  String image, @JsonKey(name: 'subdistrict')  String kecamatan, @JsonKey(name: 'city')  String disctrict, @JsonKey(name: 'lat')  double lat, @JsonKey(name: 'long')  double long, @JsonKey(name: 'province')  String province, @JsonKey(name: 'event_type')  String eventType, @JsonKey(name: 'partner_id')  int partnerId, @JsonKey(name: 'brand_id')  int brandId, @JsonKey(name: 'product_category_id')  int categoryId, @JsonKey(name: 'product_id')  int productId, @JsonKey(name: 'status_halal')  String statusHalal)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'device_id')  String deviceId, @JsonKey(name: 'user')  String user, @JsonKey(name: 'image')  String image, @JsonKey(name: 'subdistrict')  String kecamatan, @JsonKey(name: 'city')  String disctrict, @JsonKey(name: 'lat')  double lat, @JsonKey(name: 'long')  double long, @JsonKey(name: 'province')  String province, @JsonKey(name: 'event_type')  String eventType, @JsonKey(name: 'partner_id')  int partnerId, @JsonKey(name: 'brand_id')  int brandId, @JsonKey(name: 'product_category_id')  int categoryId, @JsonKey(name: 'product_id')  int productId, @JsonKey(name: 'status_halal')  String statusHalal)  $default,) {final _that = this;
 switch (_that) {
 case _ProductLogPayload():
 return $default(_that.deviceId,_that.user,_that.image,_that.kecamatan,_that.disctrict,_that.lat,_that.long,_that.province,_that.eventType,_that.partnerId,_that.brandId,_that.categoryId,_that.productId,_that.statusHalal);case _:
@@ -206,7 +206,7 @@ return $default(_that.deviceId,_that.user,_that.image,_that.kecamatan,_that.disc
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'device_id')  String deviceId, @JsonKey(name: 'user')  String user, @JsonKey(name: 'image', toJson: parseToBase64)  String image, @JsonKey(name: 'subdistrict')  String kecamatan, @JsonKey(name: 'city')  String disctrict, @JsonKey(name: 'lat')  double lat, @JsonKey(name: 'long')  double long, @JsonKey(name: 'province')  String province, @JsonKey(name: 'event_type')  String eventType, @JsonKey(name: 'partner_id')  int partnerId, @JsonKey(name: 'brand_id')  int brandId, @JsonKey(name: 'product_category_id')  int categoryId, @JsonKey(name: 'product_id')  int productId, @JsonKey(name: 'status_halal')  String statusHalal)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'device_id')  String deviceId, @JsonKey(name: 'user')  String user, @JsonKey(name: 'image')  String image, @JsonKey(name: 'subdistrict')  String kecamatan, @JsonKey(name: 'city')  String disctrict, @JsonKey(name: 'lat')  double lat, @JsonKey(name: 'long')  double long, @JsonKey(name: 'province')  String province, @JsonKey(name: 'event_type')  String eventType, @JsonKey(name: 'partner_id')  int partnerId, @JsonKey(name: 'brand_id')  int brandId, @JsonKey(name: 'product_category_id')  int categoryId, @JsonKey(name: 'product_id')  int productId, @JsonKey(name: 'status_halal')  String statusHalal)?  $default,) {final _that = this;
 switch (_that) {
 case _ProductLogPayload() when $default != null:
 return $default(_that.deviceId,_that.user,_that.image,_that.kecamatan,_that.disctrict,_that.lat,_that.long,_that.province,_that.eventType,_that.partnerId,_that.brandId,_that.categoryId,_that.productId,_that.statusHalal);case _:
@@ -221,12 +221,12 @@ return $default(_that.deviceId,_that.user,_that.image,_that.kecamatan,_that.disc
 
 @JsonSerializable(createFactory: false, fieldRename: FieldRename.snake, explicitToJson: true)
 class _ProductLogPayload implements ProductLogPayload {
-   _ProductLogPayload({@JsonKey(name: 'device_id') required this.deviceId, @JsonKey(name: 'user') required this.user, @JsonKey(name: 'image', toJson: parseToBase64) required this.image, @JsonKey(name: 'subdistrict') required this.kecamatan, @JsonKey(name: 'city') required this.disctrict, @JsonKey(name: 'lat') required this.lat, @JsonKey(name: 'long') required this.long, @JsonKey(name: 'province') required this.province, @JsonKey(name: 'event_type') required this.eventType, @JsonKey(name: 'partner_id') required this.partnerId, @JsonKey(name: 'brand_id') required this.brandId, @JsonKey(name: 'product_category_id') required this.categoryId, @JsonKey(name: 'product_id') required this.productId, @JsonKey(name: 'status_halal') required this.statusHalal});
+   _ProductLogPayload({@JsonKey(name: 'device_id') required this.deviceId, @JsonKey(name: 'user') required this.user, @JsonKey(name: 'image') required this.image, @JsonKey(name: 'subdistrict') required this.kecamatan, @JsonKey(name: 'city') required this.disctrict, @JsonKey(name: 'lat') required this.lat, @JsonKey(name: 'long') required this.long, @JsonKey(name: 'province') required this.province, @JsonKey(name: 'event_type') required this.eventType, @JsonKey(name: 'partner_id') required this.partnerId, @JsonKey(name: 'brand_id') required this.brandId, @JsonKey(name: 'product_category_id') required this.categoryId, @JsonKey(name: 'product_id') required this.productId, @JsonKey(name: 'status_halal') required this.statusHalal});
   
 
 @override@JsonKey(name: 'device_id') final  String deviceId;
 @override@JsonKey(name: 'user') final  String user;
-@override@JsonKey(name: 'image', toJson: parseToBase64) final  String image;
+@override@JsonKey(name: 'image') final  String image;
 @override@JsonKey(name: 'subdistrict') final  String kecamatan;
 @override@JsonKey(name: 'city') final  String disctrict;
 @override@JsonKey(name: 'lat') final  double lat;
@@ -272,7 +272,7 @@ abstract mixin class _$ProductLogPayloadCopyWith<$Res> implements $ProductLogPay
   factory _$ProductLogPayloadCopyWith(_ProductLogPayload value, $Res Function(_ProductLogPayload) _then) = __$ProductLogPayloadCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'device_id') String deviceId,@JsonKey(name: 'user') String user,@JsonKey(name: 'image', toJson: parseToBase64) String image,@JsonKey(name: 'subdistrict') String kecamatan,@JsonKey(name: 'city') String disctrict,@JsonKey(name: 'lat') double lat,@JsonKey(name: 'long') double long,@JsonKey(name: 'province') String province,@JsonKey(name: 'event_type') String eventType,@JsonKey(name: 'partner_id') int partnerId,@JsonKey(name: 'brand_id') int brandId,@JsonKey(name: 'product_category_id') int categoryId,@JsonKey(name: 'product_id') int productId,@JsonKey(name: 'status_halal') String statusHalal
+@JsonKey(name: 'device_id') String deviceId,@JsonKey(name: 'user') String user,@JsonKey(name: 'image') String image,@JsonKey(name: 'subdistrict') String kecamatan,@JsonKey(name: 'city') String disctrict,@JsonKey(name: 'lat') double lat,@JsonKey(name: 'long') double long,@JsonKey(name: 'province') String province,@JsonKey(name: 'event_type') String eventType,@JsonKey(name: 'partner_id') int partnerId,@JsonKey(name: 'brand_id') int brandId,@JsonKey(name: 'product_category_id') int categoryId,@JsonKey(name: 'product_id') int productId,@JsonKey(name: 'status_halal') String statusHalal
 });
 
 

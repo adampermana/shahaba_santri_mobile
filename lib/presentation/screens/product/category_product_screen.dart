@@ -154,7 +154,7 @@ class CategoryProductScreen extends StatelessWidget {
                                           item.images!.isNotEmpty)
                                       ? item.images![0].image
                                       : (item.image ?? ''),
-                                  onTap: () {
+                                  onTap: () async {
                                     try {
                                       if (item.type == 'Iklan') {
                                         final locationState = context
@@ -178,7 +178,7 @@ class CategoryProductScreen extends StatelessWidget {
                                         );
                                       }
 
-                                      context.push(
+                                      await context.push(
                                         '$currentLocation/${RouterPath.productDetailPath}',
                                         extra: {
                                           'id': item.id ?? 0,

@@ -11,6 +11,7 @@ import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart'
 import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
+import 'package:sahaba_mobile/business_logic/special_product/special_product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/domains/kisah/kisah_response.dart';
 import 'package:sahaba_mobile/domains/news/news_response.dart';
@@ -33,6 +34,7 @@ import 'package:sahaba_mobile/presentation/screens/product/category_product_scre
 import 'package:sahaba_mobile/presentation/screens/product/detail_product_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/product/global_search_halal_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/product/history_product_detail_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/product/list_detail_brand_by_product_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/product/product_halal_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/detail_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
@@ -150,6 +152,18 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: RouterPath.searchProductHalalPath,
               builder: (context, state) => const SearchProductHalalScreen(),
+            ),
+
+            GoRoute(
+              path: RouterPath.listDetailBrandByProductPath,
+              builder: (context, state) {
+                final extra = state.extra as Map<String, dynamic>?;
+                return ListDetailBrandByProductScreen(
+                  id: extra?['id'] as int? ?? 0,
+                  campaignName: extra?['campaignName'] as String?,
+                  imageUrl: extra?['image'] as String?,
+                );
+              },
             ),
 
             // Category Product

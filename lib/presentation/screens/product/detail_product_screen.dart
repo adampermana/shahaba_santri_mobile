@@ -171,7 +171,7 @@ class DetailProductScreen extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Berlaku ${product?.registerDate}',
+                                      'Terbit tanggal ${product?.registerDate}',
                                       //  - ${product.expireDate}',
                                       style: const TextStyle(
                                         color: ColorPalette.inverseSecondary,

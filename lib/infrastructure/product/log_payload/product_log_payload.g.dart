@@ -10,7 +10,7 @@ Map<String, dynamic> _$ProductLogPayloadToJson(_ProductLogPayload instance) =>
     <String, dynamic>{
       'device_id': instance.deviceId,
       'user': instance.user,
-      'image': parseToBase64(instance.image),
+      'image': instance.image,
       'subdistrict': instance.kecamatan,
       'city': instance.disctrict,
       'lat': instance.lat,
