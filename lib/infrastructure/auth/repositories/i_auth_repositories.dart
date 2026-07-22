@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:sahaba_mobile/domains/auth/hive/auth_data_hive.dart';
+import 'package:sahaba_mobile/domains/auth/hive/auth_data_katanara_hive.dart';
+import 'package:sahaba_mobile/domains/auth/login/login_respon_ai.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_response.dart';
 import 'package:sahaba_mobile/infrastructure/auth/datasources/auth_local_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/auth/datasources/i_auth_remote_datasource.dart';
@@ -13,6 +15,7 @@ abstract class IAuthRepositories {
   /// Fetch persisted login data from local storage
   AuthDataHive? fetchDataLoginUser();
   AuthDataHive? fetchDataLoginGuest();
+  AuthDataKatanaraHive? fetchDataLoginAi();
 
   // Future<bool> getCompleteProfile();
 
@@ -76,4 +79,10 @@ abstract class IAuthRepositories {
   Future<Either<ServerFailures, LoginResponse>> postRestoreAccount({
     required String jwt,
   });
+
+  /// AI Login — Katanara AI auth
+  Future<Either<ServerFailures, LoginResponAI>> postLoginAi(
+    String email,
+    String password,
+  );
 }

@@ -1,41 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:sahaba_mobile/business_logic/ai_chat_bloc/ai_chat_bloc.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
+import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
-
-// --- Temporary data models ---
-
-enum _ChatState { empty, loading, answered }
-
-class _SourceItem {
-  const _SourceItem({required this.title, required this.excerpt});
-
-  final String title;
-  final String excerpt;
-}
-
-class _ChatMessage {
-  const _ChatMessage({
-    required this.id,
-    required this.isUser,
-    this.query,
-    this.content,
-    this.sources,
-    this.followUpChips,
-  });
-
-  final String id;
-  final bool isUser;
-  final String? query;
-  final String? content;
-  final List<_SourceItem>? sources;
-  final List<String>? followUpChips;
-}
-
-// --- Screen ---
 
 class SahabaAiScreen extends StatefulWidget {
   const SahabaAiScreen({super.key});
@@ -45,83 +18,30 @@ class SahabaAiScreen extends StatefulWidget {
 }
 
 class _SahabaAiScreenState extends State<SahabaAiScreen> {
-  _ChatState _chatState = _ChatState.empty;
-  _ChatMessage? _currentMessage;
   final _textController = TextEditingController();
   final _scrollController = ScrollController();
+  late final AiChatBloc _aiChatBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _aiChatBloc = context.read<AiChatBloc>();
+  }
 
   @override
   void dispose() {
+    _aiChatBloc.add(const AiChatEvent.clearChat());
     _textController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
   void _onSend(String text) {
-    if (text.trim().isEmpty) return;
-    setState(() {
-      _chatState = _ChatState.loading;
-      _currentMessage = _ChatMessage(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        isUser: true,
-        query: text.trim(),
-      );
-    });
-    _textController.clear();
+    final message = text.trim();
+    if (message.isEmpty) return;
 
-    // Simulate AI response after 2s
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return;
-      setState(() {
-        _chatState = _ChatState.answered;
-        _currentMessage = _ChatMessage(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          isUser: false,
-          query: text.trim(),
-          content:
-              "Wa'alaikumussalam warahmatullahi wabarakatuh.\n\n"
-              'Tahajud adalah sholat sunnah yang dikerjakan pada malam hari '
-              'setelah tidur, meskipun hanya sebentar. Rasulullah ﷺ bersabda:\n\n'
-              '> "Sebaik-baik puasa setelah Ramadhan adalah puasa di bulan '
-              'Muharram, dan sebaik-baik sholat setelah sholat fardhu adalah '
-              'sholat malam." **(HR. Muslim)**\n\n'
-              '**Tata cara sholat tahajud:**\n'
-              '1. Niat sholat tahajud\n'
-              '2. Takbiratul ihram\n'
-              '3. Membaca doa iftitah\n'
-              '4. Membaca surat Al-Fatihah\n'
-              '5. Membaca surat pendek\n'
-              "6. Ruku' dengan tuma'ninah\n"
-              "7. I'tidal\n"
-              "8. Sujud dengan tuma'ninah\n"
-              '9. Duduk di antara dua sujud\n'
-              '10. Sujud kembali\n'
-              '11. Bangun untuk rakaat kedua\n'
-              '12. Tasyahud akhir\n'
-              '13. Salam',
-          sources: const [
-            _SourceItem(
-              title: 'Al-Baqarah, Ayat 194',
-              excerpt:
-                  'Lorem ipsum dolor sit amet consectetur. Sed lectus lorem id '
-                  'cras aliquam porttitor. Egestas quam sit diam leo sed sit '
-                  'purus duis. At quisque dictum id pellentesque.',
-            ),
-            _SourceItem(
-              title: 'An-Nisa, Ayat 103',
-              excerpt:
-                  'Sesungguhnya sholat itu adalah kewajiban yang ditentukan '
-                  'waktunya atas orang-orang yang beriman.',
-            ),
-          ],
-          followUpChips: const [
-            'Keutamaan sholat tahajud',
-            'Doa setelah sholat tahajud',
-            'Niat sholat tahajud',
-          ],
-        );
-      });
-    });
+    context.read<AiChatBloc>().add(AiChatEvent.postAiChat(message: message));
+    _textController.clear();
   }
 
   void _onChipTap(String chip) {
@@ -130,13 +50,27 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      appBar: _buildAppBar(context),
-      body: _buildBody(context),
+    return BlocConsumer<AiChatBloc, AiChatState>(
+      listenWhen: (previous, current) =>
+          previous.postAiChatErrorMessage != current.postAiChatErrorMessage &&
+          current.postAiChatErrorMessage.isNotEmpty,
+      listener: (context, state) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            CustomSnackBar.failure(message: state.postAiChatErrorMessage),
+          );
+      },
+      builder: (context, state) {
+        return AppScaffold(
+          appBar: _buildAppBar(context),
+          body: _buildBody(context, state),
+        );
+      },
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody(BuildContext context, AiChatState state) {
     return SafeArea(
       minimum: const EdgeInsets.only(top: 16),
       top: false,
@@ -147,7 +81,7 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
             thickness: 1,
             color: Color(0x33E8E8E8),
           ),
-          Expanded(child: _buildContent()),
+          Expanded(child: _buildContent(state)),
           _inputBar(),
           const SizedBox(height: 8),
         ],
@@ -155,18 +89,13 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
     );
   }
 
-  Widget _buildContent() {
-    switch (_chatState) {
-      case _ChatState.empty:
-        return _emptyState();
-      case _ChatState.loading:
-        return _loadingState();
-      case _ChatState.answered:
-        return _answeredState();
+  Widget _buildContent(AiChatState state) {
+    if (state.messages.isEmpty && !state.postAiChatLoading) {
+      return _emptyState();
     }
-  }
 
-  // --- Empty State ---
+    return _chatState(state);
+  }
 
   Widget _emptyState() {
     return SingleChildScrollView(
@@ -180,11 +109,11 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
           const SizedBox(
             width: 370,
             child: Text(
-              'Asisten AI siap membantumu belajar seputar ibadah, doa, sejarah, dan wawasan Islam lainnya. Pilih topik di bawah atau ketik pertanyaanmu sendiri.',
+              'Asisten AI siap membantumu belajar seputar ibadah, doa, '
+              'sejarah, dan wawasan Islam lainnya. Pilih topik di bawah '
+              'atau ketik pertanyaanmu sendiri.',
               style: TextStyle(
-                color: Color(
-                  0xFFDDDDDD,
-                ) /* semantic-content-inverse-secondary */,
+                color: Color(0xFFDDDDDD),
                 fontSize: 12,
                 fontFamily: 'Synonym Variable',
                 fontWeight: FontWeight.w400,
@@ -282,16 +211,42 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
     );
   }
 
-  // --- Loading State ---
-
-  Widget _loadingState() {
-    return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+  Widget _chatState(AiChatState state) {
+    return Stack(
       children: [
-        const SizedBox(height: 32),
-        _userBubble(_currentMessage?.query ?? ''),
-        const SizedBox(height: 16),
-        _aiLoadingRow(),
+        ListView(
+          controller: _scrollController,
+          padding: const EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 32,
+            bottom: 100,
+          ),
+          children: [
+            ...state.messages.map(_messageItem),
+            if (state.postAiChatLoading) ...[
+              const SizedBox(height: 16),
+              _aiLoadingRow(),
+            ],
+          ],
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: 188,
+          child: IgnorePointer(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent, Color(0xFF0F172A)],
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -333,9 +288,7 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
     );
   }
 
-  Widget _aiAvatar({
-    bool isBackground = false,
-  }) {
+  Widget _aiAvatar({bool isBackground = false}) {
     const avatar = CacheImageOrSvg(
       source: 'assets/images/icon-images/icon-ai.png',
       width: 34,
@@ -362,51 +315,21 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
     );
   }
 
-  // --- Answered State ---
+  Widget _messageItem(AiChatMessage message) {
+    if (message.isUser) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+        child: _userBubble(message.content),
+      );
+    }
 
-  Widget _answeredState() {
-    final msg = _currentMessage;
-    if (msg == null) return const SizedBox.shrink();
-
-    return Stack(
-      children: [
-        ListView(
-          controller: _scrollController,
-          padding: const EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 32,
-            bottom: 100,
-          ),
-          children: [
-            _userBubble(msg.query ?? ''),
-            const SizedBox(height: 16),
-            _aiAnswerCard(msg),
-          ],
-        ),
-        // Bottom fade gradient
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 0,
-          height: 188,
-          child: IgnorePointer(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Color(0xFF0F172A)],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: _aiAnswerCard(message.content),
     );
   }
 
-  Widget _aiAnswerCard(_ChatMessage msg) {
+  Widget _aiAnswerCard(String answer) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -426,40 +349,55 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
           ],
         ),
         const SizedBox(height: 8),
-        Text(
-          msg.content ?? '',
-          style: const TextStyle(
-            color: Color(0xFFDDDDDD),
-            fontSize: 12,
-            fontFamily: 'Synonym Variable',
-            fontWeight: FontWeight.w400,
-            height: 1.60,
+        MarkdownBody(
+          data: answer,
+          styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+            p: const TextStyle(
+              color: Color(0xFFDDDDDD),
+              fontSize: 12,
+              fontFamily: 'Synonym Variable',
+              fontWeight: FontWeight.w400,
+              height: 1.60,
+            ),
+            strong: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontFamily: 'Synonym Variable',
+              fontWeight: FontWeight.w700,
+              height: 1.60,
+            ),
+            listBullet: const TextStyle(
+              color: Color(0xFFDDDDDD),
+              fontSize: 12,
+              fontFamily: 'Synonym Variable',
+              fontWeight: FontWeight.w400,
+              height: 1.60,
+            ),
+            blockquote: const TextStyle(
+              color: Color(0xFFDDDDDD),
+              fontSize: 12,
+              fontFamily: 'Synonym Variable',
+              fontWeight: FontWeight.w400,
+              height: 1.60,
+            ),
+            a: const TextStyle(
+              color: Color(0xFF8EC5FF),
+              fontSize: 12,
+              fontFamily: 'Synonym Variable',
+              fontWeight: FontWeight.w500,
+              height: 1.60,
+            ),
+            blockquoteDecoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.04),
+              borderRadius: BorderRadius.circular(8),
+              border: const Border(
+                left: BorderSide(color: Color(0xFF1B8354), width: 3),
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 16),
         _disclaimerBox(),
-        const SizedBox(height: 24),
-        if (msg.sources != null && msg.sources!.isNotEmpty) ...[
-          const Text(
-            "Qur'an Sources",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontFamily: 'Synonym Variable',
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 12),
-          ...msg.sources!.map(_sourceCard),
-        ],
-        if (msg.followUpChips != null && msg.followUpChips!.isNotEmpty) ...[
-          const SizedBox(height: 20),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: msg.followUpChips!.map(_followUpChip).toList(),
-          ),
-        ],
       ],
     );
   }
@@ -485,76 +423,6 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
       ),
     );
   }
-
-  Widget _sourceCard(_SourceItem source) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Color(0x33E8E8E8),
-            // width: 1, (default)
-          ),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            source.title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontFamily: 'Synonym Variable',
-              fontWeight: FontWeight.w400,
-              height: 1.50,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            source.excerpt,
-            style: const TextStyle(
-              color: Color(0xFFDDDDDD),
-              fontSize: 10,
-              fontFamily: 'Synonym Variable',
-              fontWeight: FontWeight.w400,
-              height: 1.60,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _followUpChip(String label) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => _onChipTap(label),
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 10,
-              fontFamily: 'Synonym Variable',
-              fontWeight: FontWeight.w400,
-              height: 1.40,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // --- Input Bar ---
 
   Widget _inputBar() {
     return Padding(
@@ -597,8 +465,6 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
       ),
     );
   }
-
-  // --- AppBar ---
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return CustomAppBar.buildAppBarSimple(

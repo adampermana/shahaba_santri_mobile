@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sahaba_mobile/domains/auth/complete_profile/complete_profile_response.dart';
+import 'package:sahaba_mobile/domains/auth/login/login_respon_ai.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_response.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_sso_response.dart';
 import 'package:sahaba_mobile/domains/auth/register/register_response.dart';
@@ -16,6 +17,10 @@ abstract class IAuthRemoteDatasource {
     required String password,
     required String deviceToken,
     required String platform,
+  });
+  Future<LoginResponAI> postLoginAi({
+    required String email,
+    required String password,
   });
 
   Future<MetaResponse> postLogoutUser({required int idUser});

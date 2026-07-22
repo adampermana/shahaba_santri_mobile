@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sahaba_mobile/domains/auth/hive/auth_data_hive.dart';
+import 'package:sahaba_mobile/domains/auth/hive/auth_data_katanara_hive.dart';
 import 'package:sahaba_mobile/hive_registrar.g.dart';
 import 'package:sahaba_mobile/infrastructure/auth/datasources/auth_local_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/calendar/datasources/calendar_local_datasource.dart';
@@ -48,4 +49,5 @@ Future<void> initHiveBox() async {
   // auth box
   await Hive.openBox<AuthDataHive>(HiveAuthLocalDatasource.authGuestBox);
   await Hive.openBox<AuthDataHive>(HiveAuthLocalDatasource.authUserBox);
+  await Hive.openBox<AuthDataKatanaraHive>(HiveAuthLocalDatasource.authAiBox);
 }

@@ -2,14 +2,15 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_it/get_it.dart';
+import 'package:sahaba_mobile/business_logic/ai_chat_bloc/ai_chat_bloc.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/business_logic/calendar_bloc/calendar_bloc.dart';
-import 'package:sahaba_mobile/business_logic/kisah_bloc/kisah_bloc.dart';
-import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/business_logic/category_product/category_product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/city_search_bloc/city_search_bloc.dart';
+import 'package:sahaba_mobile/business_logic/kisah_bloc/kisah_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
+import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
 import 'package:sahaba_mobile/business_logic/product_bloc/product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/product_detail/product_detail_bloc.dart';
@@ -21,6 +22,8 @@ import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
 import 'package:sahaba_mobile/business_logic/special_product/special_product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
+import 'package:sahaba_mobile/infrastructure/ai_chat/datasources/i_ai_chat_remote_datasource.dart';
+import 'package:sahaba_mobile/infrastructure/ai_chat/repositories/i_ai_chat_repository.dart';
 import 'package:sahaba_mobile/infrastructure/auth/datasources/auth_local_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/auth/datasources/i_auth_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/auth/repositories/i_auth_repositories.dart';
@@ -30,6 +33,9 @@ import 'package:sahaba_mobile/infrastructure/calendar/datasources/i_calendar_loc
 import 'package:sahaba_mobile/infrastructure/calendar/datasources/i_calendar_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/calendar/repository/calendar_repository.dart';
 import 'package:sahaba_mobile/infrastructure/calendar/repository/i_calendar_repository.dart';
+import 'package:sahaba_mobile/infrastructure/core/api/dio_api.dart';
+import 'package:sahaba_mobile/infrastructure/core/datasources/i_core_local_datasource.dart';
+import 'package:sahaba_mobile/infrastructure/core/repository/i_core_repository.dart';
 import 'package:sahaba_mobile/infrastructure/kisah/datasources/i_kisah_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/kisah/datasources/kisah_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/kisah/repository/i_kisah_repository.dart';
@@ -38,9 +44,6 @@ import 'package:sahaba_mobile/infrastructure/news/datasources/i_news_remote_data
 import 'package:sahaba_mobile/infrastructure/news/datasources/news_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/news/repository/i_news_repository.dart';
 import 'package:sahaba_mobile/infrastructure/news/repository/news_repository.dart';
-import 'package:sahaba_mobile/infrastructure/core/api/dio_api.dart';
-import 'package:sahaba_mobile/infrastructure/core/datasources/i_core_local_datasource.dart';
-import 'package:sahaba_mobile/infrastructure/core/repository/i_core_repository.dart';
 import 'package:sahaba_mobile/infrastructure/prayer_schedule/datasources/i_prayer_local_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/prayer_schedule/datasources/i_prayer_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/prayer_schedule/datasources/prayer_local_datasource.dart';
@@ -79,6 +82,7 @@ Future<void> initApp() async {
   await _initCalendarFeature();
   await _initKisahFeature();
   await _initNewsFeature();
+  await _initAiChatFeature();
 }
 
 Future<void> _initCoreFeature() async {
@@ -88,7 +92,8 @@ Future<void> _initCoreFeature() async {
     ..registerLazySingleton(Connectivity.new)
     ..registerLazySingleton(() => FirebaseMessaging.instance)
     ..registerLazySingleton(DeviceInfoService.new)
-    ..registerLazySingleton<Dio>(DioApi.initCalendar, instanceName: 'calendar');
+    ..registerLazySingleton<Dio>(DioApi.initCalendar, instanceName: 'calendar')
+    ..registerLazySingleton<Dio>(DioApi.initAi, instanceName: 'qatanara');
 }
 
 Future<void> _initL10nFeature() async {
@@ -111,7 +116,10 @@ Future<void> _initAuthFeature() async {
       HiveAuthLocalDatasource.new,
     )
     ..registerLazySingleton<IAuthRemoteDatasource>(
-      () => AuthRemoteDatasource(sl<Dio>(instanceName: 'main')),
+      () => AuthRemoteDatasource(
+        sl<Dio>(instanceName: 'main'),
+        sl<Dio>(instanceName: 'qatanara'),
+      ),
     )
     ..registerLazySingleton<IAuthRepositories>(
       () => AuthRepositories(sl(), sl()),
@@ -218,4 +226,15 @@ Future<void> _initNewsFeature() async {
       () => NewsRepository(sl()),
     )
     ..registerFactory(() => NewsBloc(sl()));
+}
+
+Future<void> _initAiChatFeature() async {
+  sl
+    ..registerLazySingleton<IAiChatRemoteDatasource>(
+      () => AiChatRemoteDatasource(sl<Dio>(instanceName: 'qatanara')),
+    )
+    ..registerLazySingleton<IAiChatRepository>(
+      () => AiChatRepository(sl()),
+    )
+    ..registerFactory(() => AiChatBloc(sl()));
 }

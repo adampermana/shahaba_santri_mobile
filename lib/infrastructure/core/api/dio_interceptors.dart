@@ -19,6 +19,8 @@ class RequestInterceptor extends Interceptor {
     var token =
         authLocal.authGuestDataHive?.accessToken ??
         authLocal.authUserDataHive?.accessToken;
+        
+    var katanaraToken = authLocal.authAiDataHive?.token;
 
     debugPrint(
       '=== RequestInterceptor: Cached '
@@ -34,16 +36,28 @@ class RequestInterceptor extends Interceptor {
         'User token: $authUser, Guest token: $authGuest',
       );
     }
-    if (token != null) {
-      options.headers['Authorization'] = token;
-      debugPrint(
-        '=== RequestInterceptor: Token added to header for ${options.uri}',
-      );
+    
+    // Check if the request is going to Katanara AI URL
+    if (options.baseUrl.contains('api-katanara.solu.co.id')) {
+        if (katanaraToken != null) {
+             options.headers['Authorization'] = 'Bearer $katanaraToken';
+             debugPrint('=== RequestInterceptor: Katanara Token added to header for ${options.uri}');
+        } else {
+             debugPrint('=== RequestInterceptor: WARNING - No Katanara token found for ${options.uri}');
+        }
     } else {
-      debugPrint(
-        '=== RequestInterceptor: WARNING - No token found for ${options.uri}',
-      );
+        if (token != null) {
+          options.headers['Authorization'] = token;
+          debugPrint(
+            '=== RequestInterceptor: Token added to header for ${options.uri}',
+          );
+        } else {
+          debugPrint(
+            '=== RequestInterceptor: WARNING - No token found for ${options.uri}',
+          );
+        }
     }
+
     return handler.next(options);
   }
 }

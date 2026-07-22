@@ -32,8 +32,8 @@ class NewHomeScreen extends StatefulWidget {
 }
 
 class _NewHomeScreenState extends State<NewHomeScreen> {
-  static const double _maxCarouselHeight = 262;
-  static const double _minCarouselHeight = 262;
+  static const double _maxCarouselHeight = 200;
+  static const double _minCarouselHeight = 110;
   static const double _cardOverlap =
       30; // overlap card ke carousel saat masih expanded
   static const double _contentTopGap =

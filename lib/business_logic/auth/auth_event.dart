@@ -5,6 +5,7 @@ class AuthEvent with _$AuthEvent {
   const factory AuthEvent.started() = _Started;
 
   const factory AuthEvent.postloginGuest() = _PostloginGuest;
+  const factory AuthEvent.postloginAi() = _PostloginAi;
   const factory AuthEvent.postloginUser({
     required String email,
     required String password,

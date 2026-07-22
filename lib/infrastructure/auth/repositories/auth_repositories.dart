@@ -1,7 +1,10 @@
 part of 'i_auth_repositories.dart';
 
 class AuthRepositories implements IAuthRepositories {
-  AuthRepositories(this._localDatasource, this._remoteDatasource);
+  AuthRepositories(
+    this._localDatasource,
+    this._remoteDatasource,
+  );
 
   final IAuthLocalDatasource _localDatasource;
   final IAuthRemoteDatasource _remoteDatasource;
@@ -13,6 +16,10 @@ class AuthRepositories implements IAuthRepositories {
   // Fetch local data
   @override
   AuthDataHive? fetchDataLoginUser() => _localDatasource.authUserDataHive;
+
+  // Fetch local data
+  @override
+  AuthDataKatanaraHive? fetchDataLoginAi() => _localDatasource.authAiDataHive;
 
   // Login
   @override
@@ -445,12 +452,44 @@ class AuthRepositories implements IAuthRepositories {
           AuthDataHive(
             accessToken: token,
             id: response.data?.userId,
-            // name: response.data?.name,
-            // ssoProvider: null,
-            // completeProfile: response.data?.isProfileCompleted ?? false,
           ),
         );
-        // await _localDatasource.markProfileCompleted();
+      }
+      return Right(response);
+    } on ServerFailures catch (e) {
+      return Left(
+        ServerFailures(
+          statusCode: e.statusCode,
+          title: e.title,
+          message: e.message,
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<Either<ServerFailures, LoginResponAI>> postLoginAi(
+    String email,
+    String password,
+  ) async {
+    try {
+      final response = await _remoteDatasource.postLoginAi(
+        email: email,
+        password: password,
+      );
+      final token = response.token;
+      if (token != null) {
+        await _localDatasource.saveAuthAi(
+          AuthDataKatanaraHive(
+            id: response.id,
+            email: response.email,
+            name: response.name,
+            role: response.role,
+            token: token,
+            expiresAt: response.expiresAt,
+            tags: response.tags,
+          ),
+        );
       }
       return Right(response);
     } on ServerFailures catch (e) {

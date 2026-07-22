@@ -1,8 +1,28 @@
 part of 'i_auth_remote_datasource.dart';
 
 class AuthRemoteDatasource implements IAuthRemoteDatasource {
-  AuthRemoteDatasource(this._dio);
+  AuthRemoteDatasource(this._dio, this._dioAi);
   final Dio _dio;
+  final Dio _dioAi;
+
+  @override
+  Future<LoginResponAI> postLoginAi({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await _dioAi.post<Map<String, dynamic>>(
+        '/api/ai/auth/login',
+        data: {
+          'email': email,
+          'password': password,
+        },
+      );
+      return LoginResponAI.fromJson(response.data!);
+    } on DioException catch (e) {
+      throw ServerException.withError(e);
+    }
+  }
 
   @override
   Future<LoginResponse> postLoginUser({

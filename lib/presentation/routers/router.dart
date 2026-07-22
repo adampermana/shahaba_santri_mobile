@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sahaba_mobile/business_logic/ai_chat_bloc/ai_chat_bloc.dart';
 import 'package:sahaba_mobile/business_logic/kisah_bloc/kisah_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
@@ -99,7 +100,10 @@ final GoRouter router = GoRouter(
         ),
         GoRoute(
           path: RouterPath.sahabaAiPath,
-          builder: (context, state) => const SahabaAiScreen(),
+          builder: (context, state) => BlocProvider(
+            create: (_) => sl<AiChatBloc>(),
+            child: const SahabaAiScreen(),
+          ),
         ),
         GoRoute(
           path: RouterPath.kisahPath,

@@ -4,15 +4,18 @@
 
 import 'package:hive_ce/hive_ce.dart';
 import 'package:sahaba_mobile/domains/auth/hive/auth_data_hive.dart';
+import 'package:sahaba_mobile/domains/auth/hive/auth_data_katanara_hive.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
     registerAdapter(AuthDataHiveAdapter());
+    registerAdapter(AuthDataKatanaraHiveAdapter());
   }
 }
 
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
     registerAdapter(AuthDataHiveAdapter());
+    registerAdapter(AuthDataKatanaraHiveAdapter());
   }
 }

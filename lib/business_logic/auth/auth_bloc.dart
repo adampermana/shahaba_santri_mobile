@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:sahaba_mobile/domains/auth/complete_profile/complete_profile_response.dart';
 import 'package:sahaba_mobile/domains/auth/hive/auth_data_hive.dart';
+import 'package:sahaba_mobile/domains/auth/hive/auth_data_katanara_hive.dart';
+import 'package:sahaba_mobile/domains/auth/login/login_respon_ai.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_response.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_sso_response.dart';
 import 'package:sahaba_mobile/domains/auth/register/register_response.dart';
@@ -22,6 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     : super(AuthState.initial()) {
     on<_Started>(_onStarted);
     on<_PostloginGuest>(_onPostloginGuest);
+    on<_PostloginAi>(_onPostloginAi);
     on<_Postlogin>(_onPostloginUser);
     on<_PostSSO>(_onPostSSO);
     on<_PostAppleSSO>(_onPostAppleSSO);
@@ -76,6 +79,45 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           loginResponse: r,
           alert: null,
           message: r.meta?.message,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onPostloginAi(
+    _PostloginAi event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        loadingAi: true,
+        successLoginAi: false,
+        alert: null,
+        message: null,
+      ),
+    );
+
+    final result = await _authRepositories.postLoginAi(
+      'sah@mail.com',
+      '12345678',
+    );
+
+    result.fold(
+      (f) => emit(
+        state.copyWith(
+          successLoginAi: false,
+          loadingAi: false,
+          message: f.message,
+          loginResponse: null,
+          alert: Alert.fromFailures(f),
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          loadingAi: false,
+          successLoginAi: true,
+          loginAiResponse: r,
+          alert: null,
         ),
       ),
     );
@@ -454,16 +496,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         loading: true,
       ),
     );
-    final result = _authRepositories.fetchDataLoginGuest();
-    if (result == null) {
+    final resultGuest = _authRepositories.fetchDataLoginGuest();
+    final resultAi = _authRepositories.fetchDataLoginAi();
+    if (resultGuest == null && resultAi == null) {
       emit(
-        state.copyWith(
-          loading: false,
-        ),
+        state.copyWith(loading: false, loadingAi: false),
       );
       add(const AuthEvent.postloginGuest());
+      add(const AuthEvent.postloginAi());
       return;
     }
-    emit(state.copyWith(authDataHive: result, loading: false));
+    emit(
+      state.copyWith(
+        authAiDataHive: resultAi,
+        authDataHive: resultGuest,
+        loading: false,
+      ),
+    );
   }
 }
