@@ -11,7 +11,6 @@ import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart'
 import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
-import 'package:sahaba_mobile/business_logic/special_product/special_product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/domains/kisah/kisah_response.dart';
 import 'package:sahaba_mobile/domains/news/news_response.dart';
@@ -37,6 +36,7 @@ import 'package:sahaba_mobile/presentation/screens/product/history_product_detai
 import 'package:sahaba_mobile/presentation/screens/product/list_detail_brand_by_product_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/product/product_halal_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/detail_quran_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/quran_screen/list_all_news_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
@@ -78,6 +78,7 @@ final GoRouter router = GoRouter(
       builder: (context, state) => MainProvider(
         key: state.pageKey,
       ),
+
       routes: [
         GoRoute(
           path: RouterPath.selectCityPath,
@@ -95,6 +96,27 @@ final GoRouter router = GoRouter(
               child: const SelectCityScreen(),
             );
           },
+        ),
+        GoRoute(
+          path: RouterPath.listAllNewsPath,
+          builder: (context, state) => const ListAllNewsScreen(),
+          routes: [
+            // Detail News
+            GoRoute(
+              path: RouterPath.detailNewsPath,
+              builder: (context, state) {
+                final extra = state.extra;
+                final newsData = extra is NewsData ? extra : null;
+                return BlocProvider.value(
+                  value: sl<NewsBloc>(),
+                  child: DetailNewsScreen(
+                    newsId: newsData?.id ?? 0,
+                    initialData: newsData,
+                  ),
+                );
+              },
+            ),
+          ],
         ),
         GoRoute(
           path: RouterPath.qiblaPath,
@@ -146,6 +168,14 @@ final GoRouter router = GoRouter(
                   eventTime: extra?['eventTime'] as String?,
                 );
               },
+            ),
+
+            GoRoute(
+              path: RouterPath.cameraPath,
+              builder: (context, state) => BlocProvider.value(
+                value: sl<LocationBloc>(),
+                child: const CameraScanScreen(),
+              ),
             ),
 
             //  Global Search Product Halal

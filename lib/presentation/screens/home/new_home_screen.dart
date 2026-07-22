@@ -19,6 +19,7 @@ import 'package:sahaba_mobile/domains/quran/juz_model.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/domains/quran/surah_model.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
+import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
@@ -41,73 +42,68 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
 
   // static const double _bottomSafeSpace = 110;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     context.read<ProductBloc>().add(const ProductEvent.started());
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     final currentLocation = GoRouterState.of(context).uri.toString();
 
     final bottomInset = MediaQuery.of(context).padding.bottom;
 
-    return CustomScrollView(
-      slivers: [
-        SliverPersistentHeader(
-          pinned: true,
-          delegate: _CarouselHeaderDelegate(
-            maxHeight: _maxCarouselHeight,
-            minHeight: _minCarouselHeight,
-            builder: _buildCarousel,
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: Transform.translate(
-            offset: const Offset(0, -_cardOverlap + _contentTopGap),
-            child: Column(
-              spacing: 16,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _buildJadwalSholat(context),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _featureSection(
-                    context,
-                    onQiblatTap: () => context.push(
-                      '$currentLocation/${RouterPath.qiblaPath}',
-                    ),
-                    onJadwalSolatTap: () => context.push(
-                      '$currentLocation/${RouterPath.jadwalSholatPath}',
-                    ),
-                    onKalendarTap: () => context.push(
-                      '$currentLocation/${RouterPath.calendarPath}',
-                    ),
-                    onProdukHalalTap: () => context.push(
-                      '$currentLocation/${RouterPath.productHalalPath}',
-                    ),
-                    onKisahTap: () => context.push(
-                      '$currentLocation/${RouterPath.kisahPath}',
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _buildContinueReading(context),
-                ),
-                _buildBeritaIslam(context),
-                SizedBox(height: bottomInset),
-              ],
+    return BlocProvider(
+      create: (context) => sl<NewsBloc>()..add(const NewsEvent.fetchNewsList()),
+      child: CustomScrollView(
+        slivers: [
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _CarouselHeaderDelegate(
+              maxHeight: _maxCarouselHeight,
+              minHeight: _minCarouselHeight,
+              builder: _buildCarousel,
             ),
           ),
-        ),
-      ],
+          SliverToBoxAdapter(
+            child: Transform.translate(
+              offset: const Offset(0, -_cardOverlap + _contentTopGap),
+              child: Column(
+                spacing: 16,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildJadwalSholat(context),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _featureSection(
+                      context,
+                      onQiblatTap: () => context.push(
+                        '$currentLocation/${RouterPath.qiblaPath}',
+                      ),
+                      onJadwalSolatTap: () => context.push(
+                        '$currentLocation/${RouterPath.jadwalSholatPath}',
+                      ),
+                      onKalendarTap: () => context.push(
+                        '$currentLocation/${RouterPath.calendarPath}',
+                      ),
+                      onProdukHalalTap: () => context.push(
+                        '$currentLocation/${RouterPath.productHalalPath}',
+                      ),
+                      onKisahTap: () => context.push(
+                        '$currentLocation/${RouterPath.kisahPath}',
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildContinueReading(context),
+                  ),
+                  _buildBeritaIslam(context),
+                  SizedBox(height: bottomInset),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -778,6 +774,8 @@ Widget _featureSection(
 }
 
 Widget _buildBeritaIslam(BuildContext context) {
+  final currentLocation = GoRouterState.of(context).uri.toString();
+
   final textTheme = Theme.of(context).textTheme;
 
   return BlocBuilder<NewsBloc, NewsState>(
@@ -801,7 +799,7 @@ Widget _buildBeritaIslam(BuildContext context) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -811,7 +809,20 @@ Widget _buildBeritaIslam(BuildContext context) {
                     color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    height: 1.75,
+                  ),
+                ),
+
+                GestureDetector(
+                  onTap: () => context.push(
+                    '$currentLocation/${RouterPath.listAllNewsPath}',
+                  ),
+                  child: Text(
+                    'Lihat Semua',
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: const Color(0xFFDDDDDD),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
@@ -826,7 +837,7 @@ Widget _buildBeritaIslam(BuildContext context) {
                   onTap: () {
                     unawaited(
                       context.push(
-                        '${RouterPath.mainPath}/${RouterPath.detailNewsPath}',
+                        '$currentLocation/${RouterPath.detailNewsPath}',
                         extra: item,
                       ),
                     );

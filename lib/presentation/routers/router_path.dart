@@ -28,6 +28,7 @@ class RouterPath {
   // News
   static const String detailNewsPath = 'detail-news';
   static const String newsPath = 'news';
+  static const String listAllNewsPath = 'list-all-news';
 
   // Camera
   static const String cameraPath = 'camera';

@@ -37,7 +37,7 @@ class ProductHalalScreen extends HookWidget {
       child: AppScaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () => context.push(
-            '$currentLocation/${RouterPath.searchProductHalalPath}',
+            '$currentLocation/${RouterPath.cameraPath}',
           ),
           backgroundColor: ColorPalette.primary,
           shape: const CircleBorder(),

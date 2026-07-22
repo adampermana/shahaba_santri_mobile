@@ -24,11 +24,6 @@ class DetailNewsScreen extends StatefulWidget {
 
 class _DetailNewsScreenState extends State<DetailNewsScreen> {
   @override
-  void initState() {
-    super.initState();
-    context.read<NewsBloc>().add(NewsEvent.fetchNewsDetail(widget.newsId));
-  }
-
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
