@@ -7,6 +7,7 @@ import 'package:sahaba_mobile/business_logic/special_product/special_product_blo
 import 'package:sahaba_mobile/domains/ads/ads_response.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
+import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/product/widget/history_product_limit_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
@@ -34,6 +35,16 @@ class ProductHalalScreen extends HookWidget {
         ),
       ],
       child: AppScaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => context.push(
+            '$currentLocation/${RouterPath.searchProductHalalPath}',
+          ),
+          backgroundColor: ColorPalette.primary,
+          shape: const CircleBorder(),
+          child: const CacheImageOrSvg(
+            source: AppIcons.searchScan,
+          ),
+        ),
         appBar: CustomAppBar.buildAppBarSimple(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -69,6 +80,7 @@ class ProductHalalScreen extends HookWidget {
             children: [
               // Search sementara
               SearchBarWidget(
+                hintText: 'Cari produk disini',
                 readOnly: true,
                 onTap: () => context.push(
                   '$currentLocation/${RouterPath.searchProductHalalPath}',
@@ -113,57 +125,6 @@ class ProductHalalScreen extends HookWidget {
 
               // Riwayat Produk
               const HistoryProductLimitWidget(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget searchCard(
-    BuildContext context, {
-    String title = 'Cari produk disini',
-    VoidCallback? onTap,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(100),
-        child: Ink(
-          height: 56,
-          padding: const EdgeInsets.symmetric(horizontal: 18),
-          decoration: BoxDecoration(
-            color: const Color(0xFF4A5163),
-            borderRadius: BorderRadius.circular(100),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: .18),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: .18),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.search_rounded,
-                size: 34,
-                color: Colors.white.withValues(alpha: .55),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.white.withValues(alpha: .55),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
             ],
           ),
         ),
