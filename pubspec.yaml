@@ -24,6 +24,7 @@ dependencies:
   flutter_cache_manager: ^3.4.1
   flutter_compass: ^0.8.0
   flutter_hooks: ^0.21.2
+  flutter_html: ^3.0.0
   flutter_image_compress: ^2.5.0
   flutter_local_notifications: ^19.4.1
   flutter_localizations:

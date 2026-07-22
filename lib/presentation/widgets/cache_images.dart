@@ -3,6 +3,7 @@ import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 
 class CacheImageOrSvg extends StatelessWidget {
   const CacheImageOrSvg({
@@ -19,6 +20,7 @@ class CacheImageOrSvg extends StatelessWidget {
     this.cacheWidth,
     this.placeholderBuilder,
     this.svgColor,
+    this.colorLoading,
     this.svgBlendMode = BlendMode.srcIn,
     this.autoCache = false,
   });
@@ -37,6 +39,7 @@ class CacheImageOrSvg extends StatelessWidget {
   final int? cacheHeight;
   final int? cacheWidth;
   final bool autoCache;
+  final Color? colorLoading;
   final Widget Function(BuildContext context)? placeholderBuilder;
 
   /// Color to apply to SVG files. If null, will use [colorAsset] as fallback
@@ -70,11 +73,14 @@ class CacheImageOrSvg extends StatelessWidget {
           width: width,
           height: height,
           color: Colors.grey.shade100,
-          child: const Center(
+          child: Center(
             child: SizedBox(
               height: 32,
               width: 32,
-              child: CircularProgressIndicator(strokeWidth: 2),
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: colorLoading ?? ColorPalette.kWhite,
+              ),
             ),
           ),
         );

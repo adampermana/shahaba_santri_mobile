@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_it/get_it.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/business_logic/calendar_bloc/calendar_bloc.dart';
+import 'package:sahaba_mobile/business_logic/kisah_bloc/kisah_bloc.dart';
 import 'package:sahaba_mobile/business_logic/category_product/category_product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/city_search_bloc/city_search_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
@@ -28,6 +29,10 @@ import 'package:sahaba_mobile/infrastructure/calendar/datasources/i_calendar_loc
 import 'package:sahaba_mobile/infrastructure/calendar/datasources/i_calendar_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/calendar/repository/calendar_repository.dart';
 import 'package:sahaba_mobile/infrastructure/calendar/repository/i_calendar_repository.dart';
+import 'package:sahaba_mobile/infrastructure/kisah/datasources/i_kisah_remote_datasource.dart';
+import 'package:sahaba_mobile/infrastructure/kisah/datasources/kisah_remote_datasource.dart';
+import 'package:sahaba_mobile/infrastructure/kisah/repository/i_kisah_repository.dart';
+import 'package:sahaba_mobile/infrastructure/kisah/repository/kisah_repository.dart';
 import 'package:sahaba_mobile/infrastructure/core/api/dio_api.dart';
 import 'package:sahaba_mobile/infrastructure/core/datasources/i_core_local_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/core/repository/i_core_repository.dart';
@@ -67,6 +72,7 @@ Future<void> initApp() async {
   await _initQiblaFeature();
   await _initStreakFeature();
   await _initCalendarFeature();
+  await _initKisahFeature();
 }
 
 Future<void> _initCoreFeature() async {
@@ -184,4 +190,15 @@ Future<void> _initCalendarFeature() async {
       () => CalendarRepository(sl(), sl()),
     )
     ..registerFactory(() => CalendarBloc(sl()));
+}
+
+Future<void> _initKisahFeature() async {
+  sl
+    ..registerLazySingleton<IKisahRemoteDatasource>(
+      () => KisahRemoteDatasource(sl<Dio>(instanceName: 'main')),
+    )
+    ..registerLazySingleton<IKisahRepository>(
+      () => KisahRepository(sl()),
+    )
+    ..registerFactory(() => KisahBloc(sl()));
 }

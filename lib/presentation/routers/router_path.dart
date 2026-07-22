@@ -52,4 +52,8 @@ class RouterPath {
 
   // Sahaba AI
   static const String sahabaAiPath = 'sahaba-ai';
+
+  // kisah
+  static const String kisahPath = 'kisah';
+  static const String detailKisahPath = 'detail-kisah';
 }

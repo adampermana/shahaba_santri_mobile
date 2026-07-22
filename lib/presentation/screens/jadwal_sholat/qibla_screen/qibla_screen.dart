@@ -120,12 +120,6 @@ class _QiblaViewState extends State<_QiblaView> {
           fontWeight: FontWeight.w600,
         ),
       ),
-      // actions: [
-      //   Padding(
-      //     padding: const EdgeInsets.only(right: 16),
-      //     child: _QiblaInfoButton(onTap: _showQiblaInfoModal),
-      //   ),
-      // ],
     );
   }
 

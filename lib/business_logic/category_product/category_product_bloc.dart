@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:sahaba_mobile/domains/product/product_response.dart';
 
 import 'package:sahaba_mobile/infrastructure/auth/datasources/auth_local_datasource.dart';

@@ -274,13 +274,13 @@ class ProductSearchResultSheet extends StatelessWidget {
                         child: SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               final draggableController =
                                   DraggableScrollableController();
                               final locationBloc = context.read<LocationBloc>();
 
                               Navigator.pop(context); // kembali ke camera
-                              showModalBottomSheet(
+                              await showModalBottomSheet<void>(
                                 isDismissible: false,
                                 isScrollControlled: true,
                                 enableDrag: false,

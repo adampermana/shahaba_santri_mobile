@@ -95,7 +95,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
 
     // Device info
-    final device = await _deviceInfoService.deviceInfo();
+    // final device = await _deviceInfoService.deviceInfo();
 
     // final result = await _authRepositories.postLoginUser(
     //   email: event.email,

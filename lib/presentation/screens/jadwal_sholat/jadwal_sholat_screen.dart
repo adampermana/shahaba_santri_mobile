@@ -508,7 +508,7 @@ class _NextPrayerCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Jadwal Sholat',
+                  'Jadwal Salat',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: ColorPalette.kWhite,
                     fontSize: 14,

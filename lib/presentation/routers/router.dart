@@ -4,11 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sahaba_mobile/business_logic/kisah_bloc/kisah_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
+import 'package:sahaba_mobile/domains/kisah/kisah_response.dart';
 import 'package:sahaba_mobile/domains/product/product_response.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
@@ -17,6 +19,8 @@ import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/camera_screen/camera_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/calendar/calendar_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/chat/sahaba_ai_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/home/kisah/detail_kisah_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/home/kisah/kisah_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/news/detail_news_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/jadwal_sholat_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/qibla_screen/qibla_screen.dart';
@@ -94,6 +98,26 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: RouterPath.sahabaAiPath,
           builder: (context, state) => const SahabaAiScreen(),
+        ),
+        GoRoute(
+          path: RouterPath.kisahPath,
+          builder: (context, state) => BlocProvider(
+            create: (_) =>
+                sl<KisahBloc>()..add(const KisahEvent.fetchKisahList()),
+            child: const KisahScreen(),
+          ),
+          routes: [
+            GoRoute(
+              path: RouterPath.detailKisahPath,
+              builder: (context, state) {
+                final extra = state.extra;
+                if (extra is KisahData) {
+                  return DetailKisahScreen(kisahId: extra.id ?? 0);
+                }
+                return const DetailKisahScreen();
+              },
+            ),
+          ],
         ),
         GoRoute(
           path: RouterPath.calendarPath,

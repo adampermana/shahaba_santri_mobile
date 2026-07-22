@@ -80,9 +80,9 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
                     onProdukHalalTap: () => context.push(
                       '$currentLocation/${RouterPath.productHalalPath}',
                     ),
-                    // onKisahTap: () => context.push(
-                    //   '$currentLocation/${RouterPath.calendarPath}',
-                    // ),
+                    onKisahTap: () => context.push(
+                      '$currentLocation/${RouterPath.kisahPath}',
+                    ),
                   ),
                 ),
                 Padding(
@@ -508,7 +508,7 @@ Widget _featureSection(
       'onTap': onQiblatTap,
     },
     {
-      'label': 'Jadwal Solat',
+      'label': 'Jadwal Salat',
       'icon': 'assets/images/icon-images/icon-jadwal-sholat.png',
       'iconRatio': 0.85,
       'onTap': onJadwalSolatTap,
