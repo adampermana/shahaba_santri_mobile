@@ -146,24 +146,6 @@ class ListDetailBrandByProductScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-
-                    // Expanded(
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.only(right: 16, top: 4),
-                    //     child: Text(
-                    //       'Galeri Produk $headerTitle',
-                    //       maxLines: 2,
-                    //       overflow: TextOverflow.ellipsis,
-                    //       style: Theme.of(context).textTheme.headlineSmall
-                    //           ?.copyWith(
-                    //             color: ColorPalette.inverseSecondary,
-                    //             fontWeight: FontWeight.w700,
-                    //             fontSize: 24,
-                    //             height: 1.2,
-                    //           ),
-                    //     ),
-                    //   ),
-                    // ),
                     _buildBrandAvatar(headerImage),
                   ],
                 ),

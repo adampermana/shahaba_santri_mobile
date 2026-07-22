@@ -164,6 +164,17 @@ final GoRouter router = GoRouter(
                   imageUrl: extra?['image'] as String?,
                 );
               },
+              routes: [
+                GoRoute(
+                  path: RouterPath.productDetailPath,
+                  builder: (context, state) {
+                    final extra = state.extra as Map<String, dynamic>?;
+                    return DetailProductScreen(
+                      id: extra?['id'] as int? ?? 0,
+                    );
+                  },
+                ),
+              ],
             ),
 
             // Category Product
