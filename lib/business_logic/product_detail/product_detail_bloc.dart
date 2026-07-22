@@ -32,10 +32,25 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     adsResult.fold(
       (l) => emit(state.copyWith(errorMessage: l.message, isLoading: false)),
       (r) {
+        if (r.isEmpty) {
+          emit(state.copyWith(adsCarousel: null, isLoading: false));
+          return;
+        }
         final random = Random();
         final number = random.nextInt(r.length);
-        emit(state.copyWith(adsCarousel: r[number], isLoading: false));
+        emit(
+          state.copyWith(adsCarousel: r.elementAt(number), isLoading: false),
+        );
       },
     );
+
+    // adsResult.fold(
+    //   (l) => emit(state.copyWith(errorMessage: l.message, isLoading: false)),
+    //   (r) {
+    //     final random = Random();
+    //     final number = random.nextInt(r.length);
+    //     emit(state.copyWith(adsCarousel: r[number], isLoading: false));
+    //   },
+    // );
   }
 }

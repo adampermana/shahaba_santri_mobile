@@ -13,12 +13,14 @@ class SahabaHttpOvverides extends HttpOverrides {
         final minioUrl = Uri.parse(minio);
         final myQuranUrl = Uri.parse(myQuranBaseUrl);
         final calendarUrl = Uri.parse(calendarBaseUrl);
+        final aiUrl = Uri.parse(baseAIUrl);
         bool isSameHost(Uri value) =>
             host == value.host && (!value.hasPort || port == value.port);
         return isSameHost(url) ||
             isSameHost(minioUrl) ||
             isSameHost(myQuranUrl) ||
-            isSameHost(calendarUrl);
+            isSameHost(calendarUrl) ||
+            isSameHost(aiUrl);
       };
   }
 }

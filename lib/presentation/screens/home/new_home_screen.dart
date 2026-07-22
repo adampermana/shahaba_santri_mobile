@@ -6,11 +6,13 @@ import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_state.dart';
+import 'package:sahaba_mobile/business_logic/product_bloc/product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_state.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_state.dart';
+import 'package:sahaba_mobile/domains/ads/ads_response.dart';
 import 'package:sahaba_mobile/domains/news/news_response.dart';
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
 import 'package:sahaba_mobile/domains/quran/juz_model.dart';
@@ -30,14 +32,22 @@ class NewHomeScreen extends StatefulWidget {
 }
 
 class _NewHomeScreenState extends State<NewHomeScreen> {
-  static const double _maxCarouselHeight = 200;
-  static const double _minCarouselHeight = 110;
+  static const double _maxCarouselHeight = 262;
+  static const double _minCarouselHeight = 262;
   static const double _cardOverlap =
       30; // overlap card ke carousel saat masih expanded
   static const double _contentTopGap =
       40; // jarak tambahan di atas konten, biar nggak terlalu nempel
 
   // static const double _bottomSafeSpace = 110;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     context.read<ProductBloc>().add(const ProductEvent.started());
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -107,126 +117,154 @@ class _NewHomeScreenState extends State<NewHomeScreen> {
     double shrinkProgress,
   ) {
     final currentLocation = GoRouterState.of(context).uri.toString();
-    // TODO: Replace with actual carousel data source
-    const hasContent = true;
-    const title = 'Pasang Iklan Sekarang';
-    const currentIndex = 0;
-    const totalItems = 5;
 
-    final fadeOpacity = (1 - (shrinkProgress / 0.6)).clamp(0.0, 1.0);
+    return BlocBuilder<ProductBloc, ProductState>(
+      builder: (context, state) {
+        final ads = state.adsCarousel;
 
-    return Container(
-      height: height,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
-        ),
-        image: DecorationImage(
-          image: AssetImage(
-            hasContent
-                ? 'assets/images/empty-carousel.png'
-                : 'assets/images/empty-carousel.png',
-          ),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
+        if (ads.isEmpty) {
+          return Container(
+            height: height,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(24),
                 bottomRight: Radius.circular(24),
               ),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.black.withValues(alpha: 0.1),
-                  Colors.black.withValues(alpha: 0.6),
-                ],
-                stops: const [0.0, 0.7],
+              image: DecorationImage(
+                image: AssetImage('assets/images/empty-carousel.png'),
+                fit: BoxFit.cover,
               ),
             ),
-          ),
-          Positioned(
-            left: 16,
-            right: 16,
-            bottom: 16,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
+            child: Stack(
               children: [
-                Expanded(
-                  child: Opacity(
-                    opacity: fadeOpacity,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: List.generate(totalItems, (index) {
-                            return Container(
-                              margin: const EdgeInsets.only(right: 6),
-                              width: 6,
-                              height: 6,
-                              decoration: BoxDecoration(
-                                color: index == currentIndex
-                                    ? Colors.white
-                                    : Colors.white.withValues(alpha: 0.4),
-                                shape: BoxShape.circle,
-                              ),
-                            );
-                          }),
-                        ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(24),
+                      bottomRight: Radius.circular(24),
+                    ),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.1),
+                        Colors.black.withValues(alpha: 0.6),
                       ],
+                      stops: const [0.0, 0.7],
                     ),
                   ),
                 ),
-                SubmitButtonStylesWidget(
-                  style: SubmitButtonStyle.elevatedGlass,
-                  width: 150,
-                  height: 32,
-                  radius: 24,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  textButton: 'Tanya Sahaba',
-                  textStyle: const TextStyle(
-                    color: ColorPalette.kWhite,
-                    fontSize: 12,
-                    fontFamily: 'Synonym Variable',
-                    fontWeight: FontWeight.w600,
-                    height: -0.4,
-                  ),
-                  icon: const CacheImageOrSvg(
-                    source: 'assets/images/icon-images/icon-ai.png',
-                    width: 32,
-                    height: 32,
-                  ),
-                  onPressed: () => context.push(
-                    '$currentLocation/${RouterPath.sahabaAiPath}',
+                Positioned(
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                  child: _carouselOverlay(
+                    context: context,
+                    shrinkProgress: shrinkProgress,
+                    title: 'Pasang Iklan Sekarang',
+                    currentIndex: 0,
+                    totalItems: 0,
+                    onSahabaTap: () => context.push(
+                      '$currentLocation/${RouterPath.sahabaAiPath}',
+                    ),
                   ),
                 ),
               ],
             ),
+          );
+        }
+
+        return _CarouselContent(
+          height: height,
+          shrinkProgress: shrinkProgress,
+          ads: ads,
+          currentLocation: currentLocation,
+          onSahabaTap: () => context.push(
+            '$currentLocation/${RouterPath.sahabaAiPath}',
           ),
-        ],
-      ),
+        );
+      },
+    );
+  }
+
+  Widget _carouselOverlay({
+    required BuildContext context,
+    required double shrinkProgress,
+    required String title,
+    required int currentIndex,
+    required int totalItems,
+    required VoidCallback onSahabaTap,
+  }) {
+    final fadeOpacity = (1 - (shrinkProgress / 0.6)).clamp(0.0, 1.0);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: Opacity(
+            opacity: fadeOpacity,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (totalItems > 0) ...[
+                  const SizedBox(height: 8),
+                  Row(
+                    children: List.generate(totalItems, (index) {
+                      return Container(
+                        margin: const EdgeInsets.only(right: 6),
+                        width: 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: index == currentIndex
+                              ? Colors.white
+                              : Colors.white.withValues(alpha: 0.4),
+                          shape: BoxShape.circle,
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+        SubmitButtonStylesWidget(
+          style: SubmitButtonStyle.elevatedGlass,
+          width: 150,
+          height: 32,
+          radius: 24,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 6,
+          ),
+          textButton: 'Tanya Sahaba',
+          textStyle: const TextStyle(
+            color: ColorPalette.kWhite,
+            fontSize: 12,
+            fontFamily: 'Synonym Variable',
+            fontWeight: FontWeight.w600,
+            height: -0.4,
+          ),
+          icon: const CacheImageOrSvg(
+            source: 'assets/images/icon-images/icon-ai.png',
+            width: 32,
+            height: 32,
+          ),
+          onPressed: onSahabaTap,
+        ),
+      ],
     );
   }
 
@@ -871,6 +909,197 @@ Widget _buildNewsCard({
       ),
     ],
   );
+}
+
+// ─── Carousel Content (with autoPlay) ───────────────────────────
+
+class _CarouselContent extends StatefulWidget {
+  const _CarouselContent({
+    required this.height,
+    required this.shrinkProgress,
+    required this.ads,
+    required this.currentLocation,
+    required this.onSahabaTap,
+  });
+
+  final double height;
+  final double shrinkProgress;
+  final List<AdResponseData> ads;
+  final String currentLocation;
+  final VoidCallback onSahabaTap;
+
+  @override
+  State<_CarouselContent> createState() => _CarouselContentState();
+}
+
+class _CarouselContentState extends State<_CarouselContent> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final fadeOpacity = (1 - (widget.shrinkProgress / 0.6)).clamp(0.0, 1.0);
+
+    return SizedBox(
+      height: widget.height,
+      child: Stack(
+        children: [
+          PageView.builder(
+            onPageChanged: (index) => setState(() => _currentIndex = index),
+            itemCount: widget.ads.length,
+            itemBuilder: (context, index) {
+              final ad = widget.ads[index];
+              return GestureDetector(
+                onTap: () => _handleAdTap(context, ad),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(24),
+                      bottomRight: Radius.circular(24),
+                    ),
+                    image: DecorationImage(
+                      image: NetworkImage(ad.image ?? ''),
+                      fit: BoxFit.cover,
+                      onError: (_, _) {},
+                    ),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(24),
+                        bottomRight: Radius.circular(24),
+                      ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withValues(alpha: 0.1),
+                          Colors.black.withValues(alpha: 0.6),
+                        ],
+                        stops: const [0.0, 0.7],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+          Positioned(
+            left: 16,
+            right: 16,
+            bottom: 16,
+            child: Opacity(
+              opacity: fadeOpacity,
+              child: _CarouselOverlayWidget(
+                title: widget.ads[_currentIndex].campaignName ?? '',
+                currentIndex: _currentIndex,
+                totalItems: widget.ads.length,
+                onSahabaTap: widget.onSahabaTap,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleAdTap(BuildContext context, AdResponseData ad) {
+    if (ad.type?.toLowerCase() == 'product') {
+      final targetId = int.tryParse(ad.target ?? '');
+      if (targetId != null) {
+        unawaited(
+          context.push(
+            '${widget.currentLocation}/${RouterPath.productHalalPath}/'
+            '${RouterPath.productDetailPath}',
+            extra: {'id': targetId, 'isAds': true},
+          ),
+        );
+      }
+    }
+  }
+}
+
+class _CarouselOverlayWidget extends StatelessWidget {
+  const _CarouselOverlayWidget({
+    required this.title,
+    required this.currentIndex,
+    required this.totalItems,
+    required this.onSahabaTap,
+  });
+
+  final String title;
+  final int currentIndex;
+  final int totalItems;
+  final VoidCallback onSahabaTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              if (totalItems > 1) ...[
+                const SizedBox(height: 8),
+                Row(
+                  children: List.generate(totalItems, (index) {
+                    return Container(
+                      margin: const EdgeInsets.only(right: 6),
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: index == currentIndex
+                            ? Colors.white
+                            : Colors.white.withValues(alpha: 0.4),
+                        shape: BoxShape.circle,
+                      ),
+                    );
+                  }),
+                ),
+              ],
+            ],
+          ),
+        ),
+        SubmitButtonStylesWidget(
+          style: SubmitButtonStyle.elevatedGlass,
+          width: 150,
+          height: 32,
+          radius: 24,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 6,
+          ),
+          textButton: 'Tanya Sahaba',
+          textStyle: const TextStyle(
+            color: ColorPalette.kWhite,
+            fontSize: 12,
+            fontFamily: 'Synonym Variable',
+            fontWeight: FontWeight.w600,
+            height: -0.4,
+          ),
+          icon: const CacheImageOrSvg(
+            source: 'assets/images/icon-images/icon-ai.png',
+            width: 32,
+            height: 32,
+          ),
+          onPressed: onSahabaTap,
+        ),
+      ],
+    );
+  }
 }
 
 /// Delegate untuk carousel yang mengecil (shrink) mengikuti scroll,

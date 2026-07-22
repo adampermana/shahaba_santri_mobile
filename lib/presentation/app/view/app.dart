@@ -9,11 +9,13 @@ import 'package:sahaba_mobile/presentation/routers/router.dart';
 class App extends StatelessWidget {
   const App({super.key});
 
-@override
+  @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => sl<ProductBloc>()),
+        BlocProvider(
+          create: (_) => sl<ProductBloc>()..add(const ProductEvent.started()),
+        ),
         BlocProvider(
           create: (context) =>
               sl<AuthBloc>()..add(const AuthEvent.getLocalUser()),

@@ -29,8 +29,8 @@ class _QuranView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppScaffold(
       appBar: _buildAppBar(context),
-      // backgroundColor: ColorPalette.scaffoldBackground,
       body: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           BlocBuilder<QuranBloc, QuranState>(
             buildWhen: (prev, curr) => prev.currentTab != curr.currentTab,
@@ -56,36 +56,6 @@ class _QuranView extends StatelessWidget {
         ],
       ),
     );
-
-    // Scaffold(
-    //   appBar: _buildAppBar(context),
-    //   backgroundColor: ColorPalette.scaffoldBackground,
-    //   body: Column(
-    //     children: [
-    //       BlocBuilder<QuranBloc, QuranState>(
-    //         buildWhen: (prev, curr) => prev.currentTab != curr.currentTab,
-    //         builder: (context, state) {
-    //           return QuranTabBar(
-    //             currentIndex: state.currentTab,
-    //             onTabChanged: (index) {
-    //               context.read<QuranBloc>().add(QuranEvent.changeTab(index));
-    //             },
-    //           );
-    //         },
-    //       ),
-    //       Expanded(
-    //         child: BlocBuilder<QuranBloc, QuranState>(
-    //           builder: (context, state) {
-    //             if (state.currentTab == 0) {
-    //               return _SurahList(state: state);
-    //             }
-    //             return _JuzList(state: state);
-    //           },
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {

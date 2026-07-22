@@ -272,7 +272,8 @@ class DetailProductScreen extends StatelessWidget {
 
                           const SizedBox(height: 20),
                           Visibility(
-                            visible: isAds == false,
+                            visible:
+                                isAds == false && state.adsCarousel != null,
                             child: const Text(
                               'Produk Yang Mungkin Anda Sukai',
                               style: TextStyle(
@@ -287,13 +288,13 @@ class DetailProductScreen extends StatelessWidget {
                       ),
                     ),
                     Visibility(
-                      visible: isAds == false,
+                      visible: isAds == false && state.adsCarousel != null,
                       child: HistoryItems(
-                        namaProduk: ad?.name ?? state.adsCarousel!.name ?? '-',
+                        namaProduk: ad?.name ?? state.adsCarousel?.name ?? '-',
                         status: ad != null ? ad!.status! : 'Halal',
                         registerDate: ad != null ? ad!.expireDate! : '-',
-                        imagePath: ad?.image ?? state.adsCarousel!.image ?? '-',
-                        id: ad?.id ?? state.adsCarousel!.productId!,
+                        imagePath: ad?.image ?? state.adsCarousel?.image ?? '',
+                        id: ad?.id ?? state.adsCarousel?.productId ?? 0,
                         type: 'Iklan',
                         // namaProduk: ad != null
                         //     ? ad!.name!
