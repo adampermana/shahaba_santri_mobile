@@ -7,10 +7,12 @@ import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/kisah_bloc/kisah_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
+import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/domains/kisah/kisah_response.dart';
+import 'package:sahaba_mobile/domains/news/news_response.dart';
 import 'package:sahaba_mobile/domains/product/product_response.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
@@ -238,7 +240,17 @@ final GoRouter router = GoRouter(
         // Detail News
         GoRoute(
           path: RouterPath.detailNewsPath,
-          builder: (context, state) => const DetailNewsScreen(),
+          builder: (context, state) {
+            final extra = state.extra;
+            final newsData = extra is NewsData ? extra : null;
+            return BlocProvider.value(
+              value: sl<NewsBloc>(),
+              child: DetailNewsScreen(
+                newsId: newsData?.id ?? 0,
+                initialData: newsData,
+              ),
+            );
+          },
         ),
 
         // Detail Quran

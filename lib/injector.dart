@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/business_logic/calendar_bloc/calendar_bloc.dart';
 import 'package:sahaba_mobile/business_logic/kisah_bloc/kisah_bloc.dart';
+import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/business_logic/category_product/category_product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/city_search_bloc/city_search_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
@@ -33,6 +34,10 @@ import 'package:sahaba_mobile/infrastructure/kisah/datasources/i_kisah_remote_da
 import 'package:sahaba_mobile/infrastructure/kisah/datasources/kisah_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/kisah/repository/i_kisah_repository.dart';
 import 'package:sahaba_mobile/infrastructure/kisah/repository/kisah_repository.dart';
+import 'package:sahaba_mobile/infrastructure/news/datasources/i_news_remote_datasource.dart';
+import 'package:sahaba_mobile/infrastructure/news/datasources/news_remote_datasource.dart';
+import 'package:sahaba_mobile/infrastructure/news/repository/i_news_repository.dart';
+import 'package:sahaba_mobile/infrastructure/news/repository/news_repository.dart';
 import 'package:sahaba_mobile/infrastructure/core/api/dio_api.dart';
 import 'package:sahaba_mobile/infrastructure/core/datasources/i_core_local_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/core/repository/i_core_repository.dart';
@@ -73,6 +78,7 @@ Future<void> initApp() async {
   await _initStreakFeature();
   await _initCalendarFeature();
   await _initKisahFeature();
+  await _initNewsFeature();
 }
 
 Future<void> _initCoreFeature() async {
@@ -201,4 +207,15 @@ Future<void> _initKisahFeature() async {
       () => KisahRepository(sl()),
     )
     ..registerFactory(() => KisahBloc(sl()));
+}
+
+Future<void> _initNewsFeature() async {
+  sl
+    ..registerLazySingleton<INewsRemoteDatasource>(
+      () => NewsRemoteDatasource(sl<Dio>(instanceName: 'main')),
+    )
+    ..registerLazySingleton<INewsRepository>(
+      () => NewsRepository(sl()),
+    )
+    ..registerFactory(() => NewsBloc(sl()));
 }

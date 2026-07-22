@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_state.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
@@ -10,6 +11,7 @@ import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_state.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_state.dart';
+import 'package:sahaba_mobile/domains/news/news_response.dart';
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
 import 'package:sahaba_mobile/domains/quran/juz_model.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
@@ -740,115 +742,88 @@ Widget _featureSection(
 Widget _buildBeritaIslam(BuildContext context) {
   final textTheme = Theme.of(context).textTheme;
 
-  return Column(
-    spacing: 16,
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Berita Islami',
-              style: textTheme.titleMedium?.copyWith(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                height: 1.75,
-              ),
+  return BlocBuilder<NewsBloc, NewsState>(
+    builder: (context, newsState) {
+      final newsList = newsState.newsResponse?.data ?? [];
+      final isLoading = newsState.fetchNewsLoading;
+
+      if (isLoading) {
+        return const Padding(
+          padding: EdgeInsets.symmetric(vertical: 32),
+          child: Center(child: CircularProgressIndicator()),
+        );
+      }
+
+      if (newsList.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
+      return Column(
+        spacing: 16,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Berita Islami',
+                  style: textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    height: 1.75,
+                  ),
+                ),
+              ],
             ),
-            // GestureDetector(
-            //   onTap: () {},
-            //   child: Row(
-            //     mainAxisSize: MainAxisSize.min,
-            //     children: [
-            //       Text(
-            //         'Lihat semua',
-            //         style: textTheme.bodySmall?.copyWith(
-            //           color: const Color(0xFFB39164),
-            //           fontSize: 12,
-            //           fontWeight: FontWeight.w600,
-            //         ),
-            //       ),
-            //       const Icon(
-            //         Icons.keyboard_arrow_right_outlined,
-            //         color: Color(0xFFB39164),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-          ],
-        ),
-      ),
-      InkWell(
-        onTap: () {
-          unawaited(
-            context.push(
-              '${RouterPath.mainPath}/${RouterPath.detailNewsPath}',
-            ),
-          );
-        },
-        splashColor: Colors.white.withValues(alpha: 0.06),
-        highlightColor: Colors.white.withValues(alpha: 0.04),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: _buildNewsCard(
-            context: context,
-            imagePath:
-                'https://akcdn.detik.net.id/visual/2015/03/31/8c04ef5b-2678-4230-bd4e-b10f20d8e252_169.jpg?w=1200',
-            title:
-                'Doa Khutbah Jumat oleh Ustadz Ahmad Fauzi: Memohon Rahmat dan Kekuatan',
-            date: '14 Jul 2026',
-            showViewCount: false,
           ),
-        ),
-      ),
-      const SizedBox(
-        width: double.infinity,
-        height: 4,
-        child: Divider(
-          color: Color(
-            0x33E8E8E8,
-          ) /* semantic-content-inverse-tertiary */,
-          thickness: 2,
-        ),
-      ),
-      InkWell(
-        onTap: () {
-          unawaited(
-            context.push(
-              '${RouterPath.mainPath}/${RouterPath.detailNewsPath}',
-            ),
-          );
-        },
-        splashColor: Colors.white.withValues(alpha: 0.06),
-        highlightColor: Colors.white.withValues(alpha: 0.04),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: _buildNewsCard(
-            context: context,
-            imagePath:
-                'https://serikatnews.com/wp-content/uploads/2022/06/15330053455b5fce219e239.jpg',
-            title:
-                "Pesan Khutbah Jum'at H. Agus Salim Tahun 1928: Persatuan Lahir dan Batin",
-            date: '14 Jul 2026',
-            showViewCount: true,
-            viewCount: 40,
-          ),
-        ),
-      ),
-    ],
+          ...List.generate(newsList.length, (index) {
+            final item = newsList[index];
+            final isLast = index == newsList.length - 1;
+            return Column(
+              children: [
+                InkWell(
+                  onTap: () {
+                    unawaited(
+                      context.push(
+                        '${RouterPath.mainPath}/${RouterPath.detailNewsPath}',
+                        extra: item,
+                      ),
+                    );
+                  },
+                  splashColor: Colors.white.withValues(alpha: 0.06),
+                  highlightColor: Colors.white.withValues(alpha: 0.04),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: _buildNewsCard(
+                      context: context,
+                      item: item,
+                    ),
+                  ),
+                ),
+                if (!isLast)
+                  const SizedBox(
+                    width: double.infinity,
+                    height: 4,
+                    child: Divider(
+                      color: Color(0x33E8E8E8),
+                      thickness: 2,
+                    ),
+                  ),
+              ],
+            );
+          }),
+        ],
+      );
+    },
   );
 }
 
 Widget _buildNewsCard({
   required BuildContext context,
-  required String imagePath,
-  required String title,
-  required String date,
-  required bool showViewCount,
-  int viewCount = 0,
+  required NewsData item,
 }) {
   final textTheme = Theme.of(context).textTheme;
 
@@ -858,14 +833,14 @@ Widget _buildNewsCard({
       ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: CacheImageOrSvg(
-          source: imagePath,
+          source: item.pictureUrl ?? '',
           width: double.infinity,
           height: 160,
         ),
       ),
       const SizedBox(height: 16),
       Text(
-        title,
+        item.title ?? '',
         maxLines: 3,
         overflow: TextOverflow.ellipsis,
         style: textTheme.bodyMedium?.copyWith(
@@ -885,7 +860,7 @@ Widget _buildNewsCard({
           ),
           const SizedBox(width: 6),
           Text(
-            date,
+            item.createdAt ?? '',
             style: textTheme.bodySmall?.copyWith(
               color: const Color(0xFFDDDDDD),
               fontSize: 12,

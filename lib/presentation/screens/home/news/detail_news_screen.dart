@@ -1,177 +1,163 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
+import 'package:sahaba_mobile/domains/news/news_response.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 
-class DetailNewsScreen extends StatelessWidget {
-  const DetailNewsScreen({super.key});
+class DetailNewsScreen extends StatefulWidget {
+  const DetailNewsScreen({
+    super.key,
+    this.initialData,
+    required this.newsId,
+  });
+
+  final int newsId;
+  final NewsData? initialData;
+
+  @override
+  State<DetailNewsScreen> createState() => _DetailNewsScreenState();
+}
+
+class _DetailNewsScreenState extends State<DetailNewsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<NewsBloc>().add(NewsEvent.fetchNewsDetail(widget.newsId));
+  }
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return AppScaffold(
       appBar: _buildAppBar(context),
+      body: BlocBuilder<NewsBloc, NewsState>(
+        buildWhen: (prev, cur) =>
+            prev.fetchDetailLoading != cur.fetchDetailLoading ||
+            prev.fetchDetailSuccess != cur.fetchDetailSuccess ||
+            prev.newsDetail != cur.newsDetail,
+        builder: (context, state) {
+          if (state.fetchDetailLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Hero Image
-            const SizedBox(
-              height: 240,
-              width: double.infinity,
-              child: CacheImageOrSvg(
-                source:
-                    'https://akcdn.detik.net.id/visual/2015/03/31/8c04ef5b-2678-4230-bd4e-b10f20d8e252_169.jpg?w=1200',
-              ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Date
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.calendar_month_outlined,
-                        color: Color(0xFFDDDDDD),
-                        size: 16,
-                      ),
-                      const SizedBox(width: 7),
-                      Text(
-                        '14 Jul 2026',
-                        style: textTheme.bodySmall?.copyWith(
-                          color: const Color(0xFFDDDDDD),
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+          if (state.fetchDetailErrorMessage.isNotEmpty &&
+              !state.fetchDetailSuccess) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  state.fetchDetailErrorMessage,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.white70,
                   ),
-                  const SizedBox(height: 16),
+                ),
+              ),
+            );
+          }
 
-                  // Title
-                  const SizedBox(
-                    width: 371,
-                    height: 55,
-                    child: Text(
-                      'Menelusuri Jejak Sejarah Masjid Nabawi dan Perluasannya di Era Modern',
-                      style: TextStyle(
-                        color:
-                            Colors.white /* semantic-content-inverse-primary */,
-                        fontSize: 16,
+          final detail = state.newsDetail ?? widget.initialData;
+          if (detail == null) return const SizedBox.shrink();
+
+          return _buildContent(context, detail);
+        },
+      ),
+    );
+  }
+
+  Widget _buildContent(BuildContext context, NewsData detail) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Hero Image
+          SizedBox(
+            height: 240,
+            width: double.infinity,
+            child: CacheImageOrSvg(
+              source: detail.pictureUrl ?? '',
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Date
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.calendar_month_outlined,
+                      color: Color(0xFFDDDDDD),
+                      size: 16,
+                    ),
+                    const SizedBox(width: 7),
+                    Text(
+                      detail.createdAt ?? '',
+                      style: textTheme.bodySmall?.copyWith(
+                        color: const Color(0xFFDDDDDD),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // Title
+                Text(
+                  detail.title ?? '',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontFamily: 'Synonym Variable',
+                    fontWeight: FontWeight.w700,
+                    height: 1.75,
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Content (HTML)
+                if (detail.content != null && detail.content!.isNotEmpty)
+                  Html(
+                    data: detail.content,
+                    style: {
+                      'body': Style(
+                        color: const Color(0xFFDDDDDD),
+                        fontSize: FontSize(12),
+                        fontFamily: 'Synonym Variable',
+                        // lineHeight: const LineHeight(1.67),
+                        margin: Margins.zero,
+                        padding: HtmlPaddings.zero,
+                      ),
+                      'p': Style(
+                        color: const Color(0xFFDDDDDD),
+                        fontSize: FontSize(12),
+                        fontFamily: 'Synonym Variable',
+                        lineHeight: const LineHeight(1.67),
+                        margin: Margins.only(bottom: 8),
+                      ),
+                      'h3': Style(
+                        color: Colors.white,
+                        fontSize: FontSize(14),
                         fontFamily: 'Synonym Variable',
                         fontWeight: FontWeight.w700,
-                        height: 1.75,
+                        lineHeight: const LineHeight(1.5),
+                        margin: Margins.only(top: 12, bottom: 8),
                       ),
-                    ),
+                    },
                   ),
-                  const SizedBox(height: 16),
 
-                  // Location + Description
-                  const Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Madinah',
-                          style: TextStyle(
-                            color: Color(
-                              0xFFDDDDDD,
-                            ) /* semantic-content-inverse-secondary */,
-                            fontSize: 12,
-                            fontFamily: 'Synonym Variable',
-                            fontWeight: FontWeight.w700,
-                            height: 1.67,
-                          ),
-                        ),
-                        TextSpan(
-                          text:
-                              ' — Masjid Nabawi bukan sekadar tempat ibadah biasa; ia adalah denyut nadi sejarah peradaban Islam. Dibangun pertama kali oleh Rasulullah SAW pada tahun pertama Hijriah (622 Masehi) setibanya beliau di Madinah, masjid ini awalnya hanya berupa bangunan sederhana berdinding bata lumpur dan beratapkan pelepah kurma.',
-                          style: TextStyle(
-                            color: Color(
-                              0xFFDDDDDD,
-                            ) /* semantic-content-inverse-secondary */,
-                            fontSize: 12,
-                            fontFamily: 'Synonym Variable',
-                            fontWeight: FontWeight.w400,
-                            height: 1.67,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Embedded Image
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: const CacheImageOrSvg(
-                      source:
-                          'https://serikatnews.com/wp-content/uploads/2022/06/15330053455b5fce219e239.jpg',
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Article Content
-                  const SizedBox(
-                    width: 371,
-                    height: 440,
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text:
-                                'Fase Perluasan Awal Seiring bertambahnya jumlah umat Islam, masjid ini mengalami beberapa kali perluasan sejak zaman Khulafaur Rasyidin. Khalifah Umar bin Khattab dan Utsman bin Affan mencatatkan sejarah perluasan signifikan dengan mulai menggunakan material batu dan kayu yang lebih kokoh.\nEra Modern dan Fasilitas Terkini Di era modern, perluasan paling masif terjadi di bawah pemerintahan Arab Saudi. \n\nSaat ini, Masjid Nabawi telah dilengkapi dengan berbagai fasilitas canggih untuk menunjang kenyamanan jutaan jemaah, di antaranya:\n',
-                            style: TextStyle(
-                              color: Color(
-                                0xFFDDDDDD,
-                              ) /* semantic-content-inverse-secondary */,
-                              fontSize: 12,
-                              fontFamily: 'Synonym Variable',
-                              fontWeight: FontWeight.w400,
-                              height: 1.67,
-                            ),
-                          ),
-                          TextSpan(
-                            text:
-                                'Payung Hidrolik Raksasa: Terpasang di area pelataran untuk melindungi jemaah dari terik matahari Madinah.\nSistem Pendingin Udara Sentral: Menjaga suhu di dalam masjid tetap sejuk meski di puncak musim panas.\nArea Bawah Tanah (Basement): Difungsikan sebagai area parkir luas dan fasilitas utilitas terpadu.\n',
-                            style: TextStyle(
-                              color: Color(
-                                0xFFDDDDDD,
-                              ) /* semantic-content-inverse-secondary */,
-                              fontSize: 12,
-                              fontFamily: 'Synonym Variable',
-                              fontWeight: FontWeight.w400,
-                              height: 1.67,
-                            ),
-                          ),
-                          TextSpan(
-                            text:
-                                '\nHingga kini, Masjid Nabawi mampu menampung lebih dari satu juta jemaah pada puncak musim haji, menjadikannya salah satu bangunan keagamaan terbesar dan termegah di dunia yang tidak pernah sepi dari lantunan ayat suci.',
-                            style: TextStyle(
-                              color: Color(
-                                0xFFDDDDDD,
-                              ) /* semantic-content-inverse-secondary */,
-                              fontSize: 12,
-                              fontFamily: 'Synonym Variable',
-                              fontWeight: FontWeight.w400,
-                              height: 1.67,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
-              ),
+                const SizedBox(height: 16),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -196,42 +182,6 @@ class DetailNewsScreen extends StatelessWidget {
         constraints: const BoxConstraints.tightFor(width: 40, height: 40),
         splashRadius: 20,
       ),
-      // actions: [
-      //   Padding(
-      //     padding: const EdgeInsets.only(right: 16),
-      //     child: _QiblaInfoButton(onTap: _showQiblaInfoModal),
-      //   ),
-      // ],
     );
   }
-
-  // Widget _buildBulletPoint(TextTheme textTheme, String text) {
-  //   return Padding(
-  //     padding: const EdgeInsets.only(bottom: 4),
-  //     child: Row(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Text(
-  //           '• ',
-  //           style: textTheme.bodyMedium?.copyWith(
-  //             color: const Color(0xFFDDDDDD),
-  //             fontSize: 14,
-  //             height: 1.43,
-  //           ),
-  //         ),
-  //         Expanded(
-  //           child: Text(
-  //             text,
-  //             style: textTheme.bodyMedium?.copyWith(
-  //               color: const Color(0xFFDDDDDD),
-  //               fontSize: 14,
-  //               fontWeight: FontWeight.w400,
-  //               height: 1.43,
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }

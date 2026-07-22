@@ -284,13 +284,13 @@ class ProductHalalScreen extends HookWidget {
         'onTap': onMinumanJSolatTap,
       },
       {
-        'label': 'Kalendar',
+        'label': 'Obat',
         'icon': 'assets/images/icon-images/icon-obat.png',
         'iconRatio': 0.75,
         'onTap': onObatTap,
       },
       {
-        'label': 'Produk Halal',
+        'label': 'Kosmetik',
         'icon': 'assets/images/icon-images/icon-kosmetik.png',
         'iconRatio': 0.9,
         'onTap': onProdukCosmeticTap,
