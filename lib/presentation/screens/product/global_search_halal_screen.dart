@@ -20,10 +20,10 @@ import 'package:sahaba_mobile/presentation/widgets/search_history.dart';
 class SearchProductHalalScreen extends StatelessWidget {
   const SearchProductHalalScreen({super.key});
 
-  static const Map<String, double> _fallbackCoordinates = {
-    'latitude': 0.0,
-    'longitude': 0.0,
-  };
+  // static const Map<String, double> _fallbackCoordinates = {
+  //   'latitude': 0.0,
+  //   'longitude': 0.0,
+  // };
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +205,7 @@ class SearchProductHalalScreen extends StatelessWidget {
                                           ),
                                         );
                                         // }
-                                      } catch (e) {
+                                      } on Exception catch (e) {
                                         ScaffoldMessenger.of(
                                           context,
                                         ).showSnackBar(
