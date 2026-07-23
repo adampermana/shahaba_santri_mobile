@@ -177,7 +177,6 @@ class _DetailKisahScreenState extends State<DetailKisahScreen> {
           ? const EdgeInsets.only(bottom: 100)
           : EdgeInsets.zero,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Hero image — 240px sesuai Figma (node 594:5290)
           _buildHeroImage(detail.pictureUrl),
@@ -185,7 +184,6 @@ class _DetailKisahScreenState extends State<DetailKisahScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Judul — Playpen Sans Bold 24px, center, line-height 40px
                 _buildTitle(context, detail.title),
@@ -193,7 +191,7 @@ class _DetailKisahScreenState extends State<DetailKisahScreen> {
                 // Konten HTML dari API
                 if (detail.content != null && detail.content!.isNotEmpty)
                   Html(
-                    data: detail.content!,
+                    data: detail.content ?? '-',
                     style: {
                       'body': Style(
                         color: ColorPalette.inverseSecondary,
@@ -327,7 +325,6 @@ class _DetailKisahScreenState extends State<DetailKisahScreen> {
         border: const Border(
           top: BorderSide(
             color: Color(0x33E8E8E8), // rgba(232,232,232,0.2)
-            width: 1,
           ),
         ),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
@@ -388,7 +385,6 @@ class _DetailKisahScreenState extends State<DetailKisahScreen> {
                   child: Slider(
                     divisions: 2,
                     min: -1,
-                    max: 1,
                     value: _textSizeSetting.clamp(-1, 1).toDouble(),
                     onChanged: (value) {
                       setState(() => _textSizeSetting = value);

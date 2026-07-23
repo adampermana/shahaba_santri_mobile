@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -272,8 +270,7 @@ class DetailProductScreen extends StatelessWidget {
 
                           const SizedBox(height: 20),
                           Visibility(
-                            visible:
-                                isAds == false && state.adsCarousel != null,
+                            visible: !isAds && state.adsCarousel != null,
                             child: const Text(
                               'Produk Yang Mungkin Anda Sukai',
                               style: TextStyle(
@@ -288,7 +285,7 @@ class DetailProductScreen extends StatelessWidget {
                       ),
                     ),
                     Visibility(
-                      visible: isAds == false && state.adsCarousel != null,
+                      visible: !isAds && state.adsCarousel != null,
                       child: HistoryItems(
                         namaProduk: ad?.name ?? state.adsCarousel?.name ?? '-',
                         status: ad != null ? ad!.status! : 'Halal',
@@ -322,7 +319,7 @@ class DetailProductScreen extends StatelessWidget {
 
 int getDateLeft(String date) {
   final now = DateTime.now();
-  final formatter = DateFormat("dd MMM yyyy");
+  final formatter = DateFormat('dd MMM yyyy');
   final targetDate = formatter.parse(date);
 
   final days = targetDate.difference(now).inDays;

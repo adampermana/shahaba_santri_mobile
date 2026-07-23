@@ -51,7 +51,6 @@ class ProductSearchResultSheet extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.4,
                 child: SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ListView.builder(
                         shrinkWrap: true,

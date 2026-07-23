@@ -9,7 +9,7 @@ import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/widgets/search_history.dart';
 
 class SingleItemSheet extends StatelessWidget {
-  const SingleItemSheet({super.key, required this.id, this.ad});
+  const SingleItemSheet({required this.id, super.key, this.ad});
 
   final ProductData? ad;
 
@@ -84,28 +84,6 @@ class SingleItemSheet extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    // Positioned(
-                                    //   top: 0,
-                                    //   left: 8,
-                                    //   child: Container(
-                                    //     width: 50,
-                                    //     height: 50,
-                                    //     decoration: BoxDecoration(
-                                    //       color:
-                                    //           state.product!.status == 'Halal'
-                                    //           ? Colors.teal
-                                    //           : Colors.red,
-                                    //       shape: BoxShape.circle,
-                                    //     ),
-                                    //     child: Icon(
-                                    //       state.product!.status == 'Halal'
-                                    //           ? Icons.check
-                                    //           : Icons.close,
-                                    //       color: Colors.white,
-                                    //       size: 40,
-                                    //     ),
-                                    //   ),
-                                    // ),
                                   ],
                                 ),
                                 const SizedBox(height: 16),

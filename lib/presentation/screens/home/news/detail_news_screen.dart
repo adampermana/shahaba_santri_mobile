@@ -10,9 +10,9 @@ import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 
 class DetailNewsScreen extends StatefulWidget {
   const DetailNewsScreen({
+    required this.newsId,
     super.key,
     this.initialData,
-    required this.newsId,
   });
 
   final int newsId;
@@ -109,7 +109,7 @@ class _DetailNewsScreenState extends State<DetailNewsScreen> {
                   detail.title ?? '',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: 18,
                     fontFamily: 'Synonym Variable',
                     fontWeight: FontWeight.w700,
                     height: 1.75,
@@ -132,7 +132,7 @@ class _DetailNewsScreenState extends State<DetailNewsScreen> {
                       ),
                       'p': Style(
                         color: const Color(0xFFDDDDDD),
-                        fontSize: FontSize(12),
+                        fontSize: FontSize(14),
                         fontFamily: 'Synonym Variable',
                         lineHeight: const LineHeight(1.67),
                         margin: Margins.only(bottom: 8),

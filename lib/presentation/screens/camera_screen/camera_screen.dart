@@ -512,7 +512,6 @@ class CameraScanScreen extends HookWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          clipBehavior: Clip.antiAlias,
           child: _cameraPreview(controller: controller, initFuture: initFuture),
         ),
         const IgnorePointer(
@@ -629,44 +628,45 @@ class ScannerOverlayPainter extends CustomPainter {
     final shortestSide = math.min(size.width, size.height);
     final inset = math.min(16.0, shortestSide * 0.06);
     final corner = math.min(63.0, shortestSide * 0.18);
-    final radius = math.min(10.0, corner * 0.22);
+    final radius = math.min(10, corner * 0.22);
     final left = inset;
     final top = inset;
     final right = size.width - inset;
     final bottom = size.height - inset;
 
-    canvas.drawPath(
-      Path()
-        ..moveTo(left, top + corner)
-        ..lineTo(left, top + radius)
-        ..quadraticBezierTo(left, top, left + radius, top)
-        ..lineTo(left + corner, top),
-      paint,
-    );
-    canvas.drawPath(
-      Path()
-        ..moveTo(right - corner, top)
-        ..lineTo(right - radius, top)
-        ..quadraticBezierTo(right, top, right, top + radius)
-        ..lineTo(right, top + corner),
-      paint,
-    );
-    canvas.drawPath(
-      Path()
-        ..moveTo(left, bottom - corner)
-        ..lineTo(left, bottom - radius)
-        ..quadraticBezierTo(left, bottom, left + radius, bottom)
-        ..lineTo(left + corner, bottom),
-      paint,
-    );
-    canvas.drawPath(
-      Path()
-        ..moveTo(right - corner, bottom)
-        ..lineTo(right - radius, bottom)
-        ..quadraticBezierTo(right, bottom, right, bottom - radius)
-        ..lineTo(right, bottom - corner),
-      paint,
-    );
+    canvas
+      ..drawPath(
+        Path()
+          ..moveTo(left, top + corner)
+          ..lineTo(left, top + radius)
+          ..quadraticBezierTo(left, top, left + radius, top)
+          ..lineTo(left + corner, top),
+        paint,
+      )
+      ..drawPath(
+        Path()
+          ..moveTo(right - corner, top)
+          ..lineTo(right - radius, top)
+          ..quadraticBezierTo(right, top, right, top + radius)
+          ..lineTo(right, top + corner),
+        paint,
+      )
+      ..drawPath(
+        Path()
+          ..moveTo(left, bottom - corner)
+          ..lineTo(left, bottom - radius)
+          ..quadraticBezierTo(left, bottom, left + radius, bottom)
+          ..lineTo(left + corner, bottom),
+        paint,
+      )
+      ..drawPath(
+        Path()
+          ..moveTo(right - corner, bottom)
+          ..lineTo(right - radius, bottom)
+          ..quadraticBezierTo(right, bottom, right, bottom - radius)
+          ..lineTo(right, bottom - corner),
+        paint,
+      );
   }
 
   @override
@@ -689,7 +689,7 @@ class CameraBorderClipper extends CustomClipper<Path> {
       (size.height - 300) - borderWidth * 2,
     );
 
-    Path path = Path()
+    final path = Path()
       ..addRect(outer)
       ..addRect(inner);
 

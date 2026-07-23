@@ -6,7 +6,6 @@ abstract class ProductState with _$ProductState {
     required List<ProductData> data,
     required bool isLoading,
     required bool isLoadingSaveData,
-    String? errorMessage,
     required String imagePath,
     required ProductData? tempProduct,
     required bool isCamera,
@@ -22,6 +21,7 @@ abstract class ProductState with _$ProductState {
     required List<ProductData> productMultipleList,
     required PaginationMeta? paginationMeta,
     required bool isLoadingProductMultiple,
+    String? errorMessage,
     // required bool isRetry,
   }) = _ProductState;
 

@@ -34,7 +34,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         // Search Image
         searchImage: (value) async {
           debugPrint(
-            '========================Searching product by image: ${value.imagePath}',
+            '===================Searching product by image: ${value.imagePath}',
           );
           emit(state.copyWith(imagePath: value.imagePath));
           final dataLocal =
@@ -42,7 +42,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
               _localDataSource.authGuestDataHive;
           final locationDetail = await _locationPermissionService
               .getAddressFromCoordinates(value.coordinates);
-          debugPrint("================== $locationDetail");
+          debugPrint('================== $locationDetail');
           final payload = ProductBody(
             person: dataLocal?.name ?? 'Guest',
             deviceId: dataLocal?.phoneNumber ?? '',

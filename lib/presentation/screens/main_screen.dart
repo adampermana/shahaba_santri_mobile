@@ -16,7 +16,7 @@ import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
-import 'package:sahaba_mobile/presentation/screens/home/new_home_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/home/home_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/product/detail_product_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/bottom_navigation_bar.dart';
@@ -86,7 +86,7 @@ class _MainScreenState extends State<_MainScreen> {
   DateTime? _lastBackPressedAt;
 
   List<Widget> get _screens => [
-    const NewHomeScreen(),
+    HomeScreen(isActive: _selectedIndex == 0),
     const SizedBox.shrink(),
     const QuranScreen(),
   ];

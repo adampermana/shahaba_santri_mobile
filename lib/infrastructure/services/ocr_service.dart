@@ -29,11 +29,11 @@ class OcrService {
     final inputImage = InputImage.fromFile(File(path));
     final textRecognizer = TextRecognizer();
 
-    final RecognizedText recognizedText = await textRecognizer.processImage(
+    final recognizedText = await textRecognizer.processImage(
       inputImage,
     );
 
-    textRecognizer.close();
+    await textRecognizer.close();
 
     final buffer = StringBuffer();
 
@@ -53,27 +53,27 @@ class OcrService {
     final inputImage = InputImage.fromFile(File(path));
     final textRecognizer = TextRecognizer();
 
-    final RecognizedText recognizedText = await textRecognizer.processImage(
+    final recognizedText = await textRecognizer.processImage(
       inputImage,
     );
 
-    textRecognizer.close();
+    await textRecognizer.close();
 
-    final blocks = recognizedText.blocks.map((block) {
-      final rect = block.boundingBox;
-      final area = rect.width * rect.height;
-      return TextBlockArea(block.text, area);
-    }).toList();
-
-    // sort dari area terbesar
-    blocks.sort((a, b) => b.area.compareTo(a.area));
+    final blocks =
+        recognizedText.blocks.map((block) {
+            final rect = block.boundingBox;
+            final area = rect.width * rect.height;
+            return TextBlockArea(block.text, area);
+          }).toList()
+          // sort dari area terbesar
+          ..sort((a, b) => b.area.compareTo(a.area));
 
     return blocks.isNotEmpty ? blocks.first.text : '';
   }
 
   /// Cocokkan hasil OCR dengan database halal
   static String detectHalalStatus(String text) {
-    String lowered = text.toLowerCase();
+    final lowered = text.toLowerCase();
 
     for (var key in halalKeywords.keys) {
       if (lowered.contains(key)) {
@@ -86,8 +86,7 @@ class OcrService {
 }
 
 class TextBlockArea {
+  TextBlockArea(this.text, this.area);
   final String text;
   final double area;
-
-  TextBlockArea(this.text, this.area);
 }

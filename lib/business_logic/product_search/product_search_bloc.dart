@@ -13,11 +13,6 @@ part 'product_search_state.dart';
 part 'product_search_bloc.freezed.dart';
 
 class ProductSearchBloc extends Bloc<ProductSearchEvent, ProductSearchState> {
-  static const Map<String, double> _fallbackCoordinates = {
-    'latitude': 0.0,
-    'longitude': 0.0,
-  };
-
   ProductSearchBloc(
     this._repo,
     this._localDataSource,
@@ -27,6 +22,10 @@ class ProductSearchBloc extends Bloc<ProductSearchEvent, ProductSearchState> {
     on<_LoadingClick>(_onLoadingClick);
     on<_AdLog>(_onAdLog);
   }
+  static const Map<String, double> _fallbackCoordinates = {
+    'latitude': 0.0,
+    'longitude': 0.0,
+  };
 
   final IProductRepository _repo;
   final IAuthLocalDatasource _localDataSource;
@@ -69,7 +68,7 @@ class ProductSearchBloc extends Bloc<ProductSearchEvent, ProductSearchState> {
     );
   }
 
-  void _onLoadingClick(
+  Future<void> _onLoadingClick(
     _LoadingClick event,
     Emitter<ProductSearchState> emit,
   ) async {

@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 
 class SpecialProductHeader extends StatelessWidget {
-  const SpecialProductHeader({super.key, required this.child});
+  const SpecialProductHeader({required this.child, super.key});
 
   final Widget child;
 
@@ -24,8 +24,8 @@ class SpecialProductHeader extends StatelessWidget {
                     onTap: () {
                       context.pop();
                     },
-                    child: Row(
-                      children: const [
+                    child: const Row(
+                      children: [
                         Icon(
                           Icons.arrow_back_ios,
                           color: Colors.white,
@@ -33,7 +33,7 @@ class SpecialProductHeader extends StatelessWidget {
                         ),
                         SizedBox(width: 8),
                         Text(
-                          "Kembali",
+                          'Kembali',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
@@ -46,7 +46,7 @@ class SpecialProductHeader extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               child,
             ],
           ),

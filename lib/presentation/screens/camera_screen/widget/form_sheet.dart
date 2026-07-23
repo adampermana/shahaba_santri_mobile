@@ -12,7 +12,7 @@ import 'package:sahaba_mobile/presentation/screens/camera_screen/widget/success_
 import 'package:sahaba_mobile/presentation/widgets/custom_validation_form.dart';
 
 class FormSheet extends StatelessWidget {
-  const FormSheet({super.key, required this.image});
+  const FormSheet({required this.image, super.key});
 
   final String image;
 

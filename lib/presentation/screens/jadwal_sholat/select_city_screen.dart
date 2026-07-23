@@ -14,7 +14,6 @@ import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
-import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 
 class SelectCityScreen extends StatefulWidget {
   const SelectCityScreen({super.key});
@@ -208,14 +207,14 @@ class _SelectCityViewState extends State<_SelectCityView> {
                         ),
                         onChanged: (value) {
                           context.read<CitySearchBloc>().add(
-                                CitySearchEvent.searchCity(value),
-                              );
+                            CitySearchEvent.searchCity(value),
+                          );
                         },
                       ),
                     ),
                     ValueListenableBuilder<TextEditingValue>(
                       valueListenable: _searchController,
-                      builder: (_, value, __) {
+                      builder: (_, value, _) {
                         if (value.text.isEmpty) {
                           return const SizedBox(width: 18);
                         }
@@ -225,8 +224,8 @@ class _SelectCityViewState extends State<_SelectCityView> {
                           onPressed: () {
                             _searchController.clear();
                             context.read<CitySearchBloc>().add(
-                                  const CitySearchEvent.clearSearch(),
-                                );
+                              const CitySearchEvent.clearSearch(),
+                            );
                           },
                           icon: SvgPicture.asset(
                             AppIcons.closeLine,
@@ -255,16 +254,19 @@ class _SelectCityViewState extends State<_SelectCityView> {
                 builder: (context, state) {
                   final isLoading =
                       state.getAllCitiesLoading || state.searchCityLoading;
-                  final hasError = state.getAllCitiesErrorMessage.isNotEmpty ||
+                  final hasError =
+                      state.getAllCitiesErrorMessage.isNotEmpty ||
                       state.searchCityErrorMessage.isNotEmpty;
                   final errorMessage = state.getAllCitiesErrorMessage.isNotEmpty
                       ? state.getAllCitiesErrorMessage
                       : state.searchCityErrorMessage;
 
-                  final hasSearchQuery =
-                      _searchController.text.trim().isNotEmpty;
-                  final cities =
-                      hasSearchQuery ? state.searchResults : state.cities;
+                  final hasSearchQuery = _searchController.text
+                      .trim()
+                      .isNotEmpty;
+                  final cities = hasSearchQuery
+                      ? state.searchResults
+                      : state.cities;
 
                   if (isLoading) {
                     return Center(
@@ -317,7 +319,7 @@ class _SelectCityViewState extends State<_SelectCityView> {
                   }
                   return ListView.separated(
                     itemCount: cities.length,
-                    separatorBuilder: (_, __) => const Divider(
+                    separatorBuilder: (_, _) => const Divider(
                       height: 1,
                       color: ColorPalette.borderTransparent,
                     ),

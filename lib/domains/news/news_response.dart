@@ -59,4 +59,3 @@ class NewsDetailResponse {
 
   Map<String, dynamic> toJson() => _$NewsDetailResponseToJson(this);
 }
-

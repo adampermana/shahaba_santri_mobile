@@ -85,7 +85,7 @@ class HistoryProductLimitWidget extends HookWidget {
                 physics:
                     const NeverScrollableScrollPhysics(), // Disable scrolling here, parent should scroll if needed
                 itemCount: state.historyProductLimit.length,
-                separatorBuilder: (_, __) => const SizedBox.shrink(),
+                separatorBuilder: (_, _) => const SizedBox.shrink(),
                 itemBuilder: (context, index) {
                   final item = state.historyProductLimit[index];
                   return _HistoryItemTile(item: item);
@@ -135,7 +135,7 @@ class _HistoryItemTile extends StatelessWidget {
               width: 106,
               height: 72,
               autoCache: true,
-              errorBuilder: (_, __, ___) => _imagePlaceholder(),
+              errorBuilder: (_, _, _) => _imagePlaceholder(),
             ),
             const SizedBox(width: 12),
 

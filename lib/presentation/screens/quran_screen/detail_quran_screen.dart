@@ -728,7 +728,8 @@ Widget _surahContent(
   String? initialVerseKey,
 }) {
   final showBismillahAsset = _shouldShowBismillahAsset(detail);
-  final verses = showBismillahAsset &&
+  final verses =
+      showBismillahAsset &&
           detail.verses.isNotEmpty &&
           _isBismillahVerse(detail.verses.first)
       ? detail.verses.skip(1).toList(growable: false)
@@ -764,7 +765,7 @@ Widget _surahContent(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
           sliver: SliverList.separated(
             itemCount: verses.length,
-            separatorBuilder: (_, __) => const Divider(
+            separatorBuilder: (_, _) => const Divider(
               height: 1,
               thickness: 1,
               color: ColorPalette.borderTransparent,
@@ -802,24 +803,26 @@ Widget _surahContent(
                 ),
               ),
             ),
-          ...verses.take(targetIndex).map(
-            (verse) => Column(
-              children: [
-                _verseRow(
-                  context,
-                  verse,
-                  textSizeSetting,
-                  detailArgs: detailArgs,
-                  isHighlighted: isHighlighted(verse),
+          ...verses
+              .take(targetIndex)
+              .map(
+                (verse) => Column(
+                  children: [
+                    _verseRow(
+                      context,
+                      verse,
+                      textSizeSetting,
+                      detailArgs: detailArgs,
+                      isHighlighted: isHighlighted(verse),
+                    ),
+                    const Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: ColorPalette.borderTransparent,
+                    ),
+                  ],
                 ),
-                const Divider(
-                  height: 1,
-                  thickness: 1,
-                  color: ColorPalette.borderTransparent,
-                ),
-              ],
-            ),
-          ),
+              ),
         ]),
       ),
       SliverPadding(
@@ -827,7 +830,7 @@ Widget _surahContent(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
         sliver: SliverList.separated(
           itemCount: verses.length - targetIndex,
-          separatorBuilder: (_, __) => const Divider(
+          separatorBuilder: (_, _) => const Divider(
             height: 1,
             thickness: 1,
             color: ColorPalette.borderTransparent,
@@ -867,7 +870,6 @@ bool _isBismillahVerse(QuranVerseModel verse) {
   final arabic = _cleanQuranText(verse.arabic).trim();
   return arabic.startsWith('بِسْمِ');
 }
-
 
 Widget _juzContent(
   BuildContext context,

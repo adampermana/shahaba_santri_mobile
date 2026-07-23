@@ -43,7 +43,7 @@ class SearchProductHalalScreen extends StatelessWidget {
           BlocListener<ProductSearchBloc, ProductSearchState>(
             listenWhen: (previous, current) =>
                 previous.isLoadingClick != current.isLoadingClick,
-            listener: (context, state) {
+            listener: (context, state) async {
               if (state.isLoadingClick == true) {
                 LoadingOverlay.show(
                   context,
@@ -60,7 +60,7 @@ class SearchProductHalalScreen extends StatelessWidget {
                 if (Navigator.of(context, rootNavigator: true).canPop()) {
                   Navigator.of(context, rootNavigator: true).pop();
                 }
-                Navigator.push(
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => DetailProductScreen(

@@ -72,7 +72,7 @@ class HistoryItems extends StatelessWidget {
                 width: 106,
                 height: 72,
                 autoCache: true,
-                errorBuilder: (_, __, ___) => Container(
+                errorBuilder: (_, _, _) => Container(
                   width: 106,
                   height: 72,
                   decoration: BoxDecoration(

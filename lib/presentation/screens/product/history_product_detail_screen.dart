@@ -58,7 +58,7 @@ class HistoryProductDetailScreen extends StatelessWidget {
           listenWhen: (previous, current) =>
               previous.isLoading != current.isLoading,
           listener: (context, state) async {
-            if (state.isLoading == false) {
+            if (!state.isLoading) {
               await showDialog<void>(
                 context: context,
                 barrierDismissible: false, // <- Tidak bisa di close manual
@@ -142,8 +142,8 @@ class HistoryProductDetailScreen extends StatelessWidget {
                               ],
                             ),
                             InkWell(
-                              onTap: () {
-                                _showLocationDialog(
+                              onTap: () async {
+                                await _showLocationDialog(
                                   context,
                                   lat ?? product.lat,
                                   long ?? product.long,
@@ -157,7 +157,7 @@ class HistoryProductDetailScreen extends StatelessWidget {
                                   border: Border(
                                     bottom: BorderSide(
                                       color: ColorPalette.primary,
-                                      width: 2.0,
+                                      width: 2,
                                     ),
                                   ),
                                 ),
@@ -355,7 +355,7 @@ class HistoryProductDetailScreen extends StatelessWidget {
                             const Divider(
                               height: 1,
                               thickness: 1,
-                              color: const Color(0x33E8E8E8),
+                              color: Color(0x33E8E8E8),
                             ),
                             const SizedBox(height: 16),
                             Row(
@@ -418,7 +418,7 @@ class HistoryProductDetailScreen extends StatelessWidget {
                             const Divider(
                               height: 1,
                               thickness: 1,
-                              color: const Color(0x33E8E8E8),
+                              color: Color(0x33E8E8E8),
                             ),
                           ],
                         ),
@@ -510,8 +510,8 @@ class _LocationMapDialogState extends State<_LocationMapDialog> {
           Rect.fromLTWH(0, 0, pictureInfo.size.width, pictureInfo.size.height),
           paint,
         )
-        ..drawPicture(pictureInfo.picture);
-      canvas.restore();
+        ..drawPicture(pictureInfo.picture)
+        ..restore();
       pictureInfo.picture.dispose();
 
       final image = await recorder.endRecording().toImage(
@@ -527,7 +527,7 @@ class _LocationMapDialogState extends State<_LocationMapDialog> {
           );
         });
       }
-    } catch (e) {
+    } on Exception catch (e) {
       debugPrint('Failed to load custom marker: $e');
     }
   }

@@ -4,13 +4,12 @@ part 'history_product_limit.g.dart';
 
 @JsonSerializable()
 class FetchHistoryProductLimit {
-  @JsonKey(name: "data")
-  List<FetchHistoryDataProductLimit>? data;
-
   FetchHistoryProductLimit({this.data});
 
   factory FetchHistoryProductLimit.fromJson(Map<String, dynamic> json) =>
       _$FetchHistoryProductLimitFromJson(json);
+  @JsonKey(name: 'data')
+  List<FetchHistoryDataProductLimit>? data;
 
   Map<String, dynamic> toJson() => _$FetchHistoryProductLimitToJson(this);
 }
@@ -30,31 +29,31 @@ class FetchHistoryDataProductLimit {
     this.lat,
     this.long,
   });
-  @JsonKey(name: "id")
-  int? id;
-  @JsonKey(name: "product_id")
-  int? productId;
-  @JsonKey(name: "product_name")
-  String? productName;
-  @JsonKey(name: "product_category_name")
-  String? productCategoryName;
-  @JsonKey(name: 'halal_status')
-  String? halalStatus;
-  @JsonKey(name: "asset_url")
-  String? assetUrl;
-  @JsonKey(name: "event_time")
-  DateTime? eventTime;
-  @JsonKey(name: "expire_date")
-  String? expireDate;
-  @JsonKey(name: 'register_date')
-  final String? registerDate;
-  @JsonKey(name: "lat")
-  double? lat;
-  @JsonKey(name: "long")
-  double? long;
 
   factory FetchHistoryDataProductLimit.fromJson(Map<String, dynamic> json) =>
       _$FetchHistoryDataProductLimitFromJson(json);
+  @JsonKey(name: 'id')
+  int? id;
+  @JsonKey(name: 'product_id')
+  int? productId;
+  @JsonKey(name: 'product_name')
+  String? productName;
+  @JsonKey(name: 'product_category_name')
+  String? productCategoryName;
+  @JsonKey(name: 'halal_status')
+  String? halalStatus;
+  @JsonKey(name: 'asset_url')
+  String? assetUrl;
+  @JsonKey(name: 'event_time')
+  DateTime? eventTime;
+  @JsonKey(name: 'expire_date')
+  String? expireDate;
+  @JsonKey(name: 'register_date')
+  final String? registerDate;
+  @JsonKey(name: 'lat')
+  double? lat;
+  @JsonKey(name: 'long')
+  double? long;
 
   Map<String, dynamic> toJson() => _$FetchHistoryDataProductLimitToJson(this);
 }

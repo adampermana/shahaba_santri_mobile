@@ -325,7 +325,6 @@ class ListDetailBrandByProductScreen extends StatelessWidget {
                     source: imageSource,
                     width: 117,
                     height: 80,
-                    fit: BoxFit.cover,
                     autoCache: true,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
