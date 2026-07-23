@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     0,
                   ),
                   Positioned(
-                    top: _maxCarouselHeight - 20,
+                    top: _maxCarouselHeight - 30,
                     left: 16,
                     right: 16,
                     child: _buildJadwalSholat(context),
@@ -752,13 +752,22 @@ Widget _buildBeritaIslam(BuildContext context) {
                   onTap: () => context.push(
                     '$currentLocation/${RouterPath.listAllNewsPath}',
                   ),
-                  child: Text(
-                    'Lihat Semua',
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: const Color(0xFFDDDDDD),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Lihat Semua',
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: const Color(0xFFB39164),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        color: Color(0xFFB39164),
+                        size: 14,
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -982,7 +991,7 @@ class _CarouselContentState extends State<_CarouselContent> {
           Positioned(
             left: 16,
             right: 16,
-            bottom: 40,
+            bottom: 48,
             child: _CarouselOverlayWidget(
               title: currentAd?.campaignName ?? 'Pasang Iklan Sekarang',
               currentIndex: _currentIndex,
