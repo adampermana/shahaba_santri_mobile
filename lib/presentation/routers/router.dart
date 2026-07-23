@@ -198,6 +198,19 @@ final GoRouter router = GoRouter(
                 value: sl<LocationBloc>(),
                 child: const CameraScanScreen(),
               ),
+              routes: [
+                GoRoute(
+                  path: RouterPath.productDetailPath,
+                  builder: (context, state) {
+                    final extra = state.extra as Map<String, dynamic>?;
+                    return DetailProductScreen(
+                      id: extra?['id'] as int? ?? 0,
+                      ad: extra?['ad'] as ProductData?,
+                      isAds: extra?['isAds'] as bool? ?? false,
+                    );
+                  },
+                ),
+              ],
             ),
 
             //  Global Search Product Halal
@@ -213,7 +226,8 @@ final GoRouter router = GoRouter(
                 final extra = state.extra as Map<String, dynamic>?;
                 return ListDetailBrandByProductScreen(
                   id: extra?['id'] as int? ?? 0,
-                  campaignName: extra?['campaignName'] as String?,
+                  brandId: extra?['brand_id'] as int?,
+                  partnerName: extra?['partner_name'] as String?,
                   imageUrl: extra?['image'] as String?,
                 );
               },

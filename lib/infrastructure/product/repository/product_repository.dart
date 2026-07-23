@@ -255,6 +255,21 @@ class ProductRepository implements IProductRepository {
   }
 
   @override
+  Future<Either<ServerFailures, Brand>> getBrandById(int id) async {
+    try {
+      return Right(await _remote.getBrandById(id));
+    } on ServerFailures catch (e) {
+      return Left(
+        ServerFailures(
+          statusCode: e.statusCode,
+          title: e.title,
+          message: e.message,
+        ),
+      );
+    }
+  }
+
+  @override
   Future<Either<ServerFailures, bool>> sendLog(
     ProductLogPayload payload,
   ) async {

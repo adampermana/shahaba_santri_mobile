@@ -196,11 +196,15 @@ class ProductHalalScreen extends HookWidget {
                                           ),
                                         );
                                       }
+                                      debugPrint(
+                                        '=== brand id: ${brand.id}, productId: ${brand.productId}, campaignId: ${brand.campaignId}',
+                                      );
                                       await context.push(
                                         '$currentLocation/${RouterPath.listDetailBrandByProductPath}',
                                         extra: {
                                           'id': brand.id,
-                                          'campaignName': brand.campaignName,
+                                          'brand_id': brand.brandId,
+                                          'partner_name': brand.partnerName,
                                           'image': brand.image,
                                         },
                                       );

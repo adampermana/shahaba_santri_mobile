@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -8,6 +9,80 @@ import 'package:mime/mime.dart';
 String? parseToBase64(String? source) {
   if (source == null || source.isEmpty) return null;
   return base64Encode(File(source).readAsBytesSync());
+}
+
+Future<File> cropImageToAspectRatio({
+  required File file,
+  required double aspectRatio,
+}) async {
+  final bytes = await file.readAsBytes();
+  final codec = await ui.instantiateImageCodec(bytes);
+  final frame = await codec.getNextFrame();
+  final image = frame.image;
+
+  try {
+    final imageAspectRatio = image.width / image.height;
+    late final ui.Rect sourceRect;
+
+    if (imageAspectRatio > aspectRatio) {
+      final cropWidth = image.height * aspectRatio;
+      sourceRect = ui.Rect.fromLTWH(
+        (image.width - cropWidth) / 2,
+        0,
+        cropWidth,
+        image.height.toDouble(),
+      );
+    } else {
+      final cropHeight = image.width / aspectRatio;
+      sourceRect = ui.Rect.fromLTWH(
+        0,
+        (image.height - cropHeight) / 2,
+        image.width.toDouble(),
+        cropHeight,
+      );
+    }
+
+    final outputWidth = sourceRect.width.round();
+    final outputHeight = sourceRect.height.round();
+    final recorder = ui.PictureRecorder();
+    final canvas = ui.Canvas(recorder);
+    canvas.drawImageRect(
+      image,
+      sourceRect,
+      ui.Rect.fromLTWH(
+        0,
+        0,
+        outputWidth.toDouble(),
+        outputHeight.toDouble(),
+      ),
+      ui.Paint(),
+    );
+
+    final croppedImage = await recorder.endRecording().toImage(
+      outputWidth,
+      outputHeight,
+    );
+
+    try {
+      final croppedBytes = await croppedImage.toByteData(
+        format: ui.ImageByteFormat.png,
+      );
+      if (croppedBytes == null) {
+        throw StateError('Gagal memproses area gambar di dalam bingkai.');
+      }
+
+      final outputFile = File(
+        '${Directory.systemTemp.path}/cropped_${DateTime.now().microsecondsSinceEpoch}.png',
+      );
+      await outputFile.writeAsBytes(croppedBytes.buffer.asUint8List());
+      return outputFile;
+    } finally {
+      croppedImage.dispose();
+    }
+  } finally {
+    image.dispose();
+    codec.dispose();
+  }
 }
 
 Future<String?> compressImageToTargetSize({

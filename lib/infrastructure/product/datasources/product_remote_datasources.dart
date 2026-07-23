@@ -24,6 +24,7 @@ abstract class IProductRemoteDatasource {
   Future<ListProductResponse> getProductByCategory(int id);
   Future<ListProductResponse> getProdusenProduct(int id);
   Future<ListBrand> getBrandData();
+  Future<Brand> getBrandById(int id);
   Future<ListAdsResponse> getAds(String target);
   Future<ListCategory> getCategory();
   Future<ListAdsResponse> getAdsSponsored(int page, int limit);
@@ -141,6 +142,25 @@ class ProductRemoteDatasource implements IProductRemoteDatasource {
     try {
       final response = await _dio.get<Map<String, dynamic>>('/api/v1/brand');
       return ListBrand.fromJson(response.data!);
+    } on DioException catch (e) {
+      throw ServerException.withError(e);
+    }
+  }
+
+  @override
+  Future<Brand> getBrandById(int id) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/api/v1/brand/$id',
+      );
+      final data = response.data?['data'] as Map<String, dynamic>?;
+      if (data == null) {
+        throw ServerException.withMessage(
+          title: 'Brand tidak ditemukan',
+          message: 'Data brand kosong.',
+        );
+      }
+      return Brand.fromJson(data);
     } on DioException catch (e) {
       throw ServerException.withError(e);
     }

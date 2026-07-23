@@ -110,9 +110,13 @@ class CameraScanScreen extends HookWidget {
         if (!cam.value.isInitialized) return;
 
         final image = await cam.takePicture();
+        final croppedFile = await cropImageToAspectRatio(
+          file: File(image.path),
+          aspectRatio: _cameraFrameAspectRatio,
+        );
 
         final compressedFile = await compressImageToTargetSize(
-          file: File(image.path),
+          file: croppedFile,
         );
         if (compressedFile == null) return;
         bloc.add(ProductEvent.searchImage(compressedFile, coordinates));

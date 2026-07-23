@@ -34,6 +34,7 @@ abstract class IProductRepository {
   Future<Either<ServerFailures, List<DropdownItems>>> getBrand(int val);
   Future<Either<ServerFailures, List<DropdownItems>>> getProdusen();
   Future<Either<ServerFailures, List<Brand>>> getBrandData();
+  Future<Either<ServerFailures, Brand>> getBrandById(int id);
 
   Future<Either<ServerFailures, List<ProductData>>> getSearchProduct(
     String val,

@@ -1,8 +1,12 @@
+import 'package:dartz/dartz.dart' show Either;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/special_product/special_product_bloc.dart';
 import 'package:sahaba_mobile/domains/product/product_response.dart';
+import 'package:sahaba_mobile/infrastructure/failures/failures.dart';
+import 'package:sahaba_mobile/infrastructure/product/produsen/produsen.dart';
+import 'package:sahaba_mobile/infrastructure/product/repository/i_product_repository.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
@@ -13,19 +17,21 @@ import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 class ListDetailBrandByProductScreen extends StatelessWidget {
   const ListDetailBrandByProductScreen({
     required this.id,
-    this.campaignName,
+    this.brandId,
+    this.partnerName,
     this.imageUrl,
     super.key,
   });
 
   final int id;
-  final String? campaignName;
+  final int? brandId;
+  final String? partnerName;
   final String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
-    final headerTitle = campaignName?.trim().isNotEmpty == true
-        ? campaignName!.trim()
+    final headerTitle = partnerName?.trim().isNotEmpty == true
+        ? partnerName!.trim()
         : '-';
     final headerImage = imageUrl?.trim() ?? '';
 
@@ -131,10 +137,9 @@ class ListDetailBrandByProductScreen extends StatelessWidget {
                         ),
                         SizedBox(
                           width: 200,
-                          child: Text(
-                            headerTitle,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                          child: _BrandName(
+                            id: brandId,
+                            fallback: headerTitle,
                             style: Theme.of(context).textTheme.headlineSmall
                                 ?.copyWith(
                                   color: ColorPalette.inverseSecondary,
@@ -430,5 +435,60 @@ class ListDetailBrandByProductScreen extends StatelessWidget {
     }
 
     return 'Terbit $date';
+  }
+}
+
+class _BrandName extends StatefulWidget {
+  const _BrandName({
+    required this.id,
+    required this.fallback,
+    required this.style,
+  });
+
+  final int? id;
+  final String fallback;
+  final TextStyle? style;
+
+  @override
+  State<_BrandName> createState() => _BrandNameState();
+}
+
+class _BrandNameState extends State<_BrandName> {
+  Future<Either<ServerFailures, Brand>>? _brandFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    final brandId = widget.id;
+    if (brandId != null && brandId > 0) {
+      _brandFuture = sl<IProductRepository>().getBrandById(brandId);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final brandFuture = _brandFuture;
+    if (brandFuture == null) {
+      return Text(
+        widget.fallback,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: widget.style,
+      );
+    }
+
+    return FutureBuilder<Either<ServerFailures, Brand>>(
+      future: brandFuture,
+      builder: (context, snapshot) {
+        var title = widget.fallback;
+        snapshot.data?.fold((_) {}, (brand) => title = brand.name);
+        return Text(
+          title,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: widget.style,
+        );
+      },
+    );
   }
 }
