@@ -219,6 +219,7 @@ class CameraScanScreen extends HookWidget {
                       final draggableController =
                           DraggableScrollableController();
                       context.pop();
+                      // chek in
                       context.read<ProductBloc>().add(
                         ProductEvent.addLocalData(
                           state.data[0],

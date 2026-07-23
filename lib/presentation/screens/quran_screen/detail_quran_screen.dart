@@ -23,7 +23,6 @@ import 'package:sahaba_mobile/infrastructure/helpers/helper.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/bottom_sheet_widgets.dart';
-import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
@@ -856,8 +855,13 @@ bool _shouldShowBismillahAsset(QuranDetailModel detail) {
     return false;
   }
 
-  final surahNumber = int.tryParse(detail.verses.first.surahIndex);
+  return _shouldShowBismillahForSurah(detail.verses.first.surahIndex);
+}
+
+bool _shouldShowBismillahForSurah(String surahIndex) {
+  final surahNumber = int.tryParse(surahIndex);
   if (surahNumber == null) return false;
+  if (surahNumber == 1) return true;
 
   for (final chapter in chapters) {
     if (chapter.id == surahNumber) return chapter.bismillahPre;
@@ -867,8 +871,15 @@ bool _shouldShowBismillahAsset(QuranDetailModel detail) {
 }
 
 bool _isBismillahVerse(QuranVerseModel verse) {
-  final arabic = _cleanQuranText(verse.arabic).trim();
-  return arabic.startsWith('بِسْمِ');
+  final arabic = _cleanQuranText(verse.arabic)
+      .replaceAll(RegExp(r'<[^>]*>'), '')
+      .replaceAll(RegExp(r'\s+'), ' ')
+      .trim();
+  if (arabic.startsWith('بِسْمِ') || arabic.startsWith('بسم')) return true;
+
+  // Al-Fatihah's first verse is the basmalah in this dataset, even when
+  // the Arabic text is returned with a different diacritic/Unicode form.
+  return int.tryParse(verse.surahIndex) == 1 && verse.verseNumber == 1;
 }
 
 Widget _juzContent(
@@ -885,6 +896,12 @@ Widget _juzContent(
     itemCount: groups.length,
     itemBuilder: (context, gi) {
       final group = groups[gi];
+      final showBismillah = _shouldShowBismillahForSurah(group.surahIndex);
+      final displayVerses = showBismillah &&
+              group.verses.isNotEmpty &&
+              _isBismillahVerse(group.verses.first)
+          ? group.verses.skip(1).toList()
+          : group.verses;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -893,8 +910,18 @@ Widget _juzContent(
             surahName: group.surahName,
             surahNameAr: group.surahNameAr,
           ),
-          ...group.verses.asMap().entries.map((e) {
-            final isLast = e.key == group.verses.length - 1;
+          if (showBismillah)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/svg/icon-bismillah.svg',
+                  width: 135,
+                ),
+              ),
+            ),
+          ...displayVerses.asMap().entries.map((e) {
+            final isLast = e.key == displayVerses.length - 1;
             return Column(
               children: [
                 _verseRow(

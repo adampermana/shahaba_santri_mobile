@@ -30,8 +30,10 @@ class NewsRemoteDatasource implements INewsRemoteDatasource {
   @override
   Future<NewsData> getNewsDetail(int id) async {
     try {
-      final response =
-          await _dio.get<Map<String, dynamic>>('/api/v1/news/$id');
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/api/v1/news/$id',
+        queryParameters: {'limit_pagination': 3},
+      );
 
       final data = response.data;
       if (data == null) {

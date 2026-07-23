@@ -277,25 +277,25 @@ class ProductHalalScreen extends HookWidget {
     final items = [
       {
         'label': 'Makanan',
-        'icon': 'assets/images/icon-images/icon-makanan.png',
+        'icon': 'assets/images/icon-images/icon-makanan.webp',
         'iconRatio': 0.78,
         'onTap': onMakananTap,
       },
       {
         'label': 'Minuman',
-        'icon': 'assets/images/icon-images/icon-minuman.png',
+        'icon': 'assets/images/icon-images/icon-minuman.webp',
         'iconRatio': 0.85,
         'onTap': onMinumanJSolatTap,
       },
       {
         'label': 'Obat',
-        'icon': 'assets/images/icon-images/icon-obat.png',
+        'icon': 'assets/images/icon-images/icon-obat.webp',
         'iconRatio': 0.75,
         'onTap': onObatTap,
       },
       {
         'label': 'Kosmetik',
-        'icon': 'assets/images/icon-images/icon-kosmetik.png',
+        'icon': 'assets/images/icon-images/icon-kosmetik.webp',
         'iconRatio': 0.9,
         'onTap': onProdukCosmeticTap,
       },

@@ -17,7 +17,6 @@ import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/home/home_screen.dart';
-import 'package:sahaba_mobile/presentation/screens/product/detail_product_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/bottom_navigation_bar.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
@@ -261,47 +260,69 @@ class _MainScreenState extends State<_MainScreen> {
                                         .read<ProductBloc>();
 
                                     try {
-                                      productBloc.add(
-                                        ProductEvent.logAd(
-                                          state.addSplash?.productId ?? 0,
-                                          state.addSplash?.campaignId ?? 0,
-                                          state.addSplash?.id ?? 0,
-                                          {'latitude': lat, 'longitude': long},
-                                          'Click',
-                                        ),
-                                      );
-                                      if (state.addSplash!.type
-                                              ?.toLowerCase() ==
-                                          'product') {
-                                        navigator.pop();
-                                        if (!mounted) return;
-                                        await Navigator.push(
-                                          context,
-                                          MaterialPageRoute<void>(
-                                            builder: (_) => DetailProductScreen(
-                                              id: int.parse(
-                                                state.addSplash?.target ?? '0',
-                                              ),
-                                            ),
+                                      if (lat != 0.0 || long != 0.0) {
+                                        productBloc.add(
+                                          ProductEvent.logAd(
+                                            state.addSplash?.productId ?? 0,
+                                            state.addSplash?.campaignId ?? 0,
+                                            state.addSplash?.id ?? 0,
+                                            {
+                                              'latitude': lat,
+                                              'longitude': long,
+                                            },
+                                            'Click',
                                           ),
                                         );
-                                      } else {
-                                        final uri = Uri.parse(
-                                          state.addSplash?.target ?? '',
-                                        );
-                                        if (await canLaunchUrl(uri)) {
+                                      }
+                                      switch (state.addSplash!.type
+                                          ?.toUpperCase()) {
+                                        case 'PRODUCT':
+                                          final productId =
+                                              state.addSplash?.productId;
+                                          if (productId == null ||
+                                              productId <= 0) {
+                                            navigator.pop();
+                                            return;
+                                          }
+
+                                          final currentLocation =
+                                              GoRouterState.of(
+                                                context,
+                                              ).uri.toString();
+                                          navigator.pop();
+                                          if (!mounted) return;
+                                          await context.push(
+                                            '$currentLocation/'
+                                            '${RouterPath.productHalalPath}/'
+                                            '${RouterPath.productDetailPath}',
+                                            extra: {
+                                              'id': productId,
+                                              'isAds': true,
+                                            },
+                                          );
+                                          return;
+                                        case 'URL':
+                                          final target =
+                                              state.addSplash?.target?.trim();
+                                          if (target == null ||
+                                              target.isEmpty) {
+                                            navigator.pop();
+                                            return;
+                                          }
+
+                                          final uri = Uri.tryParse(target);
+                                          if (uri == null) {
+                                            navigator.pop();
+                                            return;
+                                          }
+
                                           await launchUrl(
                                             uri,
                                             mode:
                                                 LaunchMode.externalApplication,
                                           );
                                           navigator.pop();
-                                        } else {
-                                          navigator.pop();
-                                          throw Exception(
-                                            'Tidak dapat membuka URL',
-                                          );
-                                        }
+                                          return;
                                       }
                                     } on Exception catch (e) {
                                       messenger.showSnackBar(

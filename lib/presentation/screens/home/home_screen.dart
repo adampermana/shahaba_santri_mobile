@@ -24,6 +24,7 @@ import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const _heroSurfaceShadow = [
   BoxShadow(
@@ -122,6 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: _buildContinueReading(context),
                 ),
+                const SizedBox(height: 4),
                 _buildBeritaIslam(context),
                 SizedBox(height: bottomInset),
               ],
@@ -177,38 +179,22 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Color(0x14000000),
             blurRadius: 4,
             offset: Offset(0, 2),
-            spreadRadius: 0,
           ),
           BoxShadow(
             color: Color(0x11000000),
             blurRadius: 6,
             offset: Offset(0, 6),
-            spreadRadius: 0,
           ),
           BoxShadow(
             color: Color(0x0A000000),
             blurRadius: 9,
             offset: Offset(0, 14),
-            spreadRadius: 0,
           ),
           BoxShadow(
             color: Color(0x02000000),
             blurRadius: 10,
             offset: Offset(0, 26),
-            spreadRadius: 0,
           ),
-          // BoxShadow(
-          //   color: Color(0x00000000),
-          //   blurRadius: 11,
-          //   offset: Offset(0, 40),
-          //   spreadRadius: 0,
-          // ),
-          // BoxShadow(
-          //   color: Color(0x3F000000),
-          //   blurRadius: 4,
-          //   offset: Offset(0, 4),
-          //   spreadRadius: 0,
-          // ),
         ],
       ),
       child: BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
@@ -258,11 +244,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   vertical: 2,
                 ),
                 decoration: ShapeDecoration(
-                  color: Colors.white.withValues(alpha: 0.58),
+                  color: Colors.white.withValues(alpha: 0.32),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24),
                     side: BorderSide(
-                      color: Colors.white.withValues(alpha: 0.72),
+                      color: Colors.white.withValues(alpha: 0.4),
                     ),
                   ),
                 ),
@@ -476,33 +462,33 @@ Widget _featureSection(
   final items = [
     {
       'label': 'Kiblat',
-      'icon': 'assets/images/icon-images/icon-kabah.png',
+      'icon': 'assets/images/icon-images/icon-kabah.webp',
       'iconRatio': 0.78,
       'onTap': onQiblatTap,
     },
     {
       'label': 'Jadwal Salat',
-      'icon': 'assets/images/icon-images/icon-jadwal-sholat.png',
+      'icon': 'assets/images/icon-images/icon-jadwal-sholat.webp',
       'iconRatio': 0.85,
       'onTap': onJadwalSolatTap,
       'badgeType': 'fire',
     },
     {
       'label': 'Kalendar',
-      'icon': 'assets/images/icon-images/icon-kalendar.png',
+      'icon': 'assets/images/icon-images/icon-kalendar.webp',
       'iconRatio': 0.75,
       'onTap': onKalendarTap,
     },
     {
       'label': 'Produk Halal',
-      'icon': 'assets/images/icon-images/produk-halal.png',
+      'icon': 'assets/images/icon-images/icon-produk-halal.webp',
       'iconRatio': 0.9,
       'onTap': onProdukHalalTap,
       'badgeType': 'ai',
     },
     {
       'label': 'Kisah',
-      'icon': 'assets/images/icon-images/icon-kisah.png',
+      'icon': 'assets/images/icon-images/icon-kisah.webp',
       'iconRatio': 0.9,
       'onTap': onKisahTap,
     },
@@ -582,8 +568,8 @@ Widget _featureSection(
                                     ),
                                   ),
                                   child: Center(
-                                    child: Image.asset(
-                                      iconPath,
+                                    child: CacheImageOrSvg(
+                                      source: iconPath,
                                       width: iconSize,
                                       height: iconSize,
                                       fit: BoxFit.contain,
@@ -716,7 +702,7 @@ Widget _buildBeritaIslam(BuildContext context) {
 
   return BlocBuilder<NewsBloc, NewsState>(
     builder: (context, newsState) {
-      final newsList = newsState.newsResponse?.data ?? [];
+      final newsList = (newsState.newsResponse?.data ?? []).take(3).toList();
       final isLoading = newsState.fetchNewsLoading;
 
       if (isLoading) {
@@ -1092,22 +1078,38 @@ class _CarouselContentState extends State<_CarouselContent> {
     }
   }
 
-  void _handleAdTap(BuildContext context, AdResponseData? ad) {
+  Future<void> _handleAdTap(BuildContext context, AdResponseData? ad) async {
+    final currentLocation = GoRouterState.of(context).uri.toString();
+
     if (ad == null) {
       return;
     }
 
-    if (ad.type?.toLowerCase() == 'product') {
-      final targetId = int.tryParse(ad.target ?? '');
-      if (targetId != null) {
-        unawaited(
-          context.push(
-            '${widget.currentLocation}/${RouterPath.productHalalPath}/'
-            '${RouterPath.productDetailPath}',
-            extra: {'id': targetId, 'isAds': true},
-          ),
-        );
-      }
+    switch (ad.type?.toUpperCase()) {
+      case 'PRODUCT':
+        final productId = ad.productId;
+        if (productId != null && productId > 0) {
+          await context.push(
+            '$currentLocation/${RouterPath.productDetailPath}',
+            extra: {'id': productId, 'isAds': true},
+          );
+        }
+        return;
+      case 'URL':
+        final target = ad.target?.trim();
+        if (target == null || target.isEmpty) return;
+
+        var url = target;
+
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+          url = 'https://$url';
+        }
+
+        final uri = Uri.tryParse(url);
+        if (uri == null) return;
+
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+        return;
     }
   }
 }

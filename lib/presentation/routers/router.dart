@@ -98,6 +98,17 @@ final GoRouter router = GoRouter(
           },
         ),
         GoRoute(
+          path: RouterPath.productDetailPath,
+          builder: (context, state) {
+            final extra = state.extra as Map<String, dynamic>?;
+            return DetailProductScreen(
+              id: extra?['id'] as int? ?? 0,
+              ad: extra?['ad'] as ProductData?,
+              isAds: extra?['isAds'] as bool? ?? false,
+            );
+          },
+        ),
+        GoRoute(
           path: RouterPath.listAllNewsPath,
           builder: (context, state) => const ListAllNewsScreen(),
           routes: [
@@ -158,6 +169,17 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const ProductHalalScreen(),
           routes: [
             GoRoute(
+              path: RouterPath.productDetailPath,
+              builder: (context, state) {
+                final extra = state.extra as Map<String, dynamic>?;
+                return DetailProductScreen(
+                  id: extra?['id'] as int? ?? 0,
+                  ad: extra?['ad'] as ProductData?,
+                  isAds: extra?['isAds'] as bool? ?? false,
+                );
+              },
+            ),
+            GoRoute(
               path: RouterPath.historyProductPath,
               builder: (context, state) {
                 final extra = state.extra as Map<String, dynamic>?;
@@ -185,6 +207,7 @@ final GoRouter router = GoRouter(
             ),
 
             GoRoute(
+              // todo:
               path: RouterPath.listDetailBrandByProductPath,
               builder: (context, state) {
                 final extra = state.extra as Map<String, dynamic>?;

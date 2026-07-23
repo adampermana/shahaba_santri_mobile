@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
-import 'package:sahaba_mobile/presentation/routers/router_path.dart';
+import 'package:sahaba_mobile/presentation/screens/product/detail_product_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 
 class HistoryItems extends StatelessWidget {
@@ -41,19 +39,12 @@ class HistoryItems extends StatelessWidget {
       onTap:
           onTap ??
           () async {
-            final location = GoRouterState.of(context).uri.toString();
-            await context.push(
-              '$location/${RouterPath.productDetailPath}',
-              extra: {
-                'id': productId,
-                'lat': lat,
-                'long': long,
-                'eventTime': eventTime != null
-                    ? DateFormat(
-                        'dd MMM yyyy HH:mm',
-                      ).format(DateTime.parse(eventTime!))
-                    : null,
-              },
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) =>
+                    DetailProductScreen(id: id, isAds: type == 'Iklan'),
+              ),
             );
           },
       child: DecoratedBox(

@@ -152,6 +152,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           emit(state.copyWith(isLoadingSaveData: true, tempProduct: value.val));
         },
         addLocalData: (value) async {
+          debugPrint('==== ini event jalan addLocalData');
           emit(state.copyWith(errorMessage: null, isCamera: false));
           if (value.val.type?.toLowerCase() == 'iklan') {
             add(
