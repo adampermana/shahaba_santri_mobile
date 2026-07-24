@@ -138,7 +138,7 @@ class ProductHalalScreen extends HookWidget {
     return BlocBuilder<SpecialProductBloc, SpecialProductState>(
       buildWhen: (prev, curr) =>
           prev.getBrandDataLoading != curr.getBrandDataLoading ||
-          prev.dataBrand != curr.dataBrand,
+          prev.data != curr.data,
       builder: (context, state) {
         if (state.getBrandDataLoading) {
           return const SizedBox(
@@ -147,37 +147,33 @@ class ProductHalalScreen extends HookWidget {
           );
         }
 
-        if (state.dataBrand.isEmpty) return const SizedBox.shrink();
-
-        // Chunk: baris 1 = index 0–3, baris 2 = index 4–7
-        final data = state.data;
-        final rows = <List<AdResponseData>>[
-          data.take(4).toList(),
-          if (data.length > 4) data.skip(4).take(4).toList(),
-        ];
-
-        return Container(
-          width: double.infinity,
-          decoration: ShapeDecoration(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(13),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: rows
-                .map(
-                  (row) => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: row
-                        .map<Widget>(
-                          (brand) => Expanded(
-                            child: SizedBox(
-                              height: 80,
-                              child: Center(
-                                child: Material(
-                                  color: Colors.transparent,
+        return _BrandMenuPager(
+          brands: state.data,
+          currentLocation: currentLocation,
+          onBrandTap: (brand) async {
+            final loc = context.read<LocationBloc>().state;
+            if (loc.latitude != 0.0 || loc.longitude != 0.0) {
+              context.read<SpecialProductBloc>().add(
+                SpecialProductEvent.adLog(
+                  brand.productId,
+                  brand.campaignId,
+                  brand.id,
+                  'Click',
+                ),
+              );
+            }
+            await context.push(
+              '$currentLocation/${RouterPath.listDetailBrandByProductPath}',
+              extra: {
+                'id': brand.id,
+                'brand_id': brand.brandId,
+                'partner_name': brand.partnerName,
+                'image': brand.image,
+              },
+            );
+          },
+        );
+        /*
                                   child: InkWell(
                                     borderRadius: BorderRadius.circular(80),
                                     onTap: () async {
@@ -264,7 +260,7 @@ class ProductHalalScreen extends HookWidget {
                 )
                 .toList(),
           ),
-        );
+        );*/
       },
     );
   }
@@ -482,6 +478,128 @@ class ProductHalalScreen extends HookWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _BrandMenuPager extends StatefulWidget {
+  const _BrandMenuPager({
+    required this.brands,
+    required this.currentLocation,
+    required this.onBrandTap,
+  });
+
+  final List<AdResponseData> brands;
+  final String currentLocation;
+  final Future<void> Function(AdResponseData brand) onBrandTap;
+
+  @override
+  State<_BrandMenuPager> createState() => _BrandMenuPagerState();
+}
+
+class _BrandMenuPagerState extends State<_BrandMenuPager> {
+  final PageController _pageController = PageController();
+  int _page = 0;
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final brands = widget.brands.isEmpty
+        ? List<AdResponseData?>.filled(8, null)
+        : widget.brands.map<AdResponseData?>((brand) => brand).toList();
+    final pages = <List<AdResponseData?>>[];
+    for (var i = 0; i < brands.length; i += 8) {
+      pages.add(brands.sublist(i, ((i + 8).clamp(0, brands.length) as int)));
+    }
+    final showIndicator = widget.brands.length > 8;
+
+    return Column(
+      spacing: 8,
+      children: [
+        SizedBox(
+          height: 200,
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: pages.length,
+            onPageChanged: (value) => setState(() => _page = value),
+            itemBuilder: (context, pageIndex) {
+              final page = pages[pageIndex];
+              return GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 8,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  mainAxisExtent: 80,
+                ),
+                itemBuilder: (context, index) {
+                  final brand = index < page.length ? page[index] : null;
+
+                  if (brand?.image == null || brand!.image!.isEmpty) {
+                    return const CacheImageOrSvg(
+                      source: 'assets/svg/icon-brand.svg',
+                      width: 52,
+                      height: 52,
+                      isCircle: true,
+                      autoCache: true,
+                    );
+                  }
+                  return Center(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(80),
+                      onTap: () => widget.onBrandTap(brand),
+                      child: Container(
+                        width: 64,
+                        height: 64,
+                        padding: const EdgeInsets.all(6),
+                        decoration: ShapeDecoration(
+                          color: const Color(0xFFE8E8E8),
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                              width: 4,
+                              color: Color(0xFFB39164),
+                            ),
+                            borderRadius: BorderRadius.circular(80),
+                          ),
+                        ),
+
+                        child: CacheImageOrSvg(
+                          source: brand.image ?? '',
+                          width: 52,
+                          height: 52,
+                          isCircle: true,
+                          autoCache: true,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        if (showIndicator)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              pages.length,
+              (index) => AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                width: index == _page ? 12 : 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: index == _page ? Colors.white : Colors.white38,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
