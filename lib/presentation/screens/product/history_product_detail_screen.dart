@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -7,12 +8,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart' as lottie;
 import 'package:sahaba_mobile/business_logic/product_detail/product_detail_bloc.dart';
-import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
+import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
-import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
 class HistoryProductDetailScreen extends StatelessWidget {
   const HistoryProductDetailScreen({
@@ -476,18 +476,96 @@ class _LocationMapDialog extends StatefulWidget {
 }
 
 class _LocationMapDialogState extends State<_LocationMapDialog> {
+  static const _darkMapStyle = '''
+[
+  {
+    "elementType": "geometry",
+    "stylers": [
+      {"color": "#1f2937"}
+    ]
+  },
+  {
+    "elementType": "labels.icon",
+    "stylers": [
+      {"visibility": "off"}
+    ]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {"color": "#d1d5db"}
+    ]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {"color": "#111827"}
+    ]
+  },
+  {
+    "featureType": "administrative",
+    "elementType": "geometry",
+    "stylers": [
+      {"color": "#4b5563"}
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "geometry",
+    "stylers": [
+      {"color": "#253244"}
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      {"color": "#374151"}
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {"color": "#111827"}
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      {"color": "#4b5563"}
+    ]
+  },
+  {
+    "featureType": "transit",
+    "elementType": "geometry",
+    "stylers": [
+      {"color": "#253244"}
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [
+      {"color": "#0f172a"}
+    ]
+  }
+]
+''';
+
   GoogleMapController? _mapController;
   BitmapDescriptor? _customMarkerIcon;
 
   @override
-  Future<void> initState() async {
+  void initState() {
     super.initState();
-    await _loadCustomMarker();
+    unawaited(_loadCustomMarker());
   }
 
   Future<void> _loadCustomMarker() async {
     try {
-      const size = 30.0;
+      const size = 24.0;
       final pictureInfo = await vg.loadPicture(
         const SvgAssetLoader('assets/svg/map-pin-3-fill.svg'),
         null,
@@ -543,55 +621,125 @@ class _LocationMapDialogState extends State<_LocationMapDialog> {
     final point = LatLng(widget.lat, widget.long);
 
     return Dialog(
-      backgroundColor: ColorPalette.scaffoldBackground,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 36),
+      backgroundColor: const Color(0xFF0F172A),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Lokasi Produk',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-              ),
-            ),
-            const SizedBox(height: 12),
-
             ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
               child: SizedBox(
-                height: 260,
-                child: GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: point,
-                    zoom: 15,
-                  ),
-                  onMapCreated: (controller) {
-                    _mapController = controller;
-                  },
-                  markers: {
-                    Marker(
-                      markerId: const MarkerId('product_location'),
-                      position: point,
-                      icon: _customMarkerIcon ?? BitmapDescriptor.defaultMarker,
+                height: 205,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                          target: point,
+                          zoom: 15,
+                        ),
+                        style: _darkMapStyle,
+                        onMapCreated: (controller) {
+                          _mapController = controller;
+                        },
+                        markers: {
+                          Marker(
+                            markerId: const MarkerId('product_location'),
+                            position: point,
+                            icon: _customMarkerIcon ??
+                                BitmapDescriptor.defaultMarker,
+                          ),
+                        },
+                        zoomControlsEnabled: false,
+                        myLocationButtonEnabled: false,
+                        mapToolbarEnabled: false,
+                      ),
                     ),
-                  },
-                  zoomControlsEnabled: true,
-                  myLocationButtonEnabled: false,
-                  mapToolbarEnabled: false,
+                    Positioned(
+                      right: 6,
+                      bottom: 12,
+                      child: Column(
+                        spacing: 8,
+                        children: [
+                          _MapZoomButton(
+                            icon: AppIcons.zoomInLine,
+                            onTap: () => _mapController?.animateCamera(
+                              CameraUpdate.zoomIn(),
+                            ),
+                          ),
+                          _MapZoomButton(
+                            icon: AppIcons.zoomOutLine,
+                            onTap: () => _mapController?.animateCamera(
+                              CameraUpdate.zoomOut(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-            SubmitButtonStylesWidget(
-              style: SubmitButtonStyle.text,
-              textButton: 'Tutup',
-              onPressed: () => Navigator.pop(context),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => Navigator.pop(context),
+                borderRadius: BorderRadius.circular(10000),
+                child: Container(
+                  width: double.infinity,
+                  height: 52,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10000),
+                  ),
+                  child: const Text(
+                    'Tutup',
+                    style: TextStyle(
+                      color: Color(0xFFA6A6A6),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      height: 16 / 14,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MapZoomButton extends StatelessWidget {
+  const _MapZoomButton({required this.icon, required this.onTap});
+
+  final String icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(6),
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: SvgPicture.asset(
+            icon,
+            width: 24,
+            height: 24,
+            colorFilter: const ColorFilter.mode(
+              ColorPalette.kWhite,
+              BlendMode.srcIn,
+            ),
+          ),
         ),
       ),
     );
