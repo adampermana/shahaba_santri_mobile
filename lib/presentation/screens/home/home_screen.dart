@@ -206,10 +206,6 @@ class _HomeScreenState extends State<HomeScreen> {
           image: AssetImage('assets/images/motif-batik-jadwal.png'),
           fit: BoxFit.cover,
           isAntiAlias: true,
-          colorFilter: ColorFilter.mode(
-            Color(0x99182031),
-            BlendMode.srcOver,
-          ),
         ),
         boxShadow: const [
           BoxShadow(
@@ -222,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
             offset: Offset(0, 6),
           ),
           BoxShadow(
-            color: Color.fromARGB(8, 255, 255, 255),
+            color: Color.fromARGB(6, 255, 255, 255),
             blurRadius: 12,
             offset: Offset(0, 1),
           ),
@@ -1493,51 +1489,70 @@ class _ContinueReadingContent extends StatelessWidget {
               // ==========================
               // EMPTY STATE
               // ==========================
-              : Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 42,
-                  ),
-                  child: Center(
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.62),
-                          fontSize: 16,
-                          height: 1.55,
-                        ),
-                        children: const [
-                          TextSpan(
-                            text:
-                                'Belum ada riwayat. Tap ayat '
-                                'Qur’an lalu pilih\n',
-                            style: TextStyle(
-                              color: Color(
-                                0xFFA6A6A6,
-                              ) /* semantic-content-inverse-tertiary */,
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,
-                              height: 1.67,
-                            ),
-                          ),
-
-                          TextSpan(
-                            text: '“Tandai Terakhir Baca”',
-                            style: TextStyle(
-                              color: Colors
-                                  .white /* semantic-content-inverse-primary */,
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w700,
-                              height: 1.67,
-                            ),
-                          ),
-                        ],
+              : Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Positioned(
+                      left: -24,
+                      top: -50,
+                      child: Image.asset(
+                        'assets/images/motif-batik-surah1.png',
+                        width: 150,
                       ),
                     ),
-                  ),
+                    Positioned(
+                      right: -30,
+                      bottom: -10,
+                      child: Image.asset(
+                        'assets/images/motif-batik-surah2.png',
+                        width: 170,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 42,
+                      ),
+                      child: Center(
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            style: textTheme.bodyMedium?.copyWith(
+                              color: Colors.white.withValues(alpha: 0.62),
+                              fontSize: 16,
+                              height: 1.55,
+                            ),
+                            children: const [
+                              TextSpan(
+                                text:
+                                    'Belum ada riwayat. Tap ayat '
+                                    'Qur’an lalu pilih\n',
+                                style: TextStyle(
+                                  color: Color(
+                                    0xFFA6A6A6,
+                                  ) /* semantic-content-inverse-tertiary */,
+                                  fontSize: 12,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.67,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '“Tandai Terakhir Baca”',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.67,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
         ),
       ],
