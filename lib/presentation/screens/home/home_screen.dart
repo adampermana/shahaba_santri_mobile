@@ -1082,6 +1082,10 @@ class _CarouselContentState extends State<_CarouselContent> {
     final currentLocation = GoRouterState.of(context).uri.toString();
 
     if (ad == null) {
+      final uri = Uri.tryParse('https://sah.solu.co.id/');
+      if (uri != null) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
       return;
     }
 

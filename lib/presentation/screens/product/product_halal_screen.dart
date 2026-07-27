@@ -76,9 +76,7 @@ class ProductHalalScreen extends HookWidget {
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
-            spacing: 16,
             children: [
-              // Search sementara
               SearchBarWidget(
                 hintText: 'Cari produk disini',
                 readOnly: true,
@@ -86,14 +84,12 @@ class ProductHalalScreen extends HookWidget {
                   '$currentLocation/${RouterPath.searchProductHalalPath}',
                 ),
               ),
-              // searchCard(
-              //   context,
-              //   onTap: () {},
-              // ),
+              const SizedBox(height: 24),
+
               // Brand Pilihan
               _brandPilihanSection(context),
               _menuBrand(context),
-              // Kategori Produk
+              const SizedBox(height: 16),
               _featureSection(
                 context,
                 onMakananTap: () async => context.push(
@@ -122,6 +118,8 @@ class ProductHalalScreen extends HookWidget {
                   },
                 ),
               ),
+
+              const SizedBox(height: 24),
 
               // Riwayat Produk
               const HistoryProductLimitWidget(),
@@ -173,94 +171,6 @@ class ProductHalalScreen extends HookWidget {
             );
           },
         );
-        /*
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(80),
-                                    onTap: () async {
-                                      final loc = context
-                                          .read<LocationBloc>()
-                                          .state;
-                                      // Skip jika GPS belum ready
-                                      if (loc.latitude != 0.0 ||
-                                          loc.longitude != 0.0) {
-                                        context.read<SpecialProductBloc>().add(
-                                          SpecialProductEvent.adLog(
-                                            brand.productId,
-                                            brand.campaignId,
-                                            brand.id,
-                                            'Click',
-                                          ),
-                                        );
-                                      }
-                                      debugPrint(
-                                        '=== brand id: ${brand.id}, productId: ${brand.productId}, campaignId: ${brand.campaignId}',
-                                      );
-                                      await context.push(
-                                        '$currentLocation/${RouterPath.listDetailBrandByProductPath}',
-                                        extra: {
-                                          'id': brand.id,
-                                          'brand_id': brand.brandId,
-                                          'partner_name': brand.partnerName,
-                                          'image': brand.image,
-                                        },
-                                      );
-                                    },
-                                    child: Container(
-                                      width: 64,
-                                      height: 64,
-                                      clipBehavior: Clip.antiAlias,
-                                      decoration: ShapeDecoration(
-                                        color: const Color(0xFFE8E8E8),
-                                        shape: RoundedRectangleBorder(
-                                          side: const BorderSide(
-                                            width: 4,
-                                            color: Color(0xFFB39164),
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            80,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(6),
-                                        child: CacheImageOrSvg(
-                                          source:
-                                              data
-                                                  .firstWhere(
-                                                    (element) =>
-                                                        element.id == brand.id,
-                                                  )
-                                                  .image ??
-                                              '',
-                                          width: 52,
-                                          height: 52,
-                                          isCircle: true,
-                                          autoCache: true,
-                                          errorBuilder: (context, error, stackTrace) {
-                                            debugPrint(
-                                              'Gagal load image brand: $error',
-                                            );
-                                            return const Icon(
-                                              Icons
-                                                  .image_not_supported_outlined,
-                                              color: Colors.black38,
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                )
-                .toList(),
-          ),
-        );*/
       },
     );
   }
@@ -304,33 +214,45 @@ class ProductHalalScreen extends HookWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Kategori Produk',
-          style: textTheme.titleMedium?.copyWith(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            height: 1.75,
+        SizedBox(
+          width: double.infinity,
+          child: Text(
+            'Kategori Produk',
+            style: textTheme.titleMedium?.copyWith(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              height: 1.75,
+            ),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         LayoutBuilder(
           builder: (context, constraints) {
             final itemCount = items.length;
             final rawItemWidth = constraints.maxWidth / itemCount;
-            final boxSize = (rawItemWidth * 0.72).clamp(44.0, 64.0);
+            final boxSize = (rawItemWidth * 0.75).clamp(48.0, 64.0);
             final labelFontSize = (boxSize * 0.21).clamp(10.5, 13.0);
 
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: items.map((item) {
+            return GridView.builder(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: items.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                mainAxisExtent: 100, // Adjust as needed to fit icon + text
+                crossAxisSpacing: 24,
+              ),
+              itemBuilder: (context, index) {
+                final item = items[index];
                 final label = item['label']! as String;
                 final iconPath = item['icon']! as String;
                 final iconRatio = item['iconRatio']! as double;
                 final onTap = item['onTap'] as VoidCallback?;
                 final iconSize = boxSize * iconRatio;
 
-                return Expanded(
+                return Center(
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
@@ -403,7 +325,7 @@ class ProductHalalScreen extends HookWidget {
                     ),
                   ),
                 );
-              }).toList(),
+              },
             );
           },
         ),
@@ -514,15 +436,15 @@ class _BrandMenuPagerState extends State<_BrandMenuPager> {
         : widget.brands.map<AdResponseData?>((brand) => brand).toList();
     final pages = <List<AdResponseData?>>[];
     for (var i = 0; i < brands.length; i += 8) {
-      pages.add(brands.sublist(i, ((i + 8).clamp(0, brands.length) as int)));
+      pages.add(brands.sublist(i, (i + 8).clamp(0, brands.length)));
     }
     final showIndicator = widget.brands.length > 8;
 
     return Column(
-      spacing: 8,
+      spacing: 4,
       children: [
         SizedBox(
-          height: 200,
+          height: 176,
           child: PageView.builder(
             controller: _pageController,
             itemCount: pages.length,
@@ -530,6 +452,7 @@ class _BrandMenuPagerState extends State<_BrandMenuPager> {
             itemBuilder: (context, pageIndex) {
               final page = pages[pageIndex];
               return GridView.builder(
+                padding: const EdgeInsets.only(top: 16),
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: 8,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -545,7 +468,6 @@ class _BrandMenuPagerState extends State<_BrandMenuPager> {
                       width: 52,
                       height: 52,
                       isCircle: true,
-                      autoCache: true,
                     );
                   }
                   return Center(
@@ -572,7 +494,6 @@ class _BrandMenuPagerState extends State<_BrandMenuPager> {
                           width: 52,
                           height: 52,
                           isCircle: true,
-                          autoCache: true,
                         ),
                       ),
                     ),

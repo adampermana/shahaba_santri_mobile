@@ -22,8 +22,6 @@ class HistoryProductLimitWidget extends HookWidget {
         context.watch<AuthBloc>().state.authDataHive?.id ??
         sl<AuthBloc>().state.authDataHive?.id;
 
-    final currentLocation = GoRouterState.of(context).uri.toString();
-
     useEffect(() {
       debugPrint('==== GuestId: $guestId');
       if (guestId != null) {
@@ -47,17 +45,15 @@ class HistoryProductLimitWidget extends HookWidget {
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 4,
           children: [
             //  Header (fixed, tidak ikut scroll)
-            const Padding(
-              padding: EdgeInsets.fromLTRB(24, 16, 24, 8),
-              child: Text(
-                'Riwayat',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: ColorPalette.kWhite,
-                ),
+            const Text(
+              'Riwayat',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: ColorPalette.kWhite,
               ),
             ),
 
@@ -82,8 +78,7 @@ class HistoryProductLimitWidget extends HookWidget {
                 padding: const EdgeInsets.only(bottom: 120),
                 shrinkWrap:
                     true, // Enable shrinkWrap to let ListView size to its children
-                physics:
-                    const NeverScrollableScrollPhysics(), // Disable scrolling here, parent should scroll if needed
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: state.historyProductLimit.length,
                 separatorBuilder: (_, _) => const SizedBox.shrink(),
                 itemBuilder: (context, index) {
@@ -126,7 +121,7 @@ class _HistoryItemTile extends StatelessWidget {
         );
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
           children: [
             //  Gambar produk
