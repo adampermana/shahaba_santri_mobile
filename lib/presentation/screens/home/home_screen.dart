@@ -200,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: const Color(0xff3F4451),
+        color: const Color(0xff343A47),
         borderRadius: BorderRadius.circular(20),
         image: const DecorationImage(
           image: AssetImage('assets/images/motif-batik-jadwal.png'),
