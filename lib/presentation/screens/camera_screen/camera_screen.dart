@@ -234,6 +234,7 @@ class CameraScanScreen extends HookWidget {
 
                       await showModalBottomSheet<void>(
                         isDismissible: false,
+                        backgroundColor: ColorPalette.scaffoldBackground,
                         isScrollControlled: true,
                         context: context,
                         shape: const RoundedRectangleBorder(

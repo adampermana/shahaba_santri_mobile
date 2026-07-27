@@ -35,12 +35,20 @@ class SingleItemSheet extends StatelessWidget {
             const SizedBox(height: 16),
             const Text(
               'Hasil Pencocokan Produk',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: ColorPalette.kWhite,
+              ),
             ),
             const SizedBox(height: 4),
             const Text(
               'Daftar produk yang paling mirip',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: ColorPalette.inverseOnSurface,
+              ),
             ),
             const SizedBox(height: 14),
             BlocBuilder<ProductDetailBloc, ProductDetailState>(
@@ -102,8 +110,7 @@ class SingleItemSheet extends StatelessWidget {
                                       //     ? 'Expired'
                                       //     : 'Belum Terdaftar Halal',
                                       style: TextStyle(
-                                        color: ColorPalette.primary,
-                                        // color:
+                                        color: ColorPalette.kTeal, // color:
                                         //     product.status == 'Halal' &&
                                         //         getDateLeft(
                                         //               product.expireDate!,
@@ -141,6 +148,8 @@ class SingleItemSheet extends StatelessWidget {
                                             style: TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w700,
+                                              color:
+                                                  ColorPalette.contentDisabled,
                                             ),
                                           ),
                                           Text(
@@ -161,7 +170,8 @@ class SingleItemSheet extends StatelessWidget {
                                             'Terbit ${product.registerDate}',
                                             // - ${product.expireDate}',
                                             style: const TextStyle(
-                                              color: ColorPalette.kGray200,
+                                              color:
+                                                  ColorPalette.inverseSecondary,
                                               fontSize: 14,
                                               fontWeight: FontWeight.w500,
                                             ),
@@ -197,14 +207,15 @@ class SingleItemSheet extends StatelessWidget {
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
+                                    color: ColorPalette.contentDisabled,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   product.description!,
                                   style: const TextStyle(
-                                    color: Colors.black87,
                                     fontSize: 16,
+                                    color: ColorPalette.inverseSecondary,
                                   ),
                                 ),
                                 const SizedBox(height: 16),
@@ -220,12 +231,13 @@ class SingleItemSheet extends StatelessWidget {
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
+                                        color: ColorPalette.contentDisabled,
                                       ),
                                     ),
                                     Text(
                                       product.category ?? '-',
                                       style: const TextStyle(
-                                        color: Colors.black54,
+                                        color: ColorPalette.inverseSecondary,
                                         fontSize: 16,
                                       ),
                                     ),
@@ -244,6 +256,7 @@ class SingleItemSheet extends StatelessWidget {
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
+                                        color: ColorPalette.contentDisabled,
                                       ),
                                     ),
                                     const SizedBox(width: 8),
@@ -253,7 +266,8 @@ class SingleItemSheet extends StatelessWidget {
                                         child: Text(
                                           product.partner ?? '-',
                                           style: const TextStyle(
-                                            color: Colors.black54,
+                                            color:
+                                                ColorPalette.inverseSecondary,
                                             fontSize: 14,
                                           ),
                                         ),
@@ -273,6 +287,7 @@ class SingleItemSheet extends StatelessWidget {
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
+                                      color: ColorPalette.contentDisabled,
                                     ),
                                   ),
                                 ),
