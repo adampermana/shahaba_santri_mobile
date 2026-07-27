@@ -480,9 +480,9 @@ class _LocationMapDialogState extends State<_LocationMapDialog> {
   BitmapDescriptor? _customMarkerIcon;
 
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
-    _loadCustomMarker();
+    await _loadCustomMarker();
   }
 
   Future<void> _loadCustomMarker() async {

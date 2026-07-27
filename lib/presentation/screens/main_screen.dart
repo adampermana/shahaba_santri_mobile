@@ -219,17 +219,17 @@ class _MainScreenState extends State<_MainScreen> {
                 final lat = locationState.latitude;
                 final long = locationState.longitude;
                 // Log impression hanya jika GPS sudah ready
-                // if (lat != 0.0 || long != 0.0) {
-                //   context.read<ProductBloc>().add(
-                //     ProductEvent.logAd(
-                //       state.addSplash!.productId,
-                //       state.addSplash!.campaignId,
-                //       state.addSplash!.id,
-                //       {'latitude': lat, 'longitude': long},
-                //       'Impression',
-                //     ),
-                //   );
-                // }
+                if (lat != 0.0 || long != 0.0) {
+                  context.read<ProductBloc>().add(
+                    ProductEvent.logAd(
+                      state.addSplash?.productId ?? 0,
+                      state.addSplash?.campaignId ?? 0,
+                      state.addSplash?.id ?? 0,
+                      {'latitude': lat, 'longitude': long},
+                      'Impression',
+                    ),
+                  );
+                }
                 await showDialog<void>(
                   context: context,
                   builder: (_) => PopScope(
