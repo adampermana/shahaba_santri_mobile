@@ -227,28 +227,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           );
           await _repo.sendAdLog(payload);
         },
-        // getHistory: (value) async {
-        //   emit(
-        //     state.copyWith(
-        //       isLoading: true,
-        //       errorMessage: null,
-        //       isCamera: false,
-        //     ),
-        //   );
-        //   final result = await _repo.getHistory();
-        //   result.fold(
-        //     (l) =>
-        //         emit(state.copyWith(errorMessage: l.message, isLoading: false)),
-        //     (r) => emit(
-        //       state.copyWith(
-        //         masterDataHistory: r,
-        //         dataHistory: r,
-        //         isLoading: false,
-        //         isLoadingSaveData: false,
-        //       ),
-        //     ),
-        //   );
-        // },
         filterData: (value) {
           final result = state.masterDataHistory
               .where(

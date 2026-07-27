@@ -302,8 +302,8 @@ class _MainScreenState extends State<_MainScreen> {
                                           );
                                           return;
                                         case 'URL':
-                                          final target =
-                                              state.addSplash?.target?.trim();
+                                          final target = state.addSplash?.target
+                                              ?.trim();
                                           if (target == null ||
                                               target.isEmpty) {
                                             navigator.pop();

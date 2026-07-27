@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
+import 'package:sahaba_mobile/business_logic/location_cubit/location_state.dart';
 import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_state.dart';
@@ -61,6 +63,38 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   static const double _maxCarouselHeight = 262;
 
+  String? _lastPrayerScheduleCityId;
+  DateTime? _lastPrayerScheduleDate;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadPrayerScheduleIfReady(context.read<LocationCubit>().state);
+  }
+
+  void _loadPrayerScheduleIfReady(LocationState state) {
+    if (state is! LocationLoaded) return;
+
+    final cityId = state.city.id;
+    if (cityId == null) return;
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    if (_lastPrayerScheduleCityId == cityId &&
+        _lastPrayerScheduleDate == today) {
+      return;
+    }
+
+    _lastPrayerScheduleCityId = cityId;
+    _lastPrayerScheduleDate = today;
+    unawaited(
+      context.read<PrayerScheduleCubit>().loadSchedule(
+        cityId,
+        now,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentLocation = GoRouterState.of(context).uri.toString();
@@ -69,8 +103,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return BlocProvider(
       create: (context) => sl<NewsBloc>()..add(const NewsEvent.fetchNewsList()),
-      child: CustomScrollView(
-        slivers: [
+      child: BlocListener<LocationCubit, LocationState>(
+        listener: (context, state) => _loadPrayerScheduleIfReady(state),
+        child: CustomScrollView(
+          slivers: [
           SliverToBoxAdapter(
             child: SizedBox(
               height: _maxCarouselHeight + 70,
@@ -131,8 +167,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildCarousel(
     BuildContext context,
@@ -199,11 +236,18 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
         builder: (context, scheduleState) {
-          final schedule = scheduleState is PrayerScheduleLoaded
-              ? scheduleState.response.jadwal
+          final loadedState = scheduleState is PrayerScheduleLoaded
+              ? scheduleState
               : null;
+          final schedule =
+              loadedState?.todaySchedule ?? loadedState?.response.jadwal;
+          final nextPrayerLabel = loadedState?.nextPrayer?.label ??
+              _nextPrayerLabelFromActive(loadedState?.activePrayer?.label);
 
-          final nextPrayer = _resolveNextPrayer(schedule);
+          final nextPrayer = _resolvePrayerByLabel(
+            nextPrayerLabel,
+            schedule,
+          );
           final countdownText = _getCountdownText(nextPrayer);
 
           return Row(
@@ -276,69 +320,62 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  _PrayerInfo _resolveNextPrayer(PrayerScheduleModel? schedule) {
-    final now = DateTime.now();
-
-    final prayers = [
-      const _PrayerInfo(label: 'Subuh', hour: 4, minute: 35),
-      const _PrayerInfo(label: 'Terbit', hour: 5, minute: 45),
-      const _PrayerInfo(label: 'Dzuhur', hour: 11, minute: 53),
-      const _PrayerInfo(label: 'Ashar', hour: 15, minute: 15),
-      const _PrayerInfo(label: 'Maghrib', hour: 17, minute: 55),
-      const _PrayerInfo(label: 'Isya', hour: 18, minute: 55),
-    ];
-
-    for (final prayer in prayers) {
-      final scheduledTime = _getScheduledTime(prayer, schedule, now);
-      if (scheduledTime.isAfter(now)) {
-        return _PrayerInfo(
-          label: prayer.label,
-          hour: scheduledTime.hour,
-          minute: scheduledTime.minute,
-        );
-      }
+  String _nextPrayerLabelFromActive(String? activeLabel) {
+    switch (activeLabel?.toLowerCase()) {
+      case 'subuh':
+        return 'Terbit';
+      case 'terbit':
+        return 'Dzuhur';
+      case 'dzuhur':
+        return 'Ashar';
+      case 'ashar':
+        return 'Maghrib';
+      case 'maghrib':
+        return 'Isya';
+      default:
+        return 'Subuh';
     }
-
-    final tomorrow = now.add(const Duration(days: 1));
-    final subuhTomorrow = _getScheduledTime(prayers.first, schedule, tomorrow);
-    return _PrayerInfo(
-      label: prayers.first.label,
-      hour: subuhTomorrow.hour,
-      minute: subuhTomorrow.minute,
-    );
   }
 
-  DateTime _getScheduledTime(
-    _PrayerInfo prayer,
+  _PrayerInfo _resolvePrayerByLabel(
+    String label,
     PrayerScheduleModel? schedule,
-    DateTime date,
   ) {
-    if (schedule != null) {
-      final timeStr = _getTimeFromSchedule(
-        schedule,
-        prayer.label.toLowerCase(),
-      );
-      if (timeStr != null) {
-        final parts = timeStr.split(':');
-        if (parts.length == 2) {
-          final hour = int.tryParse(parts[0].trim()) ?? prayer.hour;
-          final minute = int.tryParse(parts[1].trim()) ?? prayer.minute;
-          return DateTime(
-            date.year,
-            date.month,
-            date.day,
-            hour,
-            minute,
-          );
-        }
-      }
+    final fallback = _fallbackPrayerInfo(label);
+    final timeStr = schedule == null
+        ? null
+        : _getTimeFromSchedule(schedule, fallback.label.toLowerCase());
+
+    return _parsePrayerTime(timeStr, fallback);
+  }
+
+  _PrayerInfo _fallbackPrayerInfo(String label) {
+    switch (label.toLowerCase()) {
+      case 'terbit':
+        return const _PrayerInfo(label: 'Terbit', hour: 5, minute: 45);
+      case 'dzuhur':
+        return const _PrayerInfo(label: 'Dzuhur', hour: 11, minute: 53);
+      case 'ashar':
+        return const _PrayerInfo(label: 'Ashar', hour: 15, minute: 15);
+      case 'maghrib':
+        return const _PrayerInfo(label: 'Maghrib', hour: 17, minute: 55);
+      case 'isya':
+        return const _PrayerInfo(label: 'Isya', hour: 18, minute: 55);
+      default:
+        return const _PrayerInfo(label: 'Subuh', hour: 4, minute: 35);
     }
-    return DateTime(
-      date.year,
-      date.month,
-      date.day,
-      prayer.hour,
-      prayer.minute,
+  }
+
+  _PrayerInfo _parsePrayerTime(String? timeStr, _PrayerInfo fallback) {
+    final match = RegExp(r'(\d{1,2})\s*:\s*(\d{1,2})').firstMatch(
+      timeStr ?? '',
+    );
+    if (match == null) return fallback;
+
+    return _PrayerInfo(
+      label: fallback.label,
+      hour: int.tryParse(match.group(1) ?? '') ?? fallback.hour,
+      minute: int.tryParse(match.group(2) ?? '') ?? fallback.minute,
     );
   }
 
