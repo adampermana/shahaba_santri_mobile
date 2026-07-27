@@ -45,7 +45,7 @@ const _heroSurfaceShadow = [
     offset: Offset(0, 12),
   ),
   BoxShadow(
-    color: Color(0x1A000000),
+    color: Color.fromARGB(26, 255, 255, 255),
     blurRadius: 12,
     offset: Offset(0, 4),
   ),
@@ -107,69 +107,69 @@ class _HomeScreenState extends State<HomeScreen> {
         listener: (context, state) => _loadPrayerScheduleIfReady(state),
         child: CustomScrollView(
           slivers: [
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: _maxCarouselHeight + 70,
-              child: Stack(
-                clipBehavior: Clip.none,
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: _maxCarouselHeight + 70,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    _buildCarousel(
+                      context,
+                      _maxCarouselHeight,
+                      0,
+                    ),
+                    Positioned(
+                      top: _maxCarouselHeight - 30,
+                      left: 16,
+                      right: 16,
+                      child: _buildJadwalSholat(context),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Column(
+                spacing: 16,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildCarousel(
-                    context,
-                    _maxCarouselHeight,
-                    0,
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _featureSection(
+                      context,
+                      onQiblatTap: () => context.push(
+                        '$currentLocation/${RouterPath.qiblaPath}',
+                      ),
+                      onJadwalSolatTap: () => context.push(
+                        '$currentLocation/${RouterPath.jadwalSholatPath}',
+                      ),
+                      onKalendarTap: () => context.push(
+                        '$currentLocation/${RouterPath.calendarPath}',
+                      ),
+                      onProdukHalalTap: () => context.push(
+                        '$currentLocation/${RouterPath.productHalalPath}',
+                      ),
+                      onKisahTap: () => context.push(
+                        '$currentLocation/${RouterPath.kisahPath}',
+                      ),
+                    ),
                   ),
-                  Positioned(
-                    top: _maxCarouselHeight - 30,
-                    left: 16,
-                    right: 16,
-                    child: _buildJadwalSholat(context),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildContinueReading(context),
                   ),
+                  const SizedBox(height: 4),
+                  _buildBeritaIslam(context),
+                  SizedBox(height: bottomInset),
                 ],
               ),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Column(
-              spacing: 16,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _featureSection(
-                    context,
-                    onQiblatTap: () => context.push(
-                      '$currentLocation/${RouterPath.qiblaPath}',
-                    ),
-                    onJadwalSolatTap: () => context.push(
-                      '$currentLocation/${RouterPath.jadwalSholatPath}',
-                    ),
-                    onKalendarTap: () => context.push(
-                      '$currentLocation/${RouterPath.calendarPath}',
-                    ),
-                    onProdukHalalTap: () => context.push(
-                      '$currentLocation/${RouterPath.productHalalPath}',
-                    ),
-                    onKisahTap: () => context.push(
-                      '$currentLocation/${RouterPath.kisahPath}',
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _buildContinueReading(context),
-                ),
-                const SizedBox(height: 4),
-                _buildBeritaIslam(context),
-                SizedBox(height: bottomInset),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildCarousel(
     BuildContext context,
@@ -213,9 +213,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x14000000),
+            color: Color.fromARGB(19, 255, 255, 255),
             blurRadius: 4,
-            offset: Offset(0, 2),
           ),
           BoxShadow(
             color: Color(0x11000000),
@@ -223,13 +222,13 @@ class _HomeScreenState extends State<HomeScreen> {
             offset: Offset(0, 6),
           ),
           BoxShadow(
-            color: Color(0x0A000000),
-            blurRadius: 9,
-            offset: Offset(0, 14),
+            color: Color.fromARGB(8, 255, 255, 255),
+            blurRadius: 12,
+            offset: Offset(0, 1),
           ),
           BoxShadow(
-            color: Color(0x02000000),
-            blurRadius: 10,
+            color: Color.fromARGB(2, 255, 255, 255),
+            blurRadius: 30,
             offset: Offset(0, 26),
           ),
         ],
@@ -241,7 +240,8 @@ class _HomeScreenState extends State<HomeScreen> {
               : null;
           final schedule =
               loadedState?.todaySchedule ?? loadedState?.response.jadwal;
-          final nextPrayerLabel = loadedState?.nextPrayer?.label ??
+          final nextPrayerLabel =
+              loadedState?.nextPrayer?.label ??
               _nextPrayerLabelFromActive(loadedState?.activePrayer?.label);
 
           final nextPrayer = _resolvePrayerByLabel(
