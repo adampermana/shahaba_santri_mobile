@@ -129,11 +129,10 @@ class AdzanService {
     }
     final prayerLabel = _label(normalizedPrayerName);
     final normalizedLocation = _locationLabel(locationName);
-    final notificationTitle = 'Waktu $prayerLabel Telah Tiba';
-    final notificationBody =
-        'Telah masuk waktu sholat $prayerLabel untuk wilayah '
-        '$normalizedLocation '
-        'dan sekitarnya.';
+    final notificationTitle = 'Waktu $prayerLabel';
+    final notificationBody = Platform.isAndroid
+        ? 'Masuk waktu sholat $prayerLabel untuk $normalizedLocation.'
+        : 'Masuk waktu sholat untuk $normalizedLocation.';
 
     if (Platform.isAndroid) {
       await _scheduleAndroidAlarm(
@@ -158,12 +157,12 @@ class AdzanService {
         warningNotificationOnKill: Platform.isIOS,
         androidStopAlarmOnTermination: false,
         volumeSettings: const VolumeSettings.fixed(
-          volume: 0.3,
+          volume: 0.4,
         ),
         notificationSettings: NotificationSettings(
           title: notificationTitle,
           body: notificationBody,
-          stopButton: 'Hentikan Suara',
+          stopButton: 'Hentikan',
           keepNotificationAfterAlarmEnds: true,
         ),
         payload: jsonEncode({
@@ -341,7 +340,7 @@ class AdzanService {
   String _notificationAsset(String prayerName) {
     switch (prayerName) {
       case 'subuh':
-        return 'assets/svg/notif/icon.svg';
+        return 'assets/svg/notif/icon-transparant.svg';
       case 'dzuhur':
       case 'ashar':
         return 'assets/svg/notif/duzhur-ashar.svg';
@@ -350,7 +349,7 @@ class AdzanService {
       case 'isya':
         return 'assets/svg/notif/isya.svg';
       default:
-        return 'assets/svg/notif/icon.svg';
+        return 'assets/svg/notif/icon-transparant.svg';
     }
   }
 

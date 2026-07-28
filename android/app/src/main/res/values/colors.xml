@@ -4,7 +4,8 @@
     <color name="adzan_notification_text_secondary">#FF767676</color>
     <color name="adzan_notification_action_qibla">#FF1F8E5B</color>
     <color name="adzan_notification_action_stop">#FF666666</color>
-    <color name="adzan_notification_icon_background">#FF1F8E5B</color>
+    <!-- Color icon -->
+    <color name="adzan_notification_icon_background">#FF0F172A</color>
     <color name="adzan_notification_sun">#FFFFE171</color>
     <color name="adzan_notification_sun_deep">#FFFFB02E</color>
     <color name="adzan_notification_sky">#FF62B6F6</color>
