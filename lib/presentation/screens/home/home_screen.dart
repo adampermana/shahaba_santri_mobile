@@ -122,7 +122,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       top: _maxCarouselHeight - 30,
                       left: 16,
                       right: 16,
-                      child: _buildJadwalSholat(context),
+                      child: GestureDetector(
+                        child: _buildJadwalSholat(context),
+                        onTap: () => context.push(
+                          '$currentLocation/${RouterPath.jadwalSholatPath}',
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -586,19 +591,11 @@ Widget _featureSection(
                                         'assets/images/motif-menu.png',
                                       ),
                                       fit: BoxFit.cover,
+                                      opacity: 0.48,
                                     ),
                                   ),
                                   foregroundDecoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(14),
-                                    gradient: RadialGradient(
-                                      radius: 0.72,
-                                      colors: [
-                                        Colors.white.withValues(alpha: 0.32),
-                                        Colors.white.withValues(alpha: 0.08),
-                                        Colors.transparent,
-                                      ],
-                                      stops: const [0, 0.48, 1],
-                                    ),
                                   ),
                                   child: Center(
                                     child: CacheImageOrSvg(
