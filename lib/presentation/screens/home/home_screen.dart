@@ -21,7 +21,6 @@ import 'package:sahaba_mobile/domains/quran/juz_model.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/domains/quran/surah_model.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
-import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
@@ -101,77 +100,74 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final bottomInset = MediaQuery.of(context).padding.bottom;
 
-    return BlocProvider(
-      create: (context) => sl<NewsBloc>()..add(const NewsEvent.fetchNewsList()),
-      child: BlocListener<LocationCubit, LocationState>(
-        listener: (context, state) => _loadPrayerScheduleIfReady(state),
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: _maxCarouselHeight + 70,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    _buildCarousel(
-                      context,
-                      _maxCarouselHeight,
-                      0,
-                    ),
-                    Positioned(
-                      top: _maxCarouselHeight - 30,
-                      left: 16,
-                      right: 16,
-                      child: GestureDetector(
-                        child: _buildJadwalSholat(context),
-                        onTap: () => context.push(
-                          '$currentLocation/${RouterPath.jadwalSholatPath}',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Column(
-                spacing: 16,
-                mainAxisSize: MainAxisSize.min,
+    return BlocListener<LocationCubit, LocationState>(
+      listener: (context, state) => _loadPrayerScheduleIfReady(state),
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: _maxCarouselHeight + 70,
+              child: Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: _featureSection(
-                      context,
-                      onQiblatTap: () => context.push(
-                        '$currentLocation/${RouterPath.qiblaPath}',
-                      ),
-                      onJadwalSolatTap: () => context.push(
+                  _buildCarousel(
+                    context,
+                    _maxCarouselHeight,
+                    0,
+                  ),
+                  Positioned(
+                    top: _maxCarouselHeight - 30,
+                    left: 16,
+                    right: 16,
+                    child: GestureDetector(
+                      child: _buildJadwalSholat(context),
+                      onTap: () => context.push(
                         '$currentLocation/${RouterPath.jadwalSholatPath}',
                       ),
-                      onKalendarTap: () => context.push(
-                        '$currentLocation/${RouterPath.calendarPath}',
-                      ),
-                      onProdukHalalTap: () => context.push(
-                        '$currentLocation/${RouterPath.productHalalPath}',
-                      ),
-                      onKisahTap: () => context.push(
-                        '$currentLocation/${RouterPath.kisahPath}',
-                      ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: _buildContinueReading(context),
-                  ),
-                  const SizedBox(height: 4),
-                  _buildBeritaIslam(context),
-                  SizedBox(height: bottomInset),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              spacing: 16,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _featureSection(
+                    context,
+                    onQiblatTap: () => context.push(
+                      '$currentLocation/${RouterPath.qiblaPath}',
+                    ),
+                    onJadwalSolatTap: () => context.push(
+                      '$currentLocation/${RouterPath.jadwalSholatPath}',
+                    ),
+                    onKalendarTap: () => context.push(
+                      '$currentLocation/${RouterPath.calendarPath}',
+                    ),
+                    onProdukHalalTap: () => context.push(
+                      '$currentLocation/${RouterPath.productHalalPath}',
+                    ),
+                    onKisahTap: () => context.push(
+                      '$currentLocation/${RouterPath.kisahPath}',
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _buildContinueReading(context),
+                ),
+                const SizedBox(height: 4),
+                const _BeritaIslamSection(),
+                SizedBox(height: bottomInset),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -725,162 +721,168 @@ Widget _featureSection(
   );
 }
 
-Widget _buildBeritaIslam(BuildContext context) {
-  final currentLocation = GoRouterState.of(context).uri.toString();
+class _BeritaIslamSection extends StatelessWidget {
+  const _BeritaIslamSection();
 
-  final textTheme = Theme.of(context).textTheme;
+  @override
+  Widget build(BuildContext context) {
+    final currentLocation = GoRouterState.of(context).uri.toString();
+    final textTheme = Theme.of(context).textTheme;
 
-  return BlocBuilder<NewsBloc, NewsState>(
-    builder: (context, newsState) {
-      final newsList = (newsState.newsResponse?.data ?? []).take(3).toList();
-      final isLoading = newsState.fetchNewsLoading;
+    return BlocBuilder<NewsBloc, NewsState>(
+      builder: (context, newsState) {
+        final newsList = (newsState.newsResponse?.data ?? [])
+            .take(3)
+            .toList();
+        final isLoading = newsState.fetchNewsLoading;
 
-      if (isLoading) {
-        return const Padding(
-          padding: EdgeInsets.symmetric(vertical: 32),
-          child: Center(child: CircularProgressIndicator()),
-        );
-      }
+        if (isLoading) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 32),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
 
-      if (newsList.isEmpty) {
-        return const SizedBox.shrink();
-      }
+        if (newsList.isEmpty) {
+          return const SizedBox.shrink();
+        }
 
-      return Column(
-        spacing: 16,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Berita Islami',
-                  style: textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+        return Column(
+          spacing: 16,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Berita Islami',
+                    style: textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-
-                GestureDetector(
-                  onTap: () => context.push(
-                    '$currentLocation/${RouterPath.listAllNewsPath}',
-                  ),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Lihat Semua',
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: const Color(0xFFB39164),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                  GestureDetector(
+                    onTap: () => context.push(
+                      '$currentLocation/${RouterPath.listAllNewsPath}',
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Lihat Semua',
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: const Color(0xFFB39164),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color: Color(0xFFB39164),
-                        size: 14,
-                      ),
-                    ],
+                        const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: Color(0xFFB39164),
+                          size: 14,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          ...List.generate(newsList.length, (index) {
-            final item = newsList[index];
-            final isLast = index == newsList.length - 1;
-            return Column(
-              children: [
-                InkWell(
-                  onTap: () {
-                    unawaited(
-                      context.push(
-                        '$currentLocation/${RouterPath.detailNewsPath}',
-                        extra: item,
+            ...List.generate(newsList.length, (index) {
+              final item = newsList[index];
+              final isLast = index == newsList.length - 1;
+              return Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      unawaited(
+                        context.push(
+                          '$currentLocation/${RouterPath.detailNewsPath}',
+                          extra: item,
+                        ),
+                      );
+                    },
+                    splashColor: Colors.white.withValues(alpha: 0.06),
+                    highlightColor: Colors.white.withValues(alpha: 0.04),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: _NewsCard(item: item),
+                    ),
+                  ),
+                  if (!isLast)
+                    const SizedBox(
+                      width: double.infinity,
+                      height: 4,
+                      child: Divider(
+                        color: Color(0x33E8E8E8),
+                        thickness: 2,
                       ),
-                    );
-                  },
-                  splashColor: Colors.white.withValues(alpha: 0.06),
-                  highlightColor: Colors.white.withValues(alpha: 0.04),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: _buildNewsCard(
-                      context: context,
-                      item: item,
                     ),
-                  ),
-                ),
-                if (!isLast)
-                  const SizedBox(
-                    width: double.infinity,
-                    height: 4,
-                    child: Divider(
-                      color: Color(0x33E8E8E8),
-                      thickness: 2,
-                    ),
-                  ),
-              ],
-            );
-          }),
-        ],
-      );
-    },
-  );
+                ],
+              );
+            }),
+          ],
+        );
+      },
+    );
+  }
 }
 
-Widget _buildNewsCard({
-  required BuildContext context,
-  required NewsData item,
-}) {
-  final textTheme = Theme.of(context).textTheme;
+class _NewsCard extends StatelessWidget {
+  const _NewsCard({required this.item});
 
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: CacheImageOrSvg(
-          source: item.pictureUrl ?? '',
-          width: double.infinity,
-          height: 160,
-        ),
-      ),
-      const SizedBox(height: 16),
-      Text(
-        item.title ?? '',
-        maxLines: 3,
-        overflow: TextOverflow.ellipsis,
-        style: textTheme.bodyMedium?.copyWith(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          height: 1.4,
-        ),
-      ),
-      const SizedBox(height: 12),
-      Row(
-        children: [
-          const Icon(
-            Icons.calendar_month_outlined,
-            color: Color(0xFFDDDDDD),
-            size: 16,
+  final NewsData item;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: CacheImageOrSvg(
+            source: item.pictureUrl ?? '',
+            width: double.infinity,
+            height: 160,
           ),
-          const SizedBox(width: 6),
-          Text(
-            item.createdAt ?? '',
-            style: textTheme.bodySmall?.copyWith(
-              color: const Color(0xFFDDDDDD),
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
+        ),
+        const SizedBox(height: 16),
+        Text(
+          item.title ?? '',
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+          style: textTheme.bodyMedium?.copyWith(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            height: 1.4,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            const Icon(
+              Icons.calendar_month_outlined,
+              color: Color(0xFFDDDDDD),
+              size: 16,
             ),
-          ),
-        ],
-      ),
-    ],
-  );
+            const SizedBox(width: 6),
+            Text(
+              item.createdAt ?? '',
+              style: textTheme.bodySmall?.copyWith(
+                color: const Color(0xFFDDDDDD),
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
 
 // ─── Carousel Content (with autoPlay) ───────────────────────────

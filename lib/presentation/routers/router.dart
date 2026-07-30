@@ -25,6 +25,7 @@ import 'package:sahaba_mobile/presentation/screens/home/chat/sahaba_ai_screen.da
 import 'package:sahaba_mobile/presentation/screens/home/kisah/detail_kisah_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/kisah/kisah_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/news/detail_news_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/home/news/list_all_news_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/jadwal_sholat_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/qibla_screen/qibla_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/select_city_screen.dart';
@@ -36,7 +37,6 @@ import 'package:sahaba_mobile/presentation/screens/product/history_product_detai
 import 'package:sahaba_mobile/presentation/screens/product/list_detail_brand_by_product_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/product/product_halal_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/detail_quran_screen.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/list_all_news_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 

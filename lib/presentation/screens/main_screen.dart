@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
-import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
 import 'package:sahaba_mobile/business_logic/product_bloc/product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
@@ -61,9 +60,6 @@ class MainProvider extends StatelessWidget {
             unawaited(cubit.load());
             return cubit;
           })(),
-        ),
-        BlocProvider(
-          create: (_) => sl<NewsBloc>()..add(const NewsEvent.fetchNewsList()),
         ),
       ],
       child: const _MainScreen(),

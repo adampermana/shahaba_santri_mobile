@@ -77,6 +77,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           loadingGuest: false,
           successLoginGuest: true,
           loginResponse: r,
+          authDataHive: _authRepositories.fetchDataLoginGuest(),
           alert: null,
           message: r.meta?.message,
         ),
@@ -117,6 +118,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           loadingAi: false,
           successLoginAi: true,
           loginAiResponse: r,
+          authAiDataHive: _authRepositories.fetchDataLoginAi(),
           alert: null,
         ),
       ),
@@ -496,22 +498,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         loading: true,
       ),
     );
+    final resultUser = _authRepositories.fetchDataLoginUser();
     final resultGuest = _authRepositories.fetchDataLoginGuest();
     final resultAi = _authRepositories.fetchDataLoginAi();
-    if (resultGuest == null && resultAi == null) {
-      emit(
-        state.copyWith(loading: false, loadingAi: false),
-      );
-      add(const AuthEvent.postloginGuest());
-      add(const AuthEvent.postloginAi());
-      return;
-    }
+    final authData = resultUser ?? resultGuest;
+
     emit(
       state.copyWith(
         authAiDataHive: resultAi,
-        authDataHive: resultGuest,
+        authDataHive: authData,
         loading: false,
       ),
     );
+
+    if (authData == null) {
+      add(const AuthEvent.postloginGuest());
+    }
+
+    if (resultAi == null) {
+      add(const AuthEvent.postloginAi());
+    }
   }
 }

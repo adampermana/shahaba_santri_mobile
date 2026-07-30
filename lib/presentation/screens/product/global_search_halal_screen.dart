@@ -148,6 +148,7 @@ class SearchProductHalalScreen extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.normal,
+                                color: ColorPalette.kWhite,
                               ),
                               TextSpan(
                                 text: 'Hasil Pencarian ',
@@ -157,6 +158,7 @@ class SearchProductHalalScreen extends StatelessWidget {
                                     style: const TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 16,
+                                      color: ColorPalette.kWhite,
                                     ),
                                   ),
                                 ],

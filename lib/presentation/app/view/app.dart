@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
+import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/business_logic/product_bloc/product_bloc.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/l10n/l10n.dart';
@@ -14,18 +15,23 @@ class App extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => sl<ProductBloc>()..add(const ProductEvent.started()),
-        ),
-        BlocProvider(
           create: (context) =>
               sl<AuthBloc>()..add(const AuthEvent.getLocalUser()),
+        ),
+        BlocProvider(
+          create: (_) => sl<ProductBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => sl<NewsBloc>(),
         ),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listenWhen: (previous, current) =>
-            !previous.successLoginGuest && current.successLoginGuest,
+            (previous.authDataHive == null && current.authDataHive != null) ||
+            (!previous.successLoginGuest && current.successLoginGuest),
         listener: (context, state) {
           context.read<ProductBloc>().add(const ProductEvent.started());
+          context.read<NewsBloc>().add(const NewsEvent.fetchNewsList());
         },
         child: MaterialApp.router(
           routerConfig: router,
