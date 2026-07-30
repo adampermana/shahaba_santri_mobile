@@ -136,7 +136,6 @@ class AdzanAlarmService : Service() {
                 R.id.adzan_body,
                 notificationColor(R.color.adzan_notification_text_secondary)
             )
-            setImageViewResource(R.id.adzan_icon_image, R.drawable.ic_adzan_notification_small)
             setImageViewResource(R.id.adzan_prayer_image, imageResFor(request.prayerName))
             if (layoutId == R.layout.notification_adzan_expanded) {
                 setTextColor(

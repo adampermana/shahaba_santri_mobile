@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sahaba_mobile/firebase_options.dart';
-import 'package:sahaba_mobile/infrastructure/core/api/hayuwe_http_overrides.dart';
+import 'package:sahaba_mobile/infrastructure/core/api/sahaba_http_overrides.dart';
 import 'package:sahaba_mobile/infrastructure/failures/failures.dart';
 import 'package:sahaba_mobile/infrastructure/services/adzan_service.dart';
 import 'package:sahaba_mobile/infrastructure/services/firebase_messaging_service.dart';
