@@ -93,23 +93,43 @@ class CameraScanScreen extends HookWidget {
     }, []);
 
     Future<void> takePicture() async {
-      final bloc = context.read<ProductBloc>();
+      final productBloc = context.read<ProductBloc>();
+      final locationBloc = context.read<LocationBloc>();
+
       try {
-        final locationState = context.read<LocationBloc>().state;
-        final coordinates = locationState.locations;
-        if (coordinates == null) {
-          context.read<LocationBloc>().add(
-            const LocationEvent.getCurrentLocation(isGetPosition: true),
+        final locationState = locationBloc.state;
+
+        final Map<String, double> coordinates;
+
+        if (locationState.locations != null) {
+          coordinates = locationState.locations!;
+        } else if (Platform.isIOS) {
+          // if user iOS menolak izin lokasi, tetap lanjut dengan koordinat 0.0
+          coordinates = {
+            'latitude': 0.0,
+            'longitude': 0.0,
+          };
+        } else {
+          // Untuk platform lain, coba ambil lokasi terlebih dahulu
+          locationBloc.add(
+            const LocationEvent.getCurrentLocation(
+              isGetPosition: true,
+            ),
           );
           return;
         }
-        bloc.add(ProductEvent.startLoading());
+
         final cam = controller.value;
         if (cam == null) return;
+
+        productBloc.add(const ProductEvent.startLoading());
+
         await initFuture.value;
+
         if (!cam.value.isInitialized) return;
 
         final image = await cam.takePicture();
+
         final croppedFile = await cropImageToAspectRatio(
           file: File(image.path),
           aspectRatio: _cameraFrameAspectRatio,
@@ -118,12 +138,21 @@ class CameraScanScreen extends HookWidget {
         final compressedFile = await compressImageToTargetSize(
           file: croppedFile,
         );
+
         if (compressedFile == null) return;
-        bloc.add(ProductEvent.searchImage(compressedFile, coordinates));
+
+        productBloc.add(
+          ProductEvent.searchImage(
+            compressedFile,
+            coordinates,
+          ),
+        );
       } on Exception catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.toString())));
+        if (!context.mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
       }
     }
 
@@ -142,10 +171,14 @@ class CameraScanScreen extends HookWidget {
               BlocListener<LocationBloc, LocationState>(
                 listenWhen: (previous, current) =>
                     previous.alert != current.alert,
-                listener: (context, state) {
+                listener: (context, state) async {
                   if (state.alert != null) {
-                    showAlertDialog(
+                    await showAlertDialog(
                       context,
+                      titleColor: ColorPalette.kWhite,
+                      messageColor: ColorPalette.kWhite,
+                      iconColor: const Color(0xffB39164),
+                      backgroundColor: ColorPalette.scaffoldBackground,
                       alert: state.alert,
                       title: state.titleError,
                       message: state.messageError,

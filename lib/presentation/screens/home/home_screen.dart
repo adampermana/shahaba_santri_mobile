@@ -731,9 +731,7 @@ class _BeritaIslamSection extends StatelessWidget {
 
     return BlocBuilder<NewsBloc, NewsState>(
       builder: (context, newsState) {
-        final newsList = (newsState.newsResponse?.data ?? [])
-            .take(3)
-            .toList();
+        final newsList = (newsState.newsResponse?.data ?? []).take(3).toList();
         final isLoading = newsState.fetchNewsLoading;
 
         if (isLoading) {

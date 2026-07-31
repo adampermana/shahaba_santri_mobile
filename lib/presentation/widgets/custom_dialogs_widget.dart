@@ -1,12 +1,15 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 
 import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 import 'package:sahaba_mobile/infrastructure/failures/alert.dart';
+import 'package:sahaba_mobile/infrastructure/failures/failures.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
-import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart'
-    as custom_alert_dialog;
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
 /// Reusable custom dialog widget.
@@ -139,6 +142,9 @@ class CustomDialog extends StatelessWidget {
     this.barrierDismissible = true,
     this.icon,
     this.primaryButtonColor,
+    this.titleColor,
+    this.descriptionColor,
+    this.backgroundColor,
     this.child,
     this.content,
     this.insetPadding,
@@ -181,6 +187,15 @@ class CustomDialog extends StatelessWidget {
   /// Defaults to [ColorPalette.primaryColor].
   final Color? primaryButtonColor;
 
+  /// Custom color for the title text.
+  final Color? titleColor;
+
+  /// Custom color for the description text.
+  final Color? descriptionColor;
+
+  /// Custom dialog background color.
+  final Color? backgroundColor;
+
   /// Optional custom content widget shown between description and primary
   /// button.
   final Widget? child;
@@ -210,6 +225,9 @@ class CustomDialog extends StatelessWidget {
       barrierDismissible: value,
       icon: icon,
       primaryButtonColor: primaryButtonColor,
+      titleColor: titleColor,
+      descriptionColor: descriptionColor,
+      backgroundColor: backgroundColor,
       content: content,
       insetPadding: insetPadding,
       borderRadius: borderRadius,
@@ -230,7 +248,7 @@ class CustomDialog extends StatelessWidget {
         backgroundColor: Colors.transparent,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: const Color(0xffF0E9E0),
+            color: backgroundColor ?? const Color(0xffF0E9E0),
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           child:
@@ -254,7 +272,9 @@ class CustomDialog extends StatelessWidget {
                     Center(
                       child: Text(
                         title,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(color: titleColor),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -283,7 +303,9 @@ class CustomDialog extends StatelessWidget {
                               ? 14
                               : 14,
                           fontWeight: FontWeight.w400,
-                          color: Colors.black.withValues(alpha: 0.6),
+                          color:
+                              descriptionColor ??
+                              Colors.black.withValues(alpha: 0.6),
                         ),
                       ),
                     ],
@@ -343,20 +365,175 @@ Future<void> showComingSoonDialog(BuildContext context) async {
   );
 }
 
-void showAlertDialog(
+Future<void> showAlertDialog(
   BuildContext context, {
   Alert? alert,
   String? title,
   String? message,
-  VoidCallback? onRefresh,
+  FutureOr<void> Function()? onRefresh,
   VoidCallback? onSkip,
+  Color? titleColor,
+  Color? messageColor,
+  Color? iconColor,
+  Color? backgroundColor,
 }) {
-  custom_alert_dialog.showAlertDialog(
+  return CustomAlertDialog.showAlertDialog(
     context,
     alert: alert,
     title: title,
     message: message,
     onRefresh: onRefresh,
     onSkip: onSkip,
+    titleColor: titleColor,
+    messageColor: messageColor,
+    iconColor: iconColor,
+    backgroundColor: backgroundColor,
   );
+}
+
+class CustomAlertDialog {
+  static bool _isLocationAlertDialogShowing = false;
+  static bool _isLocationAlertActionRunning = false;
+
+  static Future<void> showAlertDialog(
+    BuildContext context, {
+    Alert? alert,
+    String? title,
+    String? message,
+    FutureOr<void> Function()? onRefresh,
+    VoidCallback? onSkip,
+    Color? titleColor,
+    Color? messageColor,
+    Color? iconColor,
+    Color? backgroundColor,
+  }) async {
+    if (alert is LocationAlert || alert is PermissionFailure) {
+      if (_isLocationAlertDialogShowing || _isLocationAlertActionRunning) {
+        return;
+      }
+      _isLocationAlertDialogShowing = true;
+      final actionCompleter = Completer<void>();
+
+      await showCustomDialog<void>(
+        context: context,
+        barrierDismissible: Platform.isIOS,
+        dialog: CustomDialog(
+          title: title ?? 'Izinkan Akses Lokasi',
+          barrierDismissible: Platform.isIOS,
+          icon: Icon(
+            Icons.location_on,
+            size: 48,
+            color: iconColor ?? ColorPalette.kBlack,
+          ),
+          description: message,
+          titleColor: titleColor,
+          descriptionColor: messageColor,
+          backgroundColor: backgroundColor,
+          onPrimaryPressed: () async {
+            _isLocationAlertActionRunning = true;
+
+            try {
+              Navigator.of(context).pop();
+
+              if (alert is LocationAlert &&
+                  alert.code == locationServiceErrorCode) {
+                await Geolocator.openLocationSettings();
+                return;
+              }
+
+              final permission = await Geolocator.checkPermission();
+
+              if (permission == LocationPermission.denied ||
+                  permission == LocationPermission.unableToDetermine) {
+                final requestedPermission =
+                    await Geolocator.requestPermission();
+
+                if (!context.mounted) return;
+
+                if (requestedPermission == LocationPermission.deniedForever) {
+                  await Geolocator.openAppSettings();
+                  return;
+                }
+
+                if (requestedPermission == LocationPermission.whileInUse ||
+                    requestedPermission == LocationPermission.always) {
+                  await onRefresh?.call();
+                }
+                return;
+              }
+
+              if (permission == LocationPermission.deniedForever) {
+                await Geolocator.openAppSettings();
+                return;
+              }
+
+              await onRefresh?.call();
+            } finally {
+              _isLocationAlertActionRunning = false;
+              if (!actionCompleter.isCompleted) {
+                actionCompleter.complete();
+              }
+            }
+          },
+        ),
+      ).whenComplete(() {
+        _isLocationAlertDialogShowing = false;
+        if (!_isLocationAlertActionRunning && !actionCompleter.isCompleted) {
+          actionCompleter.complete();
+        }
+      });
+
+      await actionCompleter.future;
+    } else if (alert is LocationAlertFakeGps) {
+      if (_isLocationAlertDialogShowing || _isLocationAlertActionRunning) {
+        return;
+      }
+
+      _isLocationAlertDialogShowing = true;
+      await showCustomDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        dialog: CustomDialog(
+          title: title ?? 'Lokasi Palsu Terdeteksi',
+          barrierDismissible: false,
+          icon: Icon(
+            Icons.location_on,
+            size: 48,
+            color: iconColor ?? ColorPalette.kBlack,
+          ),
+          description: message,
+          titleColor: titleColor,
+          descriptionColor: messageColor,
+          backgroundColor: backgroundColor,
+          onPrimaryPressed: () async {
+            Navigator.of(context).pop();
+            await onRefresh?.call();
+          },
+        ),
+      ).then((_) => _isLocationAlertDialogShowing = false);
+    } else if (alert is NotificationAlert) {
+      await showCustomDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        dialog: CustomDialog(
+          title: title ?? 'Izinkan Notifikasi',
+          barrierDismissible: false,
+          icon: Icon(
+            Icons.notifications,
+            size: 48,
+            color: iconColor ?? ColorPalette.kBlack,
+          ),
+          description: message,
+          titleColor: titleColor,
+          descriptionColor: messageColor,
+          backgroundColor: backgroundColor,
+          primaryButtonText: 'Continue',
+          onPrimaryPressed: () async {
+            Navigator.of(context).pop();
+            await onRefresh?.call();
+          },
+        ),
+      ).then((_) => _isLocationAlertDialogShowing = false);
+    }
+  }
 }

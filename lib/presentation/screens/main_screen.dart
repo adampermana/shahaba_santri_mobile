@@ -11,6 +11,7 @@ import 'package:sahaba_mobile/business_logic/product_bloc/product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
+import 'package:sahaba_mobile/domains/ads/ads_response.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
@@ -19,6 +20,7 @@ import 'package:sahaba_mobile/presentation/screens/home/home_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/bottom_navigation_bar.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
+import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MainProvider extends StatelessWidget {
@@ -79,6 +81,9 @@ class _MainScreenState extends State<_MainScreen> {
 
   int _selectedIndex = 0;
   DateTime? _lastBackPressedAt;
+  AdResponseData? _pendingSplashAd;
+  bool _isLocationAlertShowing = false;
+  bool _isSplashDialogShowing = false;
 
   List<Widget> get _screens => [
     HomeScreen(isActive: _selectedIndex == 0),
@@ -110,6 +115,201 @@ class _MainScreenState extends State<_MainScreen> {
     messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(_buildExitSnackBar(context));
+  }
+
+  Future<void> _refreshLocation(BuildContext context) async {
+    final locationBloc = context.read<LocationBloc>();
+    final result = locationBloc.stream.firstWhere((state) => !state.isLoading);
+
+    locationBloc.add(
+      const LocationEvent.getCurrentLocation(isGetPosition: true),
+    );
+
+    await result;
+  }
+
+  Future<void> _maybeShowSplashAd(
+    BuildContext context, {
+    bool ignoreLocationAlert = false,
+  }) async {
+    if (_pendingSplashAd == null ||
+        _isSplashDialogShowing ||
+        !context.mounted) {
+      return;
+    }
+
+    final locationState = context.read<LocationBloc>().state;
+
+    if (locationState.isLoading || _isLocationAlertShowing) {
+      return;
+    }
+
+    if (!ignoreLocationAlert && locationState.alert != null) {
+      return;
+    }
+
+    final addSplash = _pendingSplashAd!;
+    _pendingSplashAd = null;
+    _isSplashDialogShowing = true;
+
+    try {
+      await _showSplashAdDialog(context, addSplash);
+    } finally {
+      _isSplashDialogShowing = false;
+    }
+  }
+
+  Map<String, double>? _splashAdCoordinates(BuildContext context) {
+    final locationState = context.read<LocationBloc>().state;
+    final lat = locationState.latitude;
+    final long = locationState.longitude;
+
+    if (lat == 0.0 && long == 0.0) {
+      return null;
+    }
+
+    return {'latitude': lat, 'longitude': long};
+  }
+
+  Future<void> _showSplashAdDialog(
+    BuildContext context,
+    AdResponseData addSplash,
+  ) async {
+    final coordinates = _splashAdCoordinates(context);
+    final productBloc = context.read<ProductBloc>();
+
+    if (coordinates != null) {
+      productBloc.add(
+        ProductEvent.logAd(
+          addSplash.productId ?? 0,
+          addSplash.campaignId ?? 0,
+          addSplash.id ?? 0,
+          coordinates,
+          'Impression',
+        ),
+      );
+    }
+
+    await showDialog<void>(
+      context: context,
+      builder: (_) => PopScope(
+        canPop: false,
+        child: BlocProvider.value(
+          value: productBloc,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 32,
+                child: DecoratedBox(
+                  decoration: ShapeDecoration(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: GestureDetector(
+                      onTap: () async {
+                        final messenger = ScaffoldMessenger.of(context);
+                        final navigator = Navigator.of(context);
+
+                        try {
+                          final clickCoordinates = _splashAdCoordinates(
+                            context,
+                          );
+
+                          if (clickCoordinates != null) {
+                            productBloc.add(
+                              ProductEvent.logAd(
+                                addSplash.productId ?? 0,
+                                addSplash.campaignId ?? 0,
+                                addSplash.id ?? 0,
+                                clickCoordinates,
+                                'Click',
+                              ),
+                            );
+                          }
+
+                          switch (addSplash.type?.toUpperCase()) {
+                            case 'PRODUCT':
+                              final productId = addSplash.productId;
+                              if (productId == null || productId <= 0) {
+                                navigator.pop();
+                                return;
+                              }
+
+                              final currentLocation = GoRouterState.of(
+                                context,
+                              ).uri.toString();
+                              navigator.pop();
+                              if (!mounted) return;
+                              await context.push(
+                                '$currentLocation/'
+                                '${RouterPath.productHalalPath}/'
+                                '${RouterPath.productDetailPath}',
+                                extra: {'id': productId, 'isAds': true},
+                              );
+                              return;
+                            case 'URL':
+                              final target = addSplash.target?.trim();
+                              if (target == null || target.isEmpty) {
+                                navigator.pop();
+                                return;
+                              }
+
+                              final uri = Uri.tryParse(target);
+                              if (uri == null) {
+                                navigator.pop();
+                                return;
+                              }
+
+                              await launchUrl(
+                                uri,
+                                mode: LaunchMode.externalApplication,
+                              );
+                              navigator.pop();
+                              return;
+                          }
+                        } on Exception catch (e) {
+                          messenger.showSnackBar(
+                            SnackBar(content: Text(e.toString())),
+                          );
+                        }
+                      },
+                      child: Image.network(
+                        addSplash.image ?? '',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: const SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: DecoratedBox(
+                    decoration: ShapeDecoration(
+                      color: Colors.black,
+                      shape: CircleBorder(
+                        side: BorderSide(color: Colors.white, width: 4),
+                      ),
+                    ),
+                    child: CacheImageOrSvg(
+                      source: 'assets/svg/close-circle-line.svg',
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   SnackBar _buildExitSnackBar(BuildContext context) {
@@ -204,166 +404,60 @@ class _MainScreenState extends State<_MainScreen> {
           // Konten boleh terlihat di belakang bagian atas navbar.
           extendBody: true,
 
-          body: // ─── Product / Ad Splash
-          BlocListener<ProductBloc, ProductState>(
-            listenWhen: (previous, current) =>
-                previous.addSplash != current.addSplash &&
-                previous.addSplash == null,
-            listener: (context, state) async {
-              if (state.addSplash != null) {
-                final locationState = context.read<LocationBloc>().state;
-                final lat = locationState.latitude;
-                final long = locationState.longitude;
-                // Log impression hanya jika GPS sudah ready
-                if (lat != 0.0 || long != 0.0) {
-                  context.read<ProductBloc>().add(
-                    ProductEvent.logAd(
-                      state.addSplash?.productId ?? 0,
-                      state.addSplash?.campaignId ?? 0,
-                      state.addSplash?.id ?? 0,
-                      {'latitude': lat, 'longitude': long},
-                      'Impression',
-                    ),
-                  );
-                }
-                await showDialog<void>(
-                  context: context,
-                  builder: (_) => PopScope(
-                    canPop: false,
-                    child: BlocProvider.value(
-                      value: context.read<ProductBloc>(),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width - 32,
-                            child: DecoratedBox(
-                              decoration: ShapeDecoration(
-                                color: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    final messenger = ScaffoldMessenger.of(
-                                      context,
-                                    );
-                                    final navigator = Navigator.of(context);
-                                    final productBloc = context
-                                        .read<ProductBloc>();
+          body: MultiBlocListener(
+            listeners: [
+              // Location Alert Dialog
+              BlocListener<LocationBloc, LocationState>(
+                listenWhen: (previous, current) =>
+                    previous.alert != current.alert ||
+                    previous.isLoading != current.isLoading ||
+                    previous.latitude != current.latitude ||
+                    previous.longitude != current.longitude,
+                listener: (context, state) async {
+                  if (state.alert != null) {
+                    if (_isLocationAlertShowing) return;
 
-                                    try {
-                                      if (lat != 0.0 || long != 0.0) {
-                                        productBloc.add(
-                                          ProductEvent.logAd(
-                                            state.addSplash?.productId ?? 0,
-                                            state.addSplash?.campaignId ?? 0,
-                                            state.addSplash?.id ?? 0,
-                                            {
-                                              'latitude': lat,
-                                              'longitude': long,
-                                            },
-                                            'Click',
-                                          ),
-                                        );
-                                      }
-                                      switch (state.addSplash!.type
-                                          ?.toUpperCase()) {
-                                        case 'PRODUCT':
-                                          final productId =
-                                              state.addSplash?.productId;
-                                          if (productId == null ||
-                                              productId <= 0) {
-                                            navigator.pop();
-                                            return;
-                                          }
+                    _isLocationAlertShowing = true;
 
-                                          final currentLocation =
-                                              GoRouterState.of(
-                                                context,
-                                              ).uri.toString();
-                                          navigator.pop();
-                                          if (!mounted) return;
-                                          await context.push(
-                                            '$currentLocation/'
-                                            '${RouterPath.productHalalPath}/'
-                                            '${RouterPath.productDetailPath}',
-                                            extra: {
-                                              'id': productId,
-                                              'isAds': true,
-                                            },
-                                          );
-                                          return;
-                                        case 'URL':
-                                          final target = state.addSplash?.target
-                                              ?.trim();
-                                          if (target == null ||
-                                              target.isEmpty) {
-                                            navigator.pop();
-                                            return;
-                                          }
+                    await showAlertDialog(
+                      context,
+                      alert: state.alert,
+                      titleColor: ColorPalette.kWhite,
+                      messageColor: ColorPalette.kWhite,
+                      iconColor: const Color(0xffB39164),
+                      backgroundColor: ColorPalette.scaffoldBackground,
+                      title: state.titleError,
+                      message: state.messageError,
+                      onRefresh: () => _refreshLocation(context),
+                    );
 
-                                          final uri = Uri.tryParse(target);
-                                          if (uri == null) {
-                                            navigator.pop();
-                                            return;
-                                          }
+                    _isLocationAlertShowing = false;
+                    if (!context.mounted) return;
+                    await _maybeShowSplashAd(
+                      context,
+                      ignoreLocationAlert: true,
+                    );
+                    return;
+                  }
 
-                                          await launchUrl(
-                                            uri,
-                                            mode:
-                                                LaunchMode.externalApplication,
-                                          );
-                                          navigator.pop();
-                                          return;
-                                      }
-                                    } on Exception catch (e) {
-                                      messenger.showSnackBar(
-                                        SnackBar(content: Text(e.toString())),
-                                      );
-                                    }
-                                  },
-                                  child: Image.network(
-                                    state.addSplash?.image ?? '',
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: const SizedBox(
-                              width: 40,
-                              height: 40,
-                              child: DecoratedBox(
-                                decoration: ShapeDecoration(
-                                  color: Colors.black,
-                                  shape: CircleBorder(
-                                    side: BorderSide(
-                                      color: Colors.white,
-                                      width: 4,
-                                    ),
-                                  ),
-                                ),
-                                child: CacheImageOrSvg(
-                                  source: 'assets/svg/close-circle-line.svg',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              }
-            },
+                  await _maybeShowSplashAd(context);
+                },
+              ),
+              // Add Splash Ad Dialog
+              BlocListener<ProductBloc, ProductState>(
+                listenWhen: (previous, current) =>
+                    previous.addSplash != current.addSplash &&
+                    previous.addSplash == null,
+                listener: (context, state) async {
+                  final addSplash = state.addSplash;
 
+                  if (addSplash == null) return;
+
+                  _pendingSplashAd = addSplash;
+                  await _maybeShowSplashAd(context);
+                },
+              ),
+            ],
             child: IndexedStack(
               index: _selectedIndex,
               children: _screens,
