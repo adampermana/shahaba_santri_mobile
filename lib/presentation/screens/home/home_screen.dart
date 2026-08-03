@@ -592,6 +592,15 @@ Widget _featureSection(
                                   ),
                                   foregroundDecoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(14),
+                                    gradient: RadialGradient(
+                                      radius: 0.72,
+                                      colors: [
+                                        Colors.white.withValues(alpha: 0.32),
+                                        Colors.white.withValues(alpha: 0.08),
+                                        Colors.transparent,
+                                      ],
+                                      stops: const [0, 0.48, 1],
+                                    ),
                                   ),
                                   child: Center(
                                     child: CacheImageOrSvg(

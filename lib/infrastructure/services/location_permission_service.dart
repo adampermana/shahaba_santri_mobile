@@ -38,34 +38,14 @@ class LocationPermissionService {
 
   Future<Either<Failure, Position>> getCurrentPosition() async {
     try {
-      // ── 1. Cek apakah layanan lokasi (GPS) aktif
-      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-
-      if (!serviceEnabled) {
-        return const Left(
-          LocationFailure(
-            'Izinkan Akses Lokasi',
-            'Kami menggunakan lokasi Anda untuk '
-                'menampilkan informasi kehalalan produk '
-                'yang sesuai dengan wilayah Anda.',
-          ),
-        );
-      }
+      // ── 1. Cek izin dan munculkan prompt system jika belum pernah diminta.
       var permission = await Geolocator.checkPermission();
 
-      // ── 2. Cek izin dan munculkan prompt system jika belum pernah diminta.
-      if (permission == LocationPermission.denied) {
-        return const Left(
-          PermissionFailure(
-            permissionType: PermissionType.location,
-            title: 'Izinkan Akses Lokasi',
-            message:
-                'Kami menggunakan lokasi Anda untuk '
-                'menampilkan informasi kehalalan produk '
-                'yang sesuai dengan wilayah Anda.',
-          ),
-        );
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.unableToDetermine) {
+        permission = await Geolocator.requestPermission();
       }
+
       if (permission != LocationPermission.whileInUse &&
           permission != LocationPermission.always) {
         return const Left(
@@ -74,6 +54,20 @@ class LocationPermissionService {
             title: 'Izinkan Akses Lokasi',
             message:
                 'Kami menggunakan lokasi Anda untuk '
+                'menampilkan informasi kehalalan produk '
+                'yang sesuai dengan wilayah Anda.',
+          ),
+        );
+      }
+
+      // ── 2. Cek apakah layanan lokasi (GPS) aktif.
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+      if (!serviceEnabled) {
+        return const Left(
+          LocationFailure(
+            'Izinkan Akses Lokasi',
+            'Kami menggunakan lokasi Anda untuk '
                 'menampilkan informasi kehalalan produk '
                 'yang sesuai dengan wilayah Anda.',
           ),

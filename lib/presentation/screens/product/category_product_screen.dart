@@ -41,13 +41,17 @@ class CategoryProductScreen extends StatelessWidget {
       ],
       child: BlocListener<LocationBloc, LocationState>(
         listenWhen: (previous, current) => previous.alert != current.alert,
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state.alert != null) {
-            showAlertDialog(
+            await showAlertDialog(
               context,
               alert: state.alert,
               title: state.titleError,
               message: state.messageError,
+              titleColor: ColorPalette.kWhite,
+              messageColor: ColorPalette.kWhite,
+              iconColor: const Color(0xffB39164),
+              backgroundColor: ColorPalette.scaffoldBackground,
               onRefresh: () => context.read<LocationBloc>().add(
                 const LocationEvent.getCurrentLocation(isGetPosition: true),
               ),

@@ -280,6 +280,7 @@ class ProductHalalScreen extends HookWidget {
                                           'assets/images/motif-menu.png',
                                         ),
                                         fit: BoxFit.cover,
+                                        opacity: 0.48,
                                       ),
                                     ),
                                     foregroundDecoration: BoxDecoration(

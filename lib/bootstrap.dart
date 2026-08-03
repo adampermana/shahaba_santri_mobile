@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-// import 'package:device_preview_plus/device_preview_plus.dart';
+import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:alarm/alarm.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -117,10 +117,10 @@ Future<void> bootstrap(
       await SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
       ]);
-      runApp(app);
-      // runApp(
-      //   kDebugMode ? DevicePreview(builder: (_) => app) : app,
-      // );
+      // runApp(app);
+      runApp(
+        kDebugMode ? DevicePreview(builder: (_) => app) : app,
+      );
 
       FlutterError.onError = (details) {
         log(details.exceptionAsString(), stackTrace: details.stack);

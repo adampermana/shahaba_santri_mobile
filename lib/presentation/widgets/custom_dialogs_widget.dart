@@ -407,7 +407,7 @@ class CustomAlertDialog {
     Color? iconColor,
     Color? backgroundColor,
   }) async {
-    if (alert is LocationAlert || alert is PermissionFailure) {
+    if (alert is LocationAlert || alert is PermissionAlert) {
       if (_isLocationAlertDialogShowing || _isLocationAlertActionRunning) {
         return;
       }

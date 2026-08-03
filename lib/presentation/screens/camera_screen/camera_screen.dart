@@ -85,76 +85,35 @@ class CameraScanScreen extends HookWidget {
         disposed = true;
         final cam = tempController;
         if (cam != null) {
-          await cam.dispose().catchError((e) {
+          await cam.dispose().catchError((Object e) {
             debugPrint('Camera dispose failed: $e');
           });
         }
       };
     }, []);
 
-    Future<void> takePicture() async {
-      final productBloc = context.read<ProductBloc>();
-      final locationBloc = context.read<LocationBloc>();
-
-      try {
-        final locationState = locationBloc.state;
-
-        final Map<String, double> coordinates;
-
-        if (locationState.locations != null) {
-          coordinates = locationState.locations!;
-        } else if (Platform.isIOS) {
-          // if user iOS menolak izin lokasi, tetap lanjut dengan koordinat 0.0
-          coordinates = {
-            'latitude': 0.0,
-            'longitude': 0.0,
-          };
-        } else {
-          // Untuk platform lain, coba ambil lokasi terlebih dahulu
-          locationBloc.add(
-            const LocationEvent.getCurrentLocation(
-              isGetPosition: true,
-            ),
-          );
-          return;
-        }
-
-        final cam = controller.value;
-        if (cam == null) return;
-
-        productBloc.add(const ProductEvent.startLoading());
-
-        await initFuture.value;
-
-        if (!cam.value.isInitialized) return;
-
-        final image = await cam.takePicture();
-
-        final croppedFile = await cropImageToAspectRatio(
-          file: File(image.path),
-          aspectRatio: _cameraFrameAspectRatio,
-        );
-
-        final compressedFile = await compressImageToTargetSize(
-          file: croppedFile,
-        );
-
-        if (compressedFile == null) return;
-
-        productBloc.add(
-          ProductEvent.searchImage(
-            compressedFile,
-            coordinates,
-          ),
-        );
-      } on Exception catch (e) {
-        if (!context.mounted) return;
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+    Map<String, double>? scanCoordinates(LocationState locationState) {
+      if (locationState.locations != null) {
+        return locationState.locations;
       }
+
+      if (Platform.isIOS) {
+        return const {'latitude': 0.0, 'longitude': 0.0};
+      }
+
+      return null;
     }
+
+    // Future<void> takePicture() async {
+
+    //   } on Exception catch (e) {
+    //     if (!context.mounted) return;
+
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(content: Text(e.toString())),
+    //     );
+    //   }
+    // }
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
@@ -242,11 +201,11 @@ class CameraScanScreen extends HookWidget {
                       final dataIklan = state.data
                           .where((p) => p.type!.toLowerCase().contains('iklan'))
                           .firstOrNull;
-                      final locationState = context.read<LocationBloc>().state;
-                      final coordinates = locationState.locations;
+                      final locationBloc = context.read<LocationBloc>();
+                      final coordinates = scanCoordinates(locationBloc.state);
                       if (coordinates == null) {
                         context.pop();
-                        context.read<LocationBloc>().add(
+                        locationBloc.add(
                           const LocationEvent.getCurrentLocation(
                             isGetPosition: true,
                           ),
@@ -363,7 +322,51 @@ class CameraScanScreen extends HookWidget {
                     child: _cameraStage(
                       controller: controller.value,
                       initFuture: initFuture.value,
-                      onScan: takePicture,
+                      onScan: () async {
+                        final productBloc = context.read<ProductBloc>();
+                        final locationBloc = context.read<LocationBloc>();
+
+                        final coordinates = scanCoordinates(locationBloc.state);
+
+                        if (coordinates == null) {
+                          locationBloc.add(
+                            const LocationEvent.getCurrentLocation(
+                              isGetPosition: true,
+                            ),
+                          );
+                          return;
+                        }
+
+                        final cam = controller.value;
+                        if (cam == null) return;
+
+                        productBloc.add(const ProductEvent.startLoading());
+                        await WidgetsBinding.instance.endOfFrame;
+
+                        await initFuture.value;
+
+                        if (!cam.value.isInitialized) return;
+
+                        final image = await cam.takePicture();
+
+                        final croppedFile = await cropImageToAspectRatio(
+                          file: File(image.path),
+                          aspectRatio: _cameraFrameAspectRatio,
+                        );
+
+                        final compressedFile = await compressImageToTargetSize(
+                          file: croppedFile,
+                        );
+
+                        if (compressedFile == null) return;
+
+                        productBloc.add(
+                          ProductEvent.searchImage(
+                            compressedFile,
+                            coordinates,
+                          ),
+                        );
+                      },
                       cameraFrameKey: cameraFrameKey,
                     ),
                   ),

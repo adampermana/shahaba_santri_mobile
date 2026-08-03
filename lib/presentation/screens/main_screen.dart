@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -161,14 +162,16 @@ class _MainScreenState extends State<_MainScreen> {
 
   Map<String, double>? _splashAdCoordinates(BuildContext context) {
     final locationState = context.read<LocationBloc>().state;
-    final lat = locationState.latitude;
-    final long = locationState.longitude;
 
-    if (lat == 0.0 && long == 0.0) {
-      return null;
+    if (locationState.locations != null) {
+      return locationState.locations;
     }
 
-    return {'latitude': lat, 'longitude': long};
+    if (Platform.isIOS) {
+      return const {'latitude': 0.0, 'longitude': 0.0};
+    }
+
+    return null;
   }
 
   Future<void> _showSplashAdDialog(

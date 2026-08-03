@@ -50,7 +50,7 @@
 		<key>GIDClientID</key>
 		<string>871004635003-0u5qjn9h4kdj8ndg6v5m5pekgie302qu.apps.googleusercontent.com</string>
 		<key>LSRequiresIPhoneOS</key>
-		<true />
+		<true/>
 		<key>UILaunchStoryboardName</key>
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>
@@ -69,11 +69,11 @@
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
-		<false />
+		<false/>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
-		<true />
+		<true/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
-		<true />
+		<true/>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>Sahaba needs your location to determine prayer times and Qibla direction.</string>
 		<key>NSLocationAlwaysUsageDescription</key>
@@ -81,7 +81,7 @@
 		<key>UIApplicationSceneManifest</key>
 		<dict>
 			<key>UIApplicationSupportsMultipleScenes</key>
-			<false />
+			<false/>
 			<key>UISceneConfigurations</key>
 			<dict>
 				<key>UIWindowSceneSessionRoleApplication</key>
@@ -101,22 +101,16 @@
 		</dict>
 		<!-- CAMERA -->
 		<key>NSCameraUsageDescription</key>
-		<string>Camera access is required to scan products and capture images for halal
-			verification.</string>
+		<string>Camera access is required to scan products and capture images for halal verification.</string>
 		<!-- LOCATION WHEN IN USE -->
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>Your location is used to provide market analytics, such as identifying popular
-			products in your area and optimizing advertising relevance when you scan products or
-			view ads.</string>
+		<string>Your location is used to provide market analytics, such as identifying popular products in your area and optimizing advertising relevance when you scan products or view ads.</string>
 		<!-- LOCATION ALWAYS -->
 		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-		<string>Your location is used to provide market analytics, such as identifying popular
-			products in your area and optimizing advertising relevance when you scan products or
-			view ads.</string>
+		<string>Your location is used to provide market analytics, such as identifying popular products in your area and optimizing advertising relevance when you scan products or view ads.</string>
 		<key>NSLocalNetworkUsageDescription</key>
-		<string>Scan Aman Halal uses the local network to support internal services and improve the
-			reliability of the scanning and data processing features.</string>
+		<string>Scan Aman Halal uses the local network to support internal services and improve the reliability of the scanning and data processing features.</string>
 		<key>UIStatusBarHidden</key>
-		<false />
+		<false/>
 	</dict>
 </plist>
