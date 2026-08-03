@@ -11,38 +11,40 @@ import UIKit
   }
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
-    GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
-    let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "SahabaShare")
-    let channel = FlutterMethodChannel(
-      name: "sahaba/share",
-      binaryMessenger: registrar.messenger()
-    )
+     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+     guard let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "SahabaShare") else {
+       return
+     }
+     let channel = FlutterMethodChannel(
+       name: "sahaba/share",
+       binaryMessenger: registrar.messenger()
+     )
 
-    channel.setMethodCallHandler { [weak self] call, result in
-      switch call.method {
-      case "shareImage":
-        guard
-          let args = call.arguments as? [String: Any],
-          let data = args["bytes"] as? FlutterStandardTypedData
-        else {
-          result(
-            FlutterError(
-              code: "invalid_bytes",
-              message: "Image bytes are required",
-              details: nil
-            )
-          )
-          return
-        }
+     channel.setMethodCallHandler { [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) in
+       switch call.method {
+       case "shareImage":
+         guard
+           let args = call.arguments as? [String: Any],
+           let data = args["bytes"] as? FlutterStandardTypedData
+         else {
+           result(
+             FlutterError(
+               code: "invalid_bytes",
+               message: "Image bytes are required",
+               details: nil
+             )
+           )
+           return
+         }
 
-        let fileName = args["fileName"] as? String ?? "quran.png"
-        let text = args["text"] as? String
-        self?.shareImage(data.data, fileName: fileName, text: text)
-        result(nil)
-      default:
-        result(FlutterMethodNotImplemented)
-      }
-    }
+         let fileName = args["fileName"] as? String ?? "quran.png"
+         let text = args["text"] as? String
+         self?.shareImage(data.data, fileName: fileName, text: text)
+         result(nil)
+       default:
+         result(FlutterMethodNotImplemented)
+       }
+     }
   }
 
   private func shareImage(_ data: Data, fileName: String, text: String?) {
