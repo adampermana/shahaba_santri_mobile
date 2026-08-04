@@ -1,9 +1,65 @@
 PODS:
+  - alarm (0.0.1):
+    - Flutter
+  - audioplayers_darwin (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - camera_avfoundation (0.0.1):
+    - Flutter
+  - connectivity_plus (0.0.1):
+    - Flutter
+  - device_info_plus (0.0.1):
+    - Flutter
+  - Firebase/CoreOnly (12.12.0):
+    - FirebaseCore (~> 12.12.0)
+  - Firebase/Messaging (12.12.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 12.12.0)
+  - firebase_core (4.7.0):
+    - Firebase/CoreOnly (= 12.12.0)
+    - Flutter
+  - firebase_messaging (16.1.2):
+    - Firebase/Messaging (= 12.12.0)
+    - firebase_core
+    - Flutter
+  - FirebaseCore (12.12.1):
+    - FirebaseCoreInternal (~> 12.12.0)
+    - GoogleUtilities/Environment (~> 8.1)
+    - GoogleUtilities/Logger (~> 8.1)
+  - FirebaseCoreInternal (12.12.0):
+    - "GoogleUtilities/NSData+zlib (~> 8.1)"
+  - FirebaseInstallations (12.12.0):
+    - FirebaseCore (~> 12.12.0)
+    - GoogleUtilities/Environment (~> 8.1)
+    - GoogleUtilities/UserDefaults (~> 8.1)
+    - PromisesObjC (~> 2.4)
+  - FirebaseMessaging (12.12.0):
+    - FirebaseCore (~> 12.12.0)
+    - FirebaseInstallations (~> 12.12.0)
+    - GoogleDataTransport (~> 10.1)
+    - GoogleUtilities/AppDelegateSwizzler (~> 8.1)
+    - GoogleUtilities/Environment (~> 8.1)
+    - GoogleUtilities/Reachability (~> 8.1)
+    - GoogleUtilities/UserDefaults (~> 8.1)
+    - nanopb (~> 3.30910.0)
   - Flutter (1.0.0)
   - flutter_compass (0.0.1):
     - Flutter
+  - flutter_fgbg (0.0.1):
+    - Flutter
+  - flutter_image_compress_common (1.0.0):
+    - Flutter
+    - SDWebImage
+    - SDWebImageWebPCoder
+  - flutter_local_notifications (0.0.1):
+    - Flutter
   - flutter_native_splash (0.0.1):
     - Flutter
+  - geocoding_ios (1.0.5):
+    - Flutter
+  - geolocator_apple (1.2.0):
+    - Flutter
+    - FlutterMacOS
   - Google-Maps-iOS-Utils (6.1.0):
     - GoogleMaps (~> 9.0)
   - google_maps_flutter_ios (0.0.1):
@@ -33,16 +89,45 @@ PODS:
     - GoogleToolboxForMac/Defines (= 4.2.1)
   - "GoogleToolboxForMac/NSData+zlib (4.2.1)":
     - GoogleToolboxForMac/Defines (= 4.2.1)
+  - GoogleUtilities/AppDelegateSwizzler (8.1.2):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+    - GoogleUtilities/Privacy
   - GoogleUtilities/Environment (8.1.2):
     - GoogleUtilities/Privacy
   - GoogleUtilities/Logger (8.1.2):
     - GoogleUtilities/Environment
     - GoogleUtilities/Privacy
+  - GoogleUtilities/Network (8.1.2):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Privacy
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (8.1.2)":
+    - GoogleUtilities/Privacy
   - GoogleUtilities/Privacy (8.1.2)
+  - GoogleUtilities/Reachability (8.1.2):
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Privacy
   - GoogleUtilities/UserDefaults (8.1.2):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
   - GTMSessionFetcher/Core (3.5.0)
+  - image_picker_ios (0.0.1):
+    - Flutter
+  - libwebp (1.6.0):
+    - libwebp/demux (= 1.6.0)
+    - libwebp/mux (= 1.6.0)
+    - libwebp/sharpyuv (= 1.6.0)
+    - libwebp/webp (= 1.6.0)
+  - libwebp/demux (1.6.0):
+    - libwebp/webp
+  - libwebp/mux (1.6.0):
+    - libwebp/demux
+  - libwebp/sharpyuv (1.6.0)
+  - libwebp/webp (1.6.0):
+    - libwebp/sharpyuv
   - MLImage (1.0.0-beta8)
   - MLKitCommon (14.0.0):
     - GoogleDataTransport (~> 10.0)
@@ -69,18 +154,56 @@ PODS:
     - nanopb/encode (= 3.30910.0)
   - nanopb/decode (3.30910.0)
   - nanopb/encode (3.30910.0)
+  - permission_handler_apple (9.4.8):
+    - Flutter
   - PromisesObjC (2.4.1)
+  - SDWebImage (5.21.7):
+    - SDWebImage/Core (= 5.21.7)
+  - SDWebImage/Core (5.21.7)
+  - SDWebImageWebPCoder (0.15.0):
+    - libwebp (~> 1.0)
+    - SDWebImage/Core (~> 5.17)
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - sqflite_darwin (0.0.4):
+    - Flutter
+    - FlutterMacOS
+  - url_launcher_ios (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
+  - alarm (from `.symlinks/plugins/alarm/ios`)
+  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/darwin`)
+  - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
+  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
+  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
+  - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
   - flutter_compass (from `.symlinks/plugins/flutter_compass/ios`)
+  - flutter_fgbg (from `.symlinks/plugins/flutter_fgbg/ios`)
+  - flutter_image_compress_common (from `.symlinks/plugins/flutter_image_compress_common/ios`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
+  - geocoding_ios (from `.symlinks/plugins/geocoding_ios/ios`)
+  - geolocator_apple (from `.symlinks/plugins/geolocator_apple/darwin`)
   - google_maps_flutter_ios (from `.symlinks/plugins/google_maps_flutter_ios/ios`)
   - google_mlkit_commons (from `.symlinks/plugins/google_mlkit_commons/ios`)
   - google_mlkit_text_recognition (from `.symlinks/plugins/google_mlkit_text_recognition/ios`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
   trunk:
+    - Firebase
+    - FirebaseCore
+    - FirebaseCoreInternal
+    - FirebaseInstallations
+    - FirebaseMessaging
     - Google-Maps-iOS-Utils
     - GoogleDataTransport
     - GoogleMaps
@@ -88,6 +211,7 @@ SPEC REPOS:
     - GoogleToolboxForMac
     - GoogleUtilities
     - GTMSessionFetcher
+    - libwebp
     - MLImage
     - MLKitCommon
     - MLKitTextRecognition
@@ -95,25 +219,78 @@ SPEC REPOS:
     - MLKitVision
     - nanopb
     - PromisesObjC
+    - SDWebImage
+    - SDWebImageWebPCoder
 
 EXTERNAL SOURCES:
+  alarm:
+    :path: ".symlinks/plugins/alarm/ios"
+  audioplayers_darwin:
+    :path: ".symlinks/plugins/audioplayers_darwin/darwin"
+  camera_avfoundation:
+    :path: ".symlinks/plugins/camera_avfoundation/ios"
+  connectivity_plus:
+    :path: ".symlinks/plugins/connectivity_plus/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
+  firebase_core:
+    :path: ".symlinks/plugins/firebase_core/ios"
+  firebase_messaging:
+    :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
   flutter_compass:
     :path: ".symlinks/plugins/flutter_compass/ios"
+  flutter_fgbg:
+    :path: ".symlinks/plugins/flutter_fgbg/ios"
+  flutter_image_compress_common:
+    :path: ".symlinks/plugins/flutter_image_compress_common/ios"
+  flutter_local_notifications:
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_native_splash:
     :path: ".symlinks/plugins/flutter_native_splash/ios"
+  geocoding_ios:
+    :path: ".symlinks/plugins/geocoding_ios/ios"
+  geolocator_apple:
+    :path: ".symlinks/plugins/geolocator_apple/darwin"
   google_maps_flutter_ios:
     :path: ".symlinks/plugins/google_maps_flutter_ios/ios"
   google_mlkit_commons:
     :path: ".symlinks/plugins/google_mlkit_commons/ios"
   google_mlkit_text_recognition:
     :path: ".symlinks/plugins/google_mlkit_text_recognition/ios"
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
+  sqflite_darwin:
+    :path: ".symlinks/plugins/sqflite_darwin/darwin"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
+  alarm: 19ed54ac2676c70ff0d164221082a416f47a0cd8
+  audioplayers_darwin: 835ced6edd4c9fc8ebb0a7cc9e294a91d99917d5
+  camera_avfoundation: 968a9a5323c79a99c166ad9d7866bfd2047b5a9b
+  connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
+  device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
+  Firebase: aa154fee4e9b8eac17aa42344988865b3e857d33
+  firebase_core: 9156a152117c843440b0b990c785aa0259bc5447
+  firebase_messaging: 26d3a3c5374b63164d7ee8568c3b94ca8e2b13fe
+  FirebaseCore: 86241206e656f5c80c995e370e6c975913b9b284
+  FirebaseCoreInternal: 7c12fc3011d889085e765e317d7b9fd1cef97af9
+  FirebaseInstallations: 4e6e162aa4abaaeeeb01dd00179dfc5ad9c2194e
+  FirebaseMessaging: 341004946fa7ffc741344b20f1b667514fc93e31
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_compass: b236ab69b61545cce89fd58527f401a7587d5cc1
+  flutter_fgbg: e791a8b5d5fab97ad42771e692108dc7869e2651
+  flutter_image_compress_common: 11d5dcfb36f4ded92320bfa896261813a073240e
+  flutter_local_notifications: a5a732f069baa862e728d839dd2ebb904737effb
   flutter_native_splash: 35ddbc7228eafcb3969dcc5f1fbbe27c1145a4f0
+  geocoding_ios: 33776c9ebb98d037b5e025bb0e7537f6dd19646e
+  geolocator_apple: ab36aa0e8b7d7a2d7639b3b4e48308394e8cef5e
   Google-Maps-iOS-Utils: 0a484b05ed21d88c9f9ebbacb007956edd508a96
   google_maps_flutter_ios: 0291eb2aa252298a769b04d075e4a9d747ff7264
   google_mlkit_commons: a5e4ffae5bc59ea4c7b9025dc72cb6cb79dc1166
@@ -124,13 +301,21 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: d1a2cbf009c453f4d6ded37c105e2f67a32206d8
   GoogleUtilities: 766ace00c6b10d8148408f329d10c4f051931850
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
+  image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
+  libwebp: af5937a13536ef73f3784d69cc342b98961acf33
   MLImage: 0de5c6c2bf9e93b80ef752e2797f0836f03b58c0
   MLKitCommon: 47d47b50a031d00db62f1b0efe5a1d8b09a3b2e6
   MLKitTextRecognition: c0ad24510481dfc8893ad15dfcb8a5f05ed9e826
   MLKitTextRecognitionCommon: 234ceb1cfdfb5fceb4fd664943046609a2961cc2
   MLKitVision: 39a5a812db83c4a0794445088e567f3631c11961
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
+  permission_handler_apple: 92d754bbaa7361d436db2d6c3c1c2a0fdcec462e
   PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
+  SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
+  SDWebImageWebPCoder: 0e06e365080397465cc73a7a9b472d8a3bd0f377
+  shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
+  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
+  url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
 
 PODFILE CHECKSUM: 9682d8e9d2132efad54a0dfa77a3701551b78262
 

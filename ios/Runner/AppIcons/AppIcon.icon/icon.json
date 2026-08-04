@@ -1,48 +1,36 @@
 {
-  "background": "#0F172A",
-  "fill-specializations": [
+  "fill" : {
+    "solid" : "srgb:0.05882,0.09020,0.16471,1.00000"
+  },
+  "groups" : [
     {
-      "value": {
-        "solid": "#0F172A"
-      }
-    },
-    {
-      "appearance": "dark",
-      "value": {
-        "solid": "#0F172A"
-      }
-    }
-  ],
-  "groups": [
-    {
-      "blur-material": 0.5,
-      "layers": [
+      "layers" : [
         {
-          "glass": false,
-          "image-name": "Logo.png",
-          "name": "Logo",
-          "position": {
-            "scale": 1.8,
-            "translation-in-points": [
+          "image-name" : "splash_screen_android.png",
+          "name" : "splash_screen_android",
+          "position" : {
+            "scale" : 0.26,
+            "translation-in-points" : [
               0,
-              0
+              -47
             ]
           }
         }
       ],
-      "lighting": "individual",
-      "shadow": {
-        "kind": "neutral",
-        "opacity": 0.5
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
       },
-      "specular": true,
-      "translucency": {
-        "enabled": false,
-        "value": 0.5
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
       }
     }
   ],
-  "supported-platforms": {
-    "squares": "shared"
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
   }
 }
