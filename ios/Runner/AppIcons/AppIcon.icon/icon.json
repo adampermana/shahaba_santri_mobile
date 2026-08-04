@@ -1,4 +1,5 @@
 {
+  "background" : "#0F172A",
   "fill-specializations" : [
     {
       "value" : "automatic"
@@ -13,20 +14,6 @@
       "blur-material" : 0.5,
       "layers" : [
         {
-          "fill-specializations" : [
-            {
-              "appearance" : "dark",
-              "value" : {
-                "solid" : "extended-gray:1.00000,1.00000"
-              }
-            },
-            {
-              "appearance" : "tinted",
-              "value" : {
-                "solid" : "extended-gray:1.00000,1.00000"
-              }
-            }
-          ],
           "glass" : false,
           "image-name" : "Logo.svg",
           "name" : "Logo",
