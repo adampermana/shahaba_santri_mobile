@@ -1,48 +1,48 @@
 {
-  "background" : "#0F172A",
-  "fill-specializations" : [
+  "background": "#0F172A",
+  "fill-specializations": [
     {
-      "value" : {
-        "solid" : "#0F172A"
+      "value": {
+        "solid": "#0F172A"
       }
     },
     {
-      "appearance" : "dark",
-      "value" : {
-        "solid" : "#0F172A"
+      "appearance": "dark",
+      "value": {
+        "solid": "#0F172A"
       }
     }
   ],
-  "groups" : [
+  "groups": [
     {
-      "blur-material" : 0.5,
-      "layers" : [
+      "blur-material": 0.5,
+      "layers": [
         {
-          "glass" : false,
-          "image-name" : "Logo.svg",
-          "name" : "Logo",
-          "position" : {
-            "scale" : 1.8,
-            "translation-in-points" : [
+          "glass": false,
+          "image-name": "Logo.png",
+          "name": "Logo",
+          "position": {
+            "scale": 1.8,
+            "translation-in-points": [
               0,
               0
             ]
           }
         }
       ],
-      "lighting" : "individual",
-      "shadow" : {
-        "kind" : "neutral",
-        "opacity" : 0.5
+      "lighting": "individual",
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.5
       },
-      "specular" : true,
-      "translucency" : {
-        "enabled" : false,
-        "value" : 0.5
+      "specular": true,
+      "translucency": {
+        "enabled": false,
+        "value": 0.5
       }
     }
   ],
-  "supported-platforms" : {
-    "squares" : "shared"
+  "supported-platforms": {
+    "squares": "shared"
   }
 }
