@@ -5,6 +5,6 @@ flutter_launcher_icons:
   image_path: "assets/images/icon-apps/ic_launcher_prod.png"
   adaptive_icon_foreground: "assets/images/icon-apps/ic_launcher_prod_adaptive_fore.png"
   adaptive_icon_background: "assets/images/icon-apps/ic_launcher_adaptive.png"
-  image_path_ios: "assets/images/icon-apps/ic_launcher_prod.png"
+  image_path_ios: "assets/images/icon-apps/ic_launcher_ios_prod.png"
   adaptive_icon_foreground_inset: 16
   flavor: production

@@ -50,7 +50,7 @@ flutter_native_splash:
     # 640 pixels in diameter.
     # App icon without an icon background: This should be 1152×1152 pixels, and fit within a circle
     # 768 pixels in diameter.
-    image: assets/images/splashscreen/splash_screen.png 
+    image: assets/images/splashscreen/splash_screen_android12.png 
 
     # Splash screen background color.
     color: "#1B8354"
@@ -64,7 +64,7 @@ flutter_native_splash:
     # The image_dark, color_dark, icon_background_color_dark, and branding_dark set values that
     # apply when the device is in dark mode. If they are not specified, the app will use the
     # parameters from above.
-    image_dark: assets/images/splashscreen/splash_screen.png 
+    image_dark: assets/images/splashscreen/splash_screen_android12.png
     color_dark: "#1B8354"
     #icon_background_color_dark: "#eeeeee"
     # branding_dark: assets/images/branding_image.png
