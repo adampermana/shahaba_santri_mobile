@@ -194,7 +194,10 @@ final GoRouter router = GoRouter(
 
             GoRoute(
               path: RouterPath.cameraPath,
-              builder: (context, state) => const CameraScanScreen(),
+              builder: (context, state) => BlocProvider.value(
+                value: sl<LocationBloc>(),
+                child: const CameraScanScreen(),
+              ),
               routes: [
                 GoRoute(
                   path: RouterPath.productDetailPath,

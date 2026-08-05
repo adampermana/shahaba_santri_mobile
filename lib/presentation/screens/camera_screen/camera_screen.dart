@@ -326,15 +326,49 @@ class CameraScanScreen extends HookWidget {
                         final productBloc = context.read<ProductBloc>();
                         final locationBloc = context.read<LocationBloc>();
 
-                        final coordinates = scanCoordinates(locationBloc.state);
+                        var coordinates = scanCoordinates(locationBloc.state);
 
                         if (coordinates == null) {
+                          // Trigger GPS fetch
                           locationBloc.add(
                             const LocationEvent.getCurrentLocation(
                               isGetPosition: true,
                             ),
                           );
-                          return;
+
+                          // Tampilkan loading sementara tunggu koordinat
+                          productBloc.add(const ProductEvent.startLoading());
+
+                          // Await koordinat dari stream LocationBloc
+                          final completer = Completer<Map<String, double>?>();
+                          late StreamSubscription<LocationState> sub;
+                          sub = locationBloc.stream.listen((state) async {
+                            final coords = scanCoordinates(state);
+                            if (coords != null && !completer.isCompleted) {
+                              completer.complete(coords);
+                              await sub.cancel();
+                            } else if (state.alert != null &&
+                                !completer.isCompleted) {
+                              completer.complete(null);
+                              await sub.cancel();
+                            }
+                          });
+
+                          // Timeout 15 detik
+                          coordinates = await completer.future.timeout(
+                            const Duration(seconds: 15),
+                            onTimeout: () async {
+                              await sub.cancel();
+                              return null;
+                            },
+                          );
+
+                          if (coordinates == null) {
+                            productBloc.add(
+                              const ProductEvent.stopLoading(),
+                            );
+                            return;
+                          }
                         }
 
                         final cam = controller.value;

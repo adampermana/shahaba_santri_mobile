@@ -61,12 +61,13 @@ extension ProductEventPatterns on ProductEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _StartLoading value)?  startLoading,TResult Function( _StartSaveLoading value)?  startSaveLoading,TResult Function( _SearchImage value)?  searchImage,TResult Function( _AddLocalData value)?  addLocalData,TResult Function( _LogAd value)?  logAd,TResult Function( _FilterData value)?  filterData,TResult Function( _GetHistoryProductLimit value)?  getHistoryProductLimit,TResult Function( _GetProductMultiple value)?  getProductMultiple,TResult Function( _GetProductLimitMultiple value)?  getProductLimitMultiple,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _StartLoading value)?  startLoading,TResult Function( _StopLoading value)?  stopLoading,TResult Function( _StartSaveLoading value)?  startSaveLoading,TResult Function( _SearchImage value)?  searchImage,TResult Function( _AddLocalData value)?  addLocalData,TResult Function( _LogAd value)?  logAd,TResult Function( _FilterData value)?  filterData,TResult Function( _GetHistoryProductLimit value)?  getHistoryProductLimit,TResult Function( _GetProductMultiple value)?  getProductMultiple,TResult Function( _GetProductLimitMultiple value)?  getProductLimitMultiple,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _StartLoading() when startLoading != null:
-return startLoading(_that);case _StartSaveLoading() when startSaveLoading != null:
+return startLoading(_that);case _StopLoading() when stopLoading != null:
+return stopLoading(_that);case _StartSaveLoading() when startSaveLoading != null:
 return startSaveLoading(_that);case _SearchImage() when searchImage != null:
 return searchImage(_that);case _AddLocalData() when addLocalData != null:
 return addLocalData(_that);case _LogAd() when logAd != null:
@@ -92,12 +93,13 @@ return getProductLimitMultiple(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _StartLoading value)  startLoading,required TResult Function( _StartSaveLoading value)  startSaveLoading,required TResult Function( _SearchImage value)  searchImage,required TResult Function( _AddLocalData value)  addLocalData,required TResult Function( _LogAd value)  logAd,required TResult Function( _FilterData value)  filterData,required TResult Function( _GetHistoryProductLimit value)  getHistoryProductLimit,required TResult Function( _GetProductMultiple value)  getProductMultiple,required TResult Function( _GetProductLimitMultiple value)  getProductLimitMultiple,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _StartLoading value)  startLoading,required TResult Function( _StopLoading value)  stopLoading,required TResult Function( _StartSaveLoading value)  startSaveLoading,required TResult Function( _SearchImage value)  searchImage,required TResult Function( _AddLocalData value)  addLocalData,required TResult Function( _LogAd value)  logAd,required TResult Function( _FilterData value)  filterData,required TResult Function( _GetHistoryProductLimit value)  getHistoryProductLimit,required TResult Function( _GetProductMultiple value)  getProductMultiple,required TResult Function( _GetProductLimitMultiple value)  getProductLimitMultiple,}){
 final _that = this;
 switch (_that) {
 case _Started():
 return started(_that);case _StartLoading():
-return startLoading(_that);case _StartSaveLoading():
+return startLoading(_that);case _StopLoading():
+return stopLoading(_that);case _StartSaveLoading():
 return startSaveLoading(_that);case _SearchImage():
 return searchImage(_that);case _AddLocalData():
 return addLocalData(_that);case _LogAd():
@@ -122,12 +124,13 @@ return getProductLimitMultiple(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _StartLoading value)?  startLoading,TResult? Function( _StartSaveLoading value)?  startSaveLoading,TResult? Function( _SearchImage value)?  searchImage,TResult? Function( _AddLocalData value)?  addLocalData,TResult? Function( _LogAd value)?  logAd,TResult? Function( _FilterData value)?  filterData,TResult? Function( _GetHistoryProductLimit value)?  getHistoryProductLimit,TResult? Function( _GetProductMultiple value)?  getProductMultiple,TResult? Function( _GetProductLimitMultiple value)?  getProductLimitMultiple,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _StartLoading value)?  startLoading,TResult? Function( _StopLoading value)?  stopLoading,TResult? Function( _StartSaveLoading value)?  startSaveLoading,TResult? Function( _SearchImage value)?  searchImage,TResult? Function( _AddLocalData value)?  addLocalData,TResult? Function( _LogAd value)?  logAd,TResult? Function( _FilterData value)?  filterData,TResult? Function( _GetHistoryProductLimit value)?  getHistoryProductLimit,TResult? Function( _GetProductMultiple value)?  getProductMultiple,TResult? Function( _GetProductLimitMultiple value)?  getProductLimitMultiple,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _StartLoading() when startLoading != null:
-return startLoading(_that);case _StartSaveLoading() when startSaveLoading != null:
+return startLoading(_that);case _StopLoading() when stopLoading != null:
+return stopLoading(_that);case _StartSaveLoading() when startSaveLoading != null:
 return startSaveLoading(_that);case _SearchImage() when searchImage != null:
 return searchImage(_that);case _AddLocalData() when addLocalData != null:
 return addLocalData(_that);case _LogAd() when logAd != null:
@@ -152,11 +155,12 @@ return getProductLimitMultiple(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function()?  startLoading,TResult Function( ProductData val)?  startSaveLoading,TResult Function( String imagePath,  Map<String, double> coordinates)?  searchImage,TResult Function( ProductData val,  bool isLoading,  Map<String, double> coordinates)?  addLocalData,TResult Function( int productId,  int campaignId,  int creativeId,  Map<String, double> coordinates,  String type)?  logAd,TResult Function( String val)?  filterData,TResult Function( int userId)?  getHistoryProductLimit,TResult Function( int userId,  String? ids,  String? search,  int? produsenId,  int? brandId,  int? categoryId,  int page,  int pageSize)?  getProductMultiple,TResult Function( int userId,  String? ids,  String? search,  int? produsenId,  int? brandId,  int? categoryId,  int page,  int pageSize)?  getProductLimitMultiple,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function()?  startLoading,TResult Function()?  stopLoading,TResult Function( ProductData val)?  startSaveLoading,TResult Function( String imagePath,  Map<String, double> coordinates)?  searchImage,TResult Function( ProductData val,  bool isLoading,  Map<String, double> coordinates)?  addLocalData,TResult Function( int productId,  int campaignId,  int creativeId,  Map<String, double> coordinates,  String type)?  logAd,TResult Function( String val)?  filterData,TResult Function( int userId)?  getHistoryProductLimit,TResult Function( int userId,  String? ids,  String? search,  int? produsenId,  int? brandId,  int? categoryId,  int page,  int pageSize)?  getProductMultiple,TResult Function( int userId,  String? ids,  String? search,  int? produsenId,  int? brandId,  int? categoryId,  int page,  int pageSize)?  getProductLimitMultiple,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _StartLoading() when startLoading != null:
-return startLoading();case _StartSaveLoading() when startSaveLoading != null:
+return startLoading();case _StopLoading() when stopLoading != null:
+return stopLoading();case _StartSaveLoading() when startSaveLoading != null:
 return startSaveLoading(_that.val);case _SearchImage() when searchImage != null:
 return searchImage(_that.imagePath,_that.coordinates);case _AddLocalData() when addLocalData != null:
 return addLocalData(_that.val,_that.isLoading,_that.coordinates);case _LogAd() when logAd != null:
@@ -182,11 +186,12 @@ return getProductLimitMultiple(_that.userId,_that.ids,_that.search,_that.produse
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function()  startLoading,required TResult Function( ProductData val)  startSaveLoading,required TResult Function( String imagePath,  Map<String, double> coordinates)  searchImage,required TResult Function( ProductData val,  bool isLoading,  Map<String, double> coordinates)  addLocalData,required TResult Function( int productId,  int campaignId,  int creativeId,  Map<String, double> coordinates,  String type)  logAd,required TResult Function( String val)  filterData,required TResult Function( int userId)  getHistoryProductLimit,required TResult Function( int userId,  String? ids,  String? search,  int? produsenId,  int? brandId,  int? categoryId,  int page,  int pageSize)  getProductMultiple,required TResult Function( int userId,  String? ids,  String? search,  int? produsenId,  int? brandId,  int? categoryId,  int page,  int pageSize)  getProductLimitMultiple,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function()  startLoading,required TResult Function()  stopLoading,required TResult Function( ProductData val)  startSaveLoading,required TResult Function( String imagePath,  Map<String, double> coordinates)  searchImage,required TResult Function( ProductData val,  bool isLoading,  Map<String, double> coordinates)  addLocalData,required TResult Function( int productId,  int campaignId,  int creativeId,  Map<String, double> coordinates,  String type)  logAd,required TResult Function( String val)  filterData,required TResult Function( int userId)  getHistoryProductLimit,required TResult Function( int userId,  String? ids,  String? search,  int? produsenId,  int? brandId,  int? categoryId,  int page,  int pageSize)  getProductMultiple,required TResult Function( int userId,  String? ids,  String? search,  int? produsenId,  int? brandId,  int? categoryId,  int page,  int pageSize)  getProductLimitMultiple,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started();case _StartLoading():
-return startLoading();case _StartSaveLoading():
+return startLoading();case _StopLoading():
+return stopLoading();case _StartSaveLoading():
 return startSaveLoading(_that.val);case _SearchImage():
 return searchImage(_that.imagePath,_that.coordinates);case _AddLocalData():
 return addLocalData(_that.val,_that.isLoading,_that.coordinates);case _LogAd():
@@ -211,11 +216,12 @@ return getProductLimitMultiple(_that.userId,_that.ids,_that.search,_that.produse
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function()?  startLoading,TResult? Function( ProductData val)?  startSaveLoading,TResult? Function( String imagePath,  Map<String, double> coordinates)?  searchImage,TResult? Function( ProductData val,  bool isLoading,  Map<String, double> coordinates)?  addLocalData,TResult? Function( int productId,  int campaignId,  int creativeId,  Map<String, double> coordinates,  String type)?  logAd,TResult? Function( String val)?  filterData,TResult? Function( int userId)?  getHistoryProductLimit,TResult? Function( int userId,  String? ids,  String? search,  int? produsenId,  int? brandId,  int? categoryId,  int page,  int pageSize)?  getProductMultiple,TResult? Function( int userId,  String? ids,  String? search,  int? produsenId,  int? brandId,  int? categoryId,  int page,  int pageSize)?  getProductLimitMultiple,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function()?  startLoading,TResult? Function()?  stopLoading,TResult? Function( ProductData val)?  startSaveLoading,TResult? Function( String imagePath,  Map<String, double> coordinates)?  searchImage,TResult? Function( ProductData val,  bool isLoading,  Map<String, double> coordinates)?  addLocalData,TResult? Function( int productId,  int campaignId,  int creativeId,  Map<String, double> coordinates,  String type)?  logAd,TResult? Function( String val)?  filterData,TResult? Function( int userId)?  getHistoryProductLimit,TResult? Function( int userId,  String? ids,  String? search,  int? produsenId,  int? brandId,  int? categoryId,  int page,  int pageSize)?  getProductMultiple,TResult? Function( int userId,  String? ids,  String? search,  int? produsenId,  int? brandId,  int? categoryId,  int page,  int pageSize)?  getProductLimitMultiple,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _StartLoading() when startLoading != null:
-return startLoading();case _StartSaveLoading() when startSaveLoading != null:
+return startLoading();case _StopLoading() when stopLoading != null:
+return stopLoading();case _StartSaveLoading() when startSaveLoading != null:
 return startSaveLoading(_that.val);case _SearchImage() when searchImage != null:
 return searchImage(_that.imagePath,_that.coordinates);case _AddLocalData() when addLocalData != null:
 return addLocalData(_that.val,_that.isLoading,_that.coordinates);case _LogAd() when logAd != null:
@@ -299,6 +305,44 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'ProductEvent.startLoading()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _StopLoading with DiagnosticableTreeMixin implements ProductEvent {
+  const _StopLoading();
+  
+
+
+
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'ProductEvent.stopLoading'))
+    ;
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StopLoading);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'ProductEvent.stopLoading()';
 }
 
 
@@ -946,7 +990,7 @@ as int,
 /// @nodoc
 mixin _$ProductState implements DiagnosticableTreeMixin {
 
- List<ProductData> get data; bool get isLoading; bool get isLoadingSaveData; String? get errorMessage; String get imagePath; ProductData? get tempProduct; bool get isCamera; List<AdResponseData> get adsCarousel; AdResponseData? get addSplash; List<ProductData> get masterDataHistory; List<ProductData> get dataHistory; bool get isSuccess; bool get isShowDialog; ProductBody? get productBody; List<FetchHistoryDataProductLimit> get historyProductLimit; bool get isLoadingHistoryProductLimit; List<ProductData> get productMultipleList; PaginationMeta? get paginationMeta; bool get isLoadingProductMultiple;
+ List<ProductData> get data; bool get isLoading; bool get isLoadingSaveData; String get imagePath; ProductData? get tempProduct; bool get isCamera; List<AdResponseData> get adsCarousel; AdResponseData? get addSplash; List<ProductData> get masterDataHistory; List<ProductData> get dataHistory; bool get isSuccess; bool get isShowDialog; ProductBody? get productBody; List<FetchHistoryDataProductLimit> get historyProductLimit; bool get isLoadingHistoryProductLimit; List<ProductData> get productMultipleList; PaginationMeta? get paginationMeta; bool get isLoadingProductMultiple; String? get errorMessage;
 /// Create a copy of ProductState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -958,21 +1002,21 @@ $ProductStateCopyWith<ProductState> get copyWith => _$ProductStateCopyWithImpl<P
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'ProductState'))
-    ..add(DiagnosticsProperty('data', data))..add(DiagnosticsProperty('isLoading', isLoading))..add(DiagnosticsProperty('isLoadingSaveData', isLoadingSaveData))..add(DiagnosticsProperty('errorMessage', errorMessage))..add(DiagnosticsProperty('imagePath', imagePath))..add(DiagnosticsProperty('tempProduct', tempProduct))..add(DiagnosticsProperty('isCamera', isCamera))..add(DiagnosticsProperty('adsCarousel', adsCarousel))..add(DiagnosticsProperty('addSplash', addSplash))..add(DiagnosticsProperty('masterDataHistory', masterDataHistory))..add(DiagnosticsProperty('dataHistory', dataHistory))..add(DiagnosticsProperty('isSuccess', isSuccess))..add(DiagnosticsProperty('isShowDialog', isShowDialog))..add(DiagnosticsProperty('productBody', productBody))..add(DiagnosticsProperty('historyProductLimit', historyProductLimit))..add(DiagnosticsProperty('isLoadingHistoryProductLimit', isLoadingHistoryProductLimit))..add(DiagnosticsProperty('productMultipleList', productMultipleList))..add(DiagnosticsProperty('paginationMeta', paginationMeta))..add(DiagnosticsProperty('isLoadingProductMultiple', isLoadingProductMultiple));
+    ..add(DiagnosticsProperty('data', data))..add(DiagnosticsProperty('isLoading', isLoading))..add(DiagnosticsProperty('isLoadingSaveData', isLoadingSaveData))..add(DiagnosticsProperty('imagePath', imagePath))..add(DiagnosticsProperty('tempProduct', tempProduct))..add(DiagnosticsProperty('isCamera', isCamera))..add(DiagnosticsProperty('adsCarousel', adsCarousel))..add(DiagnosticsProperty('addSplash', addSplash))..add(DiagnosticsProperty('masterDataHistory', masterDataHistory))..add(DiagnosticsProperty('dataHistory', dataHistory))..add(DiagnosticsProperty('isSuccess', isSuccess))..add(DiagnosticsProperty('isShowDialog', isShowDialog))..add(DiagnosticsProperty('productBody', productBody))..add(DiagnosticsProperty('historyProductLimit', historyProductLimit))..add(DiagnosticsProperty('isLoadingHistoryProductLimit', isLoadingHistoryProductLimit))..add(DiagnosticsProperty('productMultipleList', productMultipleList))..add(DiagnosticsProperty('paginationMeta', paginationMeta))..add(DiagnosticsProperty('isLoadingProductMultiple', isLoadingProductMultiple))..add(DiagnosticsProperty('errorMessage', errorMessage));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductState&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isLoadingSaveData, isLoadingSaveData) || other.isLoadingSaveData == isLoadingSaveData)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.tempProduct, tempProduct) || other.tempProduct == tempProduct)&&(identical(other.isCamera, isCamera) || other.isCamera == isCamera)&&const DeepCollectionEquality().equals(other.adsCarousel, adsCarousel)&&(identical(other.addSplash, addSplash) || other.addSplash == addSplash)&&const DeepCollectionEquality().equals(other.masterDataHistory, masterDataHistory)&&const DeepCollectionEquality().equals(other.dataHistory, dataHistory)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.isShowDialog, isShowDialog) || other.isShowDialog == isShowDialog)&&(identical(other.productBody, productBody) || other.productBody == productBody)&&const DeepCollectionEquality().equals(other.historyProductLimit, historyProductLimit)&&(identical(other.isLoadingHistoryProductLimit, isLoadingHistoryProductLimit) || other.isLoadingHistoryProductLimit == isLoadingHistoryProductLimit)&&const DeepCollectionEquality().equals(other.productMultipleList, productMultipleList)&&(identical(other.paginationMeta, paginationMeta) || other.paginationMeta == paginationMeta)&&(identical(other.isLoadingProductMultiple, isLoadingProductMultiple) || other.isLoadingProductMultiple == isLoadingProductMultiple));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductState&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isLoadingSaveData, isLoadingSaveData) || other.isLoadingSaveData == isLoadingSaveData)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.tempProduct, tempProduct) || other.tempProduct == tempProduct)&&(identical(other.isCamera, isCamera) || other.isCamera == isCamera)&&const DeepCollectionEquality().equals(other.adsCarousel, adsCarousel)&&(identical(other.addSplash, addSplash) || other.addSplash == addSplash)&&const DeepCollectionEquality().equals(other.masterDataHistory, masterDataHistory)&&const DeepCollectionEquality().equals(other.dataHistory, dataHistory)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.isShowDialog, isShowDialog) || other.isShowDialog == isShowDialog)&&(identical(other.productBody, productBody) || other.productBody == productBody)&&const DeepCollectionEquality().equals(other.historyProductLimit, historyProductLimit)&&(identical(other.isLoadingHistoryProductLimit, isLoadingHistoryProductLimit) || other.isLoadingHistoryProductLimit == isLoadingHistoryProductLimit)&&const DeepCollectionEquality().equals(other.productMultipleList, productMultipleList)&&(identical(other.paginationMeta, paginationMeta) || other.paginationMeta == paginationMeta)&&(identical(other.isLoadingProductMultiple, isLoadingProductMultiple) || other.isLoadingProductMultiple == isLoadingProductMultiple)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,const DeepCollectionEquality().hash(data),isLoading,isLoadingSaveData,errorMessage,imagePath,tempProduct,isCamera,const DeepCollectionEquality().hash(adsCarousel),addSplash,const DeepCollectionEquality().hash(masterDataHistory),const DeepCollectionEquality().hash(dataHistory),isSuccess,isShowDialog,productBody,const DeepCollectionEquality().hash(historyProductLimit),isLoadingHistoryProductLimit,const DeepCollectionEquality().hash(productMultipleList),paginationMeta,isLoadingProductMultiple]);
+int get hashCode => Object.hashAll([runtimeType,const DeepCollectionEquality().hash(data),isLoading,isLoadingSaveData,imagePath,tempProduct,isCamera,const DeepCollectionEquality().hash(adsCarousel),addSplash,const DeepCollectionEquality().hash(masterDataHistory),const DeepCollectionEquality().hash(dataHistory),isSuccess,isShowDialog,productBody,const DeepCollectionEquality().hash(historyProductLimit),isLoadingHistoryProductLimit,const DeepCollectionEquality().hash(productMultipleList),paginationMeta,isLoadingProductMultiple,errorMessage]);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'ProductState(data: $data, isLoading: $isLoading, isLoadingSaveData: $isLoadingSaveData, errorMessage: $errorMessage, imagePath: $imagePath, tempProduct: $tempProduct, isCamera: $isCamera, adsCarousel: $adsCarousel, addSplash: $addSplash, masterDataHistory: $masterDataHistory, dataHistory: $dataHistory, isSuccess: $isSuccess, isShowDialog: $isShowDialog, productBody: $productBody, historyProductLimit: $historyProductLimit, isLoadingHistoryProductLimit: $isLoadingHistoryProductLimit, productMultipleList: $productMultipleList, paginationMeta: $paginationMeta, isLoadingProductMultiple: $isLoadingProductMultiple)';
+  return 'ProductState(data: $data, isLoading: $isLoading, isLoadingSaveData: $isLoadingSaveData, imagePath: $imagePath, tempProduct: $tempProduct, isCamera: $isCamera, adsCarousel: $adsCarousel, addSplash: $addSplash, masterDataHistory: $masterDataHistory, dataHistory: $dataHistory, isSuccess: $isSuccess, isShowDialog: $isShowDialog, productBody: $productBody, historyProductLimit: $historyProductLimit, isLoadingHistoryProductLimit: $isLoadingHistoryProductLimit, productMultipleList: $productMultipleList, paginationMeta: $paginationMeta, isLoadingProductMultiple: $isLoadingProductMultiple, errorMessage: $errorMessage)';
 }
 
 
@@ -983,7 +1027,7 @@ abstract mixin class $ProductStateCopyWith<$Res>  {
   factory $ProductStateCopyWith(ProductState value, $Res Function(ProductState) _then) = _$ProductStateCopyWithImpl;
 @useResult
 $Res call({
- List<ProductData> data, bool isLoading, bool isLoadingSaveData, String? errorMessage, String imagePath, ProductData? tempProduct, bool isCamera, List<AdResponseData> adsCarousel, AdResponseData? addSplash, List<ProductData> masterDataHistory, List<ProductData> dataHistory, bool isSuccess, bool isShowDialog, ProductBody? productBody, List<FetchHistoryDataProductLimit> historyProductLimit, bool isLoadingHistoryProductLimit, List<ProductData> productMultipleList, PaginationMeta? paginationMeta, bool isLoadingProductMultiple
+ List<ProductData> data, bool isLoading, bool isLoadingSaveData, String imagePath, ProductData? tempProduct, bool isCamera, List<AdResponseData> adsCarousel, AdResponseData? addSplash, List<ProductData> masterDataHistory, List<ProductData> dataHistory, bool isSuccess, bool isShowDialog, ProductBody? productBody, List<FetchHistoryDataProductLimit> historyProductLimit, bool isLoadingHistoryProductLimit, List<ProductData> productMultipleList, PaginationMeta? paginationMeta, bool isLoadingProductMultiple, String? errorMessage
 });
 
 
@@ -1000,13 +1044,12 @@ class _$ProductStateCopyWithImpl<$Res>
 
 /// Create a copy of ProductState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? data = null,Object? isLoading = null,Object? isLoadingSaveData = null,Object? errorMessage = freezed,Object? imagePath = null,Object? tempProduct = freezed,Object? isCamera = null,Object? adsCarousel = null,Object? addSplash = freezed,Object? masterDataHistory = null,Object? dataHistory = null,Object? isSuccess = null,Object? isShowDialog = null,Object? productBody = freezed,Object? historyProductLimit = null,Object? isLoadingHistoryProductLimit = null,Object? productMultipleList = null,Object? paginationMeta = freezed,Object? isLoadingProductMultiple = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? data = null,Object? isLoading = null,Object? isLoadingSaveData = null,Object? imagePath = null,Object? tempProduct = freezed,Object? isCamera = null,Object? adsCarousel = null,Object? addSplash = freezed,Object? masterDataHistory = null,Object? dataHistory = null,Object? isSuccess = null,Object? isShowDialog = null,Object? productBody = freezed,Object? historyProductLimit = null,Object? isLoadingHistoryProductLimit = null,Object? productMultipleList = null,Object? paginationMeta = freezed,Object? isLoadingProductMultiple = null,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
 data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as List<ProductData>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,isLoadingSaveData: null == isLoadingSaveData ? _self.isLoadingSaveData : isLoadingSaveData // ignore: cast_nullable_to_non_nullable
-as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
-as String?,imagePath: null == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
+as bool,imagePath: null == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
 as String,tempProduct: freezed == tempProduct ? _self.tempProduct : tempProduct // ignore: cast_nullable_to_non_nullable
 as ProductData?,isCamera: null == isCamera ? _self.isCamera : isCamera // ignore: cast_nullable_to_non_nullable
 as bool,adsCarousel: null == adsCarousel ? _self.adsCarousel : adsCarousel // ignore: cast_nullable_to_non_nullable
@@ -1021,7 +1064,8 @@ as List<FetchHistoryDataProductLimit>,isLoadingHistoryProductLimit: null == isLo
 as bool,productMultipleList: null == productMultipleList ? _self.productMultipleList : productMultipleList // ignore: cast_nullable_to_non_nullable
 as List<ProductData>,paginationMeta: freezed == paginationMeta ? _self.paginationMeta : paginationMeta // ignore: cast_nullable_to_non_nullable
 as PaginationMeta?,isLoadingProductMultiple: null == isLoadingProductMultiple ? _self.isLoadingProductMultiple : isLoadingProductMultiple // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 /// Create a copy of ProductState
@@ -1118,10 +1162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ProductData> data,  bool isLoading,  bool isLoadingSaveData,  String? errorMessage,  String imagePath,  ProductData? tempProduct,  bool isCamera,  List<AdResponseData> adsCarousel,  AdResponseData? addSplash,  List<ProductData> masterDataHistory,  List<ProductData> dataHistory,  bool isSuccess,  bool isShowDialog,  ProductBody? productBody,  List<FetchHistoryDataProductLimit> historyProductLimit,  bool isLoadingHistoryProductLimit,  List<ProductData> productMultipleList,  PaginationMeta? paginationMeta,  bool isLoadingProductMultiple)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<ProductData> data,  bool isLoading,  bool isLoadingSaveData,  String imagePath,  ProductData? tempProduct,  bool isCamera,  List<AdResponseData> adsCarousel,  AdResponseData? addSplash,  List<ProductData> masterDataHistory,  List<ProductData> dataHistory,  bool isSuccess,  bool isShowDialog,  ProductBody? productBody,  List<FetchHistoryDataProductLimit> historyProductLimit,  bool isLoadingHistoryProductLimit,  List<ProductData> productMultipleList,  PaginationMeta? paginationMeta,  bool isLoadingProductMultiple,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProductState() when $default != null:
-return $default(_that.data,_that.isLoading,_that.isLoadingSaveData,_that.errorMessage,_that.imagePath,_that.tempProduct,_that.isCamera,_that.adsCarousel,_that.addSplash,_that.masterDataHistory,_that.dataHistory,_that.isSuccess,_that.isShowDialog,_that.productBody,_that.historyProductLimit,_that.isLoadingHistoryProductLimit,_that.productMultipleList,_that.paginationMeta,_that.isLoadingProductMultiple);case _:
+return $default(_that.data,_that.isLoading,_that.isLoadingSaveData,_that.imagePath,_that.tempProduct,_that.isCamera,_that.adsCarousel,_that.addSplash,_that.masterDataHistory,_that.dataHistory,_that.isSuccess,_that.isShowDialog,_that.productBody,_that.historyProductLimit,_that.isLoadingHistoryProductLimit,_that.productMultipleList,_that.paginationMeta,_that.isLoadingProductMultiple,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -1139,10 +1183,10 @@ return $default(_that.data,_that.isLoading,_that.isLoadingSaveData,_that.errorMe
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ProductData> data,  bool isLoading,  bool isLoadingSaveData,  String? errorMessage,  String imagePath,  ProductData? tempProduct,  bool isCamera,  List<AdResponseData> adsCarousel,  AdResponseData? addSplash,  List<ProductData> masterDataHistory,  List<ProductData> dataHistory,  bool isSuccess,  bool isShowDialog,  ProductBody? productBody,  List<FetchHistoryDataProductLimit> historyProductLimit,  bool isLoadingHistoryProductLimit,  List<ProductData> productMultipleList,  PaginationMeta? paginationMeta,  bool isLoadingProductMultiple)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<ProductData> data,  bool isLoading,  bool isLoadingSaveData,  String imagePath,  ProductData? tempProduct,  bool isCamera,  List<AdResponseData> adsCarousel,  AdResponseData? addSplash,  List<ProductData> masterDataHistory,  List<ProductData> dataHistory,  bool isSuccess,  bool isShowDialog,  ProductBody? productBody,  List<FetchHistoryDataProductLimit> historyProductLimit,  bool isLoadingHistoryProductLimit,  List<ProductData> productMultipleList,  PaginationMeta? paginationMeta,  bool isLoadingProductMultiple,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _ProductState():
-return $default(_that.data,_that.isLoading,_that.isLoadingSaveData,_that.errorMessage,_that.imagePath,_that.tempProduct,_that.isCamera,_that.adsCarousel,_that.addSplash,_that.masterDataHistory,_that.dataHistory,_that.isSuccess,_that.isShowDialog,_that.productBody,_that.historyProductLimit,_that.isLoadingHistoryProductLimit,_that.productMultipleList,_that.paginationMeta,_that.isLoadingProductMultiple);case _:
+return $default(_that.data,_that.isLoading,_that.isLoadingSaveData,_that.imagePath,_that.tempProduct,_that.isCamera,_that.adsCarousel,_that.addSplash,_that.masterDataHistory,_that.dataHistory,_that.isSuccess,_that.isShowDialog,_that.productBody,_that.historyProductLimit,_that.isLoadingHistoryProductLimit,_that.productMultipleList,_that.paginationMeta,_that.isLoadingProductMultiple,_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1159,10 +1203,10 @@ return $default(_that.data,_that.isLoading,_that.isLoadingSaveData,_that.errorMe
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ProductData> data,  bool isLoading,  bool isLoadingSaveData,  String? errorMessage,  String imagePath,  ProductData? tempProduct,  bool isCamera,  List<AdResponseData> adsCarousel,  AdResponseData? addSplash,  List<ProductData> masterDataHistory,  List<ProductData> dataHistory,  bool isSuccess,  bool isShowDialog,  ProductBody? productBody,  List<FetchHistoryDataProductLimit> historyProductLimit,  bool isLoadingHistoryProductLimit,  List<ProductData> productMultipleList,  PaginationMeta? paginationMeta,  bool isLoadingProductMultiple)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<ProductData> data,  bool isLoading,  bool isLoadingSaveData,  String imagePath,  ProductData? tempProduct,  bool isCamera,  List<AdResponseData> adsCarousel,  AdResponseData? addSplash,  List<ProductData> masterDataHistory,  List<ProductData> dataHistory,  bool isSuccess,  bool isShowDialog,  ProductBody? productBody,  List<FetchHistoryDataProductLimit> historyProductLimit,  bool isLoadingHistoryProductLimit,  List<ProductData> productMultipleList,  PaginationMeta? paginationMeta,  bool isLoadingProductMultiple,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _ProductState() when $default != null:
-return $default(_that.data,_that.isLoading,_that.isLoadingSaveData,_that.errorMessage,_that.imagePath,_that.tempProduct,_that.isCamera,_that.adsCarousel,_that.addSplash,_that.masterDataHistory,_that.dataHistory,_that.isSuccess,_that.isShowDialog,_that.productBody,_that.historyProductLimit,_that.isLoadingHistoryProductLimit,_that.productMultipleList,_that.paginationMeta,_that.isLoadingProductMultiple);case _:
+return $default(_that.data,_that.isLoading,_that.isLoadingSaveData,_that.imagePath,_that.tempProduct,_that.isCamera,_that.adsCarousel,_that.addSplash,_that.masterDataHistory,_that.dataHistory,_that.isSuccess,_that.isShowDialog,_that.productBody,_that.historyProductLimit,_that.isLoadingHistoryProductLimit,_that.productMultipleList,_that.paginationMeta,_that.isLoadingProductMultiple,_that.errorMessage);case _:
   return null;
 
 }
@@ -1174,7 +1218,7 @@ return $default(_that.data,_that.isLoading,_that.isLoadingSaveData,_that.errorMe
 
 
 class _ProductState with DiagnosticableTreeMixin implements ProductState {
-  const _ProductState({required final  List<ProductData> data, required this.isLoading, required this.isLoadingSaveData, this.errorMessage, required this.imagePath, required this.tempProduct, required this.isCamera, required final  List<AdResponseData> adsCarousel, required this.addSplash, required final  List<ProductData> masterDataHistory, required final  List<ProductData> dataHistory, required this.isSuccess, required this.isShowDialog, required this.productBody, required final  List<FetchHistoryDataProductLimit> historyProductLimit, required this.isLoadingHistoryProductLimit, required final  List<ProductData> productMultipleList, required this.paginationMeta, required this.isLoadingProductMultiple}): _data = data,_adsCarousel = adsCarousel,_masterDataHistory = masterDataHistory,_dataHistory = dataHistory,_historyProductLimit = historyProductLimit,_productMultipleList = productMultipleList;
+  const _ProductState({required final  List<ProductData> data, required this.isLoading, required this.isLoadingSaveData, required this.imagePath, required this.tempProduct, required this.isCamera, required final  List<AdResponseData> adsCarousel, required this.addSplash, required final  List<ProductData> masterDataHistory, required final  List<ProductData> dataHistory, required this.isSuccess, required this.isShowDialog, required this.productBody, required final  List<FetchHistoryDataProductLimit> historyProductLimit, required this.isLoadingHistoryProductLimit, required final  List<ProductData> productMultipleList, required this.paginationMeta, required this.isLoadingProductMultiple, this.errorMessage}): _data = data,_adsCarousel = adsCarousel,_masterDataHistory = masterDataHistory,_dataHistory = dataHistory,_historyProductLimit = historyProductLimit,_productMultipleList = productMultipleList;
   
 
  final  List<ProductData> _data;
@@ -1186,7 +1230,6 @@ class _ProductState with DiagnosticableTreeMixin implements ProductState {
 
 @override final  bool isLoading;
 @override final  bool isLoadingSaveData;
-@override final  String? errorMessage;
 @override final  String imagePath;
 @override final  ProductData? tempProduct;
 @override final  bool isCamera;
@@ -1232,6 +1275,7 @@ class _ProductState with DiagnosticableTreeMixin implements ProductState {
 
 @override final  PaginationMeta? paginationMeta;
 @override final  bool isLoadingProductMultiple;
+@override final  String? errorMessage;
 
 /// Create a copy of ProductState
 /// with the given fields replaced by the non-null parameter values.
@@ -1244,21 +1288,21 @@ _$ProductStateCopyWith<_ProductState> get copyWith => __$ProductStateCopyWithImp
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'ProductState'))
-    ..add(DiagnosticsProperty('data', data))..add(DiagnosticsProperty('isLoading', isLoading))..add(DiagnosticsProperty('isLoadingSaveData', isLoadingSaveData))..add(DiagnosticsProperty('errorMessage', errorMessage))..add(DiagnosticsProperty('imagePath', imagePath))..add(DiagnosticsProperty('tempProduct', tempProduct))..add(DiagnosticsProperty('isCamera', isCamera))..add(DiagnosticsProperty('adsCarousel', adsCarousel))..add(DiagnosticsProperty('addSplash', addSplash))..add(DiagnosticsProperty('masterDataHistory', masterDataHistory))..add(DiagnosticsProperty('dataHistory', dataHistory))..add(DiagnosticsProperty('isSuccess', isSuccess))..add(DiagnosticsProperty('isShowDialog', isShowDialog))..add(DiagnosticsProperty('productBody', productBody))..add(DiagnosticsProperty('historyProductLimit', historyProductLimit))..add(DiagnosticsProperty('isLoadingHistoryProductLimit', isLoadingHistoryProductLimit))..add(DiagnosticsProperty('productMultipleList', productMultipleList))..add(DiagnosticsProperty('paginationMeta', paginationMeta))..add(DiagnosticsProperty('isLoadingProductMultiple', isLoadingProductMultiple));
+    ..add(DiagnosticsProperty('data', data))..add(DiagnosticsProperty('isLoading', isLoading))..add(DiagnosticsProperty('isLoadingSaveData', isLoadingSaveData))..add(DiagnosticsProperty('imagePath', imagePath))..add(DiagnosticsProperty('tempProduct', tempProduct))..add(DiagnosticsProperty('isCamera', isCamera))..add(DiagnosticsProperty('adsCarousel', adsCarousel))..add(DiagnosticsProperty('addSplash', addSplash))..add(DiagnosticsProperty('masterDataHistory', masterDataHistory))..add(DiagnosticsProperty('dataHistory', dataHistory))..add(DiagnosticsProperty('isSuccess', isSuccess))..add(DiagnosticsProperty('isShowDialog', isShowDialog))..add(DiagnosticsProperty('productBody', productBody))..add(DiagnosticsProperty('historyProductLimit', historyProductLimit))..add(DiagnosticsProperty('isLoadingHistoryProductLimit', isLoadingHistoryProductLimit))..add(DiagnosticsProperty('productMultipleList', productMultipleList))..add(DiagnosticsProperty('paginationMeta', paginationMeta))..add(DiagnosticsProperty('isLoadingProductMultiple', isLoadingProductMultiple))..add(DiagnosticsProperty('errorMessage', errorMessage));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductState&&const DeepCollectionEquality().equals(other._data, _data)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isLoadingSaveData, isLoadingSaveData) || other.isLoadingSaveData == isLoadingSaveData)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.tempProduct, tempProduct) || other.tempProduct == tempProduct)&&(identical(other.isCamera, isCamera) || other.isCamera == isCamera)&&const DeepCollectionEquality().equals(other._adsCarousel, _adsCarousel)&&(identical(other.addSplash, addSplash) || other.addSplash == addSplash)&&const DeepCollectionEquality().equals(other._masterDataHistory, _masterDataHistory)&&const DeepCollectionEquality().equals(other._dataHistory, _dataHistory)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.isShowDialog, isShowDialog) || other.isShowDialog == isShowDialog)&&(identical(other.productBody, productBody) || other.productBody == productBody)&&const DeepCollectionEquality().equals(other._historyProductLimit, _historyProductLimit)&&(identical(other.isLoadingHistoryProductLimit, isLoadingHistoryProductLimit) || other.isLoadingHistoryProductLimit == isLoadingHistoryProductLimit)&&const DeepCollectionEquality().equals(other._productMultipleList, _productMultipleList)&&(identical(other.paginationMeta, paginationMeta) || other.paginationMeta == paginationMeta)&&(identical(other.isLoadingProductMultiple, isLoadingProductMultiple) || other.isLoadingProductMultiple == isLoadingProductMultiple));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductState&&const DeepCollectionEquality().equals(other._data, _data)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isLoadingSaveData, isLoadingSaveData) || other.isLoadingSaveData == isLoadingSaveData)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.tempProduct, tempProduct) || other.tempProduct == tempProduct)&&(identical(other.isCamera, isCamera) || other.isCamera == isCamera)&&const DeepCollectionEquality().equals(other._adsCarousel, _adsCarousel)&&(identical(other.addSplash, addSplash) || other.addSplash == addSplash)&&const DeepCollectionEquality().equals(other._masterDataHistory, _masterDataHistory)&&const DeepCollectionEquality().equals(other._dataHistory, _dataHistory)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.isShowDialog, isShowDialog) || other.isShowDialog == isShowDialog)&&(identical(other.productBody, productBody) || other.productBody == productBody)&&const DeepCollectionEquality().equals(other._historyProductLimit, _historyProductLimit)&&(identical(other.isLoadingHistoryProductLimit, isLoadingHistoryProductLimit) || other.isLoadingHistoryProductLimit == isLoadingHistoryProductLimit)&&const DeepCollectionEquality().equals(other._productMultipleList, _productMultipleList)&&(identical(other.paginationMeta, paginationMeta) || other.paginationMeta == paginationMeta)&&(identical(other.isLoadingProductMultiple, isLoadingProductMultiple) || other.isLoadingProductMultiple == isLoadingProductMultiple)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,const DeepCollectionEquality().hash(_data),isLoading,isLoadingSaveData,errorMessage,imagePath,tempProduct,isCamera,const DeepCollectionEquality().hash(_adsCarousel),addSplash,const DeepCollectionEquality().hash(_masterDataHistory),const DeepCollectionEquality().hash(_dataHistory),isSuccess,isShowDialog,productBody,const DeepCollectionEquality().hash(_historyProductLimit),isLoadingHistoryProductLimit,const DeepCollectionEquality().hash(_productMultipleList),paginationMeta,isLoadingProductMultiple]);
+int get hashCode => Object.hashAll([runtimeType,const DeepCollectionEquality().hash(_data),isLoading,isLoadingSaveData,imagePath,tempProduct,isCamera,const DeepCollectionEquality().hash(_adsCarousel),addSplash,const DeepCollectionEquality().hash(_masterDataHistory),const DeepCollectionEquality().hash(_dataHistory),isSuccess,isShowDialog,productBody,const DeepCollectionEquality().hash(_historyProductLimit),isLoadingHistoryProductLimit,const DeepCollectionEquality().hash(_productMultipleList),paginationMeta,isLoadingProductMultiple,errorMessage]);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'ProductState(data: $data, isLoading: $isLoading, isLoadingSaveData: $isLoadingSaveData, errorMessage: $errorMessage, imagePath: $imagePath, tempProduct: $tempProduct, isCamera: $isCamera, adsCarousel: $adsCarousel, addSplash: $addSplash, masterDataHistory: $masterDataHistory, dataHistory: $dataHistory, isSuccess: $isSuccess, isShowDialog: $isShowDialog, productBody: $productBody, historyProductLimit: $historyProductLimit, isLoadingHistoryProductLimit: $isLoadingHistoryProductLimit, productMultipleList: $productMultipleList, paginationMeta: $paginationMeta, isLoadingProductMultiple: $isLoadingProductMultiple)';
+  return 'ProductState(data: $data, isLoading: $isLoading, isLoadingSaveData: $isLoadingSaveData, imagePath: $imagePath, tempProduct: $tempProduct, isCamera: $isCamera, adsCarousel: $adsCarousel, addSplash: $addSplash, masterDataHistory: $masterDataHistory, dataHistory: $dataHistory, isSuccess: $isSuccess, isShowDialog: $isShowDialog, productBody: $productBody, historyProductLimit: $historyProductLimit, isLoadingHistoryProductLimit: $isLoadingHistoryProductLimit, productMultipleList: $productMultipleList, paginationMeta: $paginationMeta, isLoadingProductMultiple: $isLoadingProductMultiple, errorMessage: $errorMessage)';
 }
 
 
@@ -1269,7 +1313,7 @@ abstract mixin class _$ProductStateCopyWith<$Res> implements $ProductStateCopyWi
   factory _$ProductStateCopyWith(_ProductState value, $Res Function(_ProductState) _then) = __$ProductStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<ProductData> data, bool isLoading, bool isLoadingSaveData, String? errorMessage, String imagePath, ProductData? tempProduct, bool isCamera, List<AdResponseData> adsCarousel, AdResponseData? addSplash, List<ProductData> masterDataHistory, List<ProductData> dataHistory, bool isSuccess, bool isShowDialog, ProductBody? productBody, List<FetchHistoryDataProductLimit> historyProductLimit, bool isLoadingHistoryProductLimit, List<ProductData> productMultipleList, PaginationMeta? paginationMeta, bool isLoadingProductMultiple
+ List<ProductData> data, bool isLoading, bool isLoadingSaveData, String imagePath, ProductData? tempProduct, bool isCamera, List<AdResponseData> adsCarousel, AdResponseData? addSplash, List<ProductData> masterDataHistory, List<ProductData> dataHistory, bool isSuccess, bool isShowDialog, ProductBody? productBody, List<FetchHistoryDataProductLimit> historyProductLimit, bool isLoadingHistoryProductLimit, List<ProductData> productMultipleList, PaginationMeta? paginationMeta, bool isLoadingProductMultiple, String? errorMessage
 });
 
 
@@ -1286,13 +1330,12 @@ class __$ProductStateCopyWithImpl<$Res>
 
 /// Create a copy of ProductState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? data = null,Object? isLoading = null,Object? isLoadingSaveData = null,Object? errorMessage = freezed,Object? imagePath = null,Object? tempProduct = freezed,Object? isCamera = null,Object? adsCarousel = null,Object? addSplash = freezed,Object? masterDataHistory = null,Object? dataHistory = null,Object? isSuccess = null,Object? isShowDialog = null,Object? productBody = freezed,Object? historyProductLimit = null,Object? isLoadingHistoryProductLimit = null,Object? productMultipleList = null,Object? paginationMeta = freezed,Object? isLoadingProductMultiple = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? data = null,Object? isLoading = null,Object? isLoadingSaveData = null,Object? imagePath = null,Object? tempProduct = freezed,Object? isCamera = null,Object? adsCarousel = null,Object? addSplash = freezed,Object? masterDataHistory = null,Object? dataHistory = null,Object? isSuccess = null,Object? isShowDialog = null,Object? productBody = freezed,Object? historyProductLimit = null,Object? isLoadingHistoryProductLimit = null,Object? productMultipleList = null,Object? paginationMeta = freezed,Object? isLoadingProductMultiple = null,Object? errorMessage = freezed,}) {
   return _then(_ProductState(
 data: null == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
 as List<ProductData>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,isLoadingSaveData: null == isLoadingSaveData ? _self.isLoadingSaveData : isLoadingSaveData // ignore: cast_nullable_to_non_nullable
-as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
-as String?,imagePath: null == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
+as bool,imagePath: null == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
 as String,tempProduct: freezed == tempProduct ? _self.tempProduct : tempProduct // ignore: cast_nullable_to_non_nullable
 as ProductData?,isCamera: null == isCamera ? _self.isCamera : isCamera // ignore: cast_nullable_to_non_nullable
 as bool,adsCarousel: null == adsCarousel ? _self._adsCarousel : adsCarousel // ignore: cast_nullable_to_non_nullable
@@ -1307,7 +1350,8 @@ as List<FetchHistoryDataProductLimit>,isLoadingHistoryProductLimit: null == isLo
 as bool,productMultipleList: null == productMultipleList ? _self._productMultipleList : productMultipleList // ignore: cast_nullable_to_non_nullable
 as List<ProductData>,paginationMeta: freezed == paginationMeta ? _self.paginationMeta : paginationMeta // ignore: cast_nullable_to_non_nullable
 as PaginationMeta?,isLoadingProductMultiple: null == isLoadingProductMultiple ? _self.isLoadingProductMultiple : isLoadingProductMultiple // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

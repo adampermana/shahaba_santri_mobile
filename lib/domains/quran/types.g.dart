@@ -88,7 +88,7 @@ Map<String, dynamic> _$ChapterToJson(_Chapter instance) => <String, dynamic>{
   'nameSimple': instance.nameSimple,
   'pages': instance.pages,
   'revelationOrder': instance.revelationOrder,
-  'revelationPlace': _$ChapterRevelationPlaceEnumMap[instance.revelationPlace],
+  'revelationPlace': _$ChapterRevelationPlaceEnumMap[instance.revelationPlace]!,
   'translatedName': instance.translatedName,
   'versesCount': instance.versesCount,
 };

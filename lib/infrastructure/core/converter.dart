@@ -45,18 +45,18 @@ Future<File> cropImageToAspectRatio({
     final outputWidth = sourceRect.width.round();
     final outputHeight = sourceRect.height.round();
     final recorder = ui.PictureRecorder();
-    final canvas = ui.Canvas(recorder);
-    canvas.drawImageRect(
-      image,
-      sourceRect,
-      ui.Rect.fromLTWH(
-        0,
-        0,
-        outputWidth.toDouble(),
-        outputHeight.toDouble(),
-      ),
-      ui.Paint(),
-    );
+    final canvas = ui.Canvas(recorder)
+      ..drawImageRect(
+        image,
+        sourceRect,
+        ui.Rect.fromLTWH(
+          0,
+          0,
+          outputWidth.toDouble(),
+          outputHeight.toDouble(),
+        ),
+        ui.Paint(),
+      );
 
     final croppedImage = await recorder.endRecording().toImage(
       outputWidth,
@@ -91,7 +91,7 @@ Future<String?> compressImageToTargetSize({
   int targetMinKB = 200,
   int targetMaxKB = 400,
 }) async {
-  int quality = 75; // mulai dari kualitas tinggi
+  var quality = 75; // mulai dari kualitas tinggi
   File? compressedFile;
 
   while (quality >= minQuality) {

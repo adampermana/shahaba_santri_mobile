@@ -148,6 +148,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
             ),
           );
         },
+        stopLoading: (value) async {
+          emit(
+            state.copyWith(
+              isLoading: false,
+              isCamera: false,
+            ),
+          );
+        },
         startSaveLoading: (value) async {
           emit(state.copyWith(isLoadingSaveData: true, tempProduct: value.val));
         },

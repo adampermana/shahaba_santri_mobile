@@ -4,6 +4,7 @@ part of 'product_bloc.dart';
 abstract class ProductEvent with _$ProductEvent {
   const factory ProductEvent.started() = _Started;
   const factory ProductEvent.startLoading() = _StartLoading;
+  const factory ProductEvent.stopLoading() = _StopLoading;
   const factory ProductEvent.startSaveLoading(ProductData val) =
       _StartSaveLoading;
   const factory ProductEvent.searchImage(

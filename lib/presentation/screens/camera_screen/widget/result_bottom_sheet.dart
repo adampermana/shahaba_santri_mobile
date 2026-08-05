@@ -104,7 +104,7 @@ class ProductSearchResultSheet extends StatelessWidget {
                                           coordinates,
                                         ),
                                       );
-                                    } catch (e) {
+                                    } on Exception catch (e) {
                                       ScaffoldMessenger.of(
                                         context,
                                       ).showSnackBar(
