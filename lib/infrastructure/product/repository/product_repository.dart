@@ -67,6 +67,24 @@ class ProductRepository implements IProductRepository {
   }
 
   @override
+  Future<Either<ServerFailures, List<AdResponseData>>> getAdsByCategory(
+    int categoryId,
+  ) async {
+    try {
+      final result = await _remote.getAdsByCategory(categoryId);
+      return Right(result.data ?? []);
+    } on ServerFailures catch (e) {
+      return Left(
+        ServerFailures(
+          statusCode: e.statusCode,
+          title: e.title,
+          message: e.message,
+        ),
+      );
+    }
+  }
+
+  @override
   Future<Either<ServerFailures, List<AdResponseData>>> getAdsSponsored(
     int page,
     int limit,

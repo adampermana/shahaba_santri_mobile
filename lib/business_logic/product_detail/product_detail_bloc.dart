@@ -23,34 +23,31 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   ) async {
     emit(state.copyWith(isLoading: true, product: null));
     final result = await _repo.getProduct(event.id);
-    final adsResult = await _repo.getAds('7');
     result.fold(
-      (l) => emit(state.copyWith(errorMessage: l.message)),
-      (r) => emit(state.copyWith(product: r)),
-    );
-
-    adsResult.fold(
       (l) => emit(state.copyWith(errorMessage: l.message, isLoading: false)),
-      (r) {
-        if (r.isEmpty) {
-          emit(state.copyWith(adsCarousel: null, isLoading: false));
-          return;
-        }
-        final random = Random();
-        final number = random.nextInt(r.length);
-        emit(
-          state.copyWith(adsCarousel: r.elementAt(number), isLoading: false),
+      (r) async {
+        emit(state.copyWith(product: r, isLoading: true));
+
+        // Use product_category_id from product to fetch ads by category
+        final adsResult = await _repo.getAdsByCategory(r.categoryId ?? 0);
+        adsResult.fold(
+          (l) => emit(state.copyWith(errorMessage: l.message, isLoading: false)),
+          (rAds) {
+            if (rAds.isEmpty) {
+              emit(state.copyWith(adsCarousel: null, isLoading: false));
+              return;
+            }
+            final random = Random();
+            final number = random.nextInt(rAds.length);
+            emit(
+              state.copyWith(
+                adsCarousel: rAds.elementAt(number),
+                isLoading: false,
+              ),
+            );
+          },
         );
       },
     );
-
-    // adsResult.fold(
-    //   (l) => emit(state.copyWith(errorMessage: l.message, isLoading: false)),
-    //   (r) {
-    //     final random = Random();
-    //     final number = random.nextInt(r.length);
-    //     emit(state.copyWith(adsCarousel: r[number], isLoading: false));
-    //   },
-    // );
   }
 }
