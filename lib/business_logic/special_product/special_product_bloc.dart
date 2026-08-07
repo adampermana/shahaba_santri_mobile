@@ -34,7 +34,7 @@ class SpecialProductBloc
     _Started event,
     Emitter<SpecialProductState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(isLoading: true, getBrandDataLoading: true));
     final result = await _repo.getAds('2');
 
     final resultTopTen = await _repo.getAdsTopTen();
