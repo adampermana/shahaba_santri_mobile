@@ -9,7 +9,7 @@ import 'package:sahaba_mobile/domains/quran/surah_model.dart';
 import 'package:sahaba_mobile/domains/quran/translations/id_indonesian_islamic_affairs_ministry.dart';
 import 'package:sahaba_mobile/domains/quran/transliteration.dart';
 import 'package:sahaba_mobile/domains/quran/types.dart';
-import 'package:sahaba_mobile/domains/quran/verses/indopak.dart';
+import 'package:sahaba_mobile/domains/quran/verses/uthmani_tajweed.dart';
 import 'package:sahaba_mobile/infrastructure/quran/datasources/i_quran_local_datasource.dart';
 
 class QuranLocalDatasource implements IQuranLocalDatasource {
@@ -59,7 +59,9 @@ class QuranLocalDatasource implements IQuranLocalDatasource {
   @override
   Future<QuranDetailModel> getJuzDetail(JuzModel juz) async {
     final juzIndex = int.tryParse(juz.index ?? '') ?? 0;
-    final juzVerses = versesIndopak.where((v) => v.juzNumber == juzIndex);
+    final juzVerses = versesUthmaniTajweed.where(
+      (v) => v.juzNumber == juzIndex,
+    );
 
     return QuranDetailModel(
       type: QuranDetailType.juz,
@@ -108,7 +110,7 @@ class QuranLocalDatasource implements IQuranLocalDatasource {
   }
 
   JuzModel _juzToModel(Juz juz, List<SurahModel> surahs) {
-    final verses = versesIndopak
+    final verses = versesUthmaniTajweed
         .where((v) => v.juzNumber == juz.number)
         .toList();
     final first = verses.first;
@@ -150,7 +152,7 @@ class QuranLocalDatasource implements IQuranLocalDatasource {
     required int endVerse,
   }) {
     final surahNumber = int.parse(_requiredIndex(surah.index));
-    return versesIndopak
+    return versesUthmaniTajweed
         .where(
           (verse) =>
               verse.chapterID == surahNumber &&
@@ -176,7 +178,7 @@ class QuranLocalDatasource implements IQuranLocalDatasource {
       surahNameAr: chapter.nameArabic,
       verseNumber: _verseNumberFromKey(verse.verseKey),
       verseKey: verse.verseKey,
-      arabic: _stripUnsupportedArabicMarks(verse.text),
+      arabic: _stripHtml(_stripUnsupportedArabicMarks(verse.text)),
       transliteration: _stripHtml(transliteration.text).toLowerCase(),
       translation: _stripHtml(translation.text),
     );
@@ -217,6 +219,7 @@ class QuranLocalDatasource implements IQuranLocalDatasource {
         .replaceAll('&amp;', '&')
         .replaceAll(RegExp('<sup foot_note=[^>]*>.*?</sup>'), '')
         .replaceAll(RegExp('<[^>]*>'), '')
+        .replaceAll(RegExp(r'\s*[\u0660-\u0669]+\s*$'), '') // Hapus nomor ayat Arab di akhir string
         .trim();
   }
 }

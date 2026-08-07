@@ -1447,7 +1447,7 @@ class _ContinueReadingContent extends StatelessWidget {
                                 textDirection: TextDirection.rtl,
                                 style: textTheme.displaySmall?.copyWith(
                                   color: Colors.white,
-                                  fontFamily: 'Markazi Text',
+                                  fontFamily: 'lpmq',
                                   fontSize: 32,
                                   fontWeight: FontWeight.w400,
                                 ),

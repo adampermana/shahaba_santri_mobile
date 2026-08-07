@@ -98,16 +98,9 @@ flutter:
     - assets/audio/adzan-default.mp3
 
   fonts:
-    - family: Markazi Text
+    - family: lpmq
       fonts:
-        - asset: assets/fonts/Markazi/MarkaziText-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/Markazi/MarkaziText-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/Markazi/MarkaziText-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/Markazi/MarkaziText-Bold.ttf
-          weight: 700
+        - asset: assets/fonts/lpmq.otf
     - family: Synonym
       fonts:
         - asset: assets/fonts/synonym_complete/Fonts/OTF/Synonym-Extralight.otf

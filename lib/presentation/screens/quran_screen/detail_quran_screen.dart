@@ -34,9 +34,9 @@ typedef _SurahGroup = ({
   List<QuranVerseModel> verses,
 });
 
-const _minArabicTextSize = 20.0;
-const _defaultArabicTextSize = 28.0;
-const _maxArabicTextSize = 48.0;
+const _minArabicTextSize = 16.0;
+const _defaultArabicTextSize = 20.0;
+const _maxArabicTextSize = 26.0;
 const _minLatinTextSize = 12.0;
 const _defaultLatinTextSize = 16.0;
 const _maxLatinTextSize = 20.0;
@@ -83,6 +83,20 @@ String _cleanQuranText(String value) {
       .replaceAll('&apos;', "'")
       .replaceAll('&quot;', '"')
       .replaceAll('&amp;', '&');
+}
+
+String _cleanArabicText(String value) {
+  // 1. Hapus ZWNJ yang memutus ligature
+  var text = value.replaceAll('\u200C', '');
+
+  // 2. Reorder sequence: Letakkan tanda waqf (U+06D6 - U+06ED) sebelum harakat (U+064B - U+065F)
+  // agar menempel langsung ke huruf dasar (base character U+0600 - U+064A)
+  text = text.replaceAllMapped(
+    RegExp(r'([\u0600-\u064A])([\u064B-\u065F])([\u06D6-\u06ED])'),
+    (match) => '${match.group(1)}${match.group(3)}${match.group(2)}',
+  );
+
+  return text;
 }
 
 class DetailQuranScreen extends HookWidget {
@@ -871,10 +885,9 @@ bool _shouldShowBismillahForSurah(String surahIndex) {
 }
 
 bool _isBismillahVerse(QuranVerseModel verse) {
-  final arabic = _cleanQuranText(verse.arabic)
-      .replaceAll(RegExp(r'<[^>]*>'), '')
-      .replaceAll(RegExp(r'\s+'), ' ')
-      .trim();
+  final arabic = _cleanQuranText(
+    verse.arabic,
+  ).replaceAll(RegExp(r'<[^>]*>'), '').replaceAll(RegExp(r'\s+'), ' ').trim();
   if (arabic.startsWith('بِسْمِ') || arabic.startsWith('بسم')) return true;
 
   // Al-Fatihah's first verse is the basmalah in this dataset, even when
@@ -897,7 +910,8 @@ Widget _juzContent(
     itemBuilder: (context, gi) {
       final group = groups[gi];
       final showBismillah = _shouldShowBismillahForSurah(group.surahIndex);
-      final displayVerses = showBismillah &&
+      final displayVerses =
+          showBismillah &&
               group.verses.isNotEmpty &&
               _isBismillahVerse(group.verses.first)
           ? group.verses.skip(1).toList()
@@ -990,7 +1004,7 @@ Widget _surahBanner(
                   Text(
                     _cleanQuranText(detail.titleAr!),
                     style: textTheme.titleMedium?.copyWith(
-                      fontFamily: 'Markazi Text',
+                      fontFamily: 'lpmq',
                       color: ColorPalette.arabicText,
                       fontSize: 24,
                       fontWeight: FontWeight.w400,
@@ -1037,7 +1051,7 @@ Widget _surahBannerInJuz(
                 surahNameAr.trim().isNotEmpty ? surahNameAr : surahName,
               ),
               style: textTheme.titleMedium?.copyWith(
-                fontFamily: 'Markazi Text',
+                fontFamily: 'lpmq',
                 color: ColorPalette.arabicText,
                 fontSize: 24,
                 fontWeight: FontWeight.w400,
@@ -1094,11 +1108,14 @@ Widget _verseRow(
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: verse.arabic,
-                          style: GoogleFonts.harmattan(
+                          text: _cleanArabicText(verse.arabic),
+                          style: TextStyle(
+                            fontFamily: 'lpmq',
                             color: ColorPalette.kBlack,
                             fontSize: _arabicTextSize(textSizeSetting),
-                            fontWeight: FontWeight.w400,
+                            height: 2.6,
+                            wordSpacing: 0,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         WidgetSpan(
@@ -1116,13 +1133,12 @@ Widget _verseRow(
                     ),
                     textAlign: TextAlign.justify,
                     textDirection: TextDirection.rtl,
-                    style: textTheme.displaySmall?.copyWith(
-                      fontFamily: 'Markazi Text',
-                      color: ColorPalette.kBlack,
-                      fontSize: _arabicTextSize(textSizeSetting),
-                      height: 1.4,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    // style: TextStyle(
+                    //   fontFamily: 'KfgqpcHafs',
+                    //   color: ColorPalette.arabicText,
+                    //   fontSize: _arabicTextSize(textSizeSetting),
+                    //   height: 1.4,
+                    // ),
                   ),
                 ),
               ],
@@ -1131,7 +1147,7 @@ Widget _verseRow(
               const SizedBox(height: 22),
               Text(
                 _cleanQuranText(verse.transliteration),
-                textAlign: TextAlign.justify,
+                textAlign: TextAlign.start,
                 style: textTheme.titleMedium?.copyWith(
                   color: ColorPalette.primaryColor,
                   fontSize: _latinTextSize(textSizeSetting),
@@ -1144,7 +1160,7 @@ Widget _verseRow(
               const SizedBox(height: 10),
               Text(
                 _cleanQuranText(verse.translation),
-                textAlign: TextAlign.justify,
+                textAlign: TextAlign.start,
                 style: textTheme.bodyLarge?.copyWith(
                   color: ColorPalette.kBlack,
                   fontSize: _latinTextSize(textSizeSetting),
@@ -1530,13 +1546,13 @@ Widget _arabicVerseNumber(BuildContext context, int number, double size) {
     child: DecoratedBox(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: ColorPalette.arabicText),
+        border: Border.all(color: ColorPalette.kBlack),
       ),
       child: Center(
         child: Text(
           toArabicNumber(number),
           style: textTheme.labelSmall?.copyWith(
-            color: ColorPalette.arabicText,
+            color: ColorPalette.kBlack,
             fontSize: 14,
             fontWeight: FontWeight.w700,
           ),

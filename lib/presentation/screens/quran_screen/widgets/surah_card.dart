@@ -91,7 +91,7 @@ class SurahCard extends StatelessWidget {
               Text(
                 surah.titleAr ?? '',
                 style: textTheme.displaySmall?.copyWith(
-                  fontFamily: 'Markazi Text',
+                  fontFamily: 'lpmq',
                   fontSize: 32,
                   fontWeight: FontWeight.w400,
                   color: const Color(0xFFB39164),
