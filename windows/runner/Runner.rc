@@ -95,7 +95,7 @@ BEGIN
             VALUE "InternalName", "sahaba_mobile" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.eprisi.sah. All rights reserved." "\0"
             VALUE "OriginalFilename", "sahaba_mobile.exe" "\0"
-            VALUE "ProductName", "Sahaba Mobile" "\0"
+            VALUE "ProductName", "SAH" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
