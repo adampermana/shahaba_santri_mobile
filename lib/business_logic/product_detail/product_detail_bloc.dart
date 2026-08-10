@@ -22,30 +22,37 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     Emitter<ProductDetailState> emit,
   ) async {
     emit(state.copyWith(isLoading: true, product: null));
-    final result = await _repo.getProduct(event.id);
-    result.fold(
-      (l) => emit(state.copyWith(errorMessage: l.message, isLoading: false)),
-      (r) async {
-        emit(state.copyWith(product: r, isLoading: true));
 
-        // Use product_category_id from product to fetch ads by category
-        final adsResult = await _repo.getAdsByCategory(r.categoryId ?? 0);
-        adsResult.fold(
-          (l) => emit(state.copyWith(errorMessage: l.message, isLoading: false)),
-          (rAds) {
-            if (rAds.isEmpty) {
-              emit(state.copyWith(adsCarousel: null, isLoading: false));
-              return;
-            }
-            final random = Random();
-            final number = random.nextInt(rAds.length);
-            emit(
-              state.copyWith(
-                adsCarousel: rAds.elementAt(number),
-                isLoading: false,
-              ),
-            );
-          },
+    final result = await _repo.getProduct(event.id);
+    if (result.isLeft()) {
+      final error = result.fold((l) => l, (r) => null);
+      emit(state.copyWith(errorMessage: error?.message, isLoading: false));
+      return;
+    }
+
+    final product = result.getOrElse(() => throw Exception('unreachable'));
+    emit(state.copyWith(product: product, isLoading: true));
+
+    final adsResult = await _repo.getAdsByCategory(
+      product.categoryId ?? 0,
+      '7',
+    );
+    if (emit.isDone) return;
+
+    adsResult.fold(
+      (l) => emit(state.copyWith(errorMessage: l.message, isLoading: false)),
+      (rAds) {
+        if (rAds.isEmpty) {
+          emit(state.copyWith(adsCarousel: null, isLoading: false));
+          return;
+        }
+        final random = Random();
+        final number = random.nextInt(rAds.length);
+        emit(
+          state.copyWith(
+            adsCarousel: rAds.elementAt(number),
+            isLoading: false,
+          ),
         );
       },
     );

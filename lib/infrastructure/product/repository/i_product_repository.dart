@@ -25,7 +25,10 @@ abstract class IProductRepository {
 
   Future<Either<ServerFailures, List<ProductData>>> getHistory();
   Future<Either<ServerFailures, List<AdResponseData>>> getAds(String target);
-  Future<Either<ServerFailures, List<AdResponseData>>> getAdsByCategory(int categoryId);
+  Future<Either<ServerFailures, List<AdResponseData>>> getAdsByCategory(
+    int categoryId,
+    String target,
+  );
   Future<Either<ServerFailures, List<AdResponseData>>> getAdsSponsored(
     int page,
     int limit,

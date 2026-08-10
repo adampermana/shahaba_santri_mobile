@@ -26,7 +26,7 @@ abstract class IProductRemoteDatasource {
   Future<ListBrand> getBrandData();
   Future<Brand> getBrandById(int id);
   Future<ListAdsResponse> getAds(String target);
-  Future<ListAdsResponse> getAdsByCategory(int categoryId);
+  Future<ListAdsResponse> getAdsByCategory(int categoryId, String target);
   Future<ListCategory> getCategory();
   Future<ListAdsResponse> getAdsSponsored(int page, int limit);
   Future<ListProductResponse> getAdsTopTen();
@@ -180,10 +180,10 @@ class ProductRemoteDatasource implements IProductRemoteDatasource {
   }
 
   @override
-  Future<ListAdsResponse> getAdsByCategory(int categoryId) async {
+  Future<ListAdsResponse> getAdsByCategory(int categoryId, String target) async {
     try {
       final response = await _dio.get<Map<String, dynamic>>(
-        '/api/v1/ad/creative/',
+        '/api/v1/ad/creative/$target',
         queryParameters: {'category_id': categoryId},
       );
       return ListAdsResponse.fromJson(response.data!);

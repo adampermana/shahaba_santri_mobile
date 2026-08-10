@@ -69,9 +69,10 @@ class ProductRepository implements IProductRepository {
   @override
   Future<Either<ServerFailures, List<AdResponseData>>> getAdsByCategory(
     int categoryId,
+    String target,
   ) async {
     try {
-      final result = await _remote.getAdsByCategory(categoryId);
+      final result = await _remote.getAdsByCategory(categoryId, target);
       return Right(result.data ?? []);
     } on ServerFailures catch (e) {
       return Left(
@@ -79,6 +80,14 @@ class ProductRepository implements IProductRepository {
           statusCode: e.statusCode,
           title: e.title,
           message: e.message,
+        ),
+      );
+    } on Exception catch (e) {
+      return Left(
+        ServerFailures(
+          statusCode: 500,
+          title: 'Error',
+          message: e.toString(),
         ),
       );
     }
