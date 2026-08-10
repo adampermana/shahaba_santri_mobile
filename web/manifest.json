@@ -1,11 +1,11 @@
 {
-    "name": "Sahaba Mobile",
-    "short_name": "Sahaba Mobile",
+    "name": "SAH",
+    "short_name": "SAH",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Sahaba mobile application",
+    "description": "SAH mobile application",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
