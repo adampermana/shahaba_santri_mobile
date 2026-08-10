@@ -49,6 +49,9 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
         );
       },
       (r) async {
+        // lat 0 & lon 0 = fallback iOS (user tolak izin), skip placemark.
+        final isFallback = r.latitude == 0.0 && r.longitude == 0.0;
+
         emit(
           state.copyWith(
             isLoading: false,
@@ -61,7 +64,10 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
             messageError: '',
           ),
         );
-        add(LocationEvent.getPlaceMark(position: r));
+
+        if (!isFallback) {
+          add(LocationEvent.getPlaceMark(position: r));
+        }
       },
     );
   }

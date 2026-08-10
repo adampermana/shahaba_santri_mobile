@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -38,16 +40,24 @@ class LocationPermissionService {
 
   Future<Either<Failure, Position>> getCurrentPosition() async {
     try {
-      // ── 1. Cek izin dan munculkan prompt system jika belum pernah diminta.
       var permission = await Geolocator.checkPermission();
 
+      // ── 1. Munculkan iOS/Android native popup jika belum diminta atau
+      //       pernah ditolak sekali (bukan permanently denied).
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.unableToDetermine) {
         permission = await Geolocator.requestPermission();
       }
 
+      // ── 2. Izin ditolak setelah diminta atau ditolak permanen.
       if (permission != LocationPermission.whileInUse &&
           permission != LocationPermission.always) {
+        // iOS: tidak maksa, diam-diam fallback ke (0, 0).
+        if (Platform.isIOS) {
+          return Right(_fallbackPosition());
+        }
+
+        // Android: tampilkan alert seperti semula.
         return const Left(
           PermissionFailure(
             permissionType: PermissionType.location,
@@ -60,10 +70,16 @@ class LocationPermissionService {
         );
       }
 
-      // ── 2. Cek apakah layanan lokasi (GPS) aktif.
+      // ── 3. Cek apakah layanan lokasi (GPS) aktif.
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
       if (!serviceEnabled) {
+        // iOS: GPS mati → fallback ke (0, 0) tanpa alert.
+        if (Platform.isIOS) {
+          return Right(_fallbackPosition());
+        }
+
+        // Android: tampilkan alert seperti semula.
         return const Left(
           LocationFailure(
             'Izinkan Akses Lokasi',
@@ -74,11 +90,9 @@ class LocationPermissionService {
         );
       }
 
-      // ── 3. Ambil posisi
-      // Jika izin diberikan dan layanan lokasi aktif, ambil posisi saat ini
+      // ── 4. Ambil posisi.
       try {
         final position = await Geolocator.getCurrentPosition();
-        // kReleaseMode
         if (kReleaseMode && position.isMocked) {
           return const Left(
             LocationFakeGpsFailure(
@@ -97,6 +111,20 @@ class LocationPermissionService {
       return Left(LocationFailure('Gagal mendapatkan lokasi', '$e'));
     }
   }
+
+  /// Posisi fallback (0, 0) — digunakan di iOS saat user menolak izin lokasi.
+  Position _fallbackPosition() => Position(
+    latitude: 0,
+    longitude: 0,
+    timestamp: DateTime.now(),
+    accuracy: 0,
+    altitude: 0,
+    altitudeAccuracy: 0,
+    heading: 0,
+    headingAccuracy: 0,
+    speed: 0,
+    speedAccuracy: 0,
+  );
 
   Future<String> getLocationPlaceMark(double latitude, double longitude) async {
     try {
