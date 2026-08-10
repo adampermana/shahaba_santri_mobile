@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:sahaba_mobile/domains/auth/hive/auth_data_hive.dart';
 import 'package:sahaba_mobile/domains/auth/hive/auth_data_katanara_hive.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_respon_ai.dart';
@@ -7,7 +6,7 @@ import 'package:sahaba_mobile/domains/auth/login/login_response.dart';
 import 'package:sahaba_mobile/infrastructure/auth/datasources/auth_local_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/auth/datasources/i_auth_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/failures/failures.dart';
-import 'package:sahaba_mobile/injector.dart';
+import 'package:sahaba_mobile/infrastructure/services/firebase_messaging_service.dart';
 
 part 'auth_repositories.dart';
 

@@ -14,9 +14,6 @@ class FirebaseMessagingService {
   static final FirebaseMessagingService _instance =
       FirebaseMessagingService._internal();
 
-  static const int _maxApnsTokenAttempts = 6;
-  static const Duration _apnsTokenRetryDelay = Duration(milliseconds: 500);
-
   LocalNotificationsService? _localNotificationsService;
   StreamSubscription<RemoteMessage>? _onMessageSubscription;
   StreamSubscription<RemoteMessage>? _onMessageOpenedAppSubscription;
@@ -42,22 +39,30 @@ class FirebaseMessagingService {
   }
 
   Future<String?> getFcmToken() async {
-    if (Platform.isIOS) {
-      final apnsToken = await _getApnsTokenWithRetry();
-      if (apnsToken == null || apnsToken.isEmpty) {
-        debugPrint('APNs token unavailable. Skipping FCM token fetch for now.');
-        return null;
+    try {
+      if (Platform.isIOS) {
+        // Cek APNS token langsung dulu
+        var apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+
+        if (apnsToken == null) {
+          // Belum siap — tunggu dengan retry
+          await _waitForApnsToken();
+          apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+        }
+
+        if (apnsToken == null || apnsToken.isEmpty) {
+          debugPrint('APNs token unavailable. Skipping FCM token fetch.');
+          return null;
+        }
+
+        debugPrint('APNs Token: $apnsToken');
       }
 
-      debugPrint('APNs Token: $apnsToken');
-    }
-
-    try {
       final token = await FirebaseMessaging.instance.getToken();
       debugPrint('FCM Token: $token');
       return token;
     } on Exception catch (e) {
-      debugPrint('Error getting FCM token: $e');
+      debugPrint('Error getting APNS/FCM token: $e');
       return null;
     }
   }
@@ -113,26 +118,24 @@ class FirebaseMessagingService {
     }
   }
 
-  Future<String?> _getApnsTokenWithRetry() async {
-    for (var attempt = 1; attempt <= _maxApnsTokenAttempts; attempt++) {
+  Future<void> _waitForApnsToken({
+    int maxAttempts = 10,
+    Duration delay = const Duration(milliseconds: 500),
+  }) async {
+    for (var i = 0; i < maxAttempts; i++) {
       try {
-        final token = await FirebaseMessaging.instance.getAPNSToken();
-        if (token != null && token.isNotEmpty) {
-          return token;
-        }
+        final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+        if (apnsToken != null) return;
       } on Exception catch (e) {
-        debugPrint('APNs token attempt $attempt failed: $e');
+        debugPrint('APNS token attempt ${i + 1} failed: $e');
       }
 
-      if (attempt < _maxApnsTokenAttempts) {
-        await Future<void>.delayed(_apnsTokenRetryDelay);
+      if (i < maxAttempts - 1) {
+        await Future<void>.delayed(delay);
       }
     }
 
-    debugPrint(
-      'APNs token not available after $_maxApnsTokenAttempts attempts.',
-    );
-    return null;
+    debugPrint('APNS token not available after $maxAttempts attempts.');
   }
 
   Future<void> _handlePushNotificationsToken() async {
