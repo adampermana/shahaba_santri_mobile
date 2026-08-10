@@ -28,9 +28,10 @@ class AuthRepositories implements IAuthRepositories {
   }) async {
     try {
       final firebaseMessaging = sl<FirebaseMessaging>();
+
       final fcmToken = await firebaseMessaging.getToken();
       final response = await _remoteDatasource.postLoginGuest(
-        deviceToken: fcmToken!,
+        deviceToken: fcmToken.toString(),
         platform: platform,
       );
 
