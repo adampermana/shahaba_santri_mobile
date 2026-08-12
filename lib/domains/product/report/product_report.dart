@@ -5,12 +5,12 @@ part 'product_report.freezed.dart';
 part 'product_report.g.dart';
 
 @Freezed(fromJson: false, toJson: true)
+@JsonSerializable(
+  createFactory: false,
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+)
 abstract class ProductReport with _$ProductReport {
-  @JsonSerializable(
-    createFactory: false,
-    fieldRename: FieldRename.snake,
-    explicitToJson: true,
-  )
   factory ProductReport({
     @JsonKey(name: 'brand_id') required int brandId,
     @JsonKey(name: 'image', toJson: parseToBase64) required String image,

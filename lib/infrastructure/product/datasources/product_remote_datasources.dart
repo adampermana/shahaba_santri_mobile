@@ -56,9 +56,9 @@ class ProductRemoteDatasource implements IProductRemoteDatasource {
     try {
       final encodedImage = parseToBase64(image) ?? '';
       final data = {'image': encodedImage};
-      debugPrint('========================Uploading image: $image');
+      debugPrint('================Uploading image: $image');
       debugPrint(
-        '========================Image base64 length: ${encodedImage.length} characters',
+        '===============Image base64 length: ${encodedImage.length} characters',
       );
       final response = await _dio.post<Map<String, dynamic>>(
         '/api/v1/product/scan',
@@ -180,7 +180,10 @@ class ProductRemoteDatasource implements IProductRemoteDatasource {
   }
 
   @override
-  Future<ListAdsResponse> getAdsByCategory(int categoryId, String target) async {
+  Future<ListAdsResponse> getAdsByCategory(
+    int categoryId,
+    String target,
+  ) async {
     try {
       final response = await _dio.get<Map<String, dynamic>>(
         '/api/v1/ad/creative/$target',

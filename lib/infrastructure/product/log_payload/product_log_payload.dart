@@ -4,12 +4,12 @@ part 'product_log_payload.freezed.dart';
 part 'product_log_payload.g.dart';
 
 @Freezed(fromJson: false, toJson: true)
+@JsonSerializable(
+  createFactory: false,
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+)
 abstract class ProductLogPayload with _$ProductLogPayload {
-  @JsonSerializable(
-    createFactory: false,
-    fieldRename: FieldRename.snake,
-    explicitToJson: true,
-  )
   factory ProductLogPayload({
     @JsonKey(name: 'device_id') required String deviceId,
     @JsonKey(name: 'user') required String user,

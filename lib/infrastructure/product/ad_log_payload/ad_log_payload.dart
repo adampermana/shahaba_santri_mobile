@@ -4,12 +4,12 @@ part 'ad_log_payload.freezed.dart';
 part 'ad_log_payload.g.dart';
 
 @Freezed(fromJson: false, toJson: true)
+@JsonSerializable(
+  createFactory: false,
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+)
 abstract class AdLogPayload with _$AdLogPayload {
-  @JsonSerializable(
-    createFactory: false,
-    fieldRename: FieldRename.snake,
-    explicitToJson: true,
-  )
   factory AdLogPayload({
     @JsonKey(name: 'product_id') required int? productId,
     @JsonKey(name: 'creative_id') required int? creativeId,
