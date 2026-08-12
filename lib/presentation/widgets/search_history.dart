@@ -29,7 +29,7 @@ class HistoryItems extends StatelessWidget {
   final double? long;
   final String? eventTime;
   final int? productId;
-  final Function()? onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +39,9 @@ class HistoryItems extends StatelessWidget {
       onTap:
           onTap ??
           () async {
-            await Navigator.push(
+            await Navigator.push<DetailProductScreen>(
               context,
-              MaterialPageRoute(
+              MaterialPageRoute<DetailProductScreen>(
                 builder: (_) =>
                     DetailProductScreen(id: id, isAds: type == 'Iklan'),
               ),
