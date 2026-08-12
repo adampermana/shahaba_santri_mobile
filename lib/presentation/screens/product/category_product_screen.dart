@@ -169,7 +169,8 @@ class CategoryProductScreen extends StatelessWidget {
                                             locationState.locations;
                                         if (coordinates == null) {
                                           context.read<LocationBloc>().add(
-                                            const LocationEvent.getCurrentLocation(
+                                            const LocationEvent
+                                                .getCurrentLocation(
                                               isGetPosition: true,
                                             ),
                                           );
@@ -204,6 +205,7 @@ class CategoryProductScreen extends StatelessWidget {
                                       //   ),
                                       // );
                                     } on Exception catch (e) {
+                                      if (!context.mounted) return;
                                       ScaffoldMessenger.of(
                                         context,
                                       ).showSnackBar(
