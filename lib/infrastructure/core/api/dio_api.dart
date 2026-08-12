@@ -4,7 +4,7 @@ import 'package:sahaba_mobile/infrastructure/core/api/dio_interceptors.dart';
 
 // New Url
 // const String baseUrl = 'http://158.140.181.43:8513';
-const String baseUrl = 'http://157.20.32.181:8513';
+const String baseUrl = 'http://192.168.10.52:8123';
 const String baseAIUrl = 'https://api-katanara.solu.co.id';
 // const String baseUrl = 'http://192.168.10.42:8123';
 const String minio = 'https://api.minio-dev.solu.co.id';

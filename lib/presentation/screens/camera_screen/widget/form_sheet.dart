@@ -5,10 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
-import 'package:sahaba_mobile/business_logic/product_form/product_form_bloc.dart';
+import 'package:sahaba_mobile/business_logic/product_form/'
+    'product_form_bloc.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
-import 'package:sahaba_mobile/presentation/screens/camera_screen/widget/success_sheet.dart';
+import 'package:sahaba_mobile/presentation/screens/camera_screen/widget/'
+    'success_sheet.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_validation_form.dart';
 
 class FormSheet extends StatelessWidget {
@@ -116,7 +118,8 @@ class FormSheet extends StatelessWidget {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               const Text(
-                                                'Apakah Anda ingin membatalkan laporan ?',
+                                                'Apakah Anda ingin membatalkan '
+                                                'laporan ?',
                                                 style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w500,
@@ -131,10 +134,14 @@ class FormSheet extends StatelessWidget {
                                                   onPressed: () => Navigator.of(
                                                     ctx,
                                                   ).pop(true),
-                                                  style: ElevatedButton.styleFrom(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
                                                     backgroundColor:
-                                                        const Color(0xFFDE1135),
-                                                    shape: RoundedRectangleBorder(
+                                                        const Color(
+                                                          0xFFDE1135,
+                                                        ),
+                                                    shape:
+                                                        RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                             100,
@@ -196,7 +203,7 @@ class FormSheet extends StatelessWidget {
                                       source: ImageSource.camera,
                                     );
 
-                                if (pickedFile != null) {
+                                if (pickedFile != null && context.mounted) {
                                   context.read<ProductFormBloc>().add(
                                     ProductFormEvent.imageChange(
                                       pickedFile.path,
@@ -248,7 +255,9 @@ class FormSheet extends StatelessWidget {
                                 //   ),
                                 //   onChanged: (value) => context
                                 //       .read<ProductFormBloc>()
-                                //       .add(ProductFormEvent.nameChange(value)),
+                                //       .add(
+                                //         ProductFormEvent.nameChange(value),
+                                //       ),
                                 //   validator: (value) {
                                 //     if (value == null ||
                                 //         value.isEmpty ||
@@ -261,7 +270,9 @@ class FormSheet extends StatelessWidget {
                                 //   hintStyle: TextStyle(
                                 //     fontSize: 12,
                                 //     fontWeight: FontWeight.w400,
-                                //     color: Colors.black.withValues(alpha: 0.4),
+                                //     color: Colors.black.withValues(
+                                //       alpha: 0.4,
+                                //     ),
                                 //   ),
                                 // ),
                                 Column(
@@ -289,15 +300,14 @@ class FormSheet extends StatelessWidget {
                                           ),
                                         ),
                                         child: TextFormField(
-                                          maxLength: null,
                                           onChanged: (value) => context
                                               .read<ProductFormBloc>()
                                               .add(
-                                                ProductFormEvent.descriptionChange(
-                                                  value,
-                                                ),
+                                                ProductFormEvent
+                                                    .descriptionChange(
+                                                      value,
+                                                    ),
                                               ),
-                                          maxLines: null,
                                           decoration: InputDecoration(
                                             hintText: 'Masukan data',
                                             hintStyle: TextStyle(
@@ -327,7 +337,9 @@ class FormSheet extends StatelessWidget {
                                 //   ),
                                 //   onChanged: (value) =>
                                 //       context.read<ProductFormBloc>().add(
-                                //         ProductFormEvent.produsenChange(value),
+                                //         ProductFormEvent.produsenChange(
+                                //           value,
+                                //         ),
                                 //       ),
                                 //   validator: (value) {
                                 //     if (value == null || value.isEmpty) {
@@ -339,7 +351,9 @@ class FormSheet extends StatelessWidget {
                                 //   hintStyle: TextStyle(
                                 //     fontSize: 12,
                                 //     fontWeight: FontWeight.w400,
-                                //     color: Colors.black.withValues(alpha: 0.4),
+                                //     color: Colors.black.withValues(
+                                //       alpha: 0.4,
+                                //     ),
                                 //   ),
                                 // ),
                                 Column(
@@ -399,12 +413,15 @@ class FormSheet extends StatelessWidget {
                                                 ),
                                               ),
                                               elevation: 0,
-                                              onChanged: (value) => {
-                                                context.read<ProductFormBloc>().add(
-                                                  ProductFormEvent.produsenChange(
-                                                    value!,
-                                                  ),
-                                                ),
+                                              onChanged: (value) {
+                                                context
+                                                    .read<ProductFormBloc>()
+                                                    .add(
+                                                      ProductFormEvent
+                                                          .produsenChange(
+                                                        value!,
+                                                      ),
+                                                    );
                                               },
                                               value: state.produsen,
                                               underline: const SizedBox(),
@@ -485,14 +502,15 @@ class FormSheet extends StatelessWidget {
                                                 ),
                                               ),
                                               elevation: 0,
-                                              onChanged: (value) => {
+                                              onChanged: (value) {
                                                 context
                                                     .read<ProductFormBloc>()
                                                     .add(
-                                                      ProductFormEvent.brandChange(
+                                                      ProductFormEvent
+                                                          .brandChange(
                                                         value!,
                                                       ),
-                                                    ),
+                                                    );
                                               },
                                               value: state.brandId,
                                               underline: const SizedBox(),
@@ -539,7 +557,7 @@ class FormSheet extends StatelessWidget {
                                     context.read<ProductFormBloc>().add(
                                       ProductFormEvent.submit(coordinates),
                                     );
-                                  } catch (e) {
+                                  } on Exception catch (e) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(content: Text(e.toString())),
                                     );
