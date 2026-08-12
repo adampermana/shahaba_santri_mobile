@@ -157,7 +157,7 @@ class CameraScanScreen extends HookWidget {
                   final dataProduct = state.data
                       .where((p) => p.type!.toLowerCase().contains('organic'))
                       .toList();
-                  if (state.isLoading == true && state.isCamera == true) {
+                  if (state.isLoading && state.isCamera) {
                     LoadingOverlay.show(
                       barrierOpacity: 0.7,
                       context,
@@ -176,9 +176,9 @@ class CameraScanScreen extends HookWidget {
                   } else {
                     LoadingOverlay.hide();
                   }
-                  if (state.isLoading == false &&
+                  if (!state.isLoading &&
                       state.data.isEmpty &&
-                      state.isCamera == true) {
+                      state.isCamera) {
                     final locationBloc = context.read<LocationBloc>();
                     await showModalBottomSheet<void>(
                       backgroundColor: ColorPalette.scaffoldBackground,
@@ -194,9 +194,9 @@ class CameraScanScreen extends HookWidget {
                       ),
                     );
                     return;
-                  } else if (state.isLoading == false &&
+                  } else if (!state.isLoading &&
                       (state.data.length == 1 || dataProduct.length == 1) &&
-                      state.isCamera == true) {
+                      state.isCamera) {
                     try {
                       final dataIklan = state.data
                           .where((p) => p.type!.toLowerCase().contains('iklan'))
@@ -204,6 +204,7 @@ class CameraScanScreen extends HookWidget {
                       final locationBloc = context.read<LocationBloc>();
                       final coordinates = scanCoordinates(locationBloc.state);
                       if (coordinates == null) {
+                        if (!context.mounted) return;
                         context.pop();
                         locationBloc.add(
                           const LocationEvent.getCurrentLocation(
@@ -247,13 +248,14 @@ class CameraScanScreen extends HookWidget {
                           ),
                         ),
                       );
-                    } catch (e) {
+                    } on Exception catch (e) {
+                      if (!context.mounted) return;
                       ScaffoldMessenger.of(
                         context,
                       ).showSnackBar(SnackBar(content: Text(e.toString())));
                     }
-                  } else if (state.isLoading == false &&
-                      state.isCamera == true &&
+                  } else if (!state.isLoading &&
+                      state.isCamera &&
                       state.data.isNotEmpty &&
                       state.data.length > 1) {
                     final locationBloc = context.read<LocationBloc>();
@@ -299,7 +301,8 @@ class CameraScanScreen extends HookWidget {
                     //   MaterialPageRoute(
                     //     builder: (_) => ProductDetailPage(
                     //       isAds:
-                    //           state.tempProduct!.type?.toLowerCase() == 'iklan',
+                    //           state.tempProduct!.type?.toLowerCase() ==
+                    //               'iklan',
                     //       id: state.tempProduct!.id!,
                     //       ad: dataIklan,
                     //     ),
@@ -501,8 +504,8 @@ class CameraScanScreen extends HookWidget {
 
         const verticalReserve =
             _scanButtonSize - _scanButtonOverlap + _stageBottomGap;
-        final maxFrameHeight = math.max(
-          0.0,
+        final maxFrameHeight = math.max<double>(
+          0,
           constraints.maxHeight - verticalReserve,
         );
         final frameHeight = math.min(
@@ -702,8 +705,8 @@ class ScannerOverlayPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     final shortestSide = math.min(size.width, size.height);
-    final inset = math.min(16.0, shortestSide * 0.06);
-    final corner = math.min(63.0, shortestSide * 0.18);
+    final inset = math.min<double>(16, shortestSide * 0.06);
+    final corner = math.min<double>(63, shortestSide * 0.18);
     final radius = math.min(10, corner * 0.22);
     final left = inset;
     final top = inset;

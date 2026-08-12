@@ -220,7 +220,6 @@ final GoRouter router = GoRouter(
             ),
 
             GoRoute(
-              // todo:
               path: RouterPath.listDetailBrandByProductPath,
               builder: (context, state) {
                 final extra = state.extra as Map<String, dynamic>?;
