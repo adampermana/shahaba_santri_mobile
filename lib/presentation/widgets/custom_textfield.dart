@@ -87,14 +87,14 @@ class CustomTextFormFieldWidget extends StatelessWidget {
   final int? minLines;
   final int? maxLines;
 
-  // ── Warna fill default ──────
+  //  Warna fill default
   static const Color _kFillColor = ColorPalette.kGray;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // ── suffix builder ───────────────────────────────────────────────────────
+    //  suffix builder ─
     Widget? buildSuffix({required bool showClear}) {
       final widgets = <Widget>[];
 
@@ -117,7 +117,7 @@ class CustomTextFormFieldWidget extends StatelessWidget {
       return Row(mainAxisSize: MainAxisSize.min, children: widgets);
     }
 
-    // ── border helpers ───────────────────────────────────────────────────────
+    //  border helpers ─
     final effectiveBorderRadius = BorderRadius.circular(borderRadius ?? 8);
     final effectiveContentPadding =
         contentPadding ??
@@ -161,7 +161,7 @@ class CustomTextFormFieldWidget extends StatelessWidget {
         ? border(theme.disabledColor.withValues(alpha: 0.2))
         : noBorder;
 
-    // ── shadow decoration helper ───────────────────────────────────────────
+    //  shadow decoration helper ─
     const shadowDecoration = BoxDecoration(
       borderRadius: BorderRadius.all(Radius.circular(12)),
       boxShadow: [
@@ -180,7 +180,7 @@ class CustomTextFormFieldWidget extends StatelessWidget {
       ],
     );
 
-    // ── InputDecoration builder (reused below) ────────────────────────────
+    //  InputDecoration builder (reused below)
     InputDecoration inputDecoration({bool hideError = false}) =>
         InputDecoration(
           filled: true,
@@ -206,7 +206,7 @@ class CustomTextFormFieldWidget extends StatelessWidget {
           suffixIconConstraints: suffixIconConstraints,
         );
 
-    // ── core TextFormField ───────────────────────────────────────────────────
+    //  core TextFormField ─
     Widget textField({required Widget? suffix}) {
       // Tanpa shadow → pakai TextFormField biasa
       if (!showShadow) {
@@ -267,7 +267,7 @@ class CustomTextFormFieldWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── Shadow hanya di sekitar input ──
+              //  Shadow hanya di sekitar input
               DecoratedBox(
                 decoration: hasError
                     ? const BoxDecoration() // tanpa shadow saat error
@@ -311,7 +311,7 @@ class CustomTextFormFieldWidget extends StatelessWidget {
                   },
                 ),
               ),
-              // ── Error text di bawah shadow ──
+              //  Error text di bawah shadow
               if (errorWidget != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 6, left: 12),
@@ -330,7 +330,7 @@ class CustomTextFormFieldWidget extends StatelessWidget {
       );
     }
 
-    // ── label + field ────────────────────────────────────────────────────────
+    //  label + field
     Widget labeledField(Widget field) {
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -363,7 +363,7 @@ class CustomTextFormFieldWidget extends StatelessWidget {
       );
     }
 
-    // ── build dengan ValueListenableBuilder bila ada controller ──────────────
+    //  build dengan ValueListenableBuilder bila ada controller
     if (controller != null) {
       return ValueListenableBuilder<TextEditingValue>(
         valueListenable: controller!,
@@ -735,7 +735,7 @@ class _CustomEmailFormFieldState extends State<CustomEmailFormField> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // ── border sesuai desain (sama dengan CustomTextFormFieldWidget)
+    //  border sesuai desain (sama dengan CustomTextFormFieldWidget)
     // • enabled/empty      → no border
     // • focused            → border primary (ungu) width 2
     // • error              → border merah width 2
@@ -792,7 +792,7 @@ class _CustomEmailFormFieldState extends State<CustomEmailFormField> {
             const SizedBox(height: 5),
           ],
           () {
-            // ── shadow decoration ──
+            //  shadow decoration
             const shadowDeco = BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(12)),
               boxShadow: [
@@ -811,7 +811,7 @@ class _CustomEmailFormFieldState extends State<CustomEmailFormField> {
               ],
             );
 
-            // ── InputDecoration shared ──
+            //  InputDecoration shared
             InputDecoration emailInputDeco({bool hideError = false}) =>
                 InputDecoration(
                   filled: true,
@@ -1342,7 +1342,7 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
     this.focusNode,
     this.minLines,
     this.maxLines = 1,
-    // ── Glassmorphism ──
+    //  Glassmorphism
     this.useGlass = false,
     this.glassHeight,
     this.glassBlur = 18,
@@ -1398,7 +1398,7 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
   final int? minLines;
   final int? maxLines;
 
-  // ── Glassmorphism config ──
+  //  Glassmorphism config
   /// Aktifkan style glassmorphism (mis. search bar transparan di atas gambar/gradient).
   final bool useGlass;
   final double? glassHeight;
@@ -1412,14 +1412,14 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
   final double glassContentPaddingStart;
   final double glassContentPaddingEnd;
 
-  // ── Warna fill default ──────
+  //  Warna fill default
   static const Color _kFillColor = ColorPalette.kGray;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // ── suffix builder (dipakai di kedua mode: default & glass) ────────────
+    //  suffix builder (dipakai di kedua mode: default & glass)
     Widget? buildSuffix({required bool showClear, Color? iconColor}) {
       final widgets = <Widget>[];
 
@@ -1568,7 +1568,7 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
     // MODE DEFAULT (border/fill biasa)
     // ════════════════════════════════════════════════════════════════════
 
-    // ── border helpers ───────────────────────────────────────────────────────
+    //  border helpers ─
     final effectiveBorderRadius = BorderRadius.circular(borderRadius ?? 8);
     final effectiveContentPadding =
         contentPadding ??
@@ -1612,7 +1612,7 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
         ? border(theme.disabledColor.withValues(alpha: 0.2))
         : noBorder;
 
-    // ── shadow decoration helper ───────────────────────────────────────────
+    //  shadow decoration helper
     const shadowDecoration = BoxDecoration(
       borderRadius: BorderRadius.all(Radius.circular(12)),
       boxShadow: [
@@ -1631,7 +1631,7 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
       ],
     );
 
-    // ── InputDecoration builder (reused below) ────────────────────────────
+    //  InputDecoration builder (reused below)
     InputDecoration inputDecoration({bool hideError = false}) =>
         InputDecoration(
           filled: true,
@@ -1657,7 +1657,7 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
           suffixIconConstraints: suffixIconConstraints,
         );
 
-    // ── core TextFormField ───────────────────────────────────────────────────
+    //  core TextFormField
     Widget textField({required Widget? suffix}) {
       // Tanpa shadow → pakai TextFormField biasa
       if (!showShadow) {
@@ -1718,7 +1718,7 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── Shadow hanya di sekitar input ──
+              //  Shadow hanya di sekitar input
               DecoratedBox(
                 decoration: hasError
                     ? const BoxDecoration() // tanpa shadow saat error
@@ -1762,7 +1762,7 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
                   },
                 ),
               ),
-              // ── Error text di bawah shadow ──
+              //  Error text di bawah shadow
               if (errorWidget != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 6, left: 12),
@@ -1781,7 +1781,7 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
       );
     }
 
-    // ── label + field ────────────────────────────────────────────────────────
+    //  label + field
     Widget labeledField(Widget field) {
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -1814,7 +1814,7 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
       );
     }
 
-    // ── build dengan ValueListenableBuilder bila ada controller ──────────────
+    //  build dengan ValueListenableBuilder bila ada controller
     if (controller != null) {
       return ValueListenableBuilder<TextEditingValue>(
         valueListenable: controller!,

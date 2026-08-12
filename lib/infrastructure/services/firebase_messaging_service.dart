@@ -38,6 +38,16 @@ class FirebaseMessagingService {
     _isInitialized = true;
   }
 
+  Future<void> dispose() async {
+    await _onMessageSubscription?.cancel();
+    await _onMessageOpenedAppSubscription?.cancel();
+    await _onTokenRefreshSubscription?.cancel();
+    _onMessageSubscription = null;
+    _onMessageOpenedAppSubscription = null;
+    _onTokenRefreshSubscription = null;
+    _isInitialized = false;
+  }
+
   Future<String?> getFcmToken() async {
     try {
       if (Platform.isIOS) {
