@@ -72,7 +72,6 @@ class _CalendarView extends StatelessWidget {
               state.focusedMonth.month == DateTime.december;
 
           return SingleChildScrollView(
-            // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

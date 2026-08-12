@@ -116,7 +116,7 @@ class DetailProductScreen extends StatelessWidget {
                                   color: ColorPalette.kTeal,
                                   // color:
                                   //     product.status == 'Halal' &&
-                                  //         getDateLeft(product.expireDate!) > 0
+                                  //         getDateLeft(product.expireDate!)>0
                                   //     ? ColorPalette.kTealLight
                                   //     : Colors.red,
                                   fontWeight: FontWeight.bold,

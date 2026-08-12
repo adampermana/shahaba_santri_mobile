@@ -638,7 +638,6 @@ Widget _scrollableTabBar(
   required ValueChanged<int> onTap,
 }) {
   return ColoredBox(
-    // TODO(adam): use color palette for tab background
     color: Colors.black.withValues(alpha: 0.08),
     child: Column(
       mainAxisSize: MainAxisSize.min,
@@ -1425,7 +1424,6 @@ Future<Uint8List> _quranVerseImageBytes(
   }
 }
 
-// TODO(adam): use color palette for share card
 Widget _quranShareCard(BuildContext context, QuranVerseModel verse) {
   final textTheme = Theme.of(context).textTheme;
 

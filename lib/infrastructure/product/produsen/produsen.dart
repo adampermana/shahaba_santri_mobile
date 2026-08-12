@@ -4,16 +4,16 @@ part 'produsen.freezed.dart';
 part 'produsen.g.dart';
 
 @Freezed(toJson: false)
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 abstract class ListBrand with _$ListBrand {
-  @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
   const factory ListBrand({@Default([]) List<Brand> data}) = _ListBrand;
   factory ListBrand.fromJson(Map<String, dynamic> json) =>
       _$ListBrandFromJson(json);
 }
 
 @Freezed(toJson: false)
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 abstract class Brand with _$Brand {
-  @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
   const factory Brand({
     required int id,
     @JsonKey(name: 'image_path') required String image,

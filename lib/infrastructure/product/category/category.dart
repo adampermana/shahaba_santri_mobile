@@ -4,8 +4,8 @@ part 'category.freezed.dart';
 part 'category.g.dart';
 
 @Freezed(toJson: false)
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 abstract class ListCategory with _$ListCategory {
-  @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
   const factory ListCategory({@Default([]) List<Category> data}) =
       _ListCategory;
   factory ListCategory.fromJson(Map<String, dynamic> json) =>
@@ -13,8 +13,8 @@ abstract class ListCategory with _$ListCategory {
 }
 
 @Freezed(toJson: false)
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 abstract class Category with _$Category {
-  @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
   const factory Category({
     required int id,
     @JsonKey(name: 'icon') required String image,
@@ -26,8 +26,8 @@ abstract class Category with _$Category {
 }
 
 @Freezed(toJson: false)
+@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 abstract class Subcategory with _$Subcategory {
-  @JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
   const factory Subcategory({
     required int id,
     @JsonKey(name: 'icon') required String image,

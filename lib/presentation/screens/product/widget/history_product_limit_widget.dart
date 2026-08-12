@@ -76,8 +76,7 @@ class HistoryProductLimitWidget extends HookWidget {
             else
               ListView.separated(
                 padding: const EdgeInsets.only(bottom: 120),
-                shrinkWrap:
-                    true, // Enable shrinkWrap to let ListView size to its children
+                shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: state.historyProductLimit.length,
                 separatorBuilder: (_, _) => const SizedBox.shrink(),

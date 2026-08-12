@@ -12,17 +12,11 @@ part of 'product_bloc.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$ProductEvent implements DiagnosticableTreeMixin {
+mixin _$ProductEvent {
 
 
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'ProductEvent'))
-    ;
-}
 
 @override
 bool operator ==(Object other) {
@@ -34,7 +28,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'ProductEvent()';
 }
 
@@ -240,7 +234,7 @@ return getProductLimitMultiple(_that.userId,_that.ids,_that.search,_that.produse
 /// @nodoc
 
 
-class _Started with DiagnosticableTreeMixin implements ProductEvent {
+class _Started implements ProductEvent {
   const _Started();
   
 
@@ -248,12 +242,6 @@ class _Started with DiagnosticableTreeMixin implements ProductEvent {
 
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'ProductEvent.started'))
-    ;
-}
 
 @override
 bool operator ==(Object other) {
@@ -265,7 +253,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'ProductEvent.started()';
 }
 
@@ -278,7 +266,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 /// @nodoc
 
 
-class _StartLoading with DiagnosticableTreeMixin implements ProductEvent {
+class _StartLoading implements ProductEvent {
   const _StartLoading();
   
 
@@ -286,12 +274,6 @@ class _StartLoading with DiagnosticableTreeMixin implements ProductEvent {
 
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'ProductEvent.startLoading'))
-    ;
-}
 
 @override
 bool operator ==(Object other) {
@@ -303,7 +285,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'ProductEvent.startLoading()';
 }
 
@@ -316,7 +298,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 /// @nodoc
 
 
-class _StopLoading with DiagnosticableTreeMixin implements ProductEvent {
+class _StopLoading implements ProductEvent {
   const _StopLoading();
   
 
@@ -324,12 +306,6 @@ class _StopLoading with DiagnosticableTreeMixin implements ProductEvent {
 
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'ProductEvent.stopLoading'))
-    ;
-}
 
 @override
 bool operator ==(Object other) {
@@ -341,7 +317,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'ProductEvent.stopLoading()';
 }
 
@@ -354,7 +330,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 /// @nodoc
 
 
-class _StartSaveLoading with DiagnosticableTreeMixin implements ProductEvent {
+class _StartSaveLoading implements ProductEvent {
   const _StartSaveLoading(this.val);
   
 
@@ -367,12 +343,6 @@ class _StartSaveLoading with DiagnosticableTreeMixin implements ProductEvent {
 _$StartSaveLoadingCopyWith<_StartSaveLoading> get copyWith => __$StartSaveLoadingCopyWithImpl<_StartSaveLoading>(this, _$identity);
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'ProductEvent.startSaveLoading'))
-    ..add(DiagnosticsProperty('val', val));
-}
 
 @override
 bool operator ==(Object other) {
@@ -384,7 +354,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,val);
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'ProductEvent.startSaveLoading(val: $val)';
 }
 
@@ -426,7 +396,7 @@ as ProductData,
 /// @nodoc
 
 
-class _SearchImage with DiagnosticableTreeMixin implements ProductEvent {
+class _SearchImage implements ProductEvent {
   const _SearchImage(this.imagePath, final  Map<String, double> coordinates): _coordinates = coordinates;
   
 
@@ -446,12 +416,6 @@ class _SearchImage with DiagnosticableTreeMixin implements ProductEvent {
 _$SearchImageCopyWith<_SearchImage> get copyWith => __$SearchImageCopyWithImpl<_SearchImage>(this, _$identity);
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'ProductEvent.searchImage'))
-    ..add(DiagnosticsProperty('imagePath', imagePath))..add(DiagnosticsProperty('coordinates', coordinates));
-}
 
 @override
 bool operator ==(Object other) {
@@ -463,7 +427,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,imagePath,const DeepCollectionEquality().hash(_coordinates));
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'ProductEvent.searchImage(imagePath: $imagePath, coordinates: $coordinates)';
 }
 
@@ -506,7 +470,7 @@ as Map<String, double>,
 /// @nodoc
 
 
-class _AddLocalData with DiagnosticableTreeMixin implements ProductEvent {
+class _AddLocalData implements ProductEvent {
   const _AddLocalData(this.val, this.isLoading, final  Map<String, double> coordinates): _coordinates = coordinates;
   
 
@@ -527,12 +491,6 @@ class _AddLocalData with DiagnosticableTreeMixin implements ProductEvent {
 _$AddLocalDataCopyWith<_AddLocalData> get copyWith => __$AddLocalDataCopyWithImpl<_AddLocalData>(this, _$identity);
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'ProductEvent.addLocalData'))
-    ..add(DiagnosticsProperty('val', val))..add(DiagnosticsProperty('isLoading', isLoading))..add(DiagnosticsProperty('coordinates', coordinates));
-}
 
 @override
 bool operator ==(Object other) {
@@ -544,7 +502,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,val,isLoading,const DeepCollectionEquality().hash(_coordinates));
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'ProductEvent.addLocalData(val: $val, isLoading: $isLoading, coordinates: $coordinates)';
 }
 
@@ -588,7 +546,7 @@ as Map<String, double>,
 /// @nodoc
 
 
-class _LogAd with DiagnosticableTreeMixin implements ProductEvent {
+class _LogAd implements ProductEvent {
   const _LogAd(this.productId, this.campaignId, this.creativeId, final  Map<String, double> coordinates, this.type): _coordinates = coordinates;
   
 
@@ -611,12 +569,6 @@ class _LogAd with DiagnosticableTreeMixin implements ProductEvent {
 _$LogAdCopyWith<_LogAd> get copyWith => __$LogAdCopyWithImpl<_LogAd>(this, _$identity);
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'ProductEvent.logAd'))
-    ..add(DiagnosticsProperty('productId', productId))..add(DiagnosticsProperty('campaignId', campaignId))..add(DiagnosticsProperty('creativeId', creativeId))..add(DiagnosticsProperty('coordinates', coordinates))..add(DiagnosticsProperty('type', type));
-}
 
 @override
 bool operator ==(Object other) {
@@ -628,7 +580,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,productId,campaignId,creativeId,const DeepCollectionEquality().hash(_coordinates),type);
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'ProductEvent.logAd(productId: $productId, campaignId: $campaignId, creativeId: $creativeId, coordinates: $coordinates, type: $type)';
 }
 
@@ -674,7 +626,7 @@ as String,
 /// @nodoc
 
 
-class _FilterData with DiagnosticableTreeMixin implements ProductEvent {
+class _FilterData implements ProductEvent {
   const _FilterData(this.val);
   
 
@@ -687,12 +639,6 @@ class _FilterData with DiagnosticableTreeMixin implements ProductEvent {
 _$FilterDataCopyWith<_FilterData> get copyWith => __$FilterDataCopyWithImpl<_FilterData>(this, _$identity);
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'ProductEvent.filterData'))
-    ..add(DiagnosticsProperty('val', val));
-}
 
 @override
 bool operator ==(Object other) {
@@ -704,7 +650,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,val);
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'ProductEvent.filterData(val: $val)';
 }
 
@@ -746,7 +692,7 @@ as String,
 /// @nodoc
 
 
-class _GetHistoryProductLimit with DiagnosticableTreeMixin implements ProductEvent {
+class _GetHistoryProductLimit implements ProductEvent {
   const _GetHistoryProductLimit({required this.userId});
   
 
@@ -759,12 +705,6 @@ class _GetHistoryProductLimit with DiagnosticableTreeMixin implements ProductEve
 _$GetHistoryProductLimitCopyWith<_GetHistoryProductLimit> get copyWith => __$GetHistoryProductLimitCopyWithImpl<_GetHistoryProductLimit>(this, _$identity);
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'ProductEvent.getHistoryProductLimit'))
-    ..add(DiagnosticsProperty('userId', userId));
-}
 
 @override
 bool operator ==(Object other) {
@@ -776,7 +716,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,userId);
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'ProductEvent.getHistoryProductLimit(userId: $userId)';
 }
 
@@ -818,7 +758,7 @@ as int,
 /// @nodoc
 
 
-class _GetProductMultiple with DiagnosticableTreeMixin implements ProductEvent {
+class _GetProductMultiple implements ProductEvent {
   const _GetProductMultiple({required this.userId, this.ids, this.search, this.produsenId, this.brandId, this.categoryId, this.page = 1, this.pageSize = 10});
   
 
@@ -838,12 +778,6 @@ class _GetProductMultiple with DiagnosticableTreeMixin implements ProductEvent {
 _$GetProductMultipleCopyWith<_GetProductMultiple> get copyWith => __$GetProductMultipleCopyWithImpl<_GetProductMultiple>(this, _$identity);
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'ProductEvent.getProductMultiple'))
-    ..add(DiagnosticsProperty('userId', userId))..add(DiagnosticsProperty('ids', ids))..add(DiagnosticsProperty('search', search))..add(DiagnosticsProperty('produsenId', produsenId))..add(DiagnosticsProperty('brandId', brandId))..add(DiagnosticsProperty('categoryId', categoryId))..add(DiagnosticsProperty('page', page))..add(DiagnosticsProperty('pageSize', pageSize));
-}
 
 @override
 bool operator ==(Object other) {
@@ -855,7 +789,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,userId,ids,search,produsenId,brandId,categoryId,page,pageSize);
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'ProductEvent.getProductMultiple(userId: $userId, ids: $ids, search: $search, produsenId: $produsenId, brandId: $brandId, categoryId: $categoryId, page: $page, pageSize: $pageSize)';
 }
 
@@ -904,7 +838,7 @@ as int,
 /// @nodoc
 
 
-class _GetProductLimitMultiple with DiagnosticableTreeMixin implements ProductEvent {
+class _GetProductLimitMultiple implements ProductEvent {
   const _GetProductLimitMultiple({required this.userId, this.ids, this.search, this.produsenId, this.brandId, this.categoryId, this.page = 1, this.pageSize = 10});
   
 
@@ -924,12 +858,6 @@ class _GetProductLimitMultiple with DiagnosticableTreeMixin implements ProductEv
 _$GetProductLimitMultipleCopyWith<_GetProductLimitMultiple> get copyWith => __$GetProductLimitMultipleCopyWithImpl<_GetProductLimitMultiple>(this, _$identity);
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'ProductEvent.getProductLimitMultiple'))
-    ..add(DiagnosticsProperty('userId', userId))..add(DiagnosticsProperty('ids', ids))..add(DiagnosticsProperty('search', search))..add(DiagnosticsProperty('produsenId', produsenId))..add(DiagnosticsProperty('brandId', brandId))..add(DiagnosticsProperty('categoryId', categoryId))..add(DiagnosticsProperty('page', page))..add(DiagnosticsProperty('pageSize', pageSize));
-}
 
 @override
 bool operator ==(Object other) {
@@ -941,7 +869,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,userId,ids,search,produsenId,brandId,categoryId,page,pageSize);
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'ProductEvent.getProductLimitMultiple(userId: $userId, ids: $ids, search: $search, produsenId: $produsenId, brandId: $brandId, categoryId: $categoryId, page: $page, pageSize: $pageSize)';
 }
 
@@ -988,7 +916,7 @@ as int,
 }
 
 /// @nodoc
-mixin _$ProductState implements DiagnosticableTreeMixin {
+mixin _$ProductState {
 
  List<ProductData> get data; bool get isLoading; bool get isLoadingSaveData; String get imagePath; ProductData? get tempProduct; bool get isCamera; List<AdResponseData> get adsCarousel; AdResponseData? get addSplash; List<ProductData> get masterDataHistory; List<ProductData> get dataHistory; bool get isSuccess; bool get isShowDialog; ProductBody? get productBody; List<FetchHistoryDataProductLimit> get historyProductLimit; bool get isLoadingHistoryProductLimit; List<ProductData> get productMultipleList; PaginationMeta? get paginationMeta; bool get isLoadingProductMultiple; String? get errorMessage;
 /// Create a copy of ProductState
@@ -998,12 +926,6 @@ mixin _$ProductState implements DiagnosticableTreeMixin {
 $ProductStateCopyWith<ProductState> get copyWith => _$ProductStateCopyWithImpl<ProductState>(this as ProductState, _$identity);
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'ProductState'))
-    ..add(DiagnosticsProperty('data', data))..add(DiagnosticsProperty('isLoading', isLoading))..add(DiagnosticsProperty('isLoadingSaveData', isLoadingSaveData))..add(DiagnosticsProperty('imagePath', imagePath))..add(DiagnosticsProperty('tempProduct', tempProduct))..add(DiagnosticsProperty('isCamera', isCamera))..add(DiagnosticsProperty('adsCarousel', adsCarousel))..add(DiagnosticsProperty('addSplash', addSplash))..add(DiagnosticsProperty('masterDataHistory', masterDataHistory))..add(DiagnosticsProperty('dataHistory', dataHistory))..add(DiagnosticsProperty('isSuccess', isSuccess))..add(DiagnosticsProperty('isShowDialog', isShowDialog))..add(DiagnosticsProperty('productBody', productBody))..add(DiagnosticsProperty('historyProductLimit', historyProductLimit))..add(DiagnosticsProperty('isLoadingHistoryProductLimit', isLoadingHistoryProductLimit))..add(DiagnosticsProperty('productMultipleList', productMultipleList))..add(DiagnosticsProperty('paginationMeta', paginationMeta))..add(DiagnosticsProperty('isLoadingProductMultiple', isLoadingProductMultiple))..add(DiagnosticsProperty('errorMessage', errorMessage));
-}
 
 @override
 bool operator ==(Object other) {
@@ -1015,7 +937,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hashAll([runtimeType,const DeepCollectionEquality().hash(data),isLoading,isLoadingSaveData,imagePath,tempProduct,isCamera,const DeepCollectionEquality().hash(adsCarousel),addSplash,const DeepCollectionEquality().hash(masterDataHistory),const DeepCollectionEquality().hash(dataHistory),isSuccess,isShowDialog,productBody,const DeepCollectionEquality().hash(historyProductLimit),isLoadingHistoryProductLimit,const DeepCollectionEquality().hash(productMultipleList),paginationMeta,isLoadingProductMultiple,errorMessage]);
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'ProductState(data: $data, isLoading: $isLoading, isLoadingSaveData: $isLoadingSaveData, imagePath: $imagePath, tempProduct: $tempProduct, isCamera: $isCamera, adsCarousel: $adsCarousel, addSplash: $addSplash, masterDataHistory: $masterDataHistory, dataHistory: $dataHistory, isSuccess: $isSuccess, isShowDialog: $isShowDialog, productBody: $productBody, historyProductLimit: $historyProductLimit, isLoadingHistoryProductLimit: $isLoadingHistoryProductLimit, productMultipleList: $productMultipleList, paginationMeta: $paginationMeta, isLoadingProductMultiple: $isLoadingProductMultiple, errorMessage: $errorMessage)';
 }
 
@@ -1217,7 +1139,7 @@ return $default(_that.data,_that.isLoading,_that.isLoadingSaveData,_that.imagePa
 /// @nodoc
 
 
-class _ProductState with DiagnosticableTreeMixin implements ProductState {
+class _ProductState implements ProductState {
   const _ProductState({required final  List<ProductData> data, required this.isLoading, required this.isLoadingSaveData, required this.imagePath, required this.tempProduct, required this.isCamera, required final  List<AdResponseData> adsCarousel, required this.addSplash, required final  List<ProductData> masterDataHistory, required final  List<ProductData> dataHistory, required this.isSuccess, required this.isShowDialog, required this.productBody, required final  List<FetchHistoryDataProductLimit> historyProductLimit, required this.isLoadingHistoryProductLimit, required final  List<ProductData> productMultipleList, required this.paginationMeta, required this.isLoadingProductMultiple, this.errorMessage}): _data = data,_adsCarousel = adsCarousel,_masterDataHistory = masterDataHistory,_dataHistory = dataHistory,_historyProductLimit = historyProductLimit,_productMultipleList = productMultipleList;
   
 
@@ -1284,12 +1206,6 @@ class _ProductState with DiagnosticableTreeMixin implements ProductState {
 _$ProductStateCopyWith<_ProductState> get copyWith => __$ProductStateCopyWithImpl<_ProductState>(this, _$identity);
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'ProductState'))
-    ..add(DiagnosticsProperty('data', data))..add(DiagnosticsProperty('isLoading', isLoading))..add(DiagnosticsProperty('isLoadingSaveData', isLoadingSaveData))..add(DiagnosticsProperty('imagePath', imagePath))..add(DiagnosticsProperty('tempProduct', tempProduct))..add(DiagnosticsProperty('isCamera', isCamera))..add(DiagnosticsProperty('adsCarousel', adsCarousel))..add(DiagnosticsProperty('addSplash', addSplash))..add(DiagnosticsProperty('masterDataHistory', masterDataHistory))..add(DiagnosticsProperty('dataHistory', dataHistory))..add(DiagnosticsProperty('isSuccess', isSuccess))..add(DiagnosticsProperty('isShowDialog', isShowDialog))..add(DiagnosticsProperty('productBody', productBody))..add(DiagnosticsProperty('historyProductLimit', historyProductLimit))..add(DiagnosticsProperty('isLoadingHistoryProductLimit', isLoadingHistoryProductLimit))..add(DiagnosticsProperty('productMultipleList', productMultipleList))..add(DiagnosticsProperty('paginationMeta', paginationMeta))..add(DiagnosticsProperty('isLoadingProductMultiple', isLoadingProductMultiple))..add(DiagnosticsProperty('errorMessage', errorMessage));
-}
 
 @override
 bool operator ==(Object other) {
@@ -1301,7 +1217,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hashAll([runtimeType,const DeepCollectionEquality().hash(_data),isLoading,isLoadingSaveData,imagePath,tempProduct,isCamera,const DeepCollectionEquality().hash(_adsCarousel),addSplash,const DeepCollectionEquality().hash(_masterDataHistory),const DeepCollectionEquality().hash(_dataHistory),isSuccess,isShowDialog,productBody,const DeepCollectionEquality().hash(_historyProductLimit),isLoadingHistoryProductLimit,const DeepCollectionEquality().hash(_productMultipleList),paginationMeta,isLoadingProductMultiple,errorMessage]);
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'ProductState(data: $data, isLoading: $isLoading, isLoadingSaveData: $isLoadingSaveData, imagePath: $imagePath, tempProduct: $tempProduct, isCamera: $isCamera, adsCarousel: $adsCarousel, addSplash: $addSplash, masterDataHistory: $masterDataHistory, dataHistory: $dataHistory, isSuccess: $isSuccess, isShowDialog: $isShowDialog, productBody: $productBody, historyProductLimit: $historyProductLimit, isLoadingHistoryProductLimit: $isLoadingHistoryProductLimit, productMultipleList: $productMultipleList, paginationMeta: $paginationMeta, isLoadingProductMultiple: $isLoadingProductMultiple, errorMessage: $errorMessage)';
 }
 

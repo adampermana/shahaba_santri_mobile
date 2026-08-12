@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -20,10 +20,6 @@ part 'product_event.dart';
 part 'product_state.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
-  final IProductRepository _repo;
-  final IAuthLocalDatasource _localDataSource;
-  final LocationPermissionService _locationPermissionService;
-
   ProductBloc(
     this._repo,
     this._localDataSource,
@@ -33,16 +29,16 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       await event.map(
         // Search Image
         searchImage: (value) async {
-          debugPrint(
-            '===================Searching product by image: ${value.imagePath}',
-          );
+          // debugPrint(
+          //'===================Searching product by image: ${value.imagePath}',
+          // );
           emit(state.copyWith(imagePath: value.imagePath));
           final dataLocal =
               _localDataSource.authUserDataHive ??
               _localDataSource.authGuestDataHive;
           final locationDetail = await _locationPermissionService
               .getAddressFromCoordinates(value.coordinates);
-          debugPrint('================== $locationDetail');
+          // debugPrint('================== $locationDetail');
           final payload = ProductBody(
             person: dataLocal?.name ?? 'Guest',
             deviceId: dataLocal?.phoneNumber ?? '',
@@ -63,7 +59,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
               final ocrText = await OcrService.extractBigText(state.imagePath);
 
               final resultSearch = await _repo.getSearchProduct(ocrText);
-              debugPrint('==== error scan by image');
+              // debugPrint('==== error scan by image');
               resultSearch.fold(
                 (l) => emit(state.copyWith(errorMessage: l.message)),
                 (r) {
@@ -72,8 +68,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
                         (product) => product.type?.toLowerCase() == 'iklan',
                       )
                       .toList();
-                  debugPrint('==== running by ocr');
-                  debugPrint('==== res ocr length ${res.length}');
+                  // debugPrint('==== running by ocr');
+                  // debugPrint('==== res ocr length ${res.length}');
                   res
                       .where((e) => e.id != null)
                       .map(
@@ -101,8 +97,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
               );
             },
             (r) async {
-              debugPrint('==== success scan by image');
-              debugPrint('res image ${r.data?.length}');
+              // debugPrint('==== success scan by image');
+              // debugPrint('res image ${r.data?.length}');
               final res = r.data
                   ?.where(
                     (product) => product.type?.toLowerCase() == 'iklan',
@@ -160,7 +156,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           emit(state.copyWith(isLoadingSaveData: true, tempProduct: value.val));
         },
         addLocalData: (value) async {
-          debugPrint('==== ini event jalan addLocalData');
+          // debugPrint('==== ini event jalan addLocalData');
           emit(state.copyWith(errorMessage: null, isCamera: false));
           if (value.val.type?.toLowerCase() == 'iklan') {
             add(
@@ -204,7 +200,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
               ),
             ),
             (r) {
-              debugPrint('==== nih isinya $r');
+              // debugPrint('==== nih isinya $r');
               emit(state.copyWith(isLoadingSaveData: false));
               // add(ProductEvent.getHistory());
             },
@@ -249,9 +245,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
               _localDataSource.authUserDataHive ??
               _localDataSource.authGuestDataHive;
           if (authData == null) {
-            debugPrint(
-              '=== ProductBloc.started: No auth data, waiting for auth...',
-            );
+            // debugPrint(
+            //   '=== ProductBloc.started: No auth data, waiting for auth...',
+            // );
           }
           final result = await _repo.getAds('5');
           final carousel = await _repo.getAds('6');
@@ -361,4 +357,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       );
     });
   }
+  final IProductRepository _repo;
+  final IAuthLocalDatasource _localDataSource;
+  final LocationPermissionService _locationPermissionService;
 }
