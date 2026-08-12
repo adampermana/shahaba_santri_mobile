@@ -34,7 +34,11 @@ class JadwalSholatScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => sl<LocationCubit>()..loadSavedCity(),
+          create: (_) {
+            final cubit = sl<LocationCubit>();
+            unawaited(cubit.loadSavedCity());
+            return cubit;
+          },
         ),
         BlocProvider(
           create: (_) => sl<PrayerScheduleCubit>(),
@@ -47,8 +51,10 @@ class JadwalSholatScreen extends StatelessWidget {
             final cityId = state.city.id;
             if (cityId != null) {
               final now = DateTime.now();
-              context.read<PrayerScheduleCubit>().loadSchedule(cityId, now);
-              context.read<StreakCubit>().loadStreak(now);
+              unawaited(
+                context.read<PrayerScheduleCubit>().loadSchedule(cityId, now),
+              );
+              unawaited(context.read<StreakCubit>().loadStreak(now));
             }
           }
         },
