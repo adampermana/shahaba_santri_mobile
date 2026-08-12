@@ -58,7 +58,7 @@ class CategoryProductBloc
     Emitter<CategoryProductState> emit,
   ) async {
     emit(state.copyWith(isLoading: true, search: event.val));
-    final List<ProductData> filtered = event.val.isEmpty
+    final filtered = event.val.isEmpty
         ? state.data
         : state.data
               .where(

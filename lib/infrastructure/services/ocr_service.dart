@@ -75,7 +75,7 @@ class OcrService {
   static String detectHalalStatus(String text) {
     final lowered = text.toLowerCase();
 
-    for (var key in halalKeywords.keys) {
+    for (final key in halalKeywords.keys) {
       if (lowered.contains(key)) {
         return halalKeywords[key]!;
       }

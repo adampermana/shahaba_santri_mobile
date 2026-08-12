@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../shared/meta_response.dart';
+import 'package:sahaba_mobile/domains/shared/meta_response.dart';
 
 part 'login_sso_response.freezed.dart';
 part 'login_sso_response.g.dart';
