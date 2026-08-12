@@ -311,7 +311,7 @@ class _RegularNavBarItem extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 children: [
                   // Icon diposisikan di atas label, dengan jarak 7 dari label
-                  // (sama seperti spacing SizedBox(height: 7) versi sebelumnya).
+                  // (sama seperti spacing SizedBox(height: 7) versi sebelumnya)
                   Positioned(
                     bottom: kNavLabelBottomOffset + 17 + 7,
                     child: AnimatedScale(

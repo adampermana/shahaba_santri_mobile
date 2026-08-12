@@ -86,7 +86,7 @@ class StreakCubit extends Cubit<StreakState> {
     await _repository.updateStreak(
       currentState.date,
       prayerName,
-      !isCurrentlyChecked,
+      checked: !isCurrentlyChecked,
     );
   }
 

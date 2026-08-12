@@ -1263,8 +1263,8 @@ class _CarouselOverlayWidget extends StatelessWidget {
 
 /// Delegate untuk carousel yang mengecil (shrink) mengikuti scroll,
 /// lalu pinned di [minHeight] setelah full collapse.
-class _CarouselHeaderDelegate extends SliverPersistentHeaderDelegate {
-  _CarouselHeaderDelegate({
+class CarouselHeaderDelegate extends SliverPersistentHeaderDelegate {
+  CarouselHeaderDelegate({
     required this.maxHeight,
     required this.minHeight,
     required this.builder,
@@ -1301,7 +1301,7 @@ class _CarouselHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(covariant _CarouselHeaderDelegate oldDelegate) {
+  bool shouldRebuild(covariant CarouselHeaderDelegate oldDelegate) {
     return maxHeight != oldDelegate.maxHeight ||
         minHeight != oldDelegate.minHeight;
   }

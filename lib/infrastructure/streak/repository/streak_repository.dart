@@ -22,11 +22,15 @@ class StreakRepository implements IStreakRepository {
   @override
   Future<Either<Failure, Unit>> updateStreak(
     String date,
-    String prayerName,
-    bool checked,
-  ) async {
+    String prayerName, {
+    required bool checked,
+  }) async {
     try {
-      await _local.updateStreak(date, prayerName, checked);
+      await _local.updateStreak(
+        date,
+        prayerName,
+        checked: checked,
+      );
       return const Right(unit);
     } on Exception catch (e) {
       return Left(CacheFailure(message: e.toString()));

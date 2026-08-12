@@ -587,8 +587,8 @@ class _GlassBadgeButton extends StatelessWidget {
   }
 }
 
-class _QiblaInfoButton extends StatelessWidget {
-  const _QiblaInfoButton({required this.onTap});
+class QiblaInfoButton extends StatelessWidget {
+  const QiblaInfoButton({required this.onTap, super.key});
 
   final VoidCallback onTap;
 

@@ -159,7 +159,7 @@ class PrayerRepository implements IPrayerRepository {
 
     final uncachedMonths = <int>[];
     for (var month = 1; month <= 12; month++) {
-      final firstDay = DateTime(year, month, 1);
+      final firstDay = DateTime(year, month);
       if (_local.getCachedSchedule(cityId, _dateKey(firstDay)) == null) {
         uncachedMonths.add(month);
       }

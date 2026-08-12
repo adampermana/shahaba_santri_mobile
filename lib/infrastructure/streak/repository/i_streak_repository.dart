@@ -6,8 +6,8 @@ abstract class IStreakRepository {
   Future<Either<Failure, StreakModel>> getStreak(String date);
   Future<Either<Failure, Unit>> updateStreak(
     String date,
-    String prayerName,
-    bool checked,
-  );
+    String prayerName, {
+    required bool checked,
+  });
   Future<Either<Failure, Unit>> resetStreak();
 }

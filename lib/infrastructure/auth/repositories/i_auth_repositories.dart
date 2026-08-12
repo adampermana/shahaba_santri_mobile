@@ -66,7 +66,7 @@ abstract class IAuthRepositories {
   // });
 
   // Future<Either<ServerFailures, CompleteProfileResponse>>
-  // postCompleteSsoProfile({required String name, required String phoneNumber});
+  // postCompleteSsoProfile({required String name, required String phoneNumber})
 
   // Future<Either<ServerFailures, CompleteProfileResponse>>
   // postCompleteAppleSsoProfile({

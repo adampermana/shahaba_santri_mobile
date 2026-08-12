@@ -111,7 +111,7 @@ class AuthRepositories implements IAuthRepositories {
   //   required int userId,
   // }) async {
   //   try {
-  //     final response = await _remoteDatasource.postLogoutUser(idUser: userId);
+  //      response = await _remoteDatasource.postLogoutUser(idUser: userId);
   //     return Right(response);
   //   } on ServerException catch (e) {
   //     await _localDatasource.clearAuthUser();
@@ -133,7 +133,7 @@ class AuthRepositories implements IAuthRepositories {
   //   required String platform,
   // }) async {
   //   try {
-  //     final fcmToken = await FirebaseMessagingService.instance().getFcmToken();
+  //      fcmToken = await FirebaseMessagingService.instance().getFcmToken();
   //     if (fcmToken == null || fcmToken.isEmpty) {
   //       return const Left(
   //         ServerFailures(
@@ -182,7 +182,7 @@ class AuthRepositories implements IAuthRepositories {
   //       _ => 'Login dengan Google gagal. Silakan coba lagi.',
   //     };
   //     log(
-  //       '[GoogleSignIn] ERROR — code: ${e.code}, description: ${e.description}',
+  //     '[GoogleSignIn] ERROR — code: ${e.code}, description: ${e.description}'
   //     );
   //     return Left(
   //       ServerFailures(

@@ -41,9 +41,9 @@ class StreakLocalDatasource implements IStreakLocalDatasource {
   @override
   Future<void> updateStreak(
     String date,
-    String prayerName,
-    bool checked,
-  ) async {
+    String prayerName, {
+    required bool checked,
+  }) async {
     final box = Hive.box<String>(streakBox);
     final model = _readModel(box, date) ?? StreakModel.empty();
 
