@@ -65,6 +65,7 @@ class HistoryProductDetailScreen extends StatelessWidget {
                 builder: (_) {
                   // Tutup otomatis setelah 2 detik
                   Future.delayed(const Duration(seconds: 2), () {
+                    if (!context.mounted) return;
                     if (Navigator.canPop(context)) {
                       Navigator.pop(context);
                     }
@@ -230,12 +231,15 @@ class HistoryProductDetailScreen extends StatelessWidget {
                                     style: TextStyle(
                                       color: product.status == 'Halal'
                                           // &&
-                                          //     getDateLeft(product.expireDate!) >
+                                          //     getDateLeft(
+                                          //       product.expireDate!,
+                                          //     ) >
                                           //         0
                                           ? ColorPalette.kTeal
                                           : const Color(
                                               0xFFC6412D,
-                                            ), // Custom red for non-halal based on design
+                                            ), // Custom red for non-halal
+                                            // based on design
                                       fontWeight: FontWeight.bold,
                                       fontSize: 22,
                                     ),
@@ -302,7 +306,8 @@ class HistoryProductDetailScreen extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'Terbit tanggal ${product.registerDate ?? '-'}',
+                                        'Terbit tanggal '
+                                        '${product.registerDate ?? '-'}',
                                         //  - ${product.expireDate ?? '-'}',
                                         style: const TextStyle(
                                           color: ColorPalette.inverseSecondary,
@@ -314,10 +319,13 @@ class HistoryProductDetailScreen extends StatelessWidget {
                                       //   visible:
                                       //       product.expireDate != null &&
                                       //       product.expireDate!.isNotEmpty &&
-                                      //       getDateLeft(product.expireDate!) >
+                                      //       getDateLeft(
+                                      //         product.expireDate!,
+                                      //       ) >
                                       //           0,
                                       //   child: Text(
-                                      //     '*Berlaku ${getDateLeft(product.expireDate!)} hari lagi',
+                                      //     '*Berlaku '
+                                      //     '${getDateLeft(product.expireDate!)} hari lagi',
                                       //     style: TextStyle(
                                       //       color: ColorPalette.kRedDanger,
                                       //       fontSize: 12,
