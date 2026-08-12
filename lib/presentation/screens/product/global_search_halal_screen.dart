@@ -44,7 +44,7 @@ class SearchProductHalalScreen extends StatelessWidget {
             listenWhen: (previous, current) =>
                 previous.isLoadingClick != current.isLoadingClick,
             listener: (context, state) async {
-              if (state.isLoadingClick == true) {
+              if (state.isLoadingClick) {
                 LoadingOverlay.show(
                   context,
                   barrierOpacity: 0.7,
@@ -62,7 +62,7 @@ class SearchProductHalalScreen extends StatelessWidget {
                 }
                 await Navigator.push(
                   context,
-                  MaterialPageRoute(
+                  MaterialPageRoute<DetailProductScreen>(
                     builder: (_) => DetailProductScreen(
                       id: state.selectedProducts!.id!,
                       isAds:
@@ -174,7 +174,7 @@ class SearchProductHalalScreen extends StatelessWidget {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: state.isLoading == true
+                        child: state.isLoading
                             ? const Center(child: CircularProgressIndicator())
                             : state.errorMessage != null
                             ? Text(state.errorMessage!)
@@ -192,14 +192,16 @@ class SearchProductHalalScreen extends StatelessWidget {
                                             locationState.locations;
                                         if (coordinates == null) {
                                           context.read<LocationBloc>().add(
-                                            const LocationEvent.getCurrentLocation(
+                                            const LocationEvent
+                                                .getCurrentLocation(
                                               isGetPosition: true,
                                             ),
                                           );
                                           return;
                                         }
                                         context.read<ProductSearchBloc>().add(
-                                          const ProductSearchEvent.loadingClick(),
+                                          const ProductSearchEvent
+                                              .loadingClick(),
                                         );
                                         // if (item.type == 'Iklan') {
                                         context.read<ProductSearchBloc>().add(
