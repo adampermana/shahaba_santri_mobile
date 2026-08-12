@@ -87,16 +87,15 @@ String _cleanQuranText(String value) {
 
 String _cleanArabicText(String value) {
   // 1. Hapus ZWNJ yang memutus ligature
-  var text = value.replaceAll('\u200C', '');
+  final text = value.replaceAll('\u200C', '');
 
-  // 2. Reorder sequence: Letakkan tanda waqf (U+06D6 - U+06ED) sebelum harakat (U+064B - U+065F)
-  // agar menempel langsung ke huruf dasar (base character U+0600 - U+064A)
-  text = text.replaceAllMapped(
+  // 2. Reorder sequence: Letakkan tanda waqf (U+06D6 - U+06ED) sebelum harakat
+  // (U+064B - U+065F) agar menempel langsung ke huruf dasar
+  // (base character U+0600 - U+064A)
+  return text.replaceAllMapped(
     RegExp(r'([\u0600-\u064A])([\u064B-\u065F])([\u06D6-\u06ED])'),
     (match) => '${match.group(1)}${match.group(3)}${match.group(2)}',
   );
-
-  return text;
 }
 
 class DetailQuranScreen extends HookWidget {
@@ -639,7 +638,7 @@ Widget _scrollableTabBar(
   required ValueChanged<int> onTap,
 }) {
   return ColoredBox(
-    // TODO: Use Color TAB
+    // TODO(adam): use color palette for tab background
     color: Colors.black.withValues(alpha: 0.08),
     child: Column(
       mainAxisSize: MainAxisSize.min,
@@ -887,7 +886,7 @@ bool _shouldShowBismillahForSurah(String surahIndex) {
 bool _isBismillahVerse(QuranVerseModel verse) {
   final arabic = _cleanQuranText(
     verse.arabic,
-  ).replaceAll(RegExp(r'<[^>]*>'), '').replaceAll(RegExp(r'\s+'), ' ').trim();
+  ).replaceAll(RegExp('<[^>]*>'), '').replaceAll(RegExp(r'\s+'), ' ').trim();
   if (arabic.startsWith('بِسْمِ') || arabic.startsWith('بسم')) return true;
 
   // Al-Fatihah's first verse is the basmalah in this dataset, even when
@@ -1073,7 +1072,6 @@ Widget _verseRow(
 }) {
   final textTheme = Theme.of(context).textTheme;
 
-  // TODO: Use Color Verse Row
   return Material(
     color: const Color(0xffF0E9E0),
     child: InkWell(
@@ -1427,7 +1425,7 @@ Future<Uint8List> _quranVerseImageBytes(
   }
 }
 
-// TODO: Use Color Share Card
+// TODO(adam): use color palette for share card
 Widget _quranShareCard(BuildContext context, QuranVerseModel verse) {
   final textTheme = Theme.of(context).textTheme;
 

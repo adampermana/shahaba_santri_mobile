@@ -88,9 +88,10 @@ class ProductSearchResultSheet extends StatelessWidget {
                                           .locations;
                                       if (coordinates == null) {
                                         context.read<LocationBloc>().add(
-                                          const LocationEvent.getCurrentLocation(
-                                            isGetPosition: true,
-                                          ),
+                                          const LocationEvent
+                                              .getCurrentLocation(
+                                                isGetPosition: true,
+                                              ),
                                         );
                                         return;
                                       }
@@ -162,10 +163,11 @@ class ProductSearchResultSheet extends StatelessWidget {
                                                     ),
                                                     child: Padding(
                                                       padding:
-                                                          const EdgeInsets.symmetric(
-                                                            horizontal: 8,
-                                                            vertical: 2,
-                                                          ),
+                                                          const EdgeInsets
+                                                              .symmetric(
+                                                                horizontal: 8,
+                                                                vertical: 2,
+                                                              ),
                                                       child: Text(
                                                         item.type ?? '',
                                                         style: const TextStyle(

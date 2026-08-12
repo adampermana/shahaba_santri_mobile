@@ -1291,7 +1291,7 @@ class _IndonesianPhoneNumberFormatter extends TextInputFormatter {
 
 /// Widget TextFormField reusable dengan dukungan:
 /// - Style default (border/fill biasa, opsional shadow)
-/// - Style glassmorphism (`useGlass: true`) menggunakan `GlassContainer.clearGlass`
+/// - Style glassmorphism (`useGlass: true`) menggunakan `GlassContainer`
 ///
 /// Contoh pemakaian glass (search bar):
 /// ```dart
