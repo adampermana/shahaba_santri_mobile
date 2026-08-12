@@ -7,7 +7,7 @@ const notificationServiceErrorCode = -1;
 const notificationPermissionErrorCode = -2;
 
 @immutable
-class Failure {
+class Failure implements Exception {
   const Failure(this.title, this.message);
 
   final String title;
