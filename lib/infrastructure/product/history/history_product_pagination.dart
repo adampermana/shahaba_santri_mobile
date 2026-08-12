@@ -3,18 +3,9 @@ import 'package:sahaba_mobile/domains/product/product_response.dart';
 
 part 'history_product_pagination.g.dart';
 
-// ── Request params ─────────────────────────────────────────────────────────────
+// Request params
 
 class ProductMultipleParams {
-  final int userId;
-  final String? ids;
-  final String? search;
-  final int? produsenId;
-  final int? brandId;
-  final int? categoryId;
-  final int page;
-  final int pageSize;
-
   const ProductMultipleParams({
     required this.userId,
     this.ids,
@@ -25,6 +16,14 @@ class ProductMultipleParams {
     this.page = 1,
     this.pageSize = 10,
   });
+  final int userId;
+  final String? ids;
+  final String? search;
+  final int? produsenId;
+  final int? brandId;
+  final int? categoryId;
+  final int page;
+  final int pageSize;
 
   Map<String, dynamic> toQueryParams() {
     return {
@@ -40,7 +39,7 @@ class ProductMultipleParams {
   }
 }
 
-// ── Response ───────────────────────────────────────────────────────────────────
+// Response
 
 @JsonSerializable(createToJson: false)
 class ProductMultipleResponse {
@@ -55,6 +54,9 @@ class ProductMultipleResponse {
 
 @JsonSerializable()
 class PaginationMeta {
+  PaginationMeta({this.page, this.pageSize, this.total});
+  factory PaginationMeta.fromJson(Map<String, dynamic> json) =>
+      _$PaginationMetaFromJson(json);
   @JsonKey(name: 'page')
   int? page;
   @JsonKey(name: 'page_size')
@@ -64,8 +66,6 @@ class PaginationMeta {
   @JsonKey(name: 'total')
   int? total;
 
-  PaginationMeta({this.page, this.pageSize, this.total});
-
   /// Computed: ceil(total / pageSize). Returns 1 if unknown.
   int get totalPage {
     final t = total ?? 0;
@@ -73,9 +73,6 @@ class PaginationMeta {
     if (t == 0 || ps == 0) return 1;
     return (t / ps).ceil();
   }
-
-  factory PaginationMeta.fromJson(Map<String, dynamic> json) =>
-      _$PaginationMetaFromJson(json);
 
   Map<String, dynamic> toJson() => _$PaginationMetaToJson(this);
 }
