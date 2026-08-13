@@ -28,7 +28,6 @@ abstract class ProductState with _$ProductState {
   factory ProductState.initial() => const ProductState(
     data: [],
     isLoading: false,
-    errorMessage: null,
     imagePath: '',
     isLoadingSaveData: false,
     isSuccess: false,

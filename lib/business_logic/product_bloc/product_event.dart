@@ -12,10 +12,10 @@ abstract class ProductEvent with _$ProductEvent {
     Map<String, double> coordinates,
   ) = _SearchImage;
   const factory ProductEvent.addLocalData(
-    ProductData val,
-    bool isLoading,
-    Map<String, double> coordinates,
-  ) = _AddLocalData;
+    ProductData val, {
+    required bool isLoading,
+    required Map<String, double> coordinates,
+  }) = _AddLocalData;
   const factory ProductEvent.logAd(
     int productId,
     int campaignId,

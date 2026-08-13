@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 
 part 'types.freezed.dart';
 part 'types.g.dart';
@@ -41,8 +42,6 @@ abstract class VerseTranslation with _$VerseTranslation {
   factory VerseTranslation.fromJson(Map<String, dynamic> json) =>
       _$VerseTranslationFromJson(json);
 }
-
-enum ChapterRevelationPlace { makkah, madinah }
 
 typedef ChapterTranslatedName = Map<String, String>;
 

@@ -471,7 +471,7 @@ as Map<String, double>,
 
 
 class _AddLocalData implements ProductEvent {
-  const _AddLocalData(this.val, this.isLoading, final  Map<String, double> coordinates): _coordinates = coordinates;
+  const _AddLocalData(this.val, {required this.isLoading, required final  Map<String, double> coordinates}): _coordinates = coordinates;
   
 
  final  ProductData val;
@@ -534,8 +534,8 @@ class __$AddLocalDataCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? val = null,Object? isLoading = null,Object? coordinates = null,}) {
   return _then(_AddLocalData(
 null == val ? _self.val : val // ignore: cast_nullable_to_non_nullable
-as ProductData,null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,null == coordinates ? _self._coordinates : coordinates // ignore: cast_nullable_to_non_nullable
+as ProductData,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as bool,coordinates: null == coordinates ? _self._coordinates : coordinates // ignore: cast_nullable_to_non_nullable
 as Map<String, double>,
   ));
 }

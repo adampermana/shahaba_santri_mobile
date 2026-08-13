@@ -177,21 +177,6 @@ class DetailProductScreen extends StatelessWidget {
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                    // Visibility(
-                                    //   visible:
-                                    //       getDateLeft(product.expireDate!) <
-                                    //           30 &&
-                                    //       getDateLeft(product.expireDate!) >
-                                    //           0,
-                                    //   child: Text(
-                                    //     '*Berlaku ${getDateLeft(product.expireDate!)} hari lagi',
-                                    //     style: TextStyle(
-                                    //       fontWeight: FontWeight.w500,
-                                    //       color: ColorPalette.kRedDanger,
-                                    //       fontSize: 12,
-                                    //     ),
-                                    //   ),
-                                    // ),
                                   ],
                                 ),
                               ],

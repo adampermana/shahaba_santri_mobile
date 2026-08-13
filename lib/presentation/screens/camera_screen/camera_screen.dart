@@ -220,8 +220,8 @@ class CameraScanScreen extends HookWidget {
                       context.read<ProductBloc>().add(
                         ProductEvent.addLocalData(
                           state.data[0],
-                          false,
-                          coordinates,
+                          isLoading: false,
+                          coordinates: coordinates,
                         ),
                       );
 

@@ -101,8 +101,8 @@ class ProductSearchResultSheet extends StatelessWidget {
                                       context.read<ProductBloc>().add(
                                         ProductEvent.addLocalData(
                                           item,
-                                          true,
-                                          coordinates,
+                                          isLoading: true,
+                                          coordinates: coordinates,
                                         ),
                                       );
                                     } on Exception catch (e) {

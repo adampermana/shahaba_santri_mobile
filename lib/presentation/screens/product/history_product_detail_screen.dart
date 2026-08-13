@@ -239,7 +239,7 @@ class HistoryProductDetailScreen extends StatelessWidget {
                                           : const Color(
                                               0xFFC6412D,
                                             ), // Custom red for non-halal
-                                            // based on design
+                                      // based on design
                                       fontWeight: FontWeight.bold,
                                       fontSize: 22,
                                     ),
@@ -315,25 +315,6 @@ class HistoryProductDetailScreen extends StatelessWidget {
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
-                                      // Visibility(
-                                      //   visible:
-                                      //       product.expireDate != null &&
-                                      //       product.expireDate!.isNotEmpty &&
-                                      //       getDateLeft(
-                                      //         product.expireDate!,
-                                      //       ) >
-                                      //           0,
-                                      //   child: Text(
-                                      //     '*Berlaku '
-                                      //     '${getDateLeft(product.expireDate!)} hari lagi',
-                                      //     style: TextStyle(
-                                      //       color: ColorPalette.kRedDanger,
-                                      //       fontSize: 12,
-                                      //       fontWeight: FontWeight.w500,
-                                      //       height: 1.33,
-                                      //     ),
-                                      //   ),
-                                      // ),
                                     ],
                                   ),
                                   const SizedBox(height: 24),
@@ -657,7 +638,8 @@ class _LocationMapDialogState extends State<_LocationMapDialog> {
                           Marker(
                             markerId: const MarkerId('product_location'),
                             position: point,
-                            icon: _customMarkerIcon ??
+                            icon:
+                                _customMarkerIcon ??
                                 BitmapDescriptor.defaultMarker,
                           ),
                         },
