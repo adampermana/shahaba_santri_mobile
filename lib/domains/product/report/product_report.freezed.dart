@@ -216,8 +216,8 @@ return $default(_that.brandId,_that.image,_that.name,_that.description,_that.par
 }
 
 /// @nodoc
+@JsonSerializable(createFactory: false)
 
-@JsonSerializable(createFactory: false, fieldRename: FieldRename.snake, explicitToJson: true)
 class _ProductReport implements ProductReport {
    _ProductReport({@JsonKey(name: 'brand_id') required this.brandId, @JsonKey(name: 'image', toJson: parseToBase64) required this.image, @JsonKey(name: 'name') required this.name, @JsonKey(name: 'description') required this.description, @JsonKey(name: 'partner_id') required this.partner, @JsonKey(name: 'device_id') required this.deviceId, @JsonKey(name: 'person') required this.person, @JsonKey(name: 'kecamatan') required this.kecamatan, @JsonKey(name: 'kelurahan') required this.kelurahan, @JsonKey(name: 'lat') required this.lat, @JsonKey(name: 'long') required this.long, @JsonKey(name: 'provinsi') required this.provinsi});
   

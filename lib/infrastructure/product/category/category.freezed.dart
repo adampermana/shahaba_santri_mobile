@@ -204,8 +204,8 @@ return $default(_that.data);case _:
 }
 
 /// @nodoc
+@JsonSerializable(createToJson: false)
 
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class _ListCategory implements ListCategory {
   const _ListCategory({final  List<Category> data = const []}): _data = data;
   factory _ListCategory.fromJson(Map<String, dynamic> json) => _$ListCategoryFromJson(json);
@@ -471,8 +471,8 @@ return $default(_that.id,_that.image,_that.name,_that.subcategory);case _:
 }
 
 /// @nodoc
+@JsonSerializable(createToJson: false)
 
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class _Category implements Category {
   const _Category({required this.id, @JsonKey(name: 'icon') required this.image, @JsonKey(name: 'name') required this.name, @JsonKey(name: 'children') final  List<Subcategory> subcategory = const []}): _subcategory = subcategory;
   factory _Category.fromJson(Map<String, dynamic> json) => _$CategoryFromJson(json);
@@ -743,8 +743,8 @@ return $default(_that.id,_that.image,_that.name);case _:
 }
 
 /// @nodoc
+@JsonSerializable(createToJson: false)
 
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class _Subcategory implements Subcategory {
   const _Subcategory({required this.id, @JsonKey(name: 'icon') required this.image, @JsonKey(name: 'name') required this.name});
   factory _Subcategory.fromJson(Map<String, dynamic> json) => _$SubcategoryFromJson(json);

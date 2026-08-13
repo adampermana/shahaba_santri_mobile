@@ -204,8 +204,8 @@ return $default(_that.data);case _:
 }
 
 /// @nodoc
+@JsonSerializable(createToJson: false)
 
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class _ListBrand implements ListBrand {
   const _ListBrand({final  List<Brand> data = const []}): _data = data;
   factory _ListBrand.fromJson(Map<String, dynamic> json) => _$ListBrandFromJson(json);
@@ -470,8 +470,8 @@ return $default(_that.id,_that.image,_that.name);case _:
 }
 
 /// @nodoc
+@JsonSerializable(createToJson: false)
 
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class _Brand implements Brand {
   const _Brand({required this.id, @JsonKey(name: 'image_path') required this.image, @JsonKey(name: 'name') required this.name});
   factory _Brand.fromJson(Map<String, dynamic> json) => _$BrandFromJson(json);

@@ -204,8 +204,8 @@ return $default(_that.data);case _:
 }
 
 /// @nodoc
+@JsonSerializable(createToJson: false)
 
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class _DropdownDataResponse implements DropdownDataResponse {
   const _DropdownDataResponse({final  List<DropdownItems> data = const []}): _data = data;
   factory _DropdownDataResponse.fromJson(Map<String, dynamic> json) => _$DropdownDataResponseFromJson(json);
@@ -469,8 +469,8 @@ return $default(_that.id,_that.title);case _:
 }
 
 /// @nodoc
+@JsonSerializable(createToJson: false)
 
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 class _DropdownItems implements DropdownItems {
   const _DropdownItems({required this.id, @JsonKey(name: 'name') required this.title});
   factory _DropdownItems.fromJson(Map<String, dynamic> json) => _$DropdownItemsFromJson(json);

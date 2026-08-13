@@ -218,8 +218,8 @@ return $default(_that.deviceId,_that.user,_that.image,_that.kecamatan,_that.disc
 }
 
 /// @nodoc
+@JsonSerializable(createFactory: false)
 
-@JsonSerializable(createFactory: false, fieldRename: FieldRename.snake, explicitToJson: true)
 class _ProductLogPayload implements ProductLogPayload {
    _ProductLogPayload({@JsonKey(name: 'device_id') required this.deviceId, @JsonKey(name: 'user') required this.user, @JsonKey(name: 'image') required this.image, @JsonKey(name: 'subdistrict') required this.kecamatan, @JsonKey(name: 'city') required this.disctrict, @JsonKey(name: 'lat') required this.lat, @JsonKey(name: 'long') required this.long, @JsonKey(name: 'province') required this.province, @JsonKey(name: 'event_type') required this.eventType, @JsonKey(name: 'partner_id') required this.partnerId, @JsonKey(name: 'brand_id') required this.brandId, @JsonKey(name: 'product_category_id') required this.categoryId, @JsonKey(name: 'product_id') required this.productId, @JsonKey(name: 'status_halal') required this.statusHalal});
   

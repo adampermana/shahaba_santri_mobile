@@ -5,11 +5,6 @@ part 'product_body.freezed.dart';
 part 'product_body.g.dart';
 
 @Freezed(fromJson: false, toJson: true)
-@JsonSerializable(
-  createFactory: false,
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-)
 abstract class ProductBody with _$ProductBody {
   factory ProductBody({
     @JsonKey(name: 'device_id') required String deviceId,

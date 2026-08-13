@@ -215,8 +215,8 @@ return $default(_that.productId,_that.creativeId,_that.campaignId,_that.kecamata
 }
 
 /// @nodoc
+@JsonSerializable(createFactory: false)
 
-@JsonSerializable(createFactory: false, fieldRename: FieldRename.snake, explicitToJson: true)
 class _AdLogPayload implements AdLogPayload {
    _AdLogPayload({@JsonKey(name: 'product_id') required this.productId, @JsonKey(name: 'creative_id') required this.creativeId, @JsonKey(name: 'campaign_id') required this.campaignId, @JsonKey(name: 'subdistrict') required this.kecamatan, @JsonKey(name: 'city') required this.kelurahan, @JsonKey(name: 'lat') required this.lat, @JsonKey(name: 'long') required this.long, @JsonKey(name: 'phone_number') required this.phoneNumber, @JsonKey(name: 'user') required this.user, @JsonKey(name: 'province') required this.provinsi, @JsonKey(name: 'event_type') required this.eventType});
   

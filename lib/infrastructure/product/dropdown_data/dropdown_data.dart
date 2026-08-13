@@ -4,7 +4,6 @@ part 'dropdown_data.freezed.dart';
 part 'dropdown_data.g.dart';
 
 @Freezed(toJson: false)
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 abstract class DropdownDataResponse with _$DropdownDataResponse {
   const factory DropdownDataResponse({@Default([]) List<DropdownItems> data}) =
       _DropdownDataResponse;
@@ -14,7 +13,6 @@ abstract class DropdownDataResponse with _$DropdownDataResponse {
 }
 
 @Freezed(toJson: false)
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
 abstract class DropdownItems with _$DropdownItems {
   const factory DropdownItems({
     required int id,
