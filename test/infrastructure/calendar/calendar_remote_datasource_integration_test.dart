@@ -104,13 +104,13 @@ void main() {
         stopwatch.stop();
 
         debugPrint('');
-        debugPrint('  ⏱️  Total time : ${stopwatch.elapsedMilliseconds}ms');
+        debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
         debugPrint(
-          '  📋 Result     : ${result.length} Islamic holiday(s) found',
+          '   Result     : ${result.length} Islamic holiday(s) found',
         );
         debugPrint('');
         for (final h in result) {
-          debugPrint('     📌 ${h.date} — ${h.name}');
+          debugPrint('      ${h.date} — ${h.name}');
         }
 
         // assert
@@ -149,13 +149,13 @@ void main() {
         stopwatch.stop();
 
         debugPrint('');
-        debugPrint('  ⏱️  Total time : ${stopwatch.elapsedMilliseconds}ms');
+        debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
         debugPrint(
-          '  📋 Result     : ${result.length} Islamic holiday(s) found',
+          '   Result     : ${result.length} Islamic holiday(s) found',
         );
         debugPrint('');
         for (final h in result) {
-          debugPrint('     📌 ${h.date} — ${h.name}');
+          debugPrint('      ${h.date} — ${h.name}');
         }
 
         expect(result, isA<List<IslamicHolidayModel>>());

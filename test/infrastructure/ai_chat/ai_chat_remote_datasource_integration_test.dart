@@ -44,10 +44,10 @@ class _TestLoggingInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     log('');
     log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    log('  🚀 [REQUEST] ${options.method} ${options.uri}');
-    log('  📤 Headers:');
+    log('   [REQUEST] ${options.method} ${options.uri}');
+    log('   Headers:');
     options.headers.forEach((k, v) => log('     $k: $v'));
-    log('  📤 Body:');
+    log('   Body:');
     if (options.data is Map) {
       (options.data as Map).forEach((k, v) => log('     $k: $v'));
     } else {
@@ -62,9 +62,9 @@ class _TestLoggingInterceptor extends Interceptor {
     log('');
     log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     log(
-      '  ✅ [RESPONSE] ${response.statusCode} ${response.requestOptions.uri}',
+      '   [RESPONSE] ${response.statusCode} ${response.requestOptions.uri}',
     );
-    log('  📥 Body:');
+    log('   Body:');
     if (response.data is Map) {
       (response.data as Map).forEach((k, v) {
         final display = v.toString().length > 120

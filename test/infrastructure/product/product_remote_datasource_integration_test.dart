@@ -43,9 +43,9 @@ class _TestLoggingInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     debugPrint('');
     debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    debugPrint('  🚀 [REQUEST] ${options.method} ${options.uri}');
+    debugPrint('   [REQUEST] ${options.method} ${options.uri}');
     if (options.queryParameters.isNotEmpty) {
-      debugPrint('  📤 Query Params:');
+      debugPrint('   Query Params:');
       options.queryParameters.forEach((k, v) => debugPrint('     $k: $v'));
     }
     debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -57,13 +57,13 @@ class _TestLoggingInterceptor extends Interceptor {
     debugPrint('');
     debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     debugPrint(
-      '  ✅ [RESPONSE] ${response.statusCode} ${response.requestOptions.uri}',
+      '   [RESPONSE] ${response.statusCode} ${response.requestOptions.uri}',
     );
     final data = response.data;
     if (data is Map) {
       final list = data['data'];
       if (list is List) {
-        debugPrint('  📦 data: ${list.length} item(s)');
+        debugPrint('   data: ${list.length} item(s)');
         final preview = list.take(3).toList();
         for (var i = 0; i < preview.length; i++) {
           final item = preview[i];
@@ -92,7 +92,7 @@ class _TestLoggingInterceptor extends Interceptor {
         });
       }
     } else if (data is List) {
-      debugPrint('  📦 ${data.length} item(s)');
+      debugPrint('   ${data.length} item(s)');
       final preview = data.take(3).toList();
       for (var i = 0; i < preview.length; i++) {
         debugPrint('     [$i] ${preview[i]}');
