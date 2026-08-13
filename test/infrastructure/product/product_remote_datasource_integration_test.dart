@@ -131,18 +131,18 @@ void main() {
             final result = await datasource.getBrandData();
             stopwatch.stop();
 
-            debugPrint('  ⏱️  Total time : ${stopwatch.elapsedMilliseconds}ms');
+            debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
             debugPrint(
-              '  📋 Result     : ${result.data?.length ?? 0} brand(s) found',
+              '   Result     : ${result.data?.length ?? 0} brand(s) found',
             );
 
             expect(result, isA<ListBrand>());
           } on ServerException catch (e) {
             if (e.statusCode == 401) {
-              debugPrint('  ⚠️  Endpoint requires authorization token.');
+              debugPrint('    Endpoint requires authorization token.');
             } else if (e.statusCode == -1) {
               debugPrint(
-                '  ⚠️  Backend lokal tidak dapat diakses (Pastikan server $baseUrl menyala).',
+                '    Backend lokal tidak dapat diakses (Pastikan server $baseUrl menyala).',
               );
             } else {
               rethrow;
@@ -160,17 +160,17 @@ void main() {
             final result = await datasource.getProdusen();
             stopwatch.stop();
 
-            debugPrint('  ⏱️  Total time : ${stopwatch.elapsedMilliseconds}ms');
+            debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
             debugPrint(
-              '  📋 Result     : ${result.data?.length ?? 0} produsen(s) found',
+              '   Result     : ${result.data?.length ?? 0} produsen(s) found',
             );
 
             expect(result, isA<DropdownDataResponse>());
           } on ServerException catch (e) {
             if (e.statusCode == 401) {
-              debugPrint('  ⚠️  Endpoint requires authorization token.');
+              debugPrint('    Endpoint requires authorization token.');
             } else if (e.statusCode == -1) {
-              debugPrint('  ⚠️  Backend lokal tidak dapat diakses.');
+              debugPrint('    Backend lokal tidak dapat diakses.');
             } else {
               rethrow;
             }
@@ -189,17 +189,17 @@ void main() {
             final result = await datasource.getCategory();
             stopwatch.stop();
 
-            debugPrint('  ⏱️  Total time : ${stopwatch.elapsedMilliseconds}ms');
+            debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
             debugPrint(
-              '  📋 Result     : ${result.data?.length ?? 0} categories found',
+              '   Result     : ${result.data?.length ?? 0} categories found',
             );
 
             expect(result, isA<ListCategory>());
           } on ServerException catch (e) {
             if (e.statusCode == 401) {
-              debugPrint('  ⚠️  Endpoint requires authorization token.');
+              debugPrint('    Endpoint requires authorization token.');
             } else if (e.statusCode == -1) {
-              debugPrint('  ⚠️  Backend lokal tidak dapat diakses.');
+              debugPrint('    Backend lokal tidak dapat diakses.');
             } else {
               rethrow;
             }
@@ -218,17 +218,17 @@ void main() {
             final result = await datasource.getAdsTopTen();
             stopwatch.stop();
 
-            debugPrint('  ⏱️  Total time : ${stopwatch.elapsedMilliseconds}ms');
+            debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
             debugPrint(
-              '  📋 Result     : ${result.data?.length ?? 0} ads found',
+              '   Result     : ${result.data?.length ?? 0} ads found',
             );
 
             expect(result, isA<ListProductResponse>());
           } on ServerException catch (e) {
             if (e.statusCode == 401) {
-              debugPrint('  ⚠️  Endpoint requires authorization token.');
+              debugPrint('    Endpoint requires authorization token.');
             } else if (e.statusCode == -1) {
-              debugPrint('  ⚠️  Backend lokal tidak dapat diakses.');
+              debugPrint('    Backend lokal tidak dapat diakses.');
             } else {
               rethrow;
             }
@@ -240,24 +240,24 @@ void main() {
 
     group('Search / Product Endpoints', () {
       test(
-        'GET /api/v1/product?search=baju — should return products matching search',
+        'GET /api/v1/product?search=indomie — should return products matching search',
         () async {
           try {
             final stopwatch = Stopwatch()..start();
-            final result = await datasource.getSearchProduct('baju');
+            final result = await datasource.getSearchProduct('indomie');
             stopwatch.stop();
 
-            debugPrint('  ⏱️  Total time : ${stopwatch.elapsedMilliseconds}ms');
+            debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
             debugPrint(
-              '  📋 Result     : ${result.data?.length ?? 0} product(s) found',
+              '   Result     : ${result.data?.length ?? 0} product(s) found',
             );
 
             expect(result, isA<ListProductResponse>());
           } on ServerException catch (e) {
             if (e.statusCode == 401) {
-              debugPrint('  ⚠️  Endpoint requires authorization token.');
+              debugPrint('    Endpoint requires authorization token.');
             } else if (e.statusCode == -1) {
-              debugPrint('  ⚠️  Backend lokal tidak dapat diakses.');
+              debugPrint('    Backend lokal tidak dapat diakses.');
             } else {
               rethrow;
             }

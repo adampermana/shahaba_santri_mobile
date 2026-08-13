@@ -48,7 +48,7 @@ class _TestLoggingInterceptor extends Interceptor {
     debugPrint('');
     debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     debugPrint(
-      '  ✅ [RESPONSE] ${response.statusCode} ${response.requestOptions.uri}',
+      '   [RESPONSE] ${response.statusCode} ${response.requestOptions.uri}',
     );
     final data = response.data;
     if (data is Map) {

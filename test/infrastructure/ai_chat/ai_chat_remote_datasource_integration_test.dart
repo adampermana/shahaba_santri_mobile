@@ -83,7 +83,7 @@ class _TestLoggingInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     log('');
     log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    log('  ❌ [ERROR] ${err.type.name} ${err.requestOptions.uri}');
+    log('    [ERROR] ${err.type.name} ${err.requestOptions.uri}');
     log('     Status : ${err.response?.statusCode}');
     log('     Body   : ${err.response?.data}');
     log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -129,7 +129,7 @@ void main() {
       'POST /api/ai/chat — should return 401 when no token provided',
       () async {
         // Sengaja tidak kirim token untuk verifikasi behavior 401
-        final dio = _buildTestDio(token: null);
+        final dio = _buildTestDio();
 
         final stopwatch = Stopwatch()..start();
         Object? caughtError;
