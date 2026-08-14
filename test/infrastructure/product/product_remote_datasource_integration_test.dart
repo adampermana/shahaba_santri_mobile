@@ -15,7 +15,7 @@ import 'package:sahaba_mobile/infrastructure/product/produsen/produsen.dart';
 ///
 /// CATATAN:
 /// - Test ini memerlukan server backend lokal aktif.
-/// - Ganti nilai [kTestToken] jika endpoint product membutuhkan Bearer token otorisasi.
+/// - Ganti nilai [kTestToken] jika endpoint product membutuhkan Bearer token.
 /// - Test POST/Mutasi sementara diskip agar tidak memenuhi database production/development dengan data sampah.
 
 const String kTestToken =
@@ -53,7 +53,10 @@ class _TestLoggingInterceptor extends Interceptor {
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
+  void onResponse(
+    Response<dynamic> response,
+    ResponseInterceptorHandler handler,
+  ) {
     debugPrint('');
     debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     debugPrint(
@@ -133,7 +136,7 @@ void main() {
 
             debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
             debugPrint(
-              '   Result     : ${result.data?.length ?? 0} brand(s) found',
+              '   Result     : ${result.data.length} brand(s) found',
             );
 
             expect(result, isA<ListBrand>());
@@ -142,7 +145,7 @@ void main() {
               debugPrint('    Endpoint requires authorization token.');
             } else if (e.statusCode == -1) {
               debugPrint(
-                '    Backend lokal tidak dapat diakses (Pastikan server $baseUrl menyala).',
+                'Backend lokal tidak dapat diakses (Pastikan server $baseUrl).',
               );
             } else {
               rethrow;
@@ -162,7 +165,7 @@ void main() {
 
             debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
             debugPrint(
-              '   Result     : ${result.data?.length ?? 0} produsen(s) found',
+              '   Result     : ${result.data.length} produsen(s) found',
             );
 
             expect(result, isA<DropdownDataResponse>());
@@ -191,7 +194,7 @@ void main() {
 
             debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
             debugPrint(
-              '   Result     : ${result.data?.length ?? 0} categories found',
+              '   Result     : ${result.data.length} categories found',
             );
 
             expect(result, isA<ListCategory>());

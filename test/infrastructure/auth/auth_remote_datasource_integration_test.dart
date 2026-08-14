@@ -17,7 +17,7 @@ import 'package:sahaba_mobile/infrastructure/failures/exceptions.dart';
 /// CATATAN:
 /// - Test ini memerlukan koneksi internet aktif.
 /// - Akun AI sudah di-hardcode di sini (sah@mail.com / 12345678) sesuai arahan.
-/// - Guest login menggunakan device_token dummy karena hanya butuh token FCM placeholder.
+/// - Guest login menggunakan device_token dummy karena hanya butuh token FCM.
 
 Dio _buildDio(String url) {
   final dio = Dio(
@@ -54,7 +54,10 @@ class _TestLoggingInterceptor extends Interceptor {
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
+  void onResponse(
+    Response<dynamic> response,
+    ResponseInterceptorHandler handler,
+  ) {
     debugPrint('');
     debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     debugPrint(
@@ -192,7 +195,7 @@ void main() {
           debugPrint('     Result:');
           debugPrint('     name            : ${result.data?.name}');
           debugPrint(
-            '     token           : ${result.data?.token?.substring(0, 20)}...[HIDDEN]',
+            '     token   : ${result.data?.token?.substring(0, 20)}...[HIDDEN]',
           );
           debugPrint(
             '     isPendingDeletion: ${result.data?.isPendingDeletion}',
@@ -212,7 +215,7 @@ void main() {
           debugPrint('');
           debugPrint('   Testing guest login with empty device token...');
 
-          // Server mungkin tetap return 200 atau error — kita pastikan tidak crash dart
+          // Server mungkin tetap return 200 atau error
           try {
             final result = await datasource.postLoginGuest(
               deviceToken: '',

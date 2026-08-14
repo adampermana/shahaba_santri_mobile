@@ -13,9 +13,6 @@ import 'package:sahaba_mobile/infrastructure/failures/exceptions.dart';
 ///
 /// CATATAN:
 /// - Test ini memerlukan koneksi internet aktif.
-/// - Dio dibuat langsung tanpa GetIt agar tidak ada dependency pada app injection.
-/// - Token Katanara di-set manual di header karena RequestInterceptor perlu Hive.
-/// - Ganti nilai [kTestToken] di bawah dengan Bearer token yang valid dari login.
 
 /// ← Isi dengan Bearer token Katanara AI yang valid
 const String kTestToken =
@@ -58,7 +55,10 @@ class _TestLoggingInterceptor extends Interceptor {
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
+  void onResponse(
+    Response<dynamic> response,
+    ResponseInterceptorHandler handler,
+  ) {
     log('');
     log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     log(

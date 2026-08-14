@@ -14,30 +14,28 @@ Response<Map<String, dynamic>> _resp(
   Map<String, dynamic> data, {
   String path = '/test',
   int statusCode = 200,
-}) =>
-    Response<Map<String, dynamic>>(
-      data: data,
-      statusCode: statusCode,
-      requestOptions: RequestOptions(path: path),
-    );
+}) => Response<Map<String, dynamic>>(
+  data: data,
+  statusCode: statusCode,
+  requestOptions: RequestOptions(path: path),
+);
 
 DioException _dioError({
   DioExceptionType type = DioExceptionType.connectionTimeout,
   int? statusCode,
   Map<String, dynamic>? responseData,
   String path = '/test',
-}) =>
-    DioException(
-      type: type,
-      response: statusCode != null
-          ? Response(
-              statusCode: statusCode,
-              data: responseData,
-              requestOptions: RequestOptions(path: path),
-            )
-          : null,
-      requestOptions: RequestOptions(path: path),
-    );
+}) => DioException(
+  type: type,
+  response: statusCode != null
+      ? Response(
+          statusCode: statusCode,
+          data: responseData,
+          requestOptions: RequestOptions(path: path),
+        )
+      : null,
+  requestOptions: RequestOptions(path: path),
+);
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
@@ -53,21 +51,20 @@ void main() {
   });
 
   // Convenience wrappers
-  When<Future<Response<Map<String, dynamic>>>> _whenPost(
+  When<Future<Response<Map<String, dynamic>>>> whenPost(
     MockDio dio,
     String path,
-  ) =>
-      when(
-        () => dio.post<Map<String, dynamic>>(
-          path,
-          data: any(named: 'data'),
-          queryParameters: any(named: 'queryParameters'),
-          options: any(named: 'options'),
-          cancelToken: any(named: 'cancelToken'),
-          onSendProgress: any(named: 'onSendProgress'),
-          onReceiveProgress: any(named: 'onReceiveProgress'),
-        ),
-      );
+  ) => when(
+    () => dio.post<Map<String, dynamic>>(
+      path,
+      data: any(named: 'data'),
+      queryParameters: any(named: 'queryParameters'),
+      options: any(named: 'options'),
+      cancelToken: any(named: 'cancelToken'),
+      onSendProgress: any(named: 'onSendProgress'),
+      onReceiveProgress: any(named: 'onReceiveProgress'),
+    ),
+  );
 
   // ── postLoginAi ──────────────────────────────────────────────────────────
 
@@ -87,8 +84,10 @@ void main() {
     test(
       'should POST to _dioAi with email & password and return LoginResponAI',
       () async {
-        _whenPost(mockDioAi, path)
-            .thenAnswer((_) async => _resp(tSuccessJson, path: path));
+        whenPost(
+          mockDioAi,
+          path,
+        ).thenAnswer((_) async => _resp(tSuccessJson, path: path));
 
         final result = await datasource.postLoginAi(
           email: 'sah@mail.com',
@@ -112,21 +111,23 @@ void main() {
       },
     );
 
-    test('should throw ServerException on DioException connectionTimeout',
-        () async {
-      _whenPost(mockDioAi, path).thenThrow(_dioError(path: path));
+    test(
+      'should throw ServerException on DioException connectionTimeout',
+      () async {
+        whenPost(mockDioAi, path).thenThrow(_dioError(path: path));
 
-      expect(
-        () => datasource.postLoginAi(
-          email: 'sah@mail.com',
-          password: 'wrong',
-        ),
-        throwsA(isA<ServerException>()),
-      );
-    });
+        expect(
+          () => datasource.postLoginAi(
+            email: 'sah@mail.com',
+            password: 'wrong',
+          ),
+          throwsA(isA<ServerException>()),
+        );
+      },
+    );
 
     test('should throw ServerException on 401 bad credentials', () async {
-      _whenPost(mockDioAi, path).thenThrow(
+      whenPost(mockDioAi, path).thenThrow(
         _dioError(
           type: DioExceptionType.badResponse,
           statusCode: 401,
@@ -163,10 +164,12 @@ void main() {
     };
 
     test(
-      'should POST to _dio with device_token & platform and return LoginResponse',
+      'should POST to _dio with device_token & platform & return LoginResponse',
       () async {
-        _whenPost(mockDio, path)
-            .thenAnswer((_) async => _resp(tGuestJson, path: path));
+        whenPost(
+          mockDio,
+          path,
+        ).thenAnswer((_) async => _resp(tGuestJson, path: path));
 
         final result = await datasource.postLoginGuest(
           deviceToken: 'device-fcm-token-test',
@@ -193,7 +196,7 @@ void main() {
     );
 
     test('should throw ServerException on DioException', () async {
-      _whenPost(mockDio, path).thenThrow(
+      whenPost(mockDio, path).thenThrow(
         _dioError(
           type: DioExceptionType.connectionError,
           path: path,
@@ -210,7 +213,7 @@ void main() {
     });
 
     test('should throw ServerException on 500 server error', () async {
-      _whenPost(mockDio, path).thenThrow(
+      whenPost(mockDio, path).thenThrow(
         _dioError(
           type: DioExceptionType.badResponse,
           statusCode: 500,

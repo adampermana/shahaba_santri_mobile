@@ -64,7 +64,7 @@ class _TestLoggingInterceptor extends Interceptor {
     } else {
       final raw = data.toString();
       debugPrint(
-        '     body   : ${raw.length > 200 ? '${raw.substring(0, 200)}...' : raw}',
+        '   body :${raw.length > 200 ? '${raw.substring(0, 200)}...' : raw}',
       );
     }
     debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');

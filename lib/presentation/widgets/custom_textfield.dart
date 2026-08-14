@@ -1442,9 +1442,8 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
       return Row(mainAxisSize: MainAxisSize.min, children: widgets);
     }
 
-    // ════════════════════════════════════════════════════════════════════
     // MODE GLASSMORPHIC
-    // ════════════════════════════════════════════════════════════════════
+
     if (useGlass) {
       final effectiveGlassRadius = BorderRadius.circular(borderRadius ?? 28);
       final effectiveGlassHeight = glassHeight ?? 56;
@@ -1564,9 +1563,7 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
       return labeledGlass(glassField(suffix: buildSuffix(showClear: false)));
     }
 
-    // ════════════════════════════════════════════════════════════════════
     // MODE DEFAULT (border/fill biasa)
-    // ════════════════════════════════════════════════════════════════════
 
     //  border helpers ─
     final effectiveBorderRadius = BorderRadius.circular(borderRadius ?? 8);
