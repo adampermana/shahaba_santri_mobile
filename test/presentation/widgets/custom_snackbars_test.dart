@@ -307,7 +307,7 @@ void main() {
     );
 
     test(
-      'non-failure margin: custom margin passed through directly (excludes networkInfo)',
+      'non-failure margin: custom margin passed through directly',
       () {
         const margin = EdgeInsets.all(8);
 

@@ -4,8 +4,6 @@ import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
-//  Helper
-
 Widget _wrap(Widget child) => MaterialApp(home: Scaffold(body: child));
 
 SubmitButtonStylesWidget _btn({
