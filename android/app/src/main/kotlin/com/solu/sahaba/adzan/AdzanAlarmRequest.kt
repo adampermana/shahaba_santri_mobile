@@ -1,4 +1,4 @@
-package com.eprisi.sah.adzan
+package com.solu.sahaba.adzan
 
 import android.content.Intent
 import org.json.JSONObject

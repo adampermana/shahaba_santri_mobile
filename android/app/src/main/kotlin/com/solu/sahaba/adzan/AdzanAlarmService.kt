@@ -1,4 +1,4 @@
-package com.eprisi.sah.adzan
+package com.solu.sahaba.adzan
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -16,8 +16,8 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.eprisi.sah.MainActivity
-import com.eprisi.sah.R
+import com.solu.sahaba.MainActivity
+import com.solu.sahaba.R
 
 class AdzanAlarmService : Service() {
     private var mediaPlayer: MediaPlayer? = null
@@ -239,8 +239,8 @@ class AdzanAlarmService : Service() {
     }
 
     companion object {
-        const val ACTION_START = "com.eprisi.sah.adzan.START"
-        const val ACTION_STOP = "com.eprisi.sah.adzan.STOP_SERVICE"
+        const val ACTION_START = "com.solu.sahaba.adzan.START"
+        const val ACTION_STOP = "com.solu.sahaba.adzan.STOP_SERVICE"
         const val CHANNEL_ID = "adzan_alarm_channel"
         private const val REQUEST_CONTENT_OFFSET = 10_000
         private const val REQUEST_STOP_OFFSET = 20_000

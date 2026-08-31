@@ -513,13 +513,13 @@ Widget _featureSection(
       'iconRatio': 0.75,
       'onTap': onKalendarTap,
     },
-    {
-      'label': 'Produk Halal',
-      'icon': 'assets/images/icon-images/icon-produk-halal.webp',
-      'iconRatio': 0.9,
-      'onTap': onProdukHalalTap,
-      'badgeType': 'ai',
-    },
+    // {
+    //   'label': 'Produk Halal',
+    //   'icon': 'assets/images/icon-images/icon-produk-halal.webp',
+    //   'iconRatio': 0.9,
+    //   'onTap': onProdukHalalTap,
+    //   'badgeType': 'ai',
+    // },
     {
       'label': 'Kisah',
       'icon': 'assets/images/icon-images/icon-kisah.webp',
@@ -892,7 +892,7 @@ class _NewsCard extends StatelessWidget {
   }
 }
 
-// ─── Carousel Content (with autoPlay) ───────────────────────────
+// ─── Carousel Content (with autoPlay)
 
 class _CarouselContent extends StatefulWidget {
   const _CarouselContent({
@@ -1228,31 +1228,31 @@ class _CarouselOverlayWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
-              SubmitButtonStylesWidget(
-                style: SubmitButtonStyle.elevatedGlass,
-                width: 150,
-                height: 32,
-                radius: 24,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                textButton: 'Tanya Sahaba',
-                textStyle: const TextStyle(
-                  color: ColorPalette.kWhite,
-                  fontSize: 12,
-                  fontFamily: 'Synonym Variable',
-                  fontWeight: FontWeight.w600,
-                  height: -0.4,
-                ),
-                icon: const CacheImageOrSvg(
-                  source: 'assets/images/icon-images/icon-ai.png',
-                  width: 32,
-                  height: 32,
-                ),
-                onPressed: onSahabaTap,
-              ),
+              // const SizedBox(width: 12),
+              // SubmitButtonStylesWidget(
+              //   style: SubmitButtonStyle.elevatedGlass,
+              //   width: 150,
+              //   height: 32,
+              //   radius: 24,
+              //   padding: const EdgeInsets.symmetric(
+              //     horizontal: 12,
+              //     vertical: 6,
+              //   ),
+              //   textButton: 'Tanya Sahaba',
+              //   textStyle: const TextStyle(
+              //     color: ColorPalette.kWhite,
+              //     fontSize: 12,
+              //     fontFamily: 'Synonym Variable',
+              //     fontWeight: FontWeight.w600,
+              //     height: -0.4,
+              //   ),
+              //   icon: const CacheImageOrSvg(
+              //     source: 'assets/images/icon-images/icon-ai.png',
+              //     width: 32,
+              //     height: 32,
+              //   ),
+              //   onPressed: onSahabaTap,
+              // ),
             ],
           ),
         ),

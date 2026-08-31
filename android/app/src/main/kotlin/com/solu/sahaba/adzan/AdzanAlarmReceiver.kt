@@ -1,4 +1,4 @@
-package com.eprisi.sah.adzan
+package com.solu.sahaba.adzan
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -16,6 +16,6 @@ class AdzanAlarmReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        const val ACTION_TRIGGER = "com.eprisi.sah.adzan.TRIGGER"
+        const val ACTION_TRIGGER = "com.solu.sahaba.adzan.TRIGGER"
     }
 }

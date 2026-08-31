@@ -479,8 +479,8 @@ class _MainScreenState extends State<_MainScreen> {
                 title: 'Beranda',
               ),
               NavBarItem(
-                defaultSvgPath: AppIcons.searchScan,
-                selectedSvgPath: AppIcons.searchScan,
+                defaultSvgPath: 'assets/images/icon-images/icon-ai.png',
+                selectedSvgPath: 'assets/images/icon-images/icon-ai.png',
                 title: 'Pindai Produk',
                 isFeatured: true,
               ),
@@ -493,7 +493,10 @@ class _MainScreenState extends State<_MainScreen> {
             onChanged: (index) async {
               if (index == 1) {
                 // Featured item (Pindai): push route only, don't change index
-                await context.push('$currentLocation/${RouterPath.cameraPath}');
+                await context.push(
+                  '$currentLocation/${RouterPath.sahabaAiPath}',
+                );
+                // await context.push('$currentLocation/${RouterPath.cameraPath}');
               } else {
                 _onTabChanged(index);
               }

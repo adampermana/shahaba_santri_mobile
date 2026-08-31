@@ -133,13 +133,13 @@ final GoRouter router = GoRouter(
           path: RouterPath.qiblaPath,
           builder: (context, state) => const QiblaScreen(),
         ),
-        GoRoute(
-          path: RouterPath.sahabaAiPath,
-          builder: (context, state) => BlocProvider(
-            create: (_) => sl<AiChatBloc>(),
-            child: const SahabaAiScreen(),
-          ),
-        ),
+        // GoRoute(
+        //   path: RouterPath.sahabaAiPath,
+        //   builder: (context, state) => BlocProvider(
+        //     create: (_) => sl<AiChatBloc>(),
+        //     child: const SahabaAiScreen(),
+        //   ),
+        // ),
         GoRoute(
           path: RouterPath.kisahPath,
           builder: (context, state) => BlocProvider(
@@ -311,27 +311,35 @@ final GoRouter router = GoRouter(
           },
         ),
 
-        // Camera
         GoRoute(
-          path: RouterPath.cameraPath,
-          builder: (context, state) => BlocProvider.value(
-            value: sl<LocationBloc>(),
-            child: const CameraScanScreen(),
+          path: RouterPath.sahabaAiPath,
+          builder: (context, state) => BlocProvider(
+            create: (_) => sl<AiChatBloc>(),
+            child: const SahabaAiScreen(),
           ),
-          routes: [
-            GoRoute(
-              path: RouterPath.productDetailPath,
-              builder: (context, state) {
-                final extra = state.extra as Map<String, dynamic>?;
-                return DetailProductScreen(
-                  id: extra?['id'] as int? ?? 0,
-                  ad: extra?['ad'] as ProductData?,
-                  isAds: extra?['isAds'] as bool? ?? false,
-                );
-              },
-            ),
-          ],
         ),
+
+        // Camera
+        // GoRoute(
+        //   path: RouterPath.cameraPath,
+        //   builder: (context, state) => BlocProvider.value(
+        //     value: sl<LocationBloc>(),
+        //     child: const CameraScanScreen(),
+        //   ),
+        //   routes: [
+        //     GoRoute(
+        //       path: RouterPath.productDetailPath,
+        //       builder: (context, state) {
+        //         final extra = state.extra as Map<String, dynamic>?;
+        //         return DetailProductScreen(
+        //           id: extra?['id'] as int? ?? 0,
+        //           ad: extra?['ad'] as ProductData?,
+        //           isAds: extra?['isAds'] as bool? ?? false,
+        //         );
+        //       },
+        //     ),
+        //   ],
+        // ),
         // Detail News
         GoRoute(
           path: RouterPath.detailNewsPath,

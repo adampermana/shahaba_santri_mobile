@@ -1,9 +1,9 @@
-package com.eprisi.sah.adzan
+package com.solu.sahaba.adzan
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.eprisi.sah.MainActivity
+import com.solu.sahaba.MainActivity
 
 class AdzanAlarmActionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -33,7 +33,7 @@ class AdzanAlarmActionReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        const val ACTION_STOP = "com.eprisi.sah.adzan.STOP"
-        const val ACTION_QIBLA = "com.eprisi.sah.adzan.QIBLA"
+        const val ACTION_STOP = "com.solu.sahaba.adzan.STOP"
+        const val ACTION_QIBLA = "com.solu.sahaba.adzan.QIBLA"
     }
 }
