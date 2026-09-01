@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 
 // Jarak label (title) dari tepi bawah area konten bar.
@@ -424,14 +423,12 @@ class _FeaturedNavBarItem extends StatelessWidget {
                         color: featuredColor,
                       ),
                       child: Center(
-                        child: SvgPicture.asset(
-                          svgPath,
-                          width: iconSize,
-                          height: iconSize,
-                          colorFilter: const ColorFilter.mode(
-                            Colors.white,
-                            BlendMode.srcIn,
-                          ),
+                        child: CacheImageOrSvg(
+                          source: svgPath,
+                          width: 40,
+                          height: 40,
+                          // width: iconSize,
+                          // height: iconSize,
                         ),
                       ),
                     ),

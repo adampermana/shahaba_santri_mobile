@@ -481,7 +481,7 @@ class _MainScreenState extends State<_MainScreen> {
               NavBarItem(
                 defaultSvgPath: 'assets/images/icon-images/icon-ai.png',
                 selectedSvgPath: 'assets/images/icon-images/icon-ai.png',
-                title: 'Pindai Produk',
+                title: 'Tanya Sahaba',
                 isFeatured: true,
               ),
               NavBarItem(
