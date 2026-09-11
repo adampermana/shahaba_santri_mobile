@@ -252,9 +252,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         shaderCallback: (bounds) {
                           return const LinearGradient(
                             begin: Alignment(-0.5, 0),
-                            stops: [0.0, 0.75, 1.0],
+                            stops: [0.0, 0.5, 1.0],
                             colors: [
                               Colors.transparent,
+                              Colors.white,
                               Colors.white,
                             ],
                           ).createShader(bounds);
