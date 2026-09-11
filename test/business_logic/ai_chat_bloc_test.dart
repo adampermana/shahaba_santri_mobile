@@ -316,13 +316,13 @@ void main() {
         ).thenAnswer((_) async => Right(_response()));
         return AiChatBloc(repository);
       },
-      seed: () => AiChatState(
+      seed: () => const AiChatState(
         postAiChatLoading: false,
         postAiChatSuccess: true,
         postAiChatErrorMessage: '',
         messages: [
-          const AiChatMessage(content: 'User msg', isUser: true),
-          const AiChatMessage(content: 'Bot msg', isUser: false),
+          AiChatMessage(content: 'User msg', isUser: true),
+          AiChatMessage(content: 'Bot msg', isUser: false),
         ],
       ),
       act: (bloc) => bloc.add(const AiChatEvent.clearChat()),

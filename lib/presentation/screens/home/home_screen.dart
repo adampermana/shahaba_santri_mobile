@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,11 +21,11 @@ import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart
 import 'package:sahaba_mobile/domains/quran/juz_model.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/domains/quran/surah_model.dart';
-import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
+import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
+import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
-import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const _heroSurfaceShadow = [
@@ -197,18 +198,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildJadwalSholat(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(minHeight: 96),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      constraints: const BoxConstraints(minHeight: 95),
       clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: const Color(0xff343A47),
-        borderRadius: BorderRadius.circular(20),
-        image: const DecorationImage(
-          image: AssetImage('assets/images/motif-batik-jadwal.png'),
-          fit: BoxFit.cover,
-          isAntiAlias: true,
-        ),
-        boxShadow: const [
+      decoration: ShapeDecoration(
+        shadows: const [
           BoxShadow(
             color: Color.fromARGB(19, 255, 255, 255),
             blurRadius: 4,
@@ -229,90 +222,148 @@ class _HomeScreenState extends State<HomeScreen> {
             offset: Offset(0, 26),
           ),
         ],
+        gradient: const RadialGradient(
+          center: Alignment(0.100, 1.8),
+          radius: 2.9,
+          colors: [Color(0xFF007D56), Color(0xFF051D12)],
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
       ),
-      child: BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
-        builder: (context, scheduleState) {
-          final loadedState = scheduleState is PrayerScheduleLoaded
-              ? scheduleState
-              : null;
-          final schedule =
-              loadedState?.todaySchedule ?? loadedState?.response.jadwal;
-          final nextPrayerLabel =
-              loadedState?.nextPrayer?.label ??
-              _nextPrayerLabelFromActive(loadedState?.activePrayer?.label);
-
-          final nextPrayer = _resolvePrayerByLabel(
-            nextPrayerLabel,
-            schedule,
-          );
-          final countdownText = _getCountdownText(nextPrayer);
-
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      nextPrayer.label,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        height: 1.1,
+      child: Stack(
+        children: [
+          Positioned(
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: context.mediaQueryShortestSide * 0.7,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                // Blur hanya di sebelah kanan
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: FractionallySizedBox(
+                    widthFactor: 0.2, // 35% area kanan
+                    heightFactor: 1,
+                    child: ClipRect(
+                      child: ShaderMask(
+                        shaderCallback: (bounds) {
+                          return const LinearGradient(
+                            begin: Alignment(-0.5, 0),
+                            stops: [0.0, 0.75, 1.0],
+                            colors: [
+                              Colors.transparent,
+                              Colors.white,
+                            ],
+                          ).createShader(bounds);
+                        },
+                        blendMode: BlendMode.dstIn,
+                        child: ImageFiltered(
+                          imageFilter: ImageFilter.blur(
+                            sigmaX: 1.8,
+                            sigmaY: 1.8,
+                          ),
+                          child: const Opacity(
+                            opacity: 0.3,
+                            child: CacheImageOrSvg(
+                              source: 'assets/svg/motif/motif-home.svg',
+                            ),
+                          ),
+                        ),
                       ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      nextPrayer.time,
-                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                        color: Colors.white,
-                        fontFamily: 'Synonym Variable',
-                        fontSize: 40,
-                        fontWeight: FontWeight.w700,
-                        height: 1.05,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 2,
-                ),
-                decoration: ShapeDecoration(
-                  color: Colors.white.withValues(alpha: 0.32),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                    side: BorderSide(
-                      color: Colors.white.withValues(alpha: 0.4),
                     ),
                   ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 10,
+                const Opacity(
+                  opacity: 0.15,
+                  child: CacheImageOrSvg(
+                    source: 'assets/svg/motif/motif-home.svg',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
+              builder: (context, scheduleState) {
+                final loadedState = scheduleState is PrayerScheduleLoaded
+                    ? scheduleState
+                    : null;
+                final schedule =
+                    loadedState?.todaySchedule ?? loadedState?.response.jadwal;
+                final nextPrayerLabel =
+                    loadedState?.nextPrayer?.label ??
+                    _nextPrayerLabelFromActive(
+                      loadedState?.activePrayer?.label,
+                    );
+
+                final nextPrayer = _resolvePrayerByLabel(
+                  nextPrayerLabel,
+                  schedule,
+                );
+                final countdownText = _getCountdownText(nextPrayer);
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      countdownText,
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        color: Colors.white,
-                        fontFamily: 'Synonym Variable',
-                        fontWeight: FontWeight.w700,
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            nextPrayer.label,
+                            style: const TextStyle(
+                              color: Color(0xFFDDDDDD),
+                              fontFamily: 'Satoshi Variable',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            nextPrayer.time,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Satoshi Variable',
+                              fontSize: 40,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
-                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: Colors.white),
+                      ),
+                      child: Text(
+                        countdownText,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Satoshi Variable',
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ],
-                ),
-              ),
-            ],
-          );
-        },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -491,39 +542,34 @@ Widget _featureSection(
   VoidCallback? onProdukHalalTap,
   VoidCallback? onKisahTap,
 }) {
-  final textTheme = Theme.of(context).textTheme;
-
   final items = [
     {
       'label': 'Kiblat',
-      'icon': 'assets/images/icon-images/icon-kabah.webp',
-      'iconRatio': 0.78,
+      'icon': QiblaIcons.kabah,
+      'iconWidth': 40.0,
+      'iconHeight': 40.0,
       'onTap': onQiblatTap,
     },
     {
       'label': 'Jadwal Salat',
-      'icon': 'assets/images/icon-images/icon-jadwal-sholat.webp',
-      'iconRatio': 0.85,
+      'icon': AppIcons.jadwalSholat,
+      'iconWidth': 36.0,
+      'iconHeight': 36.0,
       'onTap': onJadwalSolatTap,
       'badgeType': 'fire',
     },
     {
       'label': 'Kalendar',
-      'icon': 'assets/images/icon-images/icon-kalendar.webp',
-      'iconRatio': 0.75,
+      'icon': AppIcons.calendar,
+      'iconWidth': 36.0,
+      'iconHeight': 36.0,
       'onTap': onKalendarTap,
     },
-    // {
-    //   'label': 'Produk Halal',
-    //   'icon': 'assets/images/icon-images/icon-produk-halal.webp',
-    //   'iconRatio': 0.9,
-    //   'onTap': onProdukHalalTap,
-    //   'badgeType': 'ai',
-    // },
     {
       'label': 'Kisah',
-      'icon': 'assets/images/icon-images/icon-kisah.webp',
-      'iconRatio': 0.9,
+      'icon': AppIcons.kisah,
+      'iconWidth': 36.0,
+      'iconHeight': 36.0,
       'onTap': onKisahTap,
     },
   ];
@@ -531,200 +577,168 @@ Widget _featureSection(
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(
+      const Text(
         'Fitur kami',
-        style: textTheme.titleMedium?.copyWith(
+        style: TextStyle(
           color: Colors.white,
+          fontFamily: 'Synonym Variable',
           fontSize: 16,
           fontWeight: FontWeight.w600,
           height: 1.75,
         ),
       ),
-      const SizedBox(height: 8),
-      LayoutBuilder(
-        builder: (context, constraints) {
-          final itemCount = items.length;
-          final rawItemWidth = constraints.maxWidth / itemCount;
-          final boxSize = (rawItemWidth * 0.72).clamp(44.0, 64.0);
-          final badgeSize = (boxSize * 0.4).clamp(18.0, 26.0);
-          final labelFontSize = (boxSize * 0.21).clamp(10.5, 13.0);
+      const SizedBox(height: 12),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: items.map((item) {
+          final label = item['label']! as String;
+          final iconPath = item['icon']! as String;
+          final iconWidth = item['iconWidth']! as double;
+          final iconHeight = item['iconHeight']! as double;
+          final onTap = item['onTap'] as VoidCallback?;
+          final badgeType = item['badgeType'] as String?;
 
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: items.map((item) {
-              final label = item['label']! as String;
-              final iconPath = item['icon']! as String;
-              final iconRatio = item['iconRatio']! as double;
-              final onTap = item['onTap'] as VoidCallback?;
-              final badgeType = item['badgeType'] as String?;
-              final iconSize = boxSize * iconRatio;
-
-              return Expanded(
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: onTap,
-                    borderRadius: BorderRadius.circular(14),
-                    splashColor: Colors.white.withValues(alpha: 0.06),
-                    highlightColor: Colors.white.withValues(alpha: 0.04),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(
-                            width: boxSize + 10,
-                            height: boxSize + 6,
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              alignment: Alignment.center,
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    image: const DecorationImage(
-                                      image: AssetImage(
-                                        'assets/images/motif-menu.png',
-                                      ),
-                                      fit: BoxFit.cover,
-                                      opacity: 0.48,
-                                    ),
+          return Expanded(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(14),
+                splashColor: Colors.white.withValues(alpha: 0.06),
+                highlightColor: Colors.white.withValues(alpha: 0.04),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 56,
+                        height: 56,
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: 56,
+                              height: 56,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: ShapeDecoration(
+                                color: Colors.white.withValues(alpha: 0.12),
+                                shadows: const [
+                                  BoxShadow(
+                                    color: Color(0x51000000),
+                                    blurRadius: 8,
+                                    offset: Offset(0, 4),
                                   ),
-                                  foregroundDecoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    gradient: RadialGradient(
-                                      radius: 0.72,
-                                      colors: [
-                                        Colors.white.withValues(alpha: 0.32),
-                                        Colors.white.withValues(alpha: 0.08),
-                                        Colors.transparent,
-                                      ],
-                                      stops: const [0, 0.48, 1],
-                                    ),
+                                ],
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(
+                                    strokeAlign: BorderSide.strokeAlignCenter,
+                                    color: Color(0x28E8E8E8),
                                   ),
-                                  child: Center(
-                                    child: CacheImageOrSvg(
-                                      source: iconPath,
-                                      width: iconSize,
-                                      height: iconSize,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
+                                  borderRadius: BorderRadius.circular(14),
                                 ),
-                                if (badgeType == 'fire')
-                                  Builder(
-                                    builder: (context) {
-                                      final streakState = context
-                                          .watch<StreakCubit>()
-                                          .state;
-                                      final streakCount =
-                                          streakState is StreakLoaded
-                                          ? streakState.currentStreak
-                                          : 0;
-                                      return Positioned(
-                                        top: -2,
-                                        right: 0,
-                                        child: Container(
-                                          height: badgeSize,
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 6,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFDE1135),
-                                            borderRadius: BorderRadius.circular(
-                                              28,
-                                            ),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                color: Color(0x3F000000),
-                                                blurRadius: 4,
-                                                offset: Offset(0, 4),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Icon(
-                                                Icons.local_fire_department,
-                                                color: Colors.white,
-                                                size: 14,
-                                              ),
-                                              const SizedBox(width: 2),
-                                              Text(
-                                                '$streakCount',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: badgeSize * 0.58,
-                                                  fontWeight: FontWeight.w700,
-                                                  height: 1,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                if (badgeType == 'ai')
-                                  Positioned(
-                                    top: -2,
-                                    right: 0,
+                              ),
+                              foregroundDecoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                gradient: RadialGradient(
+                                  radius: 0.72,
+                                  colors: [
+                                    Colors.white.withValues(alpha: 0.20),
+                                    Colors.white.withValues(alpha: 0.05),
+                                    Colors.transparent,
+                                  ],
+                                  stops: const [0, 0.48, 1],
+                                ),
+                              ),
+                              child: Center(
+                                child: CacheImageOrSvg(
+                                  source: iconPath,
+                                  width: iconWidth,
+                                  height: iconHeight,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                            if (badgeType == 'fire')
+                              Builder(
+                                builder: (context) {
+                                  final streakState = context
+                                      .watch<StreakCubit>()
+                                      .state;
+                                  final streakCount =
+                                      streakState is StreakLoaded
+                                      ? streakState.currentStreak
+                                      : 1;
+                                  return Positioned(
+                                    top: -4,
+                                    left: -4,
                                     child: Container(
-                                      width: badgeSize,
-                                      height: badgeSize,
-                                      padding: EdgeInsets.all(
-                                        badgeSize * 0.17,
+                                      height: 19,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 4,
                                       ),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF670075),
-                                        borderRadius: BorderRadius.circular(
-                                          28,
+                                      decoration: ShapeDecoration(
+                                        color: const Color(
+                                          0xFFDE1135,
                                         ),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Color(0x3F000000),
-                                            blurRadius: 4,
-                                            offset: Offset(0, 4),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            28,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const CacheImageOrSvg(
+                                            source: AppIcons.api,
+                                            width: 12,
+                                            height: 12,
+                                            fit: BoxFit.contain,
+                                          ),
+                                          const SizedBox(width: 2),
+                                          Text(
+                                            '$streakCount',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'Synonym Variable',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              height: 1,
+                                            ),
                                           ),
                                         ],
                                       ),
-                                      child: const CacheImageOrSvg(
-                                        source:
-                                            'assets/images/halal_indonesia.png',
-                                        fit: BoxFit.contain,
-                                      ),
-                                      // Image.asset(
-                                      //   'assets/images/icon-images/icon-ai.png',
-                                      //   fit: BoxFit.contain,
-                                      // ),
                                     ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            label,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: textTheme.bodySmall?.copyWith(
-                              color: const Color(0xFFDDDDDD),
-                              fontSize: labelFontSize,
-                              fontWeight: FontWeight.w500,
-                              height: 1.2,
-                            ),
-                          ),
-                        ],
+                                  );
+                                },
+                              ),
+                          ],
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 8),
+                      Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Color(0xFFDDDDDD),
+                          fontFamily: 'Satoshi Variable',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          height: 1.35,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              );
-            }).toList(),
+              ),
+            ),
           );
-        },
+        }).toList(),
       ),
     ],
   );
@@ -780,14 +794,14 @@ class _BeritaIslamSection extends StatelessWidget {
                         Text(
                           'Lihat Semua',
                           style: textTheme.bodyMedium?.copyWith(
-                            color: const Color(0xFFB39164),
+                            color: const Color(0xFF00C6BF),
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         const Icon(
                           Icons.arrow_forward_ios_rounded,
-                          color: Color(0xFFB39164),
+                          color: Color(0xFF00C6BF),
                           size: 14,
                         ),
                       ],
@@ -1344,20 +1358,11 @@ class _ContinueReadingContent extends StatelessWidget {
         Container(
           width: double.infinity,
           clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            gradient: hasHistory
-                ? const LinearGradient(
-                    begin: Alignment(-0.2, -0.4),
-                    end: Alignment(1.1, 1.4),
-                    colors: [
-                      Color(0xFFB39164),
-                      Color(0xFF4A2E15),
-                    ],
-                  )
-                : null,
-            color: hasHistory ? null : const Color(0xFF2C3446),
-            boxShadow: const [
+          decoration: ShapeDecoration(
+            color: hasHistory
+                ? Colors.white.withValues(alpha: 0.12)
+                : const Color(0xFF2C3446),
+            shadows: const [
               BoxShadow(
                 color: Color(0x14000000),
                 blurRadius: 4,
@@ -1373,36 +1378,62 @@ class _ContinueReadingContent extends StatelessWidget {
                 blurRadius: 9,
                 offset: Offset(0, 14),
               ),
+              BoxShadow(
+                color: Color(0x02000000),
+                blurRadius: 10,
+                offset: Offset(0, 26),
+              ),
+              BoxShadow(
+                color: Color(0x00000000),
+                blurRadius: 11,
+                offset: Offset(0, 40),
+              ),
             ],
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                strokeAlign: BorderSide.strokeAlignCenter,
+                color: hasHistory
+                    ? const Color(0x28E8E8E8)
+                    : const Color(0x28E8E8E8),
+              ),
+              borderRadius: BorderRadius.circular(14),
+            ),
           ),
+
+          // decoration: BoxDecoration(
+          //   borderRadius: BorderRadius.circular(16),
+          //   gradient: hasHistory
+          //       ? const LinearGradient(
+          //           begin: Alignment(-0.2, -0.4),
+          //           end: Alignment(1.1, 1.4),
+          //           colors: [
+          //             Color(0xFFB39164),
+          //             Color(0xFF4A2E15),
+          //           ],
+          //         )
+          //       : null,
+          //   color: hasHistory ? null : const Color(0xFF2C3446),
+          //   boxShadow: const [
+          //     BoxShadow(
+          //       color: Color(0x14000000),
+          //       blurRadius: 4,
+          //       offset: Offset(0, 2),
+          //     ),
+          //     BoxShadow(
+          //       color: Color(0x11000000),
+          //       blurRadius: 6,
+          //       offset: Offset(0, 6),
+          //     ),
+          //     BoxShadow(
+          //       color: Color(0x0A000000),
+          //       blurRadius: 9,
+          //       offset: Offset(0, 14),
+          //     ),
+          //   ],
+          // ),
           child: hasHistory
-              ? Stack(
-                  clipBehavior: Clip.none,
+              ? Column(
                   children: [
-                    Positioned(
-                      left: -24,
-                      top: -20,
-                      child: Opacity(
-                        opacity: 0.55,
-                        child: Image.asset(
-                          'assets/images/motif-batik-surah1.png',
-                          width: 150,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      right: -30,
-                      bottom: -30,
-                      child: Opacity(
-                        opacity: 0.55,
-                        child: Image.asset(
-                          'assets/images/motif-batik-surah2.png',
-                          width: 170,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
                     Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
@@ -1421,7 +1452,7 @@ class _ContinueReadingContent extends StatelessWidget {
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: textTheme.headlineSmall?.copyWith(
-                                        color: Colors.white,
+                                        color: ColorPalette.kWhite,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 20,
                                       ),
@@ -1430,10 +1461,8 @@ class _ContinueReadingContent extends StatelessWidget {
                                     Text(
                                       'Ayat ${verse.verseNumber}',
                                       style: textTheme.bodySmall?.copyWith(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.85,
-                                        ),
-                                        fontWeight: FontWeight.w500,
+                                        color: ColorPalette.kWhite,
+                                        fontWeight: FontWeight.w700,
                                         fontSize: 12,
                                         letterSpacing: 0.6,
                                       ),
@@ -1462,7 +1491,7 @@ class _ContinueReadingContent extends StatelessWidget {
                                   ? () => _openLastRead(context)
                                   : null,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF1B8354),
+                                backgroundColor: const Color(0xFF007D56),
                                 foregroundColor: Colors.white,
                                 disabledBackgroundColor: Colors.white
                                     .withValues(alpha: 0.25),

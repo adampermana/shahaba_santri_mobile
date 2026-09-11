@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 
@@ -155,54 +157,34 @@ class _BottomNavBarPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    const topY = 22.0;
+    const topY = 26.0;
 
-    // Lebar cekungan dibuat lebih rapat dengan tombol tengah.
-    const notchHalfWidth = 46.0;
-
-    // Jangan terlalu dalam agar tidak terlihat seperti setengah lingkaran.
-    const notchDepth = 36.0;
+    /// Floating container = 76x76
+    /// Radius = 38
+    ///
+    /// Gunakan radius 38 supaya notch mengikuti bagian LUAR
+    /// floating button.
+    const notchRadius = 38.0;
 
     final centerX = size.width / 2;
 
+    final notchRect = Rect.fromCircle(
+      center: Offset(centerX, topY),
+      radius: notchRadius,
+    );
+
     final topPath = Path()
       ..moveTo(0, topY)
-      ..lineTo(centerX - notchHalfWidth - 12, topY)
-      // Lengkungan masuk sebelah kiri.
-      ..cubicTo(
-        centerX - notchHalfWidth - 4,
-        topY,
-        centerX - notchHalfWidth,
-        topY + 4,
-        centerX - notchHalfWidth + 4,
-        topY + 12,
+      /// Garis kiri sampai tepat ke lingkaran
+      ..lineTo(centerX - notchRadius, topY)
+      /// Setengah lingkaran bagian bawah
+      ..arcTo(
+        notchRect,
+        math.pi,
+        -math.pi,
+        false,
       )
-      // Lengkungan bawah tombol.
-      ..cubicTo(
-        centerX - 30,
-        topY + notchDepth,
-        centerX - 18,
-        topY + notchDepth + 4,
-        centerX,
-        topY + notchDepth + 4,
-      )
-      ..cubicTo(
-        centerX + 18,
-        topY + notchDepth + 4,
-        centerX + 30,
-        topY + notchDepth,
-        centerX + notchHalfWidth - 4,
-        topY + 12,
-      )
-      // Lengkungan keluar sebelah kanan.
-      ..cubicTo(
-        centerX + notchHalfWidth,
-        topY + 4,
-        centerX + notchHalfWidth + 4,
-        topY,
-        centerX + notchHalfWidth + 12,
-        topY,
-      )
+      /// Lanjut garis kanan
       ..lineTo(size.width, topY);
 
     final backgroundPath = Path()
@@ -211,7 +193,7 @@ class _BottomNavBarPainter extends CustomPainter {
       ..lineTo(0, size.height)
       ..close();
 
-    // Shadow khusus garis atas dan lengkungan.
+    /// SHADOW
     final shadowPaint = Paint()
       ..color = shadowColor.withValues(alpha: 0.45)
       ..style = PaintingStyle.stroke
@@ -227,13 +209,18 @@ class _BottomNavBarPainter extends CustomPainter {
       shadowPaint,
     );
 
+    /// BACKGROUND
     final backgroundPaint = Paint()
       ..color = color
       ..style = PaintingStyle.fill
       ..isAntiAlias = true;
 
-    canvas.drawPath(backgroundPath, backgroundPaint);
+    canvas.drawPath(
+      backgroundPath,
+      backgroundPaint,
+    );
 
+    /// BORDER
     final borderPaint = Paint()
       ..color = shadowColor.withValues(alpha: 0.85)
       ..style = PaintingStyle.stroke
@@ -406,30 +393,50 @@ class _FeaturedNavBarItem extends StatelessWidget {
             alignment: Alignment.topCenter,
             children: [
               Positioned(
-                top: -38,
+                top: -22,
                 child: AnimatedScale(
                   scale: isSelected ? 1.06 : 1,
                   duration: const Duration(milliseconds: 220),
                   curve: Curves.easeOutBack,
                   child: Container(
-                    width: 84,
-                    height: 84,
-                    padding: const EdgeInsets.all(6),
+                    width: 75,
+                    height: 75,
+                    padding: const EdgeInsets.all(8),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
                       curve: Curves.easeOut,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: featuredColor,
-                      ),
-                      child: Center(
-                        child: CacheImageOrSvg(
-                          source: svgPath,
-                          width: 40,
-                          height: 40,
-                          // width: iconSize,
-                          // height: iconSize,
+                      decoration: const BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0x3F000000),
+                            blurRadius: 4,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
+                        gradient: RadialGradient(
+                          center: Alignment(0.50, 0.50),
+                          radius: 2,
+                          colors: [
+                            Color(0xFF007D56),
+                            Color(0xFF051D12),
+                          ],
                         ),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.topCenter,
+                        children: [
+                          Positioned(
+                            top: 0,
+                            bottom: 0,
+                            child: CacheImageOrSvg(
+                              source: svgPath,
+                              width: 57.61,
+                              height: 55.1,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
