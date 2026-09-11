@@ -1525,25 +1525,8 @@ class _ContinueReadingContent extends StatelessWidget {
               // ==========================
               // EMPTY STATE
               // ==========================
-              : Stack(
-                  clipBehavior: Clip.none,
+              : Column(
                   children: [
-                    Positioned(
-                      left: -24,
-                      top: -50,
-                      child: Image.asset(
-                        'assets/images/motif-batik-surah1.png',
-                        width: 150,
-                      ),
-                    ),
-                    Positioned(
-                      right: -30,
-                      bottom: -10,
-                      child: Image.asset(
-                        'assets/images/motif-batik-surah2.png',
-                        width: 170,
-                      ),
-                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
