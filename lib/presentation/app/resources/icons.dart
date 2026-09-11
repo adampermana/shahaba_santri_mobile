@@ -56,37 +56,33 @@ abstract class AppIcons {
   static const String jadwalSholatVector = '$_path/jadwal_sholat/Vector.svg';
   static const String jadwalSholatVector1 = '$_path/jadwal_sholat/Vector-1.svg';
 
-  // Jadwal Sholat - Isya
-  static const String jadwalSholatIsyaFrame =
-      '$_path/jadwal_sholat/isya/Frame.svg';
-  static const String jadwalSholatIsyaVector =
-      '$_path/jadwal_sholat/isya/Vector.svg';
-  static const String jadwalSholatIsyaVector1 =
-      '$_path/jadwal_sholat/isya/Vector-1.svg';
-
-  // Jadwal Sholat - Maghrib
-  static const String jadwalSholatMaghribFlat =
-      '$_path/jadwal_sholat/maghrib/Flat.svg';
-  static const String jadwalSholatMaghribVector =
-      '$_path/jadwal_sholat/maghrib/Vector.svg';
-  static const String jadwalSholatMaghribVector1 =
-      '$_path/jadwal_sholat/maghrib/Vector-1.svg';
-
-  // Jadwal Sholat - Subuh
-  static const String jadwalSholatSubuhCapa1 =
-      '$_path/jadwal_sholat/subuh/Capa_1.svg';
-  static const String jadwalSholatSubuhVector =
-      '$_path/jadwal_sholat/subuh/Vector.svg';
-  static const String jadwalSholatSubuhVector1 =
-      '$_path/jadwal_sholat/subuh/Vector-1.svg';
-
-  // Jadwal Sholat - Terbit
-  static const String jadwalSholatTerbitCapa1 =
-      '$_path/jadwal_sholat/terbit/Capa_1.svg';
-  static const String jadwalSholatTerbitVector =
-      '$_path/jadwal_sholat/terbit/Vector.svg';
-  static const String jadwalSholatTerbitVector1 =
-      '$_path/jadwal_sholat/terbit/Vector-1.svg';
+  // Jadwal Sholat - New shared assets
+  static const String jadwalSholatCloud = '$_path/jadwal_sholat/cloud.svg';
+  static const String jadwalSholatMountLeft =
+      '$_path/jadwal_sholat/mount-left.svg';
+  static const String jadwalSholatMountRight =
+      '$_path/jadwal_sholat/mount-right.svg';
+  static const String jadwalSholatSeaAshar =
+      '$_path/jadwal_sholat/sea-ashar.svg';
+  static const String jadwalSholatSeaAsharTerbit =
+      '$_path/jadwal_sholat/sea-ashar-terbit.svg';
+  static const String jadwalSholatSeaIsya = '$_path/jadwal_sholat/sea-isya.svg';
+  static const String jadwalSholatSeaMaghrib =
+      '$_path/jadwal_sholat/sea-maghrib.svg';
+  static const String jadwalSholatSunDzuhur =
+      '$_path/jadwal_sholat/sun-dzuhur.svg';
+  static const String jadwalSholatSunMaghrib =
+      '$_path/jadwal_sholat/sun-maghrib.svg';
+  static const String jadwalSholatSunSubuhTerbit =
+      '$_path/jadwal_sholat/sun-subuh-terbit.svg';
+  static const String jadwalSholatMonthIsya =
+      '$_path/jadwal_sholat/month-isya.svg';
+  static const String jadwalSholatSunDzuhurScene =
+      '$_path/jadwal_sholat/sun-dzuhur-scene.svg';
+  static const String jadwalSholatSunTerbitScene =
+      '$_path/jadwal_sholat/sun-terbit-scene.svg';
+  static const String jadwalSholatSunMaghribScene =
+      '$_path/jadwal_sholat/sun-maghrib-scene.svg';
 }
 
 abstract class QiblaIcons {

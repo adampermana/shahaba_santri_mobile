@@ -15,16 +15,22 @@ import 'package:sahaba_mobile/business_logic/streak_cubit/streak_state.dart';
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/infrastructure/extension/datetime_extension.dart';
-import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 import 'package:sahaba_mobile/infrastructure/services/adzan_service.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
-import 'package:sahaba_mobile/presentation/screens/home/widgets/card_jadwal_sholat.dart';
+import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/card_jadwal_sholat.dart';
+import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/prayer_landscape.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/prayer_time_tile.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/streak_indicator.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
+
+const double _tabletBreakpoint = 600;
+const double _scheduleContentMaxWidth = 560;
+
+double _horizontalPaddingFor(double width) =>
+    width >= _tabletBreakpoint ? 24 : 16;
 
 class JadwalSholatScreen extends StatelessWidget {
   const JadwalSholatScreen({super.key});
@@ -204,101 +210,140 @@ class _LoadedViewState extends State<_LoadedView> {
   ) {
     final textTheme = Theme.of(context).textTheme;
 
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: _NextPrayerCard(
-            textTheme: textTheme,
-            date: widget.state.date,
-            nextPrayer: widget.state.nextPrayer,
-            schedule: _isFutureDate(widget.state.date)
-                ? (widget.state.todaySchedule ?? widget.schedule)
-                : widget.schedule,
-            onPrevious: widget.onPrevious,
-            onNext: widget.onNext,
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 23, 16, 16),
-          sliver: SliverToBoxAdapter(
-            child: _HeaderDateNavigator(
-              date: widget.state.date,
-              textTheme: textTheme,
-              onPrevious: widget.onPrevious,
-              onNext: widget.onNext,
-            ),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-          sliver: SliverToBoxAdapter(
-            child: _InfoRow(
-              textTheme: textTheme,
-              date: widget.state.date,
-              onCompassTap: () => context.push(
-                '${RouterPath.mainPath}/${RouterPath.qiblaPath}',
+    final prayer = widget.state.nextPrayer ?? WaktuSholat.subuh;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : MediaQuery.sizeOf(context).width;
+        final horizontalPadding = _horizontalPaddingFor(width);
+
+        return SingleChildScrollView(
+          child: Stack(
+            children: [
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                height: PrayerLandscape.heightFor(width),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 700),
+                  child: PrayerLandscape(key: ValueKey(prayer), prayer: prayer),
+                ),
               ),
-              onLocationTap: () async {
-                await context.push(
-                  '${RouterPath.mainPath}/select-city',
-                  extra: context.read<LocationCubit>(),
-                );
-              },
-            ),
+              Column(
+                children: [
+                  _NextPrayerCard(
+                    nextPrayer: prayer,
+                    schedule: _isFutureDate(widget.state.date)
+                        ? (widget.state.todaySchedule ?? widget.schedule)
+                        : widget.schedule,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.fromLTRB(
+                      horizontalPadding,
+                      32,
+                      horizontalPadding,
+                      24 + MediaQuery.paddingOf(context).bottom,
+                    ),
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Color(0x330F172A), ColorPalette.background],
+                      ),
+                    ),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxWidth: _scheduleContentMaxWidth,
+                        ),
+                        child: Column(
+                          children: [
+                            _HeaderDateNavigator(
+                              date: widget.state.date,
+                              textTheme: textTheme,
+                              onPrevious: widget.onPrevious,
+                              onNext: widget.onNext,
+                            ),
+                            const SizedBox(height: 32),
+                            _InfoRow(
+                              textTheme: textTheme,
+                              date: widget.state.date,
+                              onCompassTap: () => context.push(
+                                '${RouterPath.mainPath}/${RouterPath.qiblaPath}',
+                              ),
+                              onLocationTap: () async {
+                                await context.push(
+                                  '${RouterPath.mainPath}/select-city',
+                                  extra: context.read<LocationCubit>(),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            for (
+                              var index = 0;
+                              index < _prayers.length;
+                              index++
+                            )
+                              _buildPrayerTile(context, index),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-          sliver: SliverList.builder(
-            itemCount: _prayers.length,
-            itemBuilder: (context, index) {
-              final item = _prayers[index];
-              final time =
-                  widget.schedule?.getTimeByPrayerName(
-                    item.name.toLowerCase(),
-                  ) ??
-                  item.defaultTime;
-              final isActive = widget.state.activePrayer?.label == item.name;
-              final streakState = context.watch<StreakCubit>().state;
-              final isChecked =
-                  streakState is StreakLoaded &&
-                  streakState.date == _dateKey(widget.state.date) &&
-                  streakState.isPrayerChecked(
-                    item.name.toLowerCase(),
-                  );
-              final isPastDay = _isPastDate(widget.state.date);
-              final isFutureDay = _isFutureDate(widget.state.date);
-              final isCurrentDay = !isPastDay && !isFutureDay;
+        );
+      },
+    );
+  }
 
-              // Checkbox: cuma bisa dicentang untuk prayer yang sedang aktif
-              final canCheck = isCurrentDay && isActive;
+  Widget _buildPrayerTile(BuildContext context, int index) {
+    final item = _prayers[index];
+    final time =
+        widget.schedule?.getTimeByPrayerName(
+          item.name.toLowerCase(),
+        ) ??
+        item.defaultTime;
+    final isActive = widget.state.activePrayer?.label == item.name;
+    final streakState = context.watch<StreakCubit>().state;
+    final isChecked =
+        streakState is StreakLoaded &&
+        streakState.date == _dateKey(widget.state.date) &&
+        streakState.isPrayerChecked(
+          item.name.toLowerCase(),
+        );
+    final isPastDay = _isPastDate(widget.state.date);
+    final isFutureDay = _isFutureDate(widget.state.date);
+    final isCurrentDay = !isPastDay && !isFutureDay;
 
-              // Volume: bisa di-toggle untuk semua prayer di hari ini,
-              // gak peduli isActive atau bukan
-              final canToggleVolume = isCurrentDay;
+    // Checkbox: cuma bisa dicentang untuk prayer yang sedang aktif
+    final canCheck = isCurrentDay && isActive;
 
-              return PrayerTimeTile(
-                icon: item.icon,
-                name: item.name,
-                time: _formatTime(time),
-                isActive: isActive,
-                isChecked: isChecked,
-                isHistory: isPastDay || (!isFutureDay && !isActive),
-                isEnabled: canToggleVolume,
-                showCheckbox: item.showCheckbox,
-                showVolume: item.showVolume,
-                isVolumeMuted: item.showVolume && !_isAdzanEnabled(item.name),
-                onVolumeTap: canToggleVolume && item.showVolume
-                    ? () => _onVolumeTap(context, item)
-                    : null,
-                onCheck: canCheck
-                    ? () => _onCheck(context, item.name, time)
-                    : null,
-              );
-            },
-          ),
-        ),
-      ],
+    // Volume: bisa di-toggle untuk semua prayer di hari ini,
+    // gak peduli isActive atau bukan
+    final canToggleVolume = isCurrentDay;
+
+    return PrayerTimeTile(
+      icon: item.icon,
+      name: item.name,
+      time: _formatTime(time),
+      isActive: isActive,
+      isChecked: isChecked,
+      isHistory: isPastDay || (!isFutureDay && !isActive),
+      isEnabled: canToggleVolume,
+      showCheckbox: item.showCheckbox,
+      showVolume: item.showVolume,
+      isVolumeMuted: item.showVolume && !_isAdzanEnabled(item.name),
+      onVolumeTap: canToggleVolume && item.showVolume
+          ? () => _onVolumeTap(context, item)
+          : null,
+      onCheck: canCheck ? () => _onCheck(context, item.name, time) : null,
     );
   }
 
@@ -457,340 +502,113 @@ class _PrayerItem {
 }
 
 class _NextPrayerCard extends StatelessWidget {
-  const _NextPrayerCard({
-    required this.textTheme,
-    required this.date,
-    required this.nextPrayer,
-    required this.schedule,
-    required this.onPrevious,
-    required this.onNext,
-  });
+  const _NextPrayerCard({required this.nextPrayer, required this.schedule});
 
-  final TextTheme textTheme;
-  final DateTime date;
-  final WaktuSholat? nextPrayer;
+  final WaktuSholat nextPrayer;
   final PrayerScheduleModel? schedule;
-  final VoidCallback onPrevious;
-  final VoidCallback onNext;
-
-  static const _mosqueColor = Color(0xFF0F172A);
 
   @override
   Widget build(BuildContext context) {
-    final w = nextPrayer ?? WaktuSholat.subuh;
-    final time = schedule?.getTimeByPrayerName(w.label.toLowerCase()) ?? w.time;
-    final headerHeight = _headerHeight(context);
-    final mosqueAsset = _mosqueAsset();
-    final celestialAsset = _celestialAsset(w);
-    final cloudWidth = _cloudWidth(context.mediaQuerySize.width);
-    final cloudPosition = _cloudPosition(w, cloudWidth);
-    final celestial = _celestialPosition(context, w);
-    final mosqueSize = _mosqueSize(context);
+    final textTheme = Theme.of(context).textTheme;
+    final time =
+        schedule?.getTimeByPrayerName(nextPrayer.label.toLowerCase()) ??
+        nextPrayer.time;
+    final formattedTime = time
+        .split(':')
+        .map((part) => part.trim())
+        .join(' : ');
 
-    return AnimatedContainer(
-      duration: const Duration(seconds: 1),
-      curve: Curves.easeInOut,
-      width: double.infinity,
-      height: headerHeight,
-      decoration: BoxDecoration(
-        gradient: w.gradient.toLinearGradient(),
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: Stack(
-        children: [
-          Positioned(
-            top: 60,
-            left: 16,
-            right: 16,
-            child: Row(
-              spacing: 8,
-              children: [
-                GestureDetector(
-                  onTap: () => context.pop(),
-                  child: const Icon(
-                    Icons.arrow_back_rounded,
-                    color: ColorPalette.kWhite,
-                    size: 22,
-                  ),
-                ),
-                Text(
-                  'Jadwal Salat',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: ColorPalette.kWhite,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            left: cloudPosition.left,
-            top: cloudPosition.leftTop,
-            child: SvgPicture.asset(
-              w.vectorL,
-              width: cloudWidth,
-            ),
-          ),
-          Positioned(
-            right: cloudPosition.right,
-            top: cloudPosition.rightTop,
-            child: SvgPicture.asset(
-              w.vectorR,
-              width: cloudWidth,
-            ),
-          ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : MediaQuery.sizeOf(context).width;
+        final scale = PrayerLandscape.scaleFor(width);
+        final horizontalPadding = width >= _tabletBreakpoint ? 24.0 : 8.0;
 
-          // matahari & bulan
-          Positioned(
-            left: 0,
-            right: 0,
-            top: celestial.top,
-            child: Center(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 760),
-                switchInCurve: Curves.easeOutCubic,
-                switchOutCurve: Curves.easeInCubic,
-                transitionBuilder: (child, animation) {
-                  final offset = Tween<Offset>(
-                    begin: _celestialEntryOffset(w),
-                    end: Offset.zero,
-                  ).animate(animation);
-
-                  return FadeTransition(
-                    opacity: animation,
-                    child: SlideTransition(
-                      position: offset,
-                      child: child,
+        return SizedBox(
+          height: 314 * scale,
+          child: Stack(
+            children: [
+              Positioned(
+                top: MediaQuery.paddingOf(context).top + 4,
+                left: 0,
+                right: 0,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxWidth: _scheduleContentMaxWidth,
+                      ),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            tooltip: 'Kembali',
+                            onPressed: () => context.pop(),
+                            constraints: const BoxConstraints(
+                              minWidth: 32,
+                              minHeight: 32,
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            icon: SvgPicture.asset(
+                              AppIcons.arrowLeftLine,
+                              width: 24,
+                              height: 24,
+                              colorFilter: const ColorFilter.mode(
+                                ColorPalette.kWhite,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            'Jadwal Salat',
+                            style: textTheme.bodyMedium?.copyWith(
+                              color: ColorPalette.kWhite,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  );
-                },
-                child: SvgPicture.asset(
-                  celestialAsset,
-                  key: ValueKey('${w.name}-$celestialAsset'),
-                  width: celestial.size,
-                ),
-              ),
-            ),
-          ),
-
-          // mashid
-          Positioned(
-            bottom: -mosqueSize.height * 0.56,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: SizedBox(
-                // width: mosqueSize.width,
-                // height: mosqueSize.height,
-                child: SvgPicture.asset(
-                  mosqueAsset,
-                  fit: BoxFit.fill,
-                  colorFilter: const ColorFilter.mode(
-                    _mosqueColor,
-                    BlendMode.srcIn,
                   ),
                 ),
               ),
-            ),
-          ),
-
-          // label
-          Positioned(
-            top: 120,
-            left: 16,
-            right: 16,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  w.label,
-                  style: textTheme.titleLarge?.copyWith(
-                    color: ColorPalette.kWhite,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
+              Positioned(
+                top: 143 * scale,
+                left: 16,
+                right: 16,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      nextPrayer.label,
+                      style: textTheme.titleLarge?.copyWith(
+                        color: ColorPalette.kWhite,
+                        fontSize: 20,
+                        height: 1.2,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      formattedTime,
+                      style: textTheme.displayLarge?.copyWith(
+                        color: ColorPalette.kWhite,
+                        fontSize: 48,
+                        height: 1.1,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  _formatTime(time),
-                  style: textTheme.displayLarge?.copyWith(
-                    color: ColorPalette.kWhite,
-                    fontSize: 48,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
-  }
-
-  double _cloudWidth(double cardWidth) =>
-      (cardWidth * 0.62).clamp(154.0, 210.0);
-
-  double _headerHeight(BuildContext context) {
-    return context.isTabletLarge
-        ? 430
-        : context.isTabletMedium
-        ? 410
-        : context.isTabletSmall
-        ? 380
-        : 327;
-  }
-
-  String _mosqueAsset() => AppIcons.jadwalSholatMasjidMalam;
-
-  String _celestialAsset(WaktuSholat prayer) {
-    return switch (prayer) {
-      WaktuSholat.terbit => AppIcons.jadwalSholatTerbitCapa1,
-      WaktuSholat.maghrib => AppIcons.jadwalSholatMaghribFlat,
-      WaktuSholat.isya => AppIcons.jadwalSholatMoon,
-      _ => AppIcons.jadwalSholatSubuhCapa1,
-    };
-  }
-
-  Offset _celestialEntryOffset(WaktuSholat prayer) {
-    return switch (prayer) {
-      WaktuSholat.maghrib => const Offset(0, -0.20),
-      _ => const Offset(0, 0.28),
-    };
-  }
-
-  _CelestialPosition _celestialPosition(
-    BuildContext context,
-    WaktuSholat prayer,
-  ) {
-    return switch (prayer) {
-      WaktuSholat.maghrib => _CelestialPosition(
-        top: context.isTabletLarge
-            ? 230
-            : context.isTabletMedium
-            ? 218
-            : context.isTabletSmall
-            ? 208
-            : 198,
-        size: context.isTabletLarge
-            ? 210
-            : context.isTabletMedium
-            ? 198
-            : context.isTabletSmall
-            ? 188
-            : 178,
-      ),
-      WaktuSholat.isya => _CelestialPosition(
-        top: context.isTabletLarge
-            ? 230
-            : context.isTabletMedium
-            ? 220
-            : context.isTabletSmall
-            ? 214
-            : 210,
-        size: context.isTabletLarge
-            ? 150
-            : context.isTabletMedium
-            ? 140
-            : context.isTabletSmall
-            ? 130
-            : 118,
-      ),
-      WaktuSholat.terbit => _CelestialPosition(
-        top: context.isTabletLarge
-            ? 236
-            : context.isTabletMedium
-            ? 224
-            : context.isTabletSmall
-            ? 214
-            : 190,
-        size: context.isTabletLarge
-            ? 210
-            : context.isTabletMedium
-            ? 198
-            : context.isTabletSmall
-            ? 188
-            : 184,
-      ),
-      _ => _CelestialPosition(
-        top: context.isTabletLarge
-            ? 236
-            : context.isTabletMedium
-            ? 224
-            : context.isTabletSmall
-            ? 214
-            : 200,
-        size: context.isTabletLarge
-            ? 210
-            : context.isTabletMedium
-            ? 198
-            : context.isTabletSmall
-            ? 188
-            : 184,
-      ),
-    };
-  }
-
-  Size _mosqueSize(BuildContext context) {
-    const figmaMosqueWidth = 593.563;
-    const figmaMosqueHeight = 249.053;
-    final width = context.isTabletLarge
-        ? (context.width * 0.62).clamp(680.0, 920.0)
-        : context.isTabletMedium
-        ? (context.width * 0.72).clamp(560.0, 760.0)
-        : context.isTabletSmall
-        ? (context.width * 0.92).clamp(560.0, 660.0)
-        : context.width * (figmaMosqueWidth / 402);
-    final height = width * (figmaMosqueHeight / figmaMosqueWidth);
-    return Size(width, height);
-  }
-
-  _CloudPosition _cloudPosition(WaktuSholat prayer, double cloudWidth) {
-    switch (prayer) {
-      case WaktuSholat.maghrib:
-        return _CloudPosition(
-          left: -cloudWidth * 0.7,
-          leftTop: 70,
-          right: -cloudWidth * 0.56,
-          rightTop: 70,
-        );
-      case WaktuSholat.isya:
-        return _CloudPosition(
-          left: -cloudWidth * 0.66,
-          leftTop: 80,
-          right: -cloudWidth * 0.62,
-          rightTop: 80,
-        );
-      case WaktuSholat.terbit:
-        return _CloudPosition(
-          left: -cloudWidth * 0.74,
-          leftTop: 130,
-          right: -cloudWidth * 0.60,
-          rightTop: 130,
-        );
-      case WaktuSholat.subuh:
-      case WaktuSholat.dzuhur:
-        return _CloudPosition(
-          left: -cloudWidth * 0.74,
-          leftTop: 130,
-          right: -cloudWidth * 0.60,
-          rightTop: 130,
-        );
-
-      case WaktuSholat.ashar:
-        return _CloudPosition(
-          left: -cloudWidth * 0.62,
-          leftTop: 118,
-          right: -cloudWidth * 0.5,
-          rightTop: 145,
-        );
-    }
-  }
-
-  String _formatTime(String? time) {
-    if (time == null) return '-- : --';
-    final parts = time.split(':');
-    if (parts.length != 2) return time;
-    return '${parts[0].trim()} : ${parts[1].trim()}';
   }
 }
 
@@ -867,15 +685,15 @@ class _HeaderDateArrowButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const borderRadius = BorderRadius.all(
-      Radius.circular(16),
+      Radius.circular(24),
     );
 
     return ClipRRect(
       borderRadius: borderRadius,
       child: BackdropFilter(
         filter: ImageFilter.blur(
-          sigmaX: 24,
-          sigmaY: 24,
+          sigmaX: 2,
+          sigmaY: 2,
         ),
         child: Material(
           color: Colors.transparent,
@@ -887,11 +705,10 @@ class _HeaderDateArrowButton extends StatelessWidget {
               height: 40,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.30),
+                color: Colors.white.withValues(alpha: 0.16),
                 borderRadius: borderRadius,
                 border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.20),
-                  width: 0.8,
+                  color: Colors.white,
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -926,30 +743,6 @@ class _HeaderDateArrowButton extends StatelessWidget {
   }
 }
 
-class _CelestialPosition {
-  const _CelestialPosition({
-    required this.top,
-    required this.size,
-  });
-
-  final double top;
-  final double size;
-}
-
-class _CloudPosition {
-  const _CloudPosition({
-    required this.left,
-    required this.leftTop,
-    required this.right,
-    required this.rightTop,
-  });
-
-  final double left;
-  final double leftTop;
-  final double right;
-  final double rightTop;
-}
-
 class _InfoRow extends StatelessWidget {
   const _InfoRow({
     required this.textTheme,
@@ -980,18 +773,24 @@ class _InfoRow extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             StreakIndicator(count: streakCount),
-            Row(
-              spacing: 14,
-              children: [
-                _InfoChip(
-                  icon: AppIcons.compass3Line,
-                  onTap: onCompassTap,
-                ),
-                _LocationChip(
-                  label: location,
-                  onTap: onLocationTap,
-                ),
-              ],
+            const SizedBox(width: 12),
+            Flexible(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 10,
+                children: [
+                  _InfoChip(
+                    icon: AppIcons.compass3Line,
+                    onTap: onCompassTap,
+                  ),
+                  Flexible(
+                    child: _LocationChip(
+                      label: location,
+                      onTap: onLocationTap,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         );
@@ -1021,8 +820,8 @@ class _InfoChip extends StatelessWidget {
       borderRadius: borderRadius,
       child: BackdropFilter(
         filter: ImageFilter.blur(
-          sigmaX: 24,
-          sigmaY: 24,
+          sigmaX: 2,
+          sigmaY: 2,
         ),
         child: Material(
           color: Colors.transparent,
@@ -1035,11 +834,10 @@ class _InfoChip extends StatelessWidget {
                 vertical: 4,
               ),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.30),
+                color: Colors.white.withValues(alpha: 0.16),
                 borderRadius: borderRadius,
                 border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.20),
-                  width: 0.8,
+                  color: Colors.white,
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -1095,17 +893,20 @@ class _LocationChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final maxLabelWidth = MediaQuery.sizeOf(context).width >= _tabletBreakpoint
+        ? 220.0
+        : 120.0;
 
     const borderRadius = BorderRadius.all(
-      Radius.circular(16),
+      Radius.circular(24),
     );
 
     return ClipRRect(
       borderRadius: borderRadius,
       child: BackdropFilter(
         filter: ImageFilter.blur(
-          sigmaX: 24,
-          sigmaY: 24,
+          sigmaX: 2,
+          sigmaY: 2,
         ),
         child: Material(
           color: Colors.transparent,
@@ -1118,11 +919,10 @@ class _LocationChip extends StatelessWidget {
                 vertical: 4,
               ),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.30),
+                color: Colors.white.withValues(alpha: 0.16),
                 borderRadius: borderRadius,
                 border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.20),
-                  width: 0.8,
+                  color: Colors.white,
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -1150,18 +950,20 @@ class _LocationChip extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxWidth: 120,
-                    ),
-                    child: Text(
-                      label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: textTheme.bodySmall?.copyWith(
-                        fontSize: 12,
-                        color: ColorPalette.kWhite,
-                        fontWeight: FontWeight.w500,
+                  Flexible(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: maxLabelWidth,
+                      ),
+                      child: Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: textTheme.bodySmall?.copyWith(
+                          fontSize: 12,
+                          color: ColorPalette.kWhite,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),

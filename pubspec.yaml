@@ -93,10 +93,6 @@ flutter:
     - assets/svg/notif/
     - assets/svg/qibla/
     - assets/svg/jadwal_sholat/
-    - assets/svg/jadwal_sholat/isya/
-    - assets/svg/jadwal_sholat/maghrib/
-    - assets/svg/jadwal_sholat/subuh/
-    - assets/svg/jadwal_sholat/terbit/
     - assets/audio/adzan-default.mp3
 
   fonts:

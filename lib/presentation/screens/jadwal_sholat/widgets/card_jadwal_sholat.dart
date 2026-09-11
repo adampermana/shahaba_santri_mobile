@@ -9,21 +9,21 @@ import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 class _Assets {
   const _Assets._();
 
-  static const String subuhIllustration = AppIcons.jadwalSholatSubuhCapa1;
-  static const String subuhVectorL = AppIcons.jadwalSholatSubuhVector1;
-  static const String subuhVectorR = AppIcons.jadwalSholatSubuhVector;
+  static const String subuhIllustration = AppIcons.jadwalSholatSunSubuhTerbit;
+  static const String subuhVectorL = AppIcons.jadwalSholatCloud;
+  static const String subuhVectorR = AppIcons.jadwalSholatCloud;
 
-  static const String terbitIllustration = AppIcons.jadwalSholatTerbitCapa1;
-  static const String terbitVectorL = AppIcons.jadwalSholatTerbitVector;
-  static const String terbitVectorR = AppIcons.jadwalSholatTerbitVector1;
+  static const String terbitIllustration = AppIcons.jadwalSholatSunSubuhTerbit;
+  static const String terbitVectorL = AppIcons.jadwalSholatCloud;
+  static const String terbitVectorR = AppIcons.jadwalSholatCloud;
 
-  static const String maghribIllustration = AppIcons.jadwalSholatMaghribFlat;
-  static const String maghribVectorL = AppIcons.jadwalSholatMaghribVector;
-  static const String maghribVectorR = AppIcons.jadwalSholatMaghribVector1;
+  static const String maghribIllustration = AppIcons.jadwalSholatSunMaghrib;
+  static const String maghribVectorL = AppIcons.jadwalSholatCloud;
+  static const String maghribVectorR = AppIcons.jadwalSholatCloud;
 
-  static const String isyaIllustration = AppIcons.jadwalSholatIsyaFrame;
-  static const String isyaVectorL = AppIcons.jadwalSholatIsyaVector;
-  static const String isyaVectorR = AppIcons.jadwalSholatIsyaVector1;
+  static const String isyaIllustration = AppIcons.jadwalSholatMonthIsya;
+  static const String isyaVectorL = AppIcons.jadwalSholatCloud;
+  static const String isyaVectorR = AppIcons.jadwalSholatCloud;
 }
 
 class StateGradient {
@@ -181,8 +181,7 @@ enum WaktuSholat {
     vectorR: _Assets.isyaVectorR,
     vectorRT: Offset(313, -11),
     vectorRSize: 209,
-  )
-  ;
+  );
 
   const WaktuSholat({
     required this.label,

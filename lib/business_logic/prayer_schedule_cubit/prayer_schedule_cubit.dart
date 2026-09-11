@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_state.dart';
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
 import 'package:sahaba_mobile/infrastructure/prayer_schedule/repository/i_prayer_repository.dart';
-import 'package:sahaba_mobile/presentation/screens/home/widgets/card_jadwal_sholat.dart';
+import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/card_jadwal_sholat.dart';
 
 class PrayerScheduleCubit extends Cubit<PrayerScheduleState> {
   PrayerScheduleCubit(this._repository) : super(PrayerScheduleInitial());

@@ -1,5 +1,5 @@
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
-import 'package:sahaba_mobile/presentation/screens/home/widgets/card_jadwal_sholat.dart';
+import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/card_jadwal_sholat.dart';
 
 abstract class PrayerScheduleState {}
 

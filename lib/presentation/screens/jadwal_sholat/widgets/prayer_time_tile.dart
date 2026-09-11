@@ -44,21 +44,27 @@ class PrayerTimeTile extends StatelessWidget {
         : ColorPalette.kWhite.withValues(alpha: 0.87);
     final timeColor = isActive ? ColorPalette.kWhite : ColorPalette.kWhite;
 
-    // Warna speaker ikut isActive (gray kalau non-aktif),
-    // tapi tap-ability tetap independen lewat isEnabled.
     final volumeColor = isActive
         ? ColorPalette.kWhite
-        : ColorPalette.kWhite.withValues(alpha: 0.45);
+        : isEnabled
+        ? ColorPalette.primaryColor
+        : ColorPalette.contentDisabled;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
       curve: Curves.easeOut,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isActive
-            ? ColorPalette.primaryColor
-            : ColorPalette.scaffoldBackground,
-        borderRadius: BorderRadius.circular(isActive ? 8 : 0),
+        gradient: isActive
+            ? const RadialGradient(
+                radius: 3.4,
+                colors: [ColorPalette.primaryColor, Color(0xFF105033)],
+              )
+            : null,
+        borderRadius: BorderRadius.circular(isActive ? 16 : 0),
+        border: isActive
+            ? null
+            : const Border(bottom: BorderSide(color: Color(0x14000000))),
         boxShadow: isActive
             ? const [
                 BoxShadow(
@@ -83,7 +89,8 @@ class PrayerTimeTile extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-          ],
+          ] else
+            const SizedBox(width: 30),
           Expanded(
             child: Row(
               children: [
@@ -103,7 +110,7 @@ class PrayerTimeTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: textTheme.labelMedium?.copyWith(
                       color: labelColor,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w700,
                       fontSize: 14,
                     ),
                   ),
@@ -116,7 +123,7 @@ class PrayerTimeTile extends StatelessWidget {
             time,
             style: textTheme.titleMedium?.copyWith(
               color: timeColor,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w700,
               fontSize: 16,
             ),
           ),
@@ -157,7 +164,8 @@ class PrayerTimeTile extends StatelessWidget {
                       ),
                     ),
             ),
-          ],
+          ] else
+            const SizedBox(width: 40),
         ],
       ),
     );
