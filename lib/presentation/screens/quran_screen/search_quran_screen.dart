@@ -213,17 +213,25 @@ class _SearchResultList extends StatelessWidget {
               const _SectionDivider(),
             _sectionTitle(context, 'Ayat'),
             const SizedBox(height: 12),
-            ...groupedVerses.map(
-              (group) => Padding(
+            for (var index = 0; index < groupedVerses.length; index++) ...[
+              Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: _VerseResultCard(
                   query: query,
-                  group: group,
+                  group: groupedVerses[index],
                   allSurahs: allSurahs,
                   allJuz: allJuz,
                 ),
               ),
-            ),
+              if (index < groupedVerses.length - 1)
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 12),
+                  child: Divider(
+                    height: 1,
+                    color: Color(0x28E8E8E8),
+                  ),
+                ),
+            ],
           ],
         ],
       ],
@@ -263,7 +271,7 @@ class _SearchResultList extends StatelessWidget {
     return Text(
       title,
       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-        color: ColorPalette.kWhite,
+        color: ColorPalette.contentDisabled,
         fontSize: 16,
         fontWeight: FontWeight.w500,
         letterSpacing: 0.6,

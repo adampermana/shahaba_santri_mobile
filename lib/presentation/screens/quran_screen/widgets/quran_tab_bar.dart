@@ -36,7 +36,7 @@ class QuranTabBar extends StatelessWidget {
                   border: isActive
                       ? const Border(
                           bottom: BorderSide(
-                            color: ColorPalette.primaryColor,
+                            color: ColorPalette.kWhite,
                             width: 2,
                           ),
                         )
@@ -49,7 +49,7 @@ class QuranTabBar extends StatelessWidget {
                       fontSize: 14,
                       fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
                       color: isActive
-                          ? ColorPalette.primaryColor
+                          ? ColorPalette.kWhite
                           : ColorPalette.contentDisabled,
                     ),
                   ),

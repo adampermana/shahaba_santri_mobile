@@ -24,9 +24,9 @@ class QuranSearchBar extends StatelessWidget {
       width: double.infinity,
       blur: 18,
       borderRadius: BorderRadius.circular(28),
-      borderColor: Colors.white.withValues(alpha: 0.35),
+      borderColor: Colors.white,
       borderWidth: 1,
-      color: Colors.white.withValues(alpha: 0.08),
+      color: Colors.white.withValues(alpha: 0.16),
       // shadowStrength: 4,
       shadowColor: Colors.black.withValues(alpha: 0.1),
       child: Row(
