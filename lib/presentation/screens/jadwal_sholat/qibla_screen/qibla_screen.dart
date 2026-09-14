@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,8 +12,10 @@ import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
+import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
+import 'package:sahaba_mobile/presentation/widgets/widget_info_schip.dart';
 
 class QiblaScreen extends StatelessWidget {
   const QiblaScreen({super.key});
@@ -226,9 +227,7 @@ class _QiblaViewState extends State<_QiblaView> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final availableWidth = constraints.maxWidth - 32;
-        var compassSize = availableWidth;
-        if (compassSize < 300) compassSize = 300;
-        if (compassSize > 230) compassSize = 230;
+        final compassSize = availableWidth.clamp(230.0, 270.0);
 
         return Column(
           children: [
@@ -245,7 +244,7 @@ class _QiblaViewState extends State<_QiblaView> {
                       Stack(
                         alignment: Alignment.center,
                         children: [
-                          Image.asset('assets/images/motif-qiblat.png'),
+                          Image.asset('assets/images/new-motif.png'),
                           _CompassWidget(
                             heading: state.heading,
                             qiblaDirection: state.qiblaDirection,
@@ -307,6 +306,7 @@ class _CompassWidget extends StatelessWidget {
           Positioned(
             top: topOffset,
             left: 0,
+            right: 0,
             child: _rotatingCompassFace(),
           ),
           AnimatedPositioned(
@@ -321,6 +321,7 @@ class _CompassWidget extends StatelessWidget {
           Positioned(
             top: topOffset,
             left: 0,
+            right: 0,
             child: _compassNeedle(),
           ),
         ],
@@ -334,7 +335,7 @@ class _CompassWidget extends StatelessWidget {
   }) {
     final relativeAngle = _toRadians(qiblaDirection - heading - 90);
     final center = Offset(size / 2, topOffset + size / 2);
-    final radius = size / 2 + kabahSize / 2 + size * 0.07;
+    final radius = size / 2 + kabahSize / 2 + size * -0.02;
 
     return Offset(
       center.dx + radius * cos(relativeAngle) - kabahSize / 2,
@@ -343,26 +344,22 @@ class _CompassWidget extends StatelessWidget {
   }
 
   Widget _rotatingCompassFace() {
-    return Transform.rotate(
-      angle: _toRadians(-heading),
-      child: SizedBox.square(
-        dimension: size,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            SvgPicture.asset(
-              QiblaIcons.indicatorCompas,
-              width: size,
-              height: size,
-            ),
-            Positioned.fill(
-              child: Image.asset(
-                width: size,
-                height: size,
-                'assets/images/motif-qibla.png',
-              ),
-            ),
-          ],
+    // The visible dial in indicator-active.png sits about 10px above the
+    // 320px canvas center because of its baked shadow.
+    final visualCenterOffset = size * 10 / 320;
+
+    return SizedBox.square(
+      dimension: size,
+      child: Transform.rotate(
+        angle: _toRadians(-heading),
+        child: Transform.translate(
+          offset: Offset(0, visualCenterOffset),
+          child: CacheImageOrSvg(
+            source: 'assets/images/indicator-active.png',
+            fit: BoxFit.contain,
+            width: size,
+            height: size,
+          ),
         ),
       ),
     );
@@ -392,7 +389,7 @@ class _CompassWidget extends StatelessWidget {
   }
 
   Widget _compassNeedle() {
-    final needleHeight = size * 0.36;
+    final needleHeight = size * 0.28;
     final needleWidth = needleHeight * 62 / 93;
 
     return SizedBox.square(
@@ -452,140 +449,152 @@ class _DirectionInfo extends StatelessWidget {
     if (isFacingQibla) return 'Menghadap Kiblat';
 
     final diff = (qiblaDirection - heading + 360) % 360;
-    return diff > 180 ? 'Belok ke kiri' : 'Belok ke kanan';
+    return diff > 180 ? 'Hadap ke kiri' : 'Hadap ke kanan';
   }
 
   Widget _degreeBadge(
     TextTheme textTheme,
     BuildContext context,
   ) {
-    final qiblaAngle = (qiblaDirection - heading) * pi / 180;
-
     return Row(
+      spacing: 16,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _GlassBadgeButton(
-          icon: Transform.rotate(
-            angle: qiblaAngle,
-            child: SvgPicture.asset(
-              AppIcons.compass3Line,
-              width: 24,
-              height: 24,
-              colorFilter: const ColorFilter.mode(
-                ColorPalette.kWhite,
-                BlendMode.srcIn,
-              ),
+        InfoChip(
+          text: '${qiblaDirection.toStringAsFixed(0)}°',
+          icon: AppIcons.compass3Line,
+        ),
+        InfoChip(
+          text: 'Panduan',
+          icon: AppIcons.information2Line,
+          onTap: () async => showDialog<void>(
+            context: context,
+            builder: (context) => _QiblaInfoModal(
+              onClose: () => Navigator.of(context).pop(),
             ),
           ),
-          label: '${qiblaDirection.toStringAsFixed(0)}°',
-          textTheme: textTheme,
         ),
-        const SizedBox(width: 16),
-        _GlassBadgeButton(
-          onTap: () async {
-            await showDialog<void>(
-              context: context,
-              builder: (context) => _QiblaInfoModal(
-                onClose: () => Navigator.of(context).pop(),
-              ),
-            );
-          },
-          icon: SvgPicture.asset(
-            AppIcons.information2Line,
-            width: 24,
-            height: 24,
-            colorFilter: const ColorFilter.mode(
-              ColorPalette.kWhite,
-              BlendMode.srcIn,
-            ),
-          ),
-          label: 'Panduan',
-          textTheme: textTheme,
-        ),
+        // _GlassBadgeButton(
+        //   icon: Transform.rotate(
+        //     angle: qiblaAngle,
+        //     child: SvgPicture.asset(
+        //       AppIcons.compass3Line,
+        //       width: 24,
+        //       height: 24,
+        //       colorFilter: const ColorFilter.mode(
+        //         ColorPalette.kWhite,
+        //         BlendMode.srcIn,
+        //       ),
+        //     ),
+        //   ),
+        //   label: '${qiblaDirection.toStringAsFixed(0)}°',
+        //   textTheme: textTheme,
+        // ),
+        // _GlassBadgeButton(
+        //   onTap: () async {
+        //     await showDialog<void>(
+        //       context: context,
+        //       builder: (context) => _QiblaInfoModal(
+        //         onClose: () => Navigator.of(context).pop(),
+        //       ),
+        //     );
+        //   },
+        //   icon: SvgPicture.asset(
+        //     AppIcons.information2Line,
+        //     width: 24,
+        //     height: 24,
+        //     colorFilter: const ColorFilter.mode(
+        //       ColorPalette.kWhite,
+        //       BlendMode.srcIn,
+        //     ),
+        //   ),
+        //   label: 'Panduan',
+        //   textTheme: textTheme,
+        // ),
       ],
     );
   }
 }
 
-class _GlassBadgeButton extends StatelessWidget {
-  const _GlassBadgeButton({
-    required this.icon,
-    required this.label,
-    required this.textTheme,
-    this.onTap,
-  });
+// class _GlassBadgeButton extends StatelessWidget {
+//   const _GlassBadgeButton({
+//     required this.icon,
+//     required this.label,
+//     required this.textTheme,
+//     this.onTap,
+//   });
 
-  final Widget icon;
-  final String label;
-  final TextTheme textTheme;
-  final VoidCallback? onTap;
+//   final Widget icon;
+//   final String label;
+//   final TextTheme textTheme;
+//   final VoidCallback? onTap;
 
-  @override
-  Widget build(BuildContext context) {
-    const borderRadius = BorderRadius.all(
-      Radius.circular(20),
-    );
+//   @override
+//   Widget build(BuildContext context) {
+//     const borderRadius = BorderRadius.all(
+//       Radius.circular(20),
+//     );
 
-    return ClipRRect(
-      borderRadius: borderRadius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 24,
-          sigmaY: 24,
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: borderRadius,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 6,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.30),
-                borderRadius: borderRadius,
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.20),
-                  width: 0.8,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white.withValues(alpha: 0.12),
-                    blurRadius: 2,
-                    offset: const Offset(-1, -1),
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 4,
-                    offset: const Offset(1, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  icon,
-                  const SizedBox(width: 6),
-                  Text(
-                    label,
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: ColorPalette.kWhite,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      height: 1,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+//     return ClipRRect(
+//       borderRadius: borderRadius,
+//       child: BackdropFilter(
+//         filter: ImageFilter.blur(
+//           sigmaX: 24,
+//           sigmaY: 24,
+//         ),
+//         child: Material(
+//           color: Colors.transparent,
+//           child: InkWell(
+//             onTap: onTap,
+//             borderRadius: borderRadius,
+//             child: Container(
+//               padding: const EdgeInsets.symmetric(
+//                 horizontal: 10,
+//                 vertical: 6,
+//               ),
+//               decoration: BoxDecoration(
+//                 color: Colors.white.withValues(alpha: 0.30),
+//                 borderRadius: borderRadius,
+//                 border: Border.all(
+//                   color: Colors.white.withValues(alpha: 0.20),
+//                   width: 0.8,
+//                 ),
+//                 boxShadow: [
+//                   BoxShadow(
+//                     color: Colors.white.withValues(alpha: 0.12),
+//                     blurRadius: 2,
+//                     offset: const Offset(-1, -1),
+//                   ),
+//                   BoxShadow(
+//                     color: Colors.black.withValues(alpha: 0.08),
+//                     blurRadius: 4,
+//                     offset: const Offset(1, 2),
+//                   ),
+//                 ],
+//               ),
+//               child: Row(
+//                 mainAxisSize: MainAxisSize.min,
+//                 children: [
+//                   icon,
+//                   const SizedBox(width: 6),
+//                   Text(
+//                     label,
+//                     style: textTheme.bodyMedium?.copyWith(
+//                       color: ColorPalette.kWhite,
+//                       fontSize: 12,
+//                       fontWeight: FontWeight.w600,
+//                       height: 1,
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class QiblaInfoButton extends StatelessWidget {
   const QiblaInfoButton({required this.onTap, super.key});

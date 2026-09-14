@@ -385,6 +385,7 @@ class _VerseResultCardState extends State<_VerseResultCard> {
                         style: textTheme.titleLarge?.copyWith(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
+                          color: ColorPalette.kWhite,
                         ),
                       ),
                       const SizedBox(height: 4),

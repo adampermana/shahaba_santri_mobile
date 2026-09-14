@@ -94,7 +94,7 @@ class SurahCard extends StatelessWidget {
                   fontFamily: 'lpmq',
                   fontSize: 32,
                   fontWeight: FontWeight.w400,
-                  color: const Color(0xFFB39164),
+                  color: ColorPalette.kWhite,
                   height: 1.75,
                 ),
               ),

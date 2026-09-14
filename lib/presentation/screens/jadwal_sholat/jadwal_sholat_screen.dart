@@ -25,6 +25,7 @@ import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/prayer_
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/prayer_time_tile.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/streak_indicator.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
+import 'package:sahaba_mobile/presentation/widgets/widget_info_schip.dart';
 
 const double _tabletBreakpoint = 600;
 const double _scheduleContentMaxWidth = 560;
@@ -779,7 +780,8 @@ class _InfoRow extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 spacing: 10,
                 children: [
-                  _InfoChip(
+                  InfoChip(
+                    text: 'Kiblat',
                     icon: AppIcons.compass3Line,
                     onTap: onCompassTap,
                   ),
@@ -795,88 +797,6 @@ class _InfoRow extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  const _InfoChip({
-    required this.icon,
-    required this.onTap,
-  });
-
-  final String icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    const borderRadius = BorderRadius.all(
-      Radius.circular(40),
-    );
-
-    return ClipRRect(
-      borderRadius: borderRadius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 2,
-          sigmaY: 2,
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: borderRadius,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 4,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.16),
-                borderRadius: borderRadius,
-                border: Border.all(
-                  color: Colors.white,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white.withValues(alpha: 0.12),
-                    blurRadius: 2,
-                    offset: const Offset(-1, -1),
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 4,
-                    offset: const Offset(1, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                spacing: 4,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset(
-                    icon,
-                    width: 24,
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(
-                      ColorPalette.kWhite,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  Text(
-                    'Kiblat',
-                    style: textTheme.bodySmall?.copyWith(
-                      color: ColorPalette.kWhite,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
