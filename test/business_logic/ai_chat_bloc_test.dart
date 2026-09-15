@@ -181,7 +181,7 @@ void main() {
       'bot answer uses empty string when response.answer is null',
       build: () {
         when(() => repository.postAiChat(any())).thenAnswer(
-          (_) async => Right(AiChatResponse(answer: null)),
+          (_) async => Right(AiChatResponse()),
         );
         return AiChatBloc(repository);
       },

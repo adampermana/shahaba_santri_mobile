@@ -23,6 +23,7 @@ import 'package:sahaba_mobile/infrastructure/helpers/helper.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/bottom_sheet_widgets.dart';
+import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
@@ -44,6 +45,7 @@ const _minArabicVerseNumberSize = 20.0;
 const _defaultArabicVerseNumberSize = 28.0;
 const _maxArabicVerseNumberSize = 34.0;
 const _shareChannel = MethodChannel('sahaba/share');
+const _verseBadgeFigmaGreen = Color(0xFF007D56);
 
 double _arabicTextSize(double value) => _scaledTextSize(
   value,
@@ -767,7 +769,7 @@ Widget _surahContent(
               child: Center(
                 child: SvgPicture.asset(
                   'assets/svg/icon-bismillah.svg',
-                  width: 135,
+                  width: 200,
                 ),
               ),
             ),
@@ -991,8 +993,9 @@ Widget _surahBanner(
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            'assets/images/motif-header.png',
+          CacheImageOrSvg(
+            source: 'assets/svg/motif/motif-header.svg',
+            borderRadius: BorderRadius.circular(8),
           ),
           Center(
             child: Column(
@@ -1040,9 +1043,7 @@ Widget _surahBannerInJuz(
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            'assets/images/motif-header.png',
-          ),
+          const CacheImageOrSvg(source: 'assets/svg/motif/motif-header.svg'),
           Center(
             child: Text(
               _cleanQuranText(
@@ -1087,6 +1088,7 @@ Widget _verseRow(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
+                // Number Ayat Latin
                 BlocBuilder<LastReadCubit, LastReadState>(
                   builder: (context, state) {
                     final isLastRead =
@@ -1115,6 +1117,7 @@ Widget _verseRow(
                             fontWeight: FontWeight.w500,
                           ),
                         ),
+                        // Number Ayat Arabic
                         WidgetSpan(
                           alignment: PlaceholderAlignment.middle,
                           child: Padding(
@@ -1130,12 +1133,6 @@ Widget _verseRow(
                     ),
                     textAlign: TextAlign.justify,
                     textDirection: TextDirection.rtl,
-                    // style: TextStyle(
-                    //   fontFamily: 'KfgqpcHafs',
-                    //   color: ColorPalette.arabicText,
-                    //   fontSize: _arabicTextSize(textSizeSetting),
-                    //   height: 1.4,
-                    // ),
                   ),
                 ),
               ],
@@ -1537,24 +1534,23 @@ Widget _quranShareCard(BuildContext context, QuranVerseModel verse) {
 Widget _arabicVerseNumber(BuildContext context, int number, double size) {
   final textTheme = Theme.of(context).textTheme;
 
-  return SizedBox.square(
-    dimension: size,
-    child: DecoratedBox(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: ColorPalette.kBlack),
+  return Stack(
+    alignment: Alignment.center,
+    children: [
+      CacheImageOrSvg(
+        source: 'assets/svg/motif/border-number.svg',
+        width: size,
+        height: size,
       ),
-      child: Center(
-        child: Text(
-          toArabicNumber(number),
-          style: textTheme.labelSmall?.copyWith(
-            color: ColorPalette.kBlack,
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-          ),
+      Text(
+        toArabicNumber(number),
+        style: textTheme.labelSmall?.copyWith(
+          color: ColorPalette.kBlack,
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
         ),
       ),
-    ),
+    ],
   );
 }
 
@@ -1566,26 +1562,53 @@ Widget _verseNumberBadge(
   final textTheme = Theme.of(context).textTheme;
 
   return SizedBox.square(
-    dimension: 36,
-    child: Stack(
-      alignment: Alignment.center,
-      children: [
-        SvgPicture.asset(
-          isSelected
-              ? AppIcons.motifBorderSelected
-              : AppIcons.motifBorderUnselected,
-          width: 36,
-          height: 36,
-        ),
-        Text(
-          '$number',
-          style: textTheme.labelSmall?.copyWith(
-            color: isSelected ? ColorPalette.kWhite : ColorPalette.primaryColor,
-            fontWeight: FontWeight.w700,
+    dimension: 30,
+    child: isSelected
+        ? Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: _verseBadgeFigmaGreen,
+                width: 1.5,
+              ),
+            ),
+            padding: const EdgeInsets.all(2),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: _verseBadgeFigmaGreen,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                '$number',
+                style: textTheme.labelSmall?.copyWith(
+                  color: ColorPalette.kWhite,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  height: 1,
+                ),
+              ),
+            ),
+          )
+        : Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: _verseBadgeFigmaGreen,
+                width: 1,
+              ),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              '$number',
+              style: textTheme.labelSmall?.copyWith(
+                color: ColorPalette.kBlack,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                height: 1,
+              ),
+            ),
           ),
-        ),
-      ],
-    ),
   );
 }
 

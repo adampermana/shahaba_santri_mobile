@@ -30,6 +30,8 @@ abstract class AppIcons {
   static const String motifBorderSelected = '$_path/motif/border-selected.svg';
   static const String motifBorderUnselected =
       '$_path/motif/border-unselected.svg';
+  static const String verseBadgeSelectedRing =
+      '$_path/motif/verse-badge-selected-ring.svg';
   static const String motif = '$_path/motif/motif.svg';
   static const String motifHome = '$_path/motif/motif-home.svg';
   static const String motifIslamShort = '$_path/motif/motif-islam-short.svg';

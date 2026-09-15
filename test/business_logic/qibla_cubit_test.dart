@@ -16,9 +16,8 @@ class MockQiblaRepository extends Mock implements IQiblaRepository {}
 class MockPrayerRepository extends Mock implements IPrayerRepository {}
 
 class MockCompassStreamHandler extends MockStreamHandler {
-  final List<double>? initialData;
-
   MockCompassStreamHandler({this.initialData});
+  final List<double>? initialData;
 
   @override
   void onListen(Object? arguments, MockStreamHandlerEventSink events) {
@@ -34,9 +33,9 @@ class MockCompassStreamHandler extends MockStreamHandler {
 void _setupCompassMock({List<double>? initialData}) {
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockStreamHandler(
-    const EventChannel('hemanthraj/flutter_compass'),
-    MockCompassStreamHandler(initialData: initialData),
-  );
+        const EventChannel('hemanthraj/flutter_compass'),
+        MockCompassStreamHandler(initialData: initialData),
+      );
 }
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
@@ -56,35 +55,43 @@ void main() {
     // Reset the stream handler after each test
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockStreamHandler(
-      const EventChannel('hemanthraj/flutter_compass'),
-      null,
-    );
+          const EventChannel('hemanthraj/flutter_compass'),
+          null,
+        );
   });
 
   group('QiblaCubit', () {
-    test('initial state is QiblaInitial', () {
+    test('initial state is QiblaInitial', () async {
       final cubit = QiblaCubit(qiblaRepository, prayerRepository);
       expect(cubit.state, isA<QiblaInitial>());
-      cubit.close();
+      await cubit.close();
     });
 
     blocTest<QiblaCubit, QiblaState>(
       'emits [QiblaLoading, QiblaError] when getQiblaDirection fails',
       build: () {
-        when(() => prayerRepository.getSelectedCoordinates())
-            .thenReturn(const Right((latitude: -6.2, longitude: 106.8)));
-        when(() => qiblaRepository.getQiblaDirection(any(), any()))
-            .thenAnswer((_) async => const Left(ServerFailures(
-                  statusCode: 500,
-                  title: 'Error',
-                  message: 'Gagal mendapatkan arah kiblat',
-                )));
+        when(
+          () => prayerRepository.getSelectedCoordinates(),
+        ).thenReturn(const Right((latitude: -6.2, longitude: 106.8)));
+        when(() => qiblaRepository.getQiblaDirection(any(), any())).thenAnswer(
+          (_) async => const Left(
+            ServerFailures(
+              statusCode: 500,
+              title: 'Error',
+              message: 'Gagal mendapatkan arah kiblat',
+            ),
+          ),
+        );
         return QiblaCubit(qiblaRepository, prayerRepository);
       },
       act: (cubit) => cubit.loadQibla(),
       expect: () => [
         isA<QiblaLoading>(),
-        isA<QiblaError>().having((s) => s.message, 'message', 'Gagal mendapatkan arah kiblat'),
+        isA<QiblaError>().having(
+          (s) => s.message,
+          'message',
+          'Gagal mendapatkan arah kiblat',
+        ),
       ],
     );
 
@@ -92,10 +99,12 @@ void main() {
       'emits [QiblaLoading, QiblaLoaded] when getQiblaDirection succeeds and compass emits data',
       build: () {
         _setupCompassMock(initialData: [100.0, 0.0, 0.0]); // heading: 100.0
-        when(() => prayerRepository.getSelectedCoordinates())
-            .thenReturn(const Right((latitude: -6.2, longitude: 106.8)));
-        when(() => qiblaRepository.getQiblaDirection(any(), any()))
-            .thenAnswer((_) async => const Right(295.0)); // qibla: 295.0
+        when(
+          () => prayerRepository.getSelectedCoordinates(),
+        ).thenReturn(const Right((latitude: -6.2, longitude: 106.8)));
+        when(
+          () => qiblaRepository.getQiblaDirection(any(), any()),
+        ).thenAnswer((_) async => const Right(295)); // qibla: 295.0
         return QiblaCubit(qiblaRepository, prayerRepository);
       },
       act: (cubit) => cubit.loadQibla(),
@@ -105,18 +114,26 @@ void main() {
         isA<QiblaLoaded>()
             .having((s) => s.heading, 'heading', 100.0)
             .having((s) => s.qiblaDirection, 'qiblaDirection', 295.0)
-            .having((s) => s.isFacingQibla, 'isFacingQibla', isFalse), // diff > threshold
+            .having(
+              (s) => s.isFacingQibla,
+              'isFacingQibla',
+              isFalse,
+            ), // diff > threshold
       ],
     );
 
     blocTest<QiblaCubit, QiblaState>(
       'isFacingQibla is true when heading is close to qiblaDirection',
       build: () {
-        _setupCompassMock(initialData: [290.0, 0.0, 0.0]); // heading: 290.0 (diff 5 degrees)
-        when(() => prayerRepository.getSelectedCoordinates())
-            .thenReturn(const Right((latitude: -6.2, longitude: 106.8)));
-        when(() => qiblaRepository.getQiblaDirection(any(), any()))
-            .thenAnswer((_) async => const Right(295.0)); // qibla: 295.0
+        _setupCompassMock(
+          initialData: [290.0, 0.0, 0.0],
+        ); // heading: 290.0 (diff 5 degrees)
+        when(
+          () => prayerRepository.getSelectedCoordinates(),
+        ).thenReturn(const Right((latitude: -6.2, longitude: 106.8)));
+        when(
+          () => qiblaRepository.getQiblaDirection(any(), any()),
+        ).thenAnswer((_) async => const Right(295)); // qibla: 295.0
         return QiblaCubit(qiblaRepository, prayerRepository);
       },
       act: (cubit) => cubit.loadQibla(),
@@ -126,7 +143,11 @@ void main() {
         isA<QiblaLoaded>()
             .having((s) => s.heading, 'heading', 290.0)
             .having((s) => s.qiblaDirection, 'qiblaDirection', 295.0)
-            .having((s) => s.isFacingQibla, 'isFacingQibla', isTrue), // diff = 5 <= 15
+            .having(
+              (s) => s.isFacingQibla,
+              'isFacingQibla',
+              isTrue,
+            ), // diff = 5 <= 15
       ],
     );
   });
