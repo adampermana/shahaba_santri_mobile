@@ -907,7 +907,7 @@ class _NewsCard extends StatelessWidget {
   }
 }
 
-// ─── Carousel Content (with autoPlay)
+// Carousel Content (with autoPlay)
 
 class _CarouselContent extends StatefulWidget {
   const _CarouselContent({
