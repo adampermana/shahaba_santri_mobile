@@ -66,11 +66,15 @@ class _NavArrowButton extends StatelessWidget {
     final isDisabled = onTap == null;
 
     return Container(
-      width: 32,
-      height: 48,
-      decoration: BoxDecoration(
-        color: ColorPalette.surfaceTertiary,
-        borderRadius: BorderRadius.circular(1000),
+      decoration: ShapeDecoration(
+        color: Colors.white.withValues(alpha: 0.12),
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(
+            strokeAlign: BorderSide.strokeAlignOutside,
+            color: Color(0x51E8E8E8),
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
       ),
       child: IconButton(
         onPressed: onTap,
@@ -82,7 +86,7 @@ class _NavArrowButton extends StatelessWidget {
             width: 24,
             height: 24,
             colorFilter: ColorFilter.mode(
-              isDisabled ? ColorPalette.contentDisabled : ColorPalette.kBlack,
+              isDisabled ? ColorPalette.contentDisabled : ColorPalette.kWhite,
               BlendMode.srcIn,
             ),
           ),

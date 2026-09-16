@@ -41,15 +41,17 @@ class CalendarGrid extends StatelessWidget {
     }
 
     // Day name headers
-    for (final name in _dayNames) {
+    for (var i = 0; i < _dayNames.length; i++) {
+      final name = _dayNames[i];
+      final isSunday = i == 6;
       cells.add(
         Center(
           child: Text(
             name,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: Color(0xffB39164),
+              color: isSunday ? const Color(0xFFD44333) : ColorPalette.kWhite,
             ),
           ),
         ),
@@ -138,15 +140,45 @@ class _CalendarDayCell extends StatelessWidget {
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
             ),
-            alignment: Alignment.center,
-            child: Text(
-              '$day',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: isSelected ? ColorPalette.kWhite : ColorPalette.kWhite,
-              ),
-            ),
+            child: isSelected
+                ? Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          '$day',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 3,
+                        child: Container(
+                          width: 4,
+                          height: 4,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : Center(
+                    child: Text(
+                      '$day',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: ColorPalette.kWhite,
+                      ),
+                    ),
+                  ),
           ),
           if (hasEvent && !isSelected)
             Container(
@@ -158,16 +190,7 @@ class _CalendarDayCell extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
             ),
-          if (hasEvent && isSelected)
-            Container(
-              margin: const EdgeInsets.only(top: 2),
-              width: 4,
-              height: 4,
-              decoration: const BoxDecoration(
-                color: ColorPalette.kWhite,
-                shape: BoxShape.circle,
-              ),
-            ),
+          if (hasEvent && isSelected) const SizedBox(height: 6),
         ],
       ),
     );

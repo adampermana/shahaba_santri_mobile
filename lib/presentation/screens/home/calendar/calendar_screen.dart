@@ -83,10 +83,10 @@ class _CalendarView extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: ShapeDecoration(
-                      color: Colors.white.withValues(alpha: 0.10),
+                      color: Colors.white.withValues(alpha: 0.16),
                       shape: RoundedRectangleBorder(
                         side: const BorderSide(
-                          color: Color(0x33E8E8E8),
+                          color: Color(0x28E8E8E8),
                         ),
                         borderRadius: BorderRadius.circular(16),
                       ),
