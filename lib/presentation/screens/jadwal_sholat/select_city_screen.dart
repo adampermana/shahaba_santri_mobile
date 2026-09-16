@@ -156,8 +156,8 @@ class _SelectCityViewState extends State<_SelectCityView> {
                 height: 56,
                 width: double.infinity,
                 blur: 18,
-                borderRadius: BorderRadius.circular(28),
-                borderColor: Colors.white.withValues(alpha: .35),
+                borderRadius: BorderRadius.circular(24),
+                borderColor: Colors.white,
                 borderWidth: 1,
                 shadowColor: Colors.black.withValues(alpha: .1),
                 gradient: LinearGradient(
@@ -248,7 +248,7 @@ class _SelectCityViewState extends State<_SelectCityView> {
             _UseCurrentLocationRow(
               onTap: _onUseLocation,
             ),
-            const Divider(height: 1, color: ColorPalette.borderTransparent),
+            const Divider(height: 1, color: Color(0x28E8E8E8)),
             Expanded(
               child: BlocBuilder<CitySearchBloc, CitySearchState>(
                 builder: (context, state) {
