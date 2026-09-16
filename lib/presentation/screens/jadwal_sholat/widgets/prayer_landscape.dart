@@ -31,7 +31,7 @@ class PrayerLandscape extends StatelessWidget {
     final isMaghrib = prayer == WaktuSholat.maghrib;
     final isNight = prayer == WaktuSholat.isya;
     final celestial = switch (prayer) {
-      WaktuSholat.maghrib => AppIcons.jadwalSholatSunMaghribScene,
+      WaktuSholat.maghrib => AppIcons.jadwalSholatSunMaghrib,
       WaktuSholat.terbit => AppIcons.jadwalSholatSunTerbitScene,
       WaktuSholat.isya => AppIcons.jadwalSholatMonthIsya,
       _ => AppIcons.jadwalSholatSunDzuhurScene,
@@ -40,7 +40,7 @@ class PrayerLandscape extends StatelessWidget {
       WaktuSholat.maghrib => AppIcons.jadwalSholatSeaMaghrib,
       WaktuSholat.isya => AppIcons.jadwalSholatSeaIsya,
       WaktuSholat.terbit => AppIcons.jadwalSholatSeaAshar,
-      _ => AppIcons.jadwalSholatSeaAsharTerbit,
+      _ => AppIcons.jadwalSholatSeaTerbit,
     };
     final sky = switch (prayer) {
       WaktuSholat.maghrib => const LinearGradient(

@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_state.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
@@ -1481,7 +1480,8 @@ Widget _quranShareCard(BuildContext context, QuranVerseModel verse) {
                       ),
                       textAlign: TextAlign.right,
                       textDirection: TextDirection.rtl,
-                      style: GoogleFonts.harmattan(
+                      style: const TextStyle(
+                        fontFamily: 'lpmq',
                         color: ColorPalette.kBlack,
                         fontSize: 32,
                         height: 1.4,

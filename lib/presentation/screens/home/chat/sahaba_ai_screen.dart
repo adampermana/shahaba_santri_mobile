@@ -315,6 +315,59 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
     );
   }
 
+  Widget _aiAvatarHeader() {
+    return SizedBox(
+      width: 50,
+      height: 50,
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          Positioned(
+            top: 0,
+            bottom: 0,
+            child: Container(
+              width: 60,
+              height: 60,
+              padding: const EdgeInsets.all(8),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                curve: Curves.easeOut,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.20),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x3F000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+
+                  shape: BoxShape.circle,
+                ),
+                child: const Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Positioned(
+                      top: 0,
+                      bottom: 0,
+                      child: CacheImageOrSvg(
+                        source: 'assets/svg/tanya-sahaba.svg',
+                        // width: 57.61,
+                        // height: 55.1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _messageItem(AiChatMessage message) {
     if (message.isUser) {
       return Padding(
@@ -336,7 +389,6 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
         Row(
           children: [
             _aiAvatar(),
-            const SizedBox(width: 8),
             const Text(
               'Kata Sahaba',
               style: TextStyle(
@@ -449,8 +501,7 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
         glassHeight: 48,
         glassBlur: 10,
         glassColor: Colors.white.withValues(alpha: 0.2),
-        glassBorderColor: Colors.white.withValues(alpha: 0.05),
-        glassBorderWidth: 0.5,
+        glassBorderColor: Colors.white,
         suffixIcon: IconButton(
           onPressed: () => _onSend(_textController.text),
           icon: const Icon(
@@ -470,7 +521,7 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
     return CustomAppBar.buildAppBarSimple(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      leadingWidth: 40,
+      leadingWidth: 24,
       bottom: const PreferredSize(
         preferredSize: Size.fromHeight(30),
         child: SizedBox.shrink(),
@@ -487,15 +538,15 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
         splashRadius: 20,
       ),
       titleWidget: Row(
-        spacing: 8,
+        spacing: 2,
         children: [
-          _aiAvatar(),
+          _aiAvatarHeader(),
           Text(
             'Sahaba AI',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: ColorPalette.kWhite,
               fontSize: 16,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],

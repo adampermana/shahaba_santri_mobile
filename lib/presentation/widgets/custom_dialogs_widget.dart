@@ -353,7 +353,7 @@ Future<void> showComingSoonDialog(BuildContext context) async {
   await showCustomDialog<void>(
     context: context,
     dialog: CustomDialog(
-      icon: const CacheImageOrSvg(source: 'assets/svg/wrench-fill.svg'),
+      icon: const CacheImageOrSvg(source: 'assets/svg/information-2-line.svg'),
       title: 'Fitur Belum Tersedia',
       description:
           'Kami sedang mengembangkan fitur ini agar dapat memberikan '

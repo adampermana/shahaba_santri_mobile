@@ -25,16 +25,12 @@ abstract class AppIcons {
   static const String moonLine = '$_path/moon-line.svg';
   static const String notification2Line = '$_path/notification-line.svg';
   static const String searchLine = '$_path/search-line.svg';
-  static const String searchScan = '$_path/search-eye-fill.svg';
   static const String settings4Line = '$_path/settings-line.svg';
   static const String shareLine = '$_path/share-line.svg';
   static const String sunFoggyLine = '$_path/sun-foggy-line.svg';
   static const String sunLine = '$_path/sun-line.svg';
-  static const String timeLine = '$_path/time-line.svg';
   static const String volumeMuteLine = '$_path/volume-mute-line.svg';
   static const String volumeUpLine = '$_path/volume-up-line.svg';
-  static const String zoomInLine = '$_path/zoom-in-line.svg';
-  static const String zoomOutLine = '$_path/zoom-out-line.svg';
 
   // Jadwal Sholat
   static const String jadwalSholatCloud = '$_path/jadwal_sholat/cloud.svg';
@@ -44,8 +40,8 @@ abstract class AppIcons {
       '$_path/jadwal_sholat/mount-right.svg';
   static const String jadwalSholatSeaAshar =
       '$_path/jadwal_sholat/sea-ashar.svg';
-  static const String jadwalSholatSeaAsharTerbit =
-      '$_path/jadwal_sholat/sea-ashar-terbit.svg';
+  static const String jadwalSholatSeaTerbit =
+      '$_path/jadwal_sholat/sea-terbit.svg';
   static const String jadwalSholatSeaIsya = '$_path/jadwal_sholat/sea-isya.svg';
   static const String jadwalSholatSeaMaghrib =
       '$_path/jadwal_sholat/sea-maghrib.svg';
@@ -59,8 +55,6 @@ abstract class AppIcons {
       '$_path/jadwal_sholat/sun-dzuhur-scene.svg';
   static const String jadwalSholatSunTerbitScene =
       '$_path/jadwal_sholat/sun-terbit-scene.svg';
-  static const String jadwalSholatSunMaghribScene =
-      '$_path/jadwal_sholat/sun-maghrib-scene.svg';
 }
 
 abstract class QiblaIcons {

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,11 +7,9 @@ import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
-import 'package:sahaba_mobile/business_logic/product_bloc/product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
-import 'package:sahaba_mobile/domains/ads/ads_response.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
@@ -20,9 +17,7 @@ import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/home/home_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/bottom_navigation_bar.dart';
-import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class MainProvider extends StatelessWidget {
   const MainProvider({super.key});
@@ -82,9 +77,9 @@ class _MainScreenState extends State<_MainScreen> {
 
   int _selectedIndex = 0;
   DateTime? _lastBackPressedAt;
-  AdResponseData? _pendingSplashAd;
+  // AdResponseData? _pendingSplashAd;
   bool _isLocationAlertShowing = false;
-  bool _isSplashDialogShowing = false;
+  // bool _isSplashDialogShowing = false;
 
   List<Widget> get _screens => [
     HomeScreen(isActive: _selectedIndex == 0),
@@ -129,191 +124,191 @@ class _MainScreenState extends State<_MainScreen> {
     await result;
   }
 
-  Future<void> _maybeShowSplashAd(
-    BuildContext context, {
-    bool ignoreLocationAlert = false,
-  }) async {
-    if (_pendingSplashAd == null ||
-        _isSplashDialogShowing ||
-        !context.mounted) {
-      return;
-    }
+  // Future<void> _maybeShowSplashAd(
+  //   BuildContext context, {
+  //   bool ignoreLocationAlert = false,
+  // }) async {
+  //   if (_pendingSplashAd == null ||
+  //       _isSplashDialogShowing ||
+  //       !context.mounted) {
+  //     return;
+  //   }
 
-    final locationState = context.read<LocationBloc>().state;
+  //   final locationState = context.read<LocationBloc>().state;
 
-    if (locationState.isLoading || _isLocationAlertShowing) {
-      return;
-    }
+  //   if (locationState.isLoading || _isLocationAlertShowing) {
+  //     return;
+  //   }
 
-    if (!ignoreLocationAlert && locationState.alert != null) {
-      return;
-    }
+  //   if (!ignoreLocationAlert && locationState.alert != null) {
+  //     return;
+  //   }
 
-    final addSplash = _pendingSplashAd!;
-    _pendingSplashAd = null;
-    _isSplashDialogShowing = true;
+  //   final addSplash = _pendingSplashAd!;
+  //   _pendingSplashAd = null;
+  //   _isSplashDialogShowing = true;
 
-    try {
-      await _showSplashAdDialog(context, addSplash);
-    } finally {
-      _isSplashDialogShowing = false;
-    }
-  }
+  //   try {
+  //     await _showSplashAdDialog(context, addSplash);
+  //   } finally {
+  //     _isSplashDialogShowing = false;
+  //   }
+  // }
 
-  Map<String, double>? _splashAdCoordinates(BuildContext context) {
-    final locationState = context.read<LocationBloc>().state;
+  // Map<String, double>? _splashAdCoordinates(BuildContext context) {
+  //   final locationState = context.read<LocationBloc>().state;
 
-    if (locationState.locations != null) {
-      return locationState.locations;
-    }
+  //   if (locationState.locations != null) {
+  //     return locationState.locations;
+  //   }
 
-    if (Platform.isIOS) {
-      return const {'latitude': 0.0, 'longitude': 0.0};
-    }
+  //   if (Platform.isIOS) {
+  //     return const {'latitude': 0.0, 'longitude': 0.0};
+  //   }
 
-    return null;
-  }
+  //   return null;
+  // }
 
-  Future<void> _showSplashAdDialog(
-    BuildContext context,
-    AdResponseData addSplash,
-  ) async {
-    final coordinates = _splashAdCoordinates(context);
-    final productBloc = context.read<ProductBloc>();
+  // Future<void> _showSplashAdDialog(
+  //   BuildContext context,
+  //   AdResponseData addSplash,
+  // ) async {
+  //   final coordinates = _splashAdCoordinates(context);
+  //   final productBloc = context.read<ProductBloc>();
 
-    if (coordinates != null) {
-      productBloc.add(
-        ProductEvent.logAd(
-          addSplash.productId ?? 0,
-          addSplash.campaignId ?? 0,
-          addSplash.id ?? 0,
-          coordinates,
-          'Impression',
-        ),
-      );
-    }
+  //   if (coordinates != null) {
+  //     productBloc.add(
+  //       ProductEvent.logAd(
+  //         addSplash.productId ?? 0,
+  //         addSplash.campaignId ?? 0,
+  //         addSplash.id ?? 0,
+  //         coordinates,
+  //         'Impression',
+  //       ),
+  //     );
+  //   }
 
-    await showDialog<void>(
-      context: context,
-      builder: (_) => PopScope(
-        canPop: false,
-        child: BlocProvider.value(
-          value: productBloc,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width - 32,
-                child: DecoratedBox(
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: GestureDetector(
-                      onTap: () async {
-                        final messenger = ScaffoldMessenger.of(context);
-                        final navigator = Navigator.of(context);
+  // await showDialog<void>(
+  //   context: context,
+  //   builder: (_) => PopScope(
+  //     canPop: false,
+  //     child: BlocProvider.value(
+  //       value: productBloc,
+  //       child: Column(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           SizedBox(
+  //             width: MediaQuery.of(context).size.width - 32,
+  //             child: DecoratedBox(
+  //               decoration: ShapeDecoration(
+  //                 color: Colors.white,
+  //                 shape: RoundedRectangleBorder(
+  //                   borderRadius: BorderRadius.circular(16),
+  //                 ),
+  //               ),
+  //               child: ClipRRect(
+  //                 borderRadius: BorderRadius.circular(16),
+  //                 child: GestureDetector(
+  //                   onTap: () async {
+  //                     final messenger = ScaffoldMessenger.of(context);
+  //                     final navigator = Navigator.of(context);
 
-                        try {
-                          final clickCoordinates = _splashAdCoordinates(
-                            context,
-                          );
+  //                     try {
+  //                       final clickCoordinates = _splashAdCoordinates(
+  //                         context,
+  //                       );
 
-                          if (clickCoordinates != null) {
-                            productBloc.add(
-                              ProductEvent.logAd(
-                                addSplash.productId ?? 0,
-                                addSplash.campaignId ?? 0,
-                                addSplash.id ?? 0,
-                                clickCoordinates,
-                                'Click',
-                              ),
-                            );
-                          }
+  //                       if (clickCoordinates != null) {
+  //                         productBloc.add(
+  //                           ProductEvent.logAd(
+  //                             addSplash.productId ?? 0,
+  //                             addSplash.campaignId ?? 0,
+  //                             addSplash.id ?? 0,
+  //                             clickCoordinates,
+  //                             'Click',
+  //                           ),
+  //                         );
+  //                       }
 
-                          switch (addSplash.type?.toUpperCase()) {
-                            case 'PRODUCT':
-                              final productId = addSplash.productId;
-                              if (productId == null || productId <= 0) {
-                                navigator.pop();
-                                return;
-                              }
+  //                       switch (addSplash.type?.toUpperCase()) {
+  //                         case 'PRODUCT':
+  //                           final productId = addSplash.productId;
+  //                           if (productId == null || productId <= 0) {
+  //                             navigator.pop();
+  //                             return;
+  //                           }
 
-                              final currentLocation = GoRouterState.of(
-                                context,
-                              ).uri.toString();
-                              navigator.pop();
-                              if (!mounted) return;
-                              await context.push(
-                                '$currentLocation/'
-                                '${RouterPath.productHalalPath}/'
-                                '${RouterPath.productDetailPath}',
-                                extra: {'id': productId, 'isAds': true},
-                              );
-                              return;
-                            case 'URL':
-                              final target = addSplash.target?.trim();
-                              if (target == null || target.isEmpty) {
-                                navigator.pop();
-                                return;
-                              }
+  //                           final currentLocation = GoRouterState.of(
+  //                             context,
+  //                           ).uri.toString();
+  //                           navigator.pop();
+  //                           if (!mounted) return;
+  //                           await context.push(
+  //                             '$currentLocation/'
+  //                             '${RouterPath.productHalalPath}/'
+  //                             '${RouterPath.productDetailPath}',
+  //                             extra: {'id': productId, 'isAds': true},
+  //                           );
+  //                           return;
+  //                         case 'URL':
+  //                           final target = addSplash.target?.trim();
+  //                           if (target == null || target.isEmpty) {
+  //                             navigator.pop();
+  //                             return;
+  //                           }
 
-                              final uri = Uri.tryParse(target);
-                              if (uri == null) {
-                                navigator.pop();
-                                return;
-                              }
+  //                           final uri = Uri.tryParse(target);
+  //                           if (uri == null) {
+  //                             navigator.pop();
+  //                             return;
+  //                           }
 
-                              await launchUrl(
-                                uri,
-                                mode: LaunchMode.externalApplication,
-                              );
-                              navigator.pop();
-                              return;
-                          }
-                        } on Exception catch (e) {
-                          messenger.showSnackBar(
-                            SnackBar(content: Text(e.toString())),
-                          );
-                        }
-                      },
-                      child: Image.network(
-                        addSplash.image ?? '',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: const SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: DecoratedBox(
-                    decoration: ShapeDecoration(
-                      color: Colors.black,
-                      shape: CircleBorder(
-                        side: BorderSide(color: Colors.white, width: 4),
-                      ),
-                    ),
-                    child: CacheImageOrSvg(
-                      source: 'assets/svg/close-circle-line.svg',
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  //                           await launchUrl(
+  //                             uri,
+  //                             mode: LaunchMode.externalApplication,
+  //                           );
+  //                           navigator.pop();
+  //                           return;
+  //                       }
+  //                     } on Exception catch (e) {
+  //                       messenger.showSnackBar(
+  //                         SnackBar(content: Text(e.toString())),
+  //                       );
+  //                     }
+  //                   },
+  //                   child: Image.network(
+  //                     addSplash.image ?? '',
+  //                     fit: BoxFit.cover,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //           const SizedBox(height: 12),
+  //           GestureDetector(
+  //             onTap: () => Navigator.pop(context),
+  //             child: const SizedBox(
+  //               width: 40,
+  //               height: 40,
+  //               child: DecoratedBox(
+  //                 decoration: ShapeDecoration(
+  //                   color: Colors.black,
+  //                   shape: CircleBorder(
+  //                     side: BorderSide(color: Colors.white, width: 4),
+  //                   ),
+  //                 ),
+  //                 child: CacheImageOrSvg(
+  //                   source: 'assets/svg/close-circle-line.svg',
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   ),
+  // );
+  // }
 
   SnackBar _buildExitSnackBar(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -436,30 +431,30 @@ class _MainScreenState extends State<_MainScreen> {
 
                     _isLocationAlertShowing = false;
                     if (!context.mounted) return;
-                    await _maybeShowSplashAd(
-                      context,
-                      ignoreLocationAlert: true,
-                    );
+                    // await _maybeShowSplashAd(
+                    //   context,
+                    //   ignoreLocationAlert: true,
+                    // );
                     return;
                   }
 
-                  await _maybeShowSplashAd(context);
+                  // await _maybeShowSplashAd(context);
                 },
               ),
               // Add Splash Ad Dialog
-              BlocListener<ProductBloc, ProductState>(
-                listenWhen: (previous, current) =>
-                    previous.addSplash != current.addSplash &&
-                    previous.addSplash == null,
-                listener: (context, state) async {
-                  final addSplash = state.addSplash;
+              // BlocListener<ProductBloc, ProductState>(
+              //   listenWhen: (previous, current) =>
+              //       previous.addSplash != current.addSplash &&
+              //       previous.addSplash == null,
+              //   listener: (context, state) async {
+              //     final addSplash = state.addSplash;
 
-                  if (addSplash == null) return;
+              //     if (addSplash == null) return;
 
-                  _pendingSplashAd = addSplash;
-                  await _maybeShowSplashAd(context);
-                },
-              ),
+              //     _pendingSplashAd = addSplash;
+              //     await _maybeShowSplashAd(context);
+              //   },
+              // ),
             ],
             child: IndexedStack(
               index: _selectedIndex,

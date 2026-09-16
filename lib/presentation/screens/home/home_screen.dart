@@ -9,7 +9,6 @@ import 'package:sahaba_mobile/business_logic/location_cubit/location_state.dart'
 import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_state.dart';
-import 'package:sahaba_mobile/business_logic/product_bloc/product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_state.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
@@ -150,9 +149,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     onKalendarTap: () => context.push(
                       '$currentLocation/${RouterPath.calendarPath}',
                     ),
-                    onProdukHalalTap: () => context.push(
-                      '$currentLocation/${RouterPath.productHalalPath}',
-                    ),
+                    // onProdukHalalTap: () => context.push(
+                    //   '$currentLocation/${RouterPath.productHalalPath}',
+                    // ),
                     onKisahTap: () => context.push(
                       '$currentLocation/${RouterPath.kisahPath}',
                     ),
@@ -180,19 +179,15 @@ class _HomeScreenState extends State<HomeScreen> {
   ) {
     final currentLocation = GoRouterState.of(context).uri.toString();
 
-    return BlocBuilder<ProductBloc, ProductState>(
-      builder: (context, state) {
-        return _CarouselContent(
-          height: height,
-          shrinkProgress: shrinkProgress,
-          ads: state.adsCarousel,
-          currentLocation: currentLocation,
-          isActive: widget.isActive,
-          onSahabaTap: () => context.push(
-            '$currentLocation/${RouterPath.sahabaAiPath}',
-          ),
-        );
-      },
+    return _CarouselContent(
+      height: height,
+      shrinkProgress: shrinkProgress,
+      ads: const [],
+      currentLocation: currentLocation,
+      isActive: widget.isActive,
+      onSahabaTap: () => context.push(
+        '$currentLocation/${RouterPath.sahabaAiPath}',
+      ),
     );
   }
 
@@ -540,7 +535,7 @@ Widget _featureSection(
   VoidCallback? onQiblatTap,
   VoidCallback? onJadwalSolatTap,
   VoidCallback? onKalendarTap,
-  VoidCallback? onProdukHalalTap,
+  // VoidCallback? onProdukHalalTap,
   VoidCallback? onKisahTap,
 }) {
   final items = [
@@ -1133,7 +1128,7 @@ class _CarouselContentState extends State<_CarouselContent> {
   }
 
   Future<void> _handleAdTap(BuildContext context, AdResponseData? ad) async {
-    final currentLocation = GoRouterState.of(context).uri.toString();
+    // final currentLocation = GoRouterState.of(context).uri.toString();
 
     if (ad == null) {
       final uri = Uri.tryParse('https://sah.solu.co.id/');
@@ -1143,32 +1138,32 @@ class _CarouselContentState extends State<_CarouselContent> {
       return;
     }
 
-    switch (ad.type?.toUpperCase()) {
-      case 'PRODUCT':
-        final productId = ad.productId;
-        if (productId != null && productId > 0) {
-          await context.push(
-            '$currentLocation/${RouterPath.productDetailPath}',
-            extra: {'id': productId, 'isAds': true},
-          );
-        }
-        return;
-      case 'URL':
-        final target = ad.target?.trim();
-        if (target == null || target.isEmpty) return;
+    // switch (ad.type?.toUpperCase()) {
+    //   case 'PRODUCT':
+    //     final productId = ad.productId;
+    //     if (productId != null && productId > 0) {
+    //       await context.push(
+    //         '$currentLocation/${RouterPath.productDetailPath}',
+    //         extra: {'id': productId, 'isAds': true},
+    //       );
+    //     }
+    //     return;
+    //   case 'URL':
+    //     final target = ad.target?.trim();
+    //     if (target == null || target.isEmpty) return;
 
-        var url = target;
+    //     var url = target;
 
-        if (!url.startsWith('http://') && !url.startsWith('https://')) {
-          url = 'https://$url';
-        }
+    //     if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    //       url = 'https://$url';
+    //     }
 
-        final uri = Uri.tryParse(url);
-        if (uri == null) return;
+    //     final uri = Uri.tryParse(url);
+    //     if (uri == null) return;
 
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-        return;
-    }
+    //     await launchUrl(uri, mode: LaunchMode.externalApplication);
+    //     return;
+    // }
   }
 }
 

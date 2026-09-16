@@ -103,8 +103,8 @@ dependencies {
     add("coreLibraryDesugaring", "com.android.tools:desugar_jdk_libs:2.1.5")
     implementation("androidx.core:core-ktx:1.17.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.20")
-    implementation ("com.google.mlkit:text-recognition-chinese:16.0.1")
-    implementation ("com.google.mlkit:text-recognition-devanagari:16.0.1")
-    implementation ("com.google.mlkit:text-recognition-japanese:16.0.1")
-    implementation ("com.google.mlkit:text-recognition-korean:16.0.1")
+    // implementation ("com.google.mlkit:text-recognition-chinese:16.0.1")
+    // implementation ("com.google.mlkit:text-recognition-devanagari:16.0.1")
+    // implementation ("com.google.mlkit:text-recognition-japanese:16.0.1")
+    // implementation ("com.google.mlkit:text-recognition-korean:16.0.1")
 }

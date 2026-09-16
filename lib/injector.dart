@@ -5,22 +5,16 @@ import 'package:get_it/get_it.dart';
 import 'package:sahaba_mobile/business_logic/ai_chat_bloc/ai_chat_bloc.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/business_logic/calendar_bloc/calendar_bloc.dart';
-import 'package:sahaba_mobile/business_logic/category_product/category_product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/city_search_bloc/city_search_bloc.dart';
 import 'package:sahaba_mobile/business_logic/kisah_bloc/kisah_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
 import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedule_cubit.dart';
-import 'package:sahaba_mobile/business_logic/product_bloc/product_bloc.dart';
-import 'package:sahaba_mobile/business_logic/product_detail/product_detail_bloc.dart';
-import 'package:sahaba_mobile/business_logic/product_form/product_form_bloc.dart';
-import 'package:sahaba_mobile/business_logic/product_search/product_search_bloc.dart';
 import 'package:sahaba_mobile/business_logic/qibla_cubit/qibla_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
-import 'package:sahaba_mobile/business_logic/special_product/special_product_bloc.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/infrastructure/ai_chat/datasources/i_ai_chat_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/ai_chat/repositories/i_ai_chat_repository.dart';
@@ -50,9 +44,6 @@ import 'package:sahaba_mobile/infrastructure/prayer_schedule/datasources/prayer_
 import 'package:sahaba_mobile/infrastructure/prayer_schedule/datasources/prayer_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/prayer_schedule/repository/i_prayer_repository.dart';
 import 'package:sahaba_mobile/infrastructure/prayer_schedule/repository/prayer_repository.dart';
-import 'package:sahaba_mobile/infrastructure/product/datasources/product_remote_datasources.dart';
-import 'package:sahaba_mobile/infrastructure/product/repository/i_product_repository.dart';
-import 'package:sahaba_mobile/infrastructure/product/repository/product_repository.dart';
 import 'package:sahaba_mobile/infrastructure/qibla/repository/i_qibla_repository.dart';
 import 'package:sahaba_mobile/infrastructure/qibla/repository/qibla_repository.dart';
 import 'package:sahaba_mobile/infrastructure/quran/datasources/i_quran_local_datasource.dart';
@@ -75,7 +66,7 @@ Future<void> initApp() async {
   await _initL10nFeature();
   await _initAuthFeature();
   await _initQuranFeature();
-  await _initProductFeature();
+  // await _initProductFeature();
   await _initPrayerFeature();
   await _initQiblaFeature();
   await _initStreakFeature();
@@ -140,22 +131,22 @@ Future<void> _initQuranFeature() async {
     ..registerLazySingleton(() => LastReadCubit(sl()));
 }
 
-Future<void> _initProductFeature() async {
-  sl
-    ..registerLazySingleton<IProductRemoteDatasource>(
-      () => ProductRemoteDatasource(sl<Dio>(instanceName: 'main')),
-    )
-    ..registerLazySingleton<IProductRepository>(
-      () => ProductRepository(sl(), sl()),
-    )
-    ..registerFactory(() => ProductFormBloc(sl(), sl(), sl()))
-    // ..registerFactory(() => PersonalDataFormBloc(sl()))
-    ..registerFactory(() => ProductDetailBloc(sl()))
-    ..registerFactory(() => ProductSearchBloc(sl(), sl(), sl()))
-    ..registerFactory(() => SpecialProductBloc(sl(), sl(), sl()))
-    ..registerFactory(() => CategoryProductBloc(sl(), sl(), sl()))
-    ..registerFactory(() => ProductBloc(sl(), sl(), sl()));
-}
+// Future<void> _initProductFeature() async {
+//   sl
+//     ..registerLazySingleton<IProductRemoteDatasource>(
+//       () => ProductRemoteDatasource(sl<Dio>(instanceName: 'main')),
+//     )
+//     ..registerLazySingleton<IProductRepository>(
+//       () => ProductRepository(sl(), sl()),
+//     )
+// ..registerFactory(() => ProductFormBloc(sl(), sl(), sl()))
+// ..registerFactory(() => PersonalDataFormBloc(sl()))
+// ..registerFactory(() => ProductDetailBloc(sl()))
+// ..registerFactory(() => ProductSearchBloc(sl(), sl(), sl()))
+// ..registerFactory(() => SpecialProductBloc(sl(), sl(), sl()))
+// ..registerFactory(() => CategoryProductBloc(sl(), sl(), sl()))
+// ..registerFactory(() => ProductBloc(sl(), sl(), sl()));
+// }
 
 Future<void> _initPrayerFeature() async {
   sl

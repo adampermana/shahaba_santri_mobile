@@ -37,21 +37,21 @@ class RouterPath {
   static const String jadwalSholatPath = 'jadwal-sholat';
 
   // Product Detail
-  static const String productDetailPath = 'product-detail';
+  // static const String productDetailPath = 'product-detail';
 
   // Product Halal
-  static const String productHalalPath = 'product-halal';
+  // static const String productHalalPath = 'product-halal';
 
   // Global Search Product Halal
-  static const String searchProductHalalPath = 'search-product-halal';
+  // static const String searchProductHalalPath = 'search-product-halal';
 
   // Product History
-  static const String historyProductPath = 'history-product';
+  // static const String historyProductPath = 'history-product';
 
   // Category Product
-  static const String categoryProductPath = 'category-product';
-  static const String listDetailBrandByProductPath =
-      'list-detail-brand-by-product';
+  // static const String categoryProductPath = 'category-product';
+  // static const String listDetailBrandByProductPath =
+  //     'list-detail-brand-by-product';
 
   // Sahaba AI
   static const String sahabaAiPath = 'sahaba-ai';
