@@ -6,14 +6,14 @@ import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 // Jarak label (title) dari tepi bawah area konten bar.
 // Dipakai bareng oleh _RegularNavBarItem dan _FeaturedNavBarItem
 // supaya posisi teks keduanya SELALU sejajar, apapun iconSize-nya.
-const double kNavLabelBottomOffset = 14;
+const double kNavLabelBottomOffset = 10;
 
 class BottomNavigationItemsBar extends StatefulWidget {
   const BottomNavigationItemsBar({
     required this.items,
     required this.onChanged,
     super.key,
-    this.barHeight = 86,
+    this.barHeight = 82,
     this.barWidth,
     this.iconSize = 26,
     this.featuredIconSize = 34,
