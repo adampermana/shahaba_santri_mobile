@@ -66,8 +66,9 @@ class InfoChip extends StatelessWidget {
                 children: [
                   SvgPicture.asset(
                     icon,
-                    width: 24,
-                    height: 24,
+                    // width: 24,
+                    // height: 24,
+                    fit: BoxFit.cover,
                     colorFilter: const ColorFilter.mode(
                       ColorPalette.kWhite,
                       BlendMode.srcIn,

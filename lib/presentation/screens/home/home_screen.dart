@@ -482,30 +482,30 @@ Widget _featureSection(
     {
       'label': 'Kiblat',
       'icon': QiblaIcons.kabah,
-      'iconWidth': 40.0,
-      'iconHeight': 40.0,
+      // 'iconWidth': 40.0,
+      // 'iconHeight': 40.0,
       'onTap': onQiblatTap,
     },
     {
       'label': 'Jadwal Salat',
       'icon': AppIcons.jadwalSholat,
-      'iconWidth': 40.0,
-      'iconHeight': 40.0,
+      // 'iconWidth': 40.0,
+      // 'iconHeight': 40.0,
       'onTap': onJadwalSolatTap,
       'badgeType': 'fire',
     },
     {
       'label': 'Kalendar',
       'icon': AppIcons.calendar,
-      'iconWidth': 40.0,
-      'iconHeight': 40.0,
+      // 'iconWidth': 40.0,
+      // 'iconHeight': 40.0,
       'onTap': onKalendarTap,
     },
     {
       'label': 'Kisah',
       'icon': AppIcons.kisah,
-      'iconWidth': 40.0,
-      'iconHeight': 40.0,
+      // 'iconWidth': 40.0,
+      // 'iconHeight': 40.0,
       'onTap': onKisahTap,
     },
   ];
@@ -530,8 +530,8 @@ Widget _featureSection(
         children: items.map((item) {
           final label = item['label']! as String;
           final iconPath = item['icon']! as String;
-          final iconWidth = item['iconWidth']! as double;
-          final iconHeight = item['iconHeight']! as double;
+          // final iconWidth = item['iconWidth']! as double;
+          // final iconHeight = item['iconHeight']! as double;
           final onTap = item['onTap'] as VoidCallback?;
           final badgeType = item['badgeType'] as String?;
 
@@ -591,9 +591,9 @@ Widget _featureSection(
                               child: Center(
                                 child: CacheImageOrSvg(
                                   source: iconPath,
-                                  width: iconWidth,
-                                  height: iconHeight,
-                                  fit: BoxFit.contain,
+                                  // width: iconWidth,
+                                  // height: iconHeight,
+                                  // fit: BoxFit.contain,
                                 ),
                               ),
                             ),
