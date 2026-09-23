@@ -64,7 +64,7 @@ class SearchBarWidget extends StatelessWidget {
                   color: Color(0xFFA6A6A6),
 
                   fontSize: 14,
-                  fontFamily: 'Synonym Variable',
+                  fontFamily: 'Satoshi',
                   fontWeight: FontWeight.w500,
                 ),
               ),

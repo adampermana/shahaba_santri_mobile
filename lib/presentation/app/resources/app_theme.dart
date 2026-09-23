@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 
 class AppTheme {
-  static const String _fontFamily = 'Synonym';
+  static const String _fontFamily = 'Satoshi';
 
   static ThemeData get lightTheme {
     const colorScheme = ColorScheme.light(

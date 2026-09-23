@@ -55,7 +55,7 @@ class SurahCard extends StatelessWidget {
                 style: const TextStyle(
                   color: ColorPalette.primaryColor,
                   fontSize: 40,
-                  fontFamily: 'Synonym Variable',
+                  fontFamily: 'Satoshi',
                   fontWeight: FontWeight.w500,
                   letterSpacing: 0.60,
                 ),
@@ -71,7 +71,7 @@ class SurahCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: textTheme.titleLarge?.copyWith(
-                        fontSize: 20,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: ColorPalette.kWhite,
                       ),

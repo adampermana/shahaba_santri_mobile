@@ -1144,7 +1144,7 @@ Widget _verseRow(
                 style: textTheme.titleMedium?.copyWith(
                   color: ColorPalette.primaryColor,
                   fontSize: _latinTextSize(textSizeSetting),
-                  fontFamily: 'Synonym Variable',
+                  fontFamily: 'Satoshi',
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -1157,7 +1157,7 @@ Widget _verseRow(
                 style: textTheme.bodyLarge?.copyWith(
                   color: ColorPalette.kBlack,
                   fontSize: _latinTextSize(textSizeSetting),
-                  fontFamily: 'Synonym Variable',
+                  fontFamily: 'Satoshi',
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -1501,7 +1501,7 @@ Widget _quranShareCard(BuildContext context, QuranVerseModel verse) {
                     style: textTheme.titleMedium?.copyWith(
                       color: ColorPalette.primaryColor,
                       fontSize: 16,
-                      fontFamily: 'Synonym Variable',
+                      fontFamily: 'Satoshi',
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -1517,7 +1517,7 @@ Widget _quranShareCard(BuildContext context, QuranVerseModel verse) {
                     style: textTheme.bodyLarge?.copyWith(
                       color: ColorPalette.kBlack,
                       fontSize: 16,
-                      fontFamily: 'Synonym Variable',
+                      fontFamily: 'Satoshi',
                       fontWeight: FontWeight.w400,
                     ),
                   ),

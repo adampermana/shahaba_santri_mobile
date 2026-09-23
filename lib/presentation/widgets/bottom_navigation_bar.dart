@@ -110,6 +110,7 @@ class _BottomNavigationItemsBarState extends State<BottomNavigationItemsBar> {
                         final isSelected = _currentIndex == index;
 
                         if (item.isFeatured) {
+                          // tanya sahaba
                           return _FeaturedNavBarItem(
                             item: item,
                             isSelected: isSelected,
@@ -286,47 +287,41 @@ class _RegularNavBarItem extends StatelessWidget {
         // ClipRect membatasi ripple/hover supaya tidak "tembus" keluar
         // dari area item ini (misalnya menutupi notch atau item sebelah).
         child: ClipRect(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onTap,
-              hoverColor: Colors.black.withValues(alpha: 0.08),
-              splashColor: Colors.black.withValues(alpha: 0.08),
-              highlightColor: Colors.black.withValues(alpha: 0.08),
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  // Icon diposisikan di atas label, dengan jarak 7 dari label
-                  // (sama seperti spacing SizedBox(height: 7) versi sebelumnya)
-                  Positioned(
-                    bottom: kNavLabelBottomOffset + 17 + 7,
-                    child: AnimatedScale(
-                      duration: const Duration(milliseconds: 180),
-                      curve: Curves.easeOut,
-                      scale: isSelected ? 1.05 : 1,
-                      child: CacheImageOrSvg(
-                        source: svgPath,
-                        width: iconSize,
-                        height: iconSize,
-                        colorAsset: color,
-                      ),
+          child: GestureDetector(
+            onTap: onTap,
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                // Icon diposisikan di atas label, dengan jarak 7 dari label
+                // (sama seperti spacing SizedBox(height: 7) versi sebelumnya)
+                Positioned(
+                  bottom: kNavLabelBottomOffset + 17 + 7,
+                  child: AnimatedScale(
+                    duration: const Duration(milliseconds: 180),
+                    curve: Curves.easeOut,
+                    scale: isSelected ? 1.05 : 1,
+                    child: CacheImageOrSvg(
+                      source: svgPath,
+                      width: iconSize,
+                      height: iconSize,
+                      colorAsset: color,
                     ),
                   ),
-                  // Label anchored ke bottom, sama persis dengan featured item.
-                  Positioned(
-                    left: 4,
-                    right: 4,
-                    bottom: kNavLabelBottomOffset,
-                    child: Text(
-                      item.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: labelStyle,
-                    ),
+                ),
+                // Label anchored ke bottom, sama persis dengan featured item.
+                Positioned(
+                  left: 4,
+                  right: 4,
+                  bottom: kNavLabelBottomOffset,
+                  child: Text(
+                    item.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: labelStyle,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

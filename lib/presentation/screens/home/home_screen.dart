@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -20,7 +18,6 @@ import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart
 import 'package:sahaba_mobile/domains/quran/juz_model.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/domains/quran/surah_model.dart';
-import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
@@ -115,6 +112,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     _maxCarouselHeight,
                     0,
                   ),
+                  const Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 220,
+                    bottom: 0,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Color(0x000F172A), ColorPalette.background],
+                          stops: [0, 0.3],
+                        ),
+                      ),
+                    ),
+                  ),
                   Positioned(
                     top: _maxCarouselHeight - 30,
                     left: 16,
@@ -196,89 +209,16 @@ class _HomeScreenState extends State<HomeScreen> {
       constraints: const BoxConstraints(minHeight: 95),
       clipBehavior: Clip.antiAlias,
       decoration: ShapeDecoration(
-        shadows: const [
-          BoxShadow(
-            color: Color.fromARGB(19, 255, 255, 255),
-            blurRadius: 4,
-          ),
-          BoxShadow(
-            color: Color(0x11000000),
-            blurRadius: 6,
-            offset: Offset(0, 6),
-          ),
-          BoxShadow(
-            color: Color.fromARGB(6, 255, 255, 255),
-            blurRadius: 12,
-            offset: Offset(0, 1),
-          ),
-          BoxShadow(
-            color: Color.fromARGB(2, 255, 255, 255),
-            blurRadius: 30,
-            offset: Offset(0, 26),
-          ),
-        ],
-        gradient: const RadialGradient(
-          center: Alignment(0.100, 1.8),
-          radius: 2.9,
-          colors: [Color(0xFF007D56), Color(0xFF051D12)],
-        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
       ),
       child: Stack(
         children: [
-          Positioned(
-            right: 0,
-            top: 0,
-            bottom: 0,
-            width: context.mediaQueryShortestSide * 0.7,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                // Blur hanya di sebelah kanan
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: FractionallySizedBox(
-                    widthFactor: 0.2, // 35% area kanan
-                    heightFactor: 1,
-                    child: ClipRect(
-                      child: ShaderMask(
-                        shaderCallback: (bounds) {
-                          return const LinearGradient(
-                            begin: Alignment(-0.5, 0),
-                            stops: [0.0, 0.5, 1.0],
-                            colors: [
-                              Colors.transparent,
-                              Colors.white,
-                              Colors.white,
-                            ],
-                          ).createShader(bounds);
-                        },
-                        blendMode: BlendMode.dstIn,
-                        child: ImageFiltered(
-                          imageFilter: ImageFilter.blur(
-                            sigmaX: 1.8,
-                            sigmaY: 1.8,
-                          ),
-                          child: const Opacity(
-                            opacity: 0.3,
-                            child: CacheImageOrSvg(
-                              source: 'assets/svg/motif/motif-home.svg',
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const Opacity(
-                  opacity: 0.15,
-                  child: CacheImageOrSvg(
-                    source: 'assets/svg/motif/motif-home.svg',
-                  ),
-                ),
-              ],
+          const Positioned.fill(
+            child: CacheImageOrSvg(
+              source: 'assets/images/motif-prayer.png',
+              fit: BoxFit.fill,
             ),
           ),
           Padding(
@@ -314,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             nextPrayer.label,
                             style: const TextStyle(
                               color: Color(0xFFDDDDDD),
-                              fontFamily: 'Satoshi Variable',
+                              fontFamily: 'Satoshi',
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
                             ),
@@ -324,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             nextPrayer.time,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontFamily: 'Satoshi Variable',
+                              fontFamily: 'Satoshi',
                               fontSize: 40,
                               fontWeight: FontWeight.w700,
                             ),
@@ -347,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         countdownText,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontFamily: 'Satoshi Variable',
+                          fontFamily: 'Satoshi',
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
                         ),
@@ -549,23 +489,23 @@ Widget _featureSection(
     {
       'label': 'Jadwal Salat',
       'icon': AppIcons.jadwalSholat,
-      'iconWidth': 36.0,
-      'iconHeight': 36.0,
+      'iconWidth': 40.0,
+      'iconHeight': 40.0,
       'onTap': onJadwalSolatTap,
       'badgeType': 'fire',
     },
     {
       'label': 'Kalendar',
       'icon': AppIcons.calendar,
-      'iconWidth': 36.0,
-      'iconHeight': 36.0,
+      'iconWidth': 40.0,
+      'iconHeight': 40.0,
       'onTap': onKalendarTap,
     },
     {
       'label': 'Kisah',
       'icon': AppIcons.kisah,
-      'iconWidth': 36.0,
-      'iconHeight': 36.0,
+      'iconWidth': 40.0,
+      'iconHeight': 40.0,
       'onTap': onKisahTap,
     },
   ];
@@ -577,7 +517,7 @@ Widget _featureSection(
         'Fitur kami',
         style: TextStyle(
           color: Colors.white,
-          fontFamily: 'Synonym Variable',
+          fontFamily: 'Satoshi',
           fontSize: 16,
           fontWeight: FontWeight.w600,
           height: 1.75,
@@ -699,7 +639,7 @@ Widget _featureSection(
                                             '$streakCount',
                                             style: const TextStyle(
                                               color: Colors.white,
-                                              fontFamily: 'Synonym Variable',
+                                              fontFamily: 'Satoshi',
                                               fontSize: 14,
                                               fontWeight: FontWeight.w600,
                                               height: 1,
@@ -722,7 +662,7 @@ Widget _featureSection(
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Color(0xFFDDDDDD),
-                          fontFamily: 'Satoshi Variable',
+                          fontFamily: 'Satoshi',
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
                           height: 1.35,
@@ -1252,7 +1192,7 @@ class _CarouselOverlayWidget extends StatelessWidget {
               //   textStyle: const TextStyle(
               //     color: ColorPalette.kWhite,
               //     fontSize: 12,
-              //     fontFamily: 'Synonym Variable',
+              //     fontFamily: 'Satoshi',
               //     fontWeight: FontWeight.w600,
               //     height: -0.4,
               //   ),

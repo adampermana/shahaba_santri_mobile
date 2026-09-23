@@ -4,7 +4,6 @@ import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extensi
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/widgets/card_jadwal_sholat.dart';
-import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 
 /// The 402px Figma scene, with the horizon aligned to the date section.
 class PrayerLandscape extends StatelessWidget {
@@ -37,10 +36,10 @@ class PrayerLandscape extends StatelessWidget {
       _ => AppIcons.jadwalSholatSunDzuhurScene,
     };
     final sea = switch (prayer) {
-      WaktuSholat.maghrib => AppIcons.jadwalSholatSeaMaghrib,
-      WaktuSholat.isya => AppIcons.jadwalSholatSeaIsya,
-      WaktuSholat.terbit => AppIcons.jadwalSholatSeaAshar,
-      _ => AppIcons.jadwalSholatSeaTerbit,
+      WaktuSholat.maghrib => AppIcons.jadwalSholatSeaMaghribPng,
+      WaktuSholat.isya => AppIcons.jadwalSholatSeaIsyaPng,
+      WaktuSholat.terbit => AppIcons.jadwalSholatSeaAsharPng,
+      _ => AppIcons.jadwalSholatSeaTerbitPng,
     };
     final sky = switch (prayer) {
       WaktuSholat.maghrib => const LinearGradient(
@@ -73,7 +72,7 @@ class PrayerLandscape extends StatelessWidget {
     final celestialTop = isNight
         ? 236.0
         : isMaghrib
-        ? 208.0
+        ? 210.0
         : isDay
         ? 211.0
         : 220.0;
@@ -105,9 +104,11 @@ class PrayerLandscape extends StatelessWidget {
             height: height * scale,
             child: SvgPicture.asset(
               path,
+              // sun and moon
               width: width * scale,
               height: height * scale,
-              fit: BoxFit.fill,
+              // fit: BoxFit.fill
+              // fit: BoxFit.cover,
               excludeFromSemantics: true,
               colorFilter: color == null
                   ? null
@@ -198,7 +199,7 @@ class PrayerLandscape extends StatelessWidget {
                             (402 - celestialSize) / 2,
                             celestialTop,
                             celestialSize,
-                            isMaghrib ? 114 : celestialSize,
+                            celestialSize,
                           ),
                         asset(
                           AppIcons.jadwalSholatMountLeft,
@@ -227,10 +228,11 @@ class PrayerLandscape extends StatelessWidget {
                   left: 0,
                   right: 0,
                   top: horizon,
-                  bottom: 0,
-                  child: CacheImageOrSvg(
-                    source: sea,
-                    // excludeFromSemantics: true,
+                  child: Image.asset(
+                    sea,
+                    width: width,
+                    fit: BoxFit.fitWidth,
+                    excludeFromSemantics: true,
                   ),
                 ),
                 Positioned(

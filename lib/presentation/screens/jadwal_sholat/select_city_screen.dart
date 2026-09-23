@@ -323,7 +323,7 @@ class _SelectCityViewState extends State<_SelectCityView> {
                       height: 1,
                       color: ColorPalette.borderTransparent,
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     itemBuilder: (context, index) {
                       final city = cities[index];
                       return _CityTile(
@@ -396,7 +396,7 @@ class _UseCurrentLocationRow extends StatelessWidget {
         return InkWell(
           onTap: isLoading ? null : onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
             child: Row(
               children: [
                 if (isLoading)

@@ -428,7 +428,7 @@ class _HayuWeLogoText extends StatelessWidget {
     return const Text(
       'HayuWe',
       style: TextStyle(
-        fontFamily: 'Synonym',
+        fontFamily: 'Satoshi',
         fontSize: 24,
         fontStyle: FontStyle.italic,
         color: ColorPalette.primaryColor,

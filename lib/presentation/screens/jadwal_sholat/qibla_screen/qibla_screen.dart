@@ -242,14 +242,19 @@ class _QiblaViewState extends State<_QiblaView> {
                     spacing: 70,
                     children: [
                       Stack(
-                        alignment: Alignment.center,
+                        // alignment: Alignment.center,
                         children: [
                           Image.asset('assets/images/new-motif.png'),
-                          _CompassWidget(
-                            heading: state.heading,
-                            qiblaDirection: state.qiblaDirection,
-                            isFacingQibla: state.isFacingQibla,
-                            size: compassSize,
+                          Positioned(
+                            top: -20,
+                            left: 0,
+                            right: 0,
+                            child: _CompassWidget(
+                              heading: state.heading,
+                              qiblaDirection: state.qiblaDirection,
+                              isFacingQibla: state.isFacingQibla,
+                              size: compassSize,
+                            ),
                           ),
                         ],
                       ),
@@ -275,7 +280,7 @@ class _QiblaViewState extends State<_QiblaView> {
   }
 }
 
-class _CompassWidget extends StatelessWidget {
+class _CompassWidget extends StatefulWidget {
   const _CompassWidget({
     required this.heading,
     required this.qiblaDirection,
@@ -289,67 +294,149 @@ class _CompassWidget extends StatelessWidget {
   final double size;
 
   @override
+  State<_CompassWidget> createState() => _CompassWidgetState();
+}
+
+class _CompassWidgetState extends State<_CompassWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _headingAnim;
+
+  double _currentAnimHeading = 0;
+  double _targetHeading = 0;
+  static const double _alpha = 0.25;
+
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentAnimHeading = widget.heading;
+    _targetHeading = widget.heading;
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+
+    _headingAnim = Tween<double>(
+      begin: widget.heading,
+      end: widget.heading,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+
+    _controller.addListener(() {
+      _currentAnimHeading = _headingAnim.value;
+    });
+
+    _initialized = true;
+  }
+
+  @override
+  void didUpdateWidget(_CompassWidget old) {
+    super.didUpdateWidget(old);
+    if (!_initialized) return;
+
+    final targetDiff = _shortestDelta(_targetHeading, widget.heading);
+    final smoothedTarget = _targetHeading + targetDiff * _alpha;
+
+    final currentVal = _currentAnimHeading;
+    final delta = _shortestDelta(currentVal, smoothedTarget);
+
+    _targetHeading = currentVal + delta;
+
+    _headingAnim = Tween<double>(
+      begin: currentVal,
+      end: _targetHeading,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+
+    _controller
+      ..stop()
+      ..reset();
+    unawaited(_controller.forward());
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  /// Returns signed shortest delta from [from] to [to] in degrees (-180..180).
+  double _shortestDelta(double from, double to) {
+    var delta = (to - from) % 360;
+    if (delta > 180) delta -= 360;
+    if (delta < -180) delta += 360;
+    return delta;
+  }
+
+  double _toRadians(double degree) => degree * pi / 180;
+
+  @override
   Widget build(BuildContext context) {
-    final kabahSize = size * 0.18;
-    final topOffset = kabahSize + size * 0.07;
-    final kabahOffset = _kabahOffset(
-      kabahSize: kabahSize,
-      topOffset: topOffset,
-    );
+    final kabahSize = widget.size * 0.18;
+    final topOffset = kabahSize + widget.size * 0.07;
+    final radius = widget.size / 2 + kabahSize / 2 + widget.size * -0.02;
 
-    return SizedBox(
-      width: size,
-      height: size + topOffset,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned(
-            top: topOffset,
-            left: 0,
-            right: 0,
-            child: _rotatingCompassFace(),
+    return AnimatedBuilder(
+      animation: _headingAnim,
+      builder: (context, _) {
+        final currentHeading = _headingAnim.value;
+        final qiblaAngleRad = _toRadians(
+          widget.qiblaDirection - currentHeading,
+        );
+
+        return SizedBox(
+          width: widget.size,
+          height: widget.size + topOffset,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // Piringan kompas berputar mengikuti heading
+              Positioned(
+                top: topOffset,
+                left: 0,
+                right: 0,
+                child: _rotatingCompassFace(currentHeading),
+              ),
+              // Ka'bah mengorbit secara melingkar sempurna tanpa loncat
+              Positioned(
+                top: topOffset,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Center(
+                  child: Transform.rotate(
+                    angle: qiblaAngleRad,
+                    child: Transform.translate(
+                      offset: Offset(0, -radius),
+                      child: Transform.rotate(
+                        // Tetap tegak lurus
+                        angle: -qiblaAngleRad,
+                        child: _kabahIcon(size: kabahSize),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // Jarum penunjuk HP (selalu di tengah menunjuk ke atas)
+              Positioned(
+                top: topOffset,
+                left: 0,
+                right: 0,
+                child: _compassNeedle(),
+              ),
+            ],
           ),
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 160),
-            top: kabahOffset.dy,
-            left: kabahOffset.dx,
-            child: _kabahIcon(
-              size: kabahSize,
-            ),
-          ),
-          // jarum
-          Positioned(
-            top: topOffset,
-            left: 0,
-            right: 0,
-            child: _compassNeedle(),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Offset _kabahOffset({
-    required double kabahSize,
-    required double topOffset,
-  }) {
-    final relativeAngle = _toRadians(qiblaDirection - heading - 90);
-    final center = Offset(size / 2, topOffset + size / 2);
-    final radius = size / 2 + kabahSize / 2 + size * -0.02;
-
-    return Offset(
-      center.dx + radius * cos(relativeAngle) - kabahSize / 2,
-      center.dy + radius * sin(relativeAngle) - kabahSize / 2,
-    );
-  }
-
-  Widget _rotatingCompassFace() {
-    // The visible dial in indicator-active.png sits about 10px above the
-    // 320px canvas center because of its baked shadow.
-    final visualCenterOffset = size * 10 / 320;
+  Widget _rotatingCompassFace(double heading) {
+    final visualCenterOffset = widget.size * 10 / 320;
 
     return SizedBox.square(
-      dimension: size,
+      dimension: widget.size,
       child: Transform.rotate(
         angle: _toRadians(-heading),
         child: Transform.translate(
@@ -357,8 +444,8 @@ class _CompassWidget extends StatelessWidget {
           child: CacheImageOrSvg(
             source: 'assets/images/indicator-active.png',
             fit: BoxFit.contain,
-            width: size,
-            height: size,
+            width: widget.size,
+            height: widget.size,
           ),
         ),
       ),
@@ -389,26 +476,26 @@ class _CompassWidget extends StatelessWidget {
   }
 
   Widget _compassNeedle() {
-    final needleHeight = size * 0.28;
+    final needleHeight = widget.size * 0.28;
     final needleWidth = needleHeight * 62 / 93;
 
     return SizedBox.square(
-      dimension: size,
+      dimension: widget.size,
       child: Center(
         child: SvgPicture.asset(
           QiblaIcons.jarum,
           width: needleWidth,
           height: needleHeight,
           colorFilter: ColorFilter.mode(
-            isFacingQibla ? ColorPalette.primaryColor : const Color(0xFFE71545),
+            widget.isFacingQibla
+                ? ColorPalette.primaryColor
+                : const Color(0xFFE71545),
             BlendMode.srcIn,
           ),
         ),
       ),
     );
   }
-
-  double _toRadians(double degree) => degree * pi / 180;
 }
 
 class _DirectionInfo extends StatelessWidget {
@@ -641,10 +728,20 @@ class _QiblaInfoModal extends StatelessWidget {
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
       backgroundColor: ColorPalette.scaffoldBackground,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(16),
       ),
+      clipBehavior: Clip.antiAlias,
       child: Stack(
         children: [
+          Positioned(
+            top: 0,
+            right: 0,
+            child: Image.asset(
+              'assets/images/motif-appbar.png',
+              height: 130,
+              fit: BoxFit.fitHeight,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(28, 32, 28, 20),
             child: Column(

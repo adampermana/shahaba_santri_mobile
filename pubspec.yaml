@@ -1,7 +1,7 @@
 
 name: sahaba_mobile
 description: Sahaba mobile application
-version: 1.6.2+30
+version: 1.6.4+32
 publish_to: none
 
 environment:
@@ -86,6 +86,7 @@ flutter:
     - assets/images/icon-apps/
     - assets/images/icon-images/
     - assets/images/splashscreen/
+    - assets/images/jadwal_sholat/
     - assets/svg/
     - assets/animation/
     - assets/svg/motif/
@@ -96,19 +97,32 @@ flutter:
 
   fonts:
     - family: lpmq
-      fonts:
+      fonts:        
         - asset: assets/fonts/lpmq.otf
-    - family: Synonym
+    - family: Satoshi
       fonts:
-        - asset: assets/fonts/synonym_complete/Fonts/OTF/Synonym-Extralight.otf
-          weight: 200
-        - asset: assets/fonts/synonym_complete/Fonts/OTF/Synonym-Light.otf
+        - asset: assets/fonts/Satoshi-Light.otf
           weight: 300
-        - asset: assets/fonts/synonym_complete/Fonts/OTF/Synonym-Regular.otf
+        - asset: assets/fonts/Satoshi-LightItalic.otf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/Satoshi-Regular.otf
           weight: 400
-        - asset: assets/fonts/synonym_complete/Fonts/OTF/Synonym-Medium.otf
+        - asset: assets/fonts/Satoshi-Italic.otf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/Satoshi-Medium.otf
           weight: 500
-        - asset: assets/fonts/synonym_complete/Fonts/OTF/Synonym-Semibold.otf
-          weight: 600
-        - asset: assets/fonts/synonym_complete/Fonts/OTF/Synonym-Bold.otf
+        - asset: assets/fonts/Satoshi-MediumItalic.otf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/Satoshi-Bold.otf
           weight: 700
+        - asset: assets/fonts/Satoshi-BoldItalic.otf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/Satoshi-Black.otf
+          weight: 900
+        - asset: assets/fonts/Satoshi-BlackItalic.otf
+          weight: 900
+          style: italic

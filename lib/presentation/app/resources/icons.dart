@@ -1,5 +1,6 @@
 abstract class AppIcons {
   static const String _path = 'assets/svg';
+  static const String _imgPath = 'assets/images';
 
   static const String api = '$_path/api.svg';
   static const String arrowDropDownLine = '$_path/arrow-drop-down-line.svg';
@@ -45,6 +46,15 @@ abstract class AppIcons {
   static const String jadwalSholatSeaIsya = '$_path/jadwal_sholat/sea-isya.svg';
   static const String jadwalSholatSeaMaghrib =
       '$_path/jadwal_sholat/sea-maghrib.svg';
+
+  static const String jadwalSholatSeaAsharPng =
+      '$_imgPath/jadwal_sholat/sea-ashar.png';
+  static const String jadwalSholatSeaTerbitPng =
+      '$_imgPath/jadwal_sholat/sea-terbit.png';
+  static const String jadwalSholatSeaIsyaPng =
+      '$_imgPath/jadwal_sholat/sea-isya.png';
+  static const String jadwalSholatSeaMaghribPng =
+      '$_imgPath/jadwal_sholat/sea-maghrib.png';
   static const String jadwalSholatSunMaghrib =
       '$_path/jadwal_sholat/sun-maghrib.svg';
   static const String jadwalSholatSunSubuhTerbit =

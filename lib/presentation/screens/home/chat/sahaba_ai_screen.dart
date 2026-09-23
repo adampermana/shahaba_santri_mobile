@@ -98,41 +98,46 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
   }
 
   Widget _emptyState() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 34),
-          _greetingHeader(),
-          const SizedBox(height: 8),
-          const SizedBox(
-            width: 370,
-            child: Text(
-              'Asisten AI siap membantumu belajar seputar ibadah, doa, '
-              'sejarah, dan wawasan Islam lainnya. Pilih topik di bawah '
-              'atau ketik pertanyaanmu sendiri.',
-              style: TextStyle(
-                color: Color(0xFFDDDDDD),
-                fontSize: 12,
-                fontFamily: 'Synonym Variable',
-                fontWeight: FontWeight.w400,
-                height: 1.50,
-              ),
+    return CustomScrollView(
+      slivers: [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 34),
+                _greetingHeader(),
+                const SizedBox(height: 8),
+                const Text(
+                  'Asisten AI siap membantumu belajar seputar ibadah, '
+                  'doa, sejarah, dan wawasan Islam lainnya. Pilih topik '
+                  'di bawah atau ketik pertanyaanmu sendiri.',
+                  style: TextStyle(
+                    color: Color(0xFFDDDDDD),
+                    fontSize: 12,
+                    fontFamily: 'Satoshi',
+                    fontWeight: FontWeight.w400,
+                    height: 1.50,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                _subtitleText('Mulai dengan topik di bawah ini'),
+                const SizedBox(height: 12),
+                _suggestionChip('🕌', 'Carikan doa sebelum tidur'),
+                const SizedBox(height: 8),
+                _suggestionChip('📖', 'Bagaimana niat puasa Ramadhan?'),
+                const SizedBox(height: 8),
+                _suggestionChip('🤲', 'Doa setelah sholat tahajud'),
+                const SizedBox(height: 8),
+                _suggestionChip('☪️', 'Keutamaan sholat dhuha'),
+                const Spacer(),
+              ],
             ),
           ),
-          const SizedBox(height: 32),
-          _subtitleText('Mulai dengan topik di bawah ini'),
-          const SizedBox(height: 12),
-          _suggestionChip('🕌', 'Carikan doa sebelum tidur'),
-          const SizedBox(height: 8),
-          _suggestionChip('📖', 'Bagaimana niat puasa Ramadhan?'),
-          const SizedBox(height: 8),
-          _suggestionChip('🤲', 'Doa setelah sholat tahajud'),
-          const SizedBox(height: 8),
-          _suggestionChip('☪️', 'Keutamaan sholat dhuha'),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -145,7 +150,7 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,
-            fontFamily: 'Synonym Variable',
+            fontFamily: 'Satoshi',
             fontWeight: FontWeight.w700,
             height: 1.40,
           ),
@@ -155,7 +160,7 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,
-            fontFamily: 'Synonym Variable',
+            fontFamily: 'Satoshi',
             fontWeight: FontWeight.w700,
             height: 1.40,
           ),
@@ -170,7 +175,7 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
       style: const TextStyle(
         color: Color(0xFFDDDDDD),
         fontSize: 12,
-        fontFamily: 'Synonym Variable',
+        fontFamily: 'Satoshi',
         fontWeight: FontWeight.w400,
         height: 1.50,
       ),
@@ -199,7 +204,7 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
                 style: const TextStyle(
                   color: Color(0xFFDDDDDD),
                   fontSize: 12,
-                  fontFamily: 'Synonym Variable',
+                  fontFamily: 'Satoshi',
                   fontWeight: FontWeight.w400,
                   height: 1.50,
                 ),
@@ -266,7 +271,7 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
           style: const TextStyle(
             color: Color(0xFFDDDDDD),
             fontSize: 12,
-            fontFamily: 'Synonym Variable',
+            fontFamily: 'Satoshi',
             fontWeight: FontWeight.w400,
             height: 1.40,
           ),
@@ -394,7 +399,7 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 14,
-                fontFamily: 'Synonym Variable',
+                fontFamily: 'Satoshi',
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -407,35 +412,35 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
             p: const TextStyle(
               color: Color(0xFFDDDDDD),
               fontSize: 12,
-              fontFamily: 'Synonym Variable',
+              fontFamily: 'Satoshi',
               fontWeight: FontWeight.w400,
               height: 1.60,
             ),
             strong: const TextStyle(
               color: Colors.white,
               fontSize: 12,
-              fontFamily: 'Synonym Variable',
+              fontFamily: 'Satoshi',
               fontWeight: FontWeight.w700,
               height: 1.60,
             ),
             listBullet: const TextStyle(
               color: Color(0xFFDDDDDD),
               fontSize: 12,
-              fontFamily: 'Synonym Variable',
+              fontFamily: 'Satoshi',
               fontWeight: FontWeight.w400,
               height: 1.60,
             ),
             blockquote: const TextStyle(
               color: Color(0xFFDDDDDD),
               fontSize: 12,
-              fontFamily: 'Synonym Variable',
+              fontFamily: 'Satoshi',
               fontWeight: FontWeight.w400,
               height: 1.60,
             ),
             a: const TextStyle(
               color: Color(0xFF8EC5FF),
               fontSize: 12,
-              fontFamily: 'Synonym Variable',
+              fontFamily: 'Satoshi',
               fontWeight: FontWeight.w500,
               height: 1.60,
             ),
@@ -468,7 +473,7 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
         style: TextStyle(
           color: Colors.white,
           fontSize: 10,
-          fontFamily: 'Synonym Variable',
+          fontFamily: 'Satoshi',
           fontWeight: FontWeight.w400,
           height: 1.40,
         ),
@@ -486,13 +491,13 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
         hintStyle: const TextStyle(
           color: Color(0xFFA6A6A6),
           fontSize: 12,
-          fontFamily: 'Synonym Variable',
+          fontFamily: 'Satoshi',
           fontWeight: FontWeight.w400,
         ),
         textStyle: const TextStyle(
           color: Colors.white,
           fontSize: 12,
-          fontFamily: 'Synonym Variable',
+          fontFamily: 'Satoshi',
           fontWeight: FontWeight.w400,
         ),
         onsubmit: _onSend,

@@ -376,7 +376,7 @@ class _VerseResultCardState extends State<_VerseResultCard> {
                   style: const TextStyle(
                     color: ColorPalette.primaryColor,
                     fontSize: 40,
-                    fontFamily: 'Synonym Variable',
+                    fontFamily: 'Satoshi',
                     fontWeight: FontWeight.w500,
                     letterSpacing: 0.6,
                   ),
