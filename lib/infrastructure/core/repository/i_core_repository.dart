@@ -9,6 +9,6 @@ abstract class ICoreRepository {
   Future<Locale?> loadLocale();
   Locale? getLocale();
 
-  // Future<void> saveOnBoarding({required bool isBoarding});
-  // bool fetchOnBoarding();
+  Future<void> saveOnBoarding({required bool isBoarding});
+  bool fetchOnBoarding();
 }

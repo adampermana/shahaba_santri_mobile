@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
+import 'package:sahaba_mobile/business_logic/core_cubit/core_cubit.dart';
 import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/l10n/l10n.dart';
@@ -20,6 +21,10 @@ class App extends StatelessWidget {
         // BlocProvider(
         //   create: (_) => sl<ProductBloc>(),
         // ),
+        BlocProvider<CoreCubit>(
+          lazy: false,
+          create: (context) => sl<CoreCubit>()..fetchOnBoarding(),
+        ),
         BlocProvider(
           create: (_) => sl<NewsBloc>(),
         ),

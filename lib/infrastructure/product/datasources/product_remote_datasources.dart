@@ -58,7 +58,7 @@
 //       final data = {'image': encodedImage};
 //       debugPrint('================Uploading image: $image');
 //       debugPrint(
-//         '===============Image base64 length: ${encodedImage.length} characters',
+//     '===============Image base64 length: ${encodedImage.length} characters',
 //       );
 //       final response = await _dio.post<Map<String, dynamic>>(
 //         '/api/v1/product/scan',

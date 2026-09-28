@@ -755,6 +755,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.0"
+  flutter_onboarding_slider:
+    dependency: "direct main"
+    description:
+      path: "packages/flutter_onboarding_slider"
+      ref: sahaba
+      resolved-ref: a8b5671f12a3f0f6c887a547079e8ac3a2786b1a
+      url: "https://github.com/adampermana/flutter_onboarding_slider.git"
+    source: git
+    version: "1.0.11"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:

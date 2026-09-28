@@ -9,7 +9,7 @@ import 'package:sahaba_mobile/infrastructure/failures/failures.dart';
 import 'package:sahaba_mobile/infrastructure/prayer_schedule/repository/i_prayer_repository.dart';
 import 'package:sahaba_mobile/infrastructure/qibla/repository/i_qibla_repository.dart';
 
-// ─── Mocks ────────────────────────────────────────────────────────────────────
+// Mocks
 
 class MockQiblaRepository extends Mock implements IQiblaRepository {}
 
@@ -38,7 +38,7 @@ void _setupCompassMock({List<double>? initialData}) {
       );
 }
 
-// ─── Tests ────────────────────────────────────────────────────────────────────
+// Tests
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

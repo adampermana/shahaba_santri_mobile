@@ -101,11 +101,57 @@ extension ContextExtensionss on BuildContext {
   /// Gunakan width karena lebih tepat untuk layout responsif
   double get screenWidth => mediaQuerySize.width;
 
-  bool get isPhoneSmall => width < 400;
-  bool get isPhoneMedium => width >= 400 && width < 480;
-  bool get isPhoneLarge => width >= 480 && width < 600;
+  // Breakpoint Responsif
+  // Patokan utama: width (kategori phone/tablet)
+  // Patokan sekunder: height (tier small/medium/large dalam kategori)
+  //
+  // #Smartphone reference:
+  //   Small       : 360×640  @2.0
+  //   Galaxy S20  : 360×800  @4.0
+  //   OnePlus 8Pro: 360×800  @4.0
+  //   Medium      : 412×732  @2.0
+  //   Sony Xperia : 411×960  @4.0
+  //   Big         : 480×835  @2.0
+  //
+  // #Tablet reference:
+  //   Small  : 800×1280  @2.0
+  //   Medium : 1024×1350 @2.0
+  //   Large  : 1280×1880 @2.0
+  //
 
-  bool get isTabletSmall => width >= 600 && width < 720;
-  bool get isTabletMedium => width >= 720 && width < 1024;
-  bool get isTabletLarge => width >= 1024;
+  // Kategori utama
+  bool get isPhone => width < 600;
+  bool get isTablet => width >= 600;
+
+  // Phone tier (width < 600)
+  // Narrow  : width < 390  → 360dp (Small, Galaxy S20, OnePlus 8 Pro)
+  // Standard: 390–450      → 411–412dp (Sony Xperia, Medium)
+  // Wide    : 450–600      → 480dp (Big phone)
+  bool get isPhoneNarrow => width < 390;
+  bool get isPhoneStandard => width >= 390 && width < 450;
+  bool get isPhoneWide => width >= 450 && width < 600;
+
+  // Phone height tier (berlaku dalam isPhone)
+  // Short  : height < 750  → 640h (Small), 732h (Medium)
+  // Tall   : 750–900       → 800h (Galaxy S20, OnePlus), 835h (Big)
+  // XTall  : ≥ 900         → 960h (Sony Xperia)
+  bool get isPhoneShort => isPhone && height < 750;
+  bool get isPhoneTall => isPhone && height >= 750 && height < 900;
+  bool get isPhoneXTall => isPhone && height >= 900;
+
+  // Tablet tier (width ≥ 600)
+  // Small  : 600–900   → 800dp wide
+  // Medium : 900–1150  → 1024dp wide
+  // Large  : ≥ 1150    → 1280dp wide
+  bool get isTabletSmall => width >= 600 && width < 900;
+  bool get isTabletMedium => width >= 900 && width < 1150;
+  bool get isTabletLarge => width >= 1150;
+
+  // Legacy aliases — kompatibel dengan kode lama
+  // isPhoneSmall  → narrow width 360dp (Small, Galaxy S20, OnePlus)
+  // isPhoneMedium → standard width 411–412dp (Medium, Sony Xperia)
+  // isPhoneLarge  → wide width 480dp (Big phone)
+  bool get isPhoneSmall => isPhoneNarrow;
+  bool get isPhoneMedium => isPhoneStandard;
+  bool get isPhoneLarge => isPhoneWide;
 }

@@ -1595,7 +1595,6 @@ Widget _verseNumberBadge(
               shape: BoxShape.circle,
               border: Border.all(
                 color: _verseBadgeFigmaGreen,
-                width: 1,
               ),
             ),
             alignment: Alignment.center,

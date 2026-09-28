@@ -3,6 +3,25 @@ class RouterPath {
 
   /// Root paths
   static const String rootPath = '/';
+  static const String onboardingPath = '/onboarding';
+
+  //  Auth ─
+  static const String loginPath = '/login';
+
+  // [Login] => Register
+  static const String registerPath = 'register';
+
+  // [Login] => Lupa Password
+  static const String forgotPasswordPath = '/forgot-password';
+
+  // [Login | Register | Forgot Password] => Verifikasi OTP
+  static const String verifyAcountPath = 'verify-account';
+
+  // [Verify OTP — Forgot Password] => Password Baru
+  static const String newPasswordPath = 'new-password';
+
+  // [Verify OTP — Register] => Lengkapi Profil
+  static const String completeProfileRegisterPath = 'complete-profile-register';
 
   /// Main paths
   static const String mainPath = '/main';

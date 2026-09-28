@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/ai_chat_bloc/ai_chat_bloc.dart';
+import 'package:sahaba_mobile/business_logic/core_cubit/core_cubit.dart';
 import 'package:sahaba_mobile/business_logic/kisah_bloc/kisah_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
 import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
@@ -17,6 +18,8 @@ import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/login/login_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/register/register_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/calendar/calendar_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/chat/sahaba_ai_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/kisah/detail_kisah_screen.dart';
@@ -27,6 +30,7 @@ import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/jadwal_sholat_s
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/qibla_screen/qibla_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/select_city_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/main_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/onboarding/onboarding_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/detail_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
@@ -35,10 +39,22 @@ final GoRouter router = GoRouter(
   debugLogDiagnostics: kDebugMode,
   initialLocation: RouterPath.rootPath,
   redirect: (context, state) {
+    final isOnBoarded = sl<CoreCubit>().state.isBoarding;
     final location = state.matchedLocation;
 
-    if (location == RouterPath.rootPath) {
-      return RouterPath.mainPath;
+    // Belum onboarding → arahkan ke onboarding
+    if (!isOnBoarded) {
+      return location == RouterPath.onboardingPath
+          ? null
+          : RouterPath.onboardingPath;
+    }
+
+    // Sudah onboarding, jangan biarkan akses ke onboarding / root
+    final isOnboardingOrRoot =
+        location == RouterPath.onboardingPath ||
+        location == RouterPath.rootPath;
+    if (isOnboardingOrRoot) {
+      return RouterPath.loginPath;
     }
 
     return null;
@@ -63,6 +79,22 @@ final GoRouter router = GoRouter(
     );
   },
   routes: [
+    GoRoute(
+      path: RouterPath.onboardingPath,
+      builder: (context, state) => const OnboardingScreen(),
+    ),
+    GoRoute(
+      path: RouterPath.loginPath,
+      builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: RouterPath.registerPath,
+      builder: (context, state) => const RegisterScreen(),
+    ),
+    // GoRoute(
+    //   path: RouterPath.forgotPasswordPath,
+    //   builder: (context, state) => const Forg(),
+    // ),
     GoRoute(
       // Main path
       path: RouterPath.mainPath,

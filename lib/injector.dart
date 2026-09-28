@@ -6,6 +6,7 @@ import 'package:sahaba_mobile/business_logic/ai_chat_bloc/ai_chat_bloc.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/business_logic/calendar_bloc/calendar_bloc.dart';
 import 'package:sahaba_mobile/business_logic/city_search_bloc/city_search_bloc.dart';
+import 'package:sahaba_mobile/business_logic/core_cubit/core_cubit.dart';
 import 'package:sahaba_mobile/business_logic/kisah_bloc/kisah_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
@@ -92,7 +93,8 @@ Future<void> _initL10nFeature() async {
     ..registerLazySingleton<ICoreLocalDatasource>(
       HiveCoreLocalDatasource.new,
     )
-    ..registerLazySingleton<ICoreRepository>(() => CoreRepositories(sl()));
+    ..registerLazySingleton<ICoreRepository>(() => CoreRepositories(sl()))
+    ..registerLazySingleton(() => CoreCubit(sl()));
 }
 
 Future<void> _initLocationFeature() async {

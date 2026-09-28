@@ -33,7 +33,7 @@
 //   }
 
 //   @override
-//   Future<Either<ServerFailures, List<DropdownItems>>> getBrand(int val) async {
+// Future<Either<ServerFailures, List<DropdownItems>>> getBrand(int val) async {
 //     try {
 //       final result = await _remote.getBrand(val);
 //       return Right(result.data);

@@ -13,10 +13,10 @@ class CoreRepositories implements ICoreRepository {
   @override
   Locale? getLocale() => _localDatasource.locale;
 
-  // @override
-  // Future<void> saveOnBoarding({required bool isBoarding}) =>
-  //     _localDatasource.saveOnBoarding(isBoarding: isBoarding);
+  @override
+  Future<void> saveOnBoarding({required bool isBoarding}) =>
+      _localDatasource.saveOnBoarding(isBoarding: isBoarding);
 
-  // @override
-  // bool fetchOnBoarding() => _localDatasource.fetchOnBoarding();
+  @override
+  bool fetchOnBoarding() => _localDatasource.fetchOnBoarding();
 }
