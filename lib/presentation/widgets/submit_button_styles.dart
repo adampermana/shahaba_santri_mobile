@@ -153,7 +153,6 @@ class SubmitButtonStylesWidget extends StatelessWidget {
           borderColor: Colors.white.withValues(alpha: 0.35),
           borderWidth: 1,
           padding: padding ?? EdgeInsets.zero,
-          // shadowStrength: 3,
           child: isLoading
               ? const SizedBox(
                   width: 22,
@@ -164,7 +163,7 @@ class SubmitButtonStylesWidget extends StatelessWidget {
                   ),
                 )
               : Row(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (icon != null) ...[
                       icon!,

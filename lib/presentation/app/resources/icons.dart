@@ -65,6 +65,12 @@ abstract class AppIcons {
       '$_path/jadwal_sholat/sun-dzuhur-scene.svg';
   static const String jadwalSholatSunTerbitScene =
       '$_path/jadwal_sholat/sun-terbit-scene.svg';
+
+  // Auth
+  static const String authHeader = '$_path/auth_header.svg';
+  static const String iconMail = '$_path/icon-mail.svg';
+  static const String iconGoogle = '$_path/icon-google.svg';
+  static const String iconApple = '$_path/icon-apple.svg';
 }
 
 abstract class QiblaIcons {
