@@ -528,6 +528,7 @@ class CustomEmailFormField extends StatefulWidget {
     this.fillColor,
     this.showShadow = false,
     this.colorBorder,
+    this.focusedBorderColor,
     this.useBorder = false,
     this.borderRadius,
     this.contentPadding,
@@ -559,6 +560,7 @@ class CustomEmailFormField extends StatefulWidget {
   final Color? fillColor;
   final bool showShadow;
   final Color? colorBorder;
+  final Color? focusedBorderColor;
   final bool useBorder;
   final double? borderRadius;
   final EdgeInsetsGeometry? contentPadding;
@@ -837,7 +839,10 @@ class _CustomEmailFormFieldState extends State<CustomEmailFormField> {
                   enabledBorder: widget.readOnly
                       ? b(const Color(0xFFCCCCCC))
                       : noBorder,
-                  focusedBorder: b(theme.colorScheme.primary, 2),
+                  focusedBorder: b(
+                      widget.focusedBorderColor ?? theme.colorScheme.primary,
+                      2,
+                    ),
                   disabledBorder: noBorder,
                   errorBorder: b(theme.colorScheme.error, 2),
                   focusedErrorBorder: b(theme.colorScheme.error, 2),
@@ -886,7 +891,11 @@ class _CustomEmailFormFieldState extends State<CustomEmailFormField> {
                     : (widget.readOnly ? b(const Color(0xFFCCCCCC)) : noBorder);
                 final inputFocusedBorder = hasError
                     ? b(theme.colorScheme.error, 2)
-                    : b(theme.colorScheme.primary, 2);
+                    : b(
+                        widget.focusedBorderColor ??
+                            theme.colorScheme.primary,
+                        2,
+                      );
                 final effectiveErrorStyle =
                     widget.errorStyle ??
                     TextStyle(color: theme.colorScheme.error, fontSize: 12);
@@ -1032,6 +1041,7 @@ class CustomPasswordFormField extends StatefulWidget {
     this.colorBorder,
     this.useBorder = false,
     this.borderRadius,
+    this.focusedBorderColor,
   });
 
   final TextEditingController? controller;
@@ -1061,6 +1071,7 @@ class CustomPasswordFormField extends StatefulWidget {
   final Color? colorBorder;
   final bool useBorder;
   final double? borderRadius;
+  final Color? focusedBorderColor;
 
   @override
   State<CustomPasswordFormField> createState() =>
@@ -1110,6 +1121,7 @@ class _CustomPasswordFormFieldState extends State<CustomPasswordFormField> {
       colorBorder: widget.colorBorder,
       useBorder: widget.useBorder,
       borderRadius: widget.borderRadius,
+      focusedBorderColor: widget.focusedBorderColor,
     );
   }
 }

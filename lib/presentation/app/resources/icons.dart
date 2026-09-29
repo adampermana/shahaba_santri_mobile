@@ -71,6 +71,8 @@ abstract class AppIcons {
   static const String iconMail = '$_path/icon-mail.svg';
   static const String iconGoogle = '$_path/icon-google.svg';
   static const String iconApple = '$_path/icon-apple.svg';
+  static const String iconLock = '$_path/icon-lock.svg';
+  static const String iconEyeOff = '$_path/icon-eye-off.svg';
 }
 
 abstract class QiblaIcons {

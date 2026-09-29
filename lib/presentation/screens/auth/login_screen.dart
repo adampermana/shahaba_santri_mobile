@@ -4,6 +4,7 @@ import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_password.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
@@ -24,10 +25,20 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _onLanjut() {
-    if (_formKey.currentState?.validate() ?? false) {
-      // TODO: navigate ke next step / cek email
-    }
+  Future<void> _onLanjut() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    await BottomSheetPassword.show(
+      context,
+      email: _emailController.text.trim(),
+      onKonfirmasi: (password) {
+        Navigator.of(context).pop();
+        // TODO: proses login dengan email + password
+      },
+      onLupaPassword: () {
+        Navigator.of(context).pop();
+        // TODO: navigate ke forgot password
+      },
+    );
   }
 
   void _onGoogle() {
@@ -113,54 +124,47 @@ class _LoginScreenState extends State<LoginScreen> {
                                     const SizedBox(height: 24),
 
                                     // Email Field
-                                    Theme(
-                                      data: Theme.of(context).copyWith(
-                                        colorScheme: Theme.of(context)
-                                            .colorScheme
-                                            .copyWith(
-                                              primary: const Color(0xFF007D56),
-                                            ),
-                                      ),
-                                      child: CustomEmailFormField(
-                                        controller: _emailController,
-                                        hintText: 'Ketik emailmu di sini',
-                                        labelText: 'Email kamu',
-                                        labelTextColor:
-                                            ColorPalette.inverseSecondary,
-                                        textInputAction: TextInputAction.done,
-                                        fillColor: const Color(0x1FFFFFFF),
-                                        useBorder: true,
-                                        colorBorder: const Color(0x29E8E8E8),
-                                        borderRadius: 12,
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                              horizontal: 16,
-                                              vertical: 12,
-                                            ),
-                                        textStyle: const TextStyle(
-                                          fontFamily: 'Satoshi',
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12,
-                                          color: ColorPalette.kWhite,
-                                        ),
-                                        hintStyle: const TextStyle(
-                                          fontFamily: 'Satoshi',
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12,
-                                          color: ColorPalette.contentDisabled,
-                                        ),
-                                        prefixIcon: Padding(
-                                          padding: const EdgeInsets.symmetric(
+                                    CustomEmailFormField(
+                                      controller: _emailController,
+                                      hintText: 'Ketik emailmu di sini',
+                                      labelText: 'Email kamu',
+                                      labelTextColor:
+                                          ColorPalette.inverseSecondary,
+                                      textInputAction: TextInputAction.done,
+                                      fillColor: const Color(0x1FFFFFFF),
+                                      useBorder: true,
+                                      colorBorder: const Color(0x29E8E8E8),
+                                      focusedBorderColor:
+                                          const Color(0xFF007D56),
+                                      borderRadius: 12,
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
                                             horizontal: 16,
+                                            vertical: 12,
                                           ),
-                                          child: SvgPicture.asset(
-                                            AppIcons.iconMail,
-                                            width: 18,
-                                            height: 18,
-                                          ),
-                                        ),
-                                        onsubmit: (_) => _onLanjut(),
+                                      textStyle: const TextStyle(
+                                        fontFamily: 'Satoshi',
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                        color: ColorPalette.kWhite,
                                       ),
+                                      hintStyle: const TextStyle(
+                                        fontFamily: 'Satoshi',
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12,
+                                        color: ColorPalette.contentDisabled,
+                                      ),
+                                      prefixIcon: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                        ),
+                                        child: SvgPicture.asset(
+                                          AppIcons.iconMail,
+                                          width: 18,
+                                          height: 18,
+                                        ),
+                                      ),
+                                      onsubmit: (_) => _onLanjut(),
                                     ),
 
                                     const SizedBox(height: 24),
