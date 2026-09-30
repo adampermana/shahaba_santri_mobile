@@ -17,9 +17,9 @@ import 'package:sahaba_mobile/domains/news/news_response.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/injector.dart';
+import 'package:sahaba_mobile/presentation/controller/animation_controller.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
-import 'package:sahaba_mobile/presentation/screens/auth/login_screen.dart';
-import 'package:sahaba_mobile/presentation/screens/auth/register_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/auth_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/calendar/calendar_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/chat/sahaba_ai_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/kisah/detail_kisah_screen.dart';
@@ -85,11 +85,12 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: RouterPath.loginPath,
-      builder: (context, state) => const LoginScreen(),
+      builder: (context, state) => const AuthScreen(),
     ),
     GoRoute(
       path: RouterPath.registerPath,
-      builder: (context, state) => const RegisterScreen(),
+      builder: (context, state) =>
+          const AuthScreen(initialMode: AuthMode.register),
     ),
     // GoRoute(
     //   path: RouterPath.forgotPasswordPath,

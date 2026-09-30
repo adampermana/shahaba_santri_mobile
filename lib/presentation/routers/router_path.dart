@@ -8,8 +8,8 @@ class RouterPath {
   //  Auth ─
   static const String loginPath = '/login';
 
-  // [Login] => Register
-  static const String registerPath = 'register';
+  // [Login] =\> Register
+  static const String registerPath = '/register';
 
   // [Login] => Lupa Password
   static const String forgotPasswordPath = '/forgot-password';
