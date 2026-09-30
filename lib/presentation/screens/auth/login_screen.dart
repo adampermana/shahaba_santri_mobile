@@ -18,6 +18,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
+  bool get isComplete => _emailController.text.trim().length >= 4;
 
   @override
   void dispose() {
@@ -26,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _onLanjut() async {
+    if (!isComplete) return;
     if (!(_formKey.currentState?.validate() ?? false)) return;
     await BottomSheetPassword.show(
       context,
@@ -134,8 +136,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       fillColor: const Color(0x1FFFFFFF),
                                       useBorder: true,
                                       colorBorder: const Color(0x29E8E8E8),
-                                      focusedBorderColor:
-                                          const Color(0xFF007D56),
+                                      focusedBorderColor: const Color(
+                                        0xFF007D56,
+                                      ),
                                       borderRadius: 12,
                                       contentPadding:
                                           const EdgeInsets.symmetric(
@@ -155,8 +158,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                         color: ColorPalette.contentDisabled,
                                       ),
                                       prefixIcon: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 16,
+                                        padding: const EdgeInsets.only(
+                                          right: 10,
+                                          left: 16,
                                         ),
                                         child: SvgPicture.asset(
                                           AppIcons.iconMail,
@@ -172,10 +176,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                     // Tombol Lanjut
                                     SubmitButtonStylesWidget(
                                       style: SubmitButtonStyle.elevated,
-                                      primaryColor: const Color(0xFF007D56),
+                                      primaryColor: isComplete
+                                          ? ColorPalette.primaryColor
+                                          : ColorPalette.contentDisabled,
                                       textButton: 'Lanjut',
                                       height: 48,
                                       radius: 14,
+                                      isActive: isComplete,
                                       textStyle: const TextStyle(
                                         fontFamily: 'Satoshi',
                                         fontWeight: FontWeight.w700,
@@ -308,7 +315,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           children: [
                                             TextSpan(
                                               text:
-                                                  'Dengan melanjutkan, Anda menyetujui \n',
+                                                  'Dengan melanjutkan, Anda '
+                                                  'menyetujui \n',
                                               style: TextStyle(
                                                 color: ColorPalette
                                                     .contentDisabled,

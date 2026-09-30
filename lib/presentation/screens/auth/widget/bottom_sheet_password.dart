@@ -48,6 +48,8 @@ class BottomSheetPassword extends StatefulWidget {
 
 class _BottomSheetPasswordState extends State<BottomSheetPassword> {
   final _passwordController = TextEditingController();
+  bool get isComplete => _passwordController.text.trim().length >= 4;
+
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
@@ -58,6 +60,7 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
   }
 
   void _onKonfirmasi() {
+    if (!isComplete) return;
     if (!(_formKey.currentState?.validate() ?? false)) return;
     setState(() => _isLoading = true);
     widget.onKonfirmasi?.call(_passwordController.text);
@@ -163,7 +166,7 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
                     color: ColorPalette.contentDisabled,
                   ),
                   prefixIcon: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.only(right: 10, left: 16),
                     child: SvgPicture.asset(
                       AppIcons.iconLock,
                       width: 18,
@@ -191,11 +194,14 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
             //  Tombol Konfirmasi
             SubmitButtonStylesWidget(
               style: SubmitButtonStyle.elevated,
-              primaryColor: ColorPalette.primaryColor,
+              primaryColor: isComplete
+                  ? ColorPalette.primaryColor
+                  : ColorPalette.contentDisabled,
               textButton: 'Konfirmasi',
               height: 48,
               radius: 9999,
               isLoading: _isLoading,
+              isActive: isComplete,
               textStyle: const TextStyle(
                 fontFamily: 'Satoshi',
                 fontWeight: FontWeight.w700,
