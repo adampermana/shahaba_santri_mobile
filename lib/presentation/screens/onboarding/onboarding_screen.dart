@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/core_cubit/core_cubit.dart';
 import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
+import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -13,12 +14,20 @@ class OnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CoreCubit, CoreState>(
-      buildWhen: (prev, next) =>
-          prev.isBoarding != next.isBoarding ||
-          prev.isSubmmitBoard != next.isSubmmitBoard,
-      builder: (context, state) {
-        return OnBoardingSlider(
+    return BlocListener<CoreCubit, CoreState>(
+      listenWhen: (prev, next) => prev.isSubmmitBoard != next.isSubmmitBoard,
+      listener: (context, state) {
+        if (state.isSubmmitBoard) {
+          debugPrint('===== //${state.isBoarding} ke login');
+          context.go(RouterPath.loginPath);
+        }
+      },
+      child: BlocBuilder<CoreCubit, CoreState>(
+        buildWhen: (prev, next) =>
+            prev.isBoarding != next.isBoarding ||
+            prev.isSubmmitBoard != next.isSubmmitBoard,
+        builder: (context, state) {
+          return OnBoardingSlider(
             indicatorPosition: 2,
             // indicatorAbove: true,
             isTop: true,
@@ -31,8 +40,9 @@ class OnboardingScreen extends StatelessWidget {
                 fontWeight: FontWeight.w400,
               ),
             ),
-            skipFunctionOverride: () async =>
-                context.read<CoreCubit>().saveBoardingScreen(),
+            skipFunctionOverride: () async {
+              await context.read<CoreCubit>().saveBoardingScreen();
+            },
             centerBackground: true,
             totalPage: 3,
             finishButtonText: 'Yuk, Mulai!',
@@ -320,8 +330,9 @@ class OnboardingScreen extends StatelessWidget {
               ),
             ],
             headerBackgroundColor: ColorPalette.scaffoldBackground,
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

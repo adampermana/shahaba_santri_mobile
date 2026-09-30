@@ -54,13 +54,24 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+    _passwordController.addListener(_onPasswordChanged);
+  }
+
+  void _onPasswordChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
   void dispose() {
-    _passwordController.dispose();
+    _passwordController
+      ..removeListener(_onPasswordChanged)
+      ..dispose();
     super.dispose();
   }
 
   void _onKonfirmasi() {
-    if (!isComplete) return;
     if (!(_formKey.currentState?.validate() ?? false)) return;
     setState(() => _isLoading = true);
     widget.onKonfirmasi?.call(_passwordController.text);
@@ -82,7 +93,7 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //  Handle bar
+            // Handle bar
             Center(
               child: Container(
                 width: 40,
@@ -95,7 +106,7 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
               ),
             ),
 
-            //  Title
+            // Title
             const Center(
               child: Text(
                 'Masukin kata sandi kamu',
@@ -110,7 +121,7 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
 
             const SizedBox(height: 32),
 
-            //  Password Field
+            // Password Field
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -191,7 +202,7 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
 
             const SizedBox(height: 32),
 
-            //  Tombol Konfirmasi
+            // Tombol Konfirmasi
             SubmitButtonStylesWidget(
               style: SubmitButtonStyle.elevated,
               primaryColor: isComplete

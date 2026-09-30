@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
+import 'package:sahaba_mobile/infrastructure/extension/string_extension.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_password.dart';
@@ -21,13 +22,24 @@ class _LoginScreenState extends State<LoginScreen> {
   bool get isComplete => _emailController.text.trim().length >= 4;
 
   @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_onEmailChanged);
+  }
+
+  void _onEmailChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
   void dispose() {
-    _emailController.dispose();
+    _emailController
+      ..removeListener(_onEmailChanged)
+      ..dispose();
     super.dispose();
   }
 
   Future<void> _onLanjut() async {
-    if (!isComplete) return;
     if (!(_formKey.currentState?.validate() ?? false)) return;
     await BottomSheetPassword.show(
       context,
@@ -107,6 +119,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               child: Form(
                                 key: _formKey,
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -168,6 +182,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                           height: 18,
                                         ),
                                       ),
+                                      validator: (value) {
+                                        final cleanValue =
+                                            value?.trim() ?? '';
+                                        if (cleanValue.isEmpty) {
+                                          return 'Isi email kamu dulu, yuk!';
+                                        }
+                                        if (!cleanValue.isEmail) {
+                                          return 'Format email tidak valid';
+                                        }
+                                        return null;
+                                      },
                                       onsubmit: (_) => _onLanjut(),
                                     ),
 

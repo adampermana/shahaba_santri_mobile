@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:glass_kit/glass_kit.dart';
+import 'package:sahaba_mobile/infrastructure/extension/string_extension.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 
 class CustomTextFormFieldWidget extends StatelessWidget {
@@ -43,6 +44,7 @@ class CustomTextFormFieldWidget extends StatelessWidget {
     this.focusNode,
     this.minLines,
     this.maxLines = 1,
+    this.autovalidateMode,
   }) : assert(
          error == null || errorText == null,
          'Only one of error and errorText can be specified.',
@@ -86,15 +88,16 @@ class CustomTextFormFieldWidget extends StatelessWidget {
   final FocusNode? focusNode;
   final int? minLines;
   final int? maxLines;
+  final AutovalidateMode? autovalidateMode;
 
-  //  Warna fill default
+  // Warna fill default
   static const Color _kFillColor = ColorPalette.kGray;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    //  suffix builder ─
+    // suffix builder
     Widget? buildSuffix({required bool showClear}) {
       final widgets = <Widget>[];
 
@@ -117,7 +120,7 @@ class CustomTextFormFieldWidget extends StatelessWidget {
       return Row(mainAxisSize: MainAxisSize.min, children: widgets);
     }
 
-    //  border helpers ─
+    // border helpers
     final effectiveBorderRadius = BorderRadius.circular(borderRadius ?? 8);
     final effectiveContentPadding =
         contentPadding ??
@@ -140,7 +143,7 @@ class CustomTextFormFieldWidget extends StatelessWidget {
     );
 
     final InputBorder enabledBorder = manualError
-        ? border(theme.colorScheme.error, 2)
+        ? border(const Color(0xFFDE1135))
         : (useBorder
               ? border(colorBorder ?? const Color(0xFF231F20))
               : readOnly
@@ -148,20 +151,21 @@ class CustomTextFormFieldWidget extends StatelessWidget {
               : noBorder);
 
     final InputBorder focusedBorder = manualError
-        ? border(theme.colorScheme.error, 2)
+        ? border(const Color(0xFFDE1135))
         : border(
             focusedBorderColor ?? colorBorder ?? theme.colorScheme.primary,
-            2,
           );
 
-    final InputBorder errorBorder = border(theme.colorScheme.error, 2);
-    final InputBorder focusedErrorBorder = border(theme.colorScheme.error, 2);
+    final InputBorder errorBorder = border(const Color(0xFFDE1135));
+    final InputBorder focusedErrorBorder = border(
+      const Color(0xFFDE1135),
+    );
 
     final InputBorder disabledBorder = useBorder
         ? border(theme.disabledColor.withValues(alpha: 0.2))
         : noBorder;
 
-    //  shadow decoration helper ─
+    // shadow decoration helper
     const shadowDecoration = BoxDecoration(
       borderRadius: BorderRadius.all(Radius.circular(12)),
       boxShadow: [
@@ -180,79 +184,40 @@ class CustomTextFormFieldWidget extends StatelessWidget {
       ],
     );
 
-    //  InputDecoration builder (reused below)
-    InputDecoration inputDecoration({bool hideError = false}) =>
-        InputDecoration(
-          filled: true,
-          fillColor: fillColor ?? (readOnly ? _kFillColor : _kFillColor),
-          hintText: hintText,
-          hintStyle:
-              hintStyle ?? TextStyle(color: theme.disabledColor, fontSize: 14),
-          prefixIcon: prefixIcon,
-          contentPadding: effectiveContentPadding,
-          border: enabledBorder,
-          enabledBorder: enabledBorder,
-          focusedBorder: focusedBorder,
-          disabledBorder: disabledBorder,
-          errorBorder: errorBorder,
-          focusedErrorBorder: focusedErrorBorder,
-          error: error,
-          errorText: errorText,
-          errorStyle: hideError
-              ? const TextStyle(fontSize: 0, height: 0)
-              : errorStyle ??
-                    TextStyle(color: theme.colorScheme.error, fontSize: 12),
-          errorMaxLines: errorMaxLines,
-          suffixIconConstraints: suffixIconConstraints,
-        );
-
-    //  core TextFormField ─
+    // core FormField + TextField
     Widget textField({required Widget? suffix}) {
-      // Tanpa shadow → pakai TextFormField biasa
-      if (!showShadow) {
-        return TextFormField(
-          key: key,
-          focusNode: focusNode,
-          controller: controller,
-          initialValue: controller == null ? initialValue : null,
-          obscureText: obscureText,
-          readOnly: readOnly,
-          onFieldSubmitted: onsubmit,
-          keyboardType: keyboardType,
-          textInputAction: textInputAction,
-          textCapitalization: textCapitalization,
-          minLines: effectiveMinLines,
-          maxLines: effectiveMaxLines,
-          inputFormatters: inputFormatters,
-          style: textStyle ?? DefaultTextStyle.of(context).style,
-          decoration: inputDecoration().copyWith(suffixIcon: suffix),
-          onTap: onTap,
-          onChanged: onChanged,
-          validator: validator,
-        );
-      }
-
-      // Dengan shadow → pisah input (shadow) dan error text (di bawah)
       return FormField<String>(
+        autovalidateMode: autovalidateMode,
         initialValue: controller?.text ?? initialValue ?? '',
         validator: validator != null
             ? (value) => validator!(controller?.text ?? value)
             : null,
         builder: (state) {
-          // Sync error dari FormField ke InputDecoration border
           final validationErrorText = state.errorText;
           final hasError =
-              validationErrorText != null || error != null || errorText != null;
+              validationErrorText != null ||
+              error != null ||
+              errorText != null ||
+              manualError;
           final inputBorder = hasError ? errorBorder : enabledBorder;
           final inputFocusedBorder = hasError
               ? focusedErrorBorder
               : focusedBorder;
+
           final effectiveErrorStyle =
               errorStyle ??
-              TextStyle(color: theme.colorScheme.error, fontSize: 12);
+              const TextStyle(
+                fontFamily: 'Satoshi',
+                fontWeight: FontWeight.w700,
+                fontSize: 12,
+                color: Color(0xFFDE1135),
+              );
+
           final errorWidget =
               error ??
-              (validationErrorText != null || errorText != null
+              ((validationErrorText != null &&
+                          validationErrorText.isNotEmpty) ||
+                      (errorText != null && errorText!.isNotEmpty)
                   ? Text(
                       validationErrorText ?? errorText!,
                       style: effectiveErrorStyle,
@@ -263,58 +228,60 @@ class CustomTextFormFieldWidget extends StatelessWidget {
                     )
                   : null);
 
+          Widget inputField = TextField(
+            key: key,
+            focusNode: focusNode,
+            controller: controller,
+            obscureText: obscureText,
+            readOnly: readOnly,
+            onSubmitted: onsubmit,
+            keyboardType: keyboardType,
+            textInputAction: textInputAction,
+            textCapitalization: textCapitalization,
+            minLines: effectiveMinLines,
+            maxLines: effectiveMaxLines,
+            inputFormatters: inputFormatters,
+            style: textStyle ?? DefaultTextStyle.of(context).style,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: fillColor ?? (readOnly ? _kFillColor : _kFillColor),
+              hintText: hintText,
+              hintStyle:
+                  hintStyle ??
+                  TextStyle(color: theme.disabledColor, fontSize: 14),
+              prefixIcon: prefixIcon,
+              suffixIcon: suffix,
+              contentPadding: effectiveContentPadding,
+              border: inputBorder,
+              enabledBorder: inputBorder,
+              focusedBorder: inputFocusedBorder,
+              disabledBorder: disabledBorder,
+              errorBorder: errorBorder,
+              focusedErrorBorder: focusedErrorBorder,
+              suffixIconConstraints: suffixIconConstraints,
+            ),
+            onTap: onTap,
+            onChanged: (value) {
+              state.didChange(value);
+              onChanged?.call(value);
+            },
+          );
+
+          if (showShadow) {
+            inputField = DecoratedBox(
+              decoration: hasError ? const BoxDecoration() : shadowDecoration,
+              child: inputField,
+            );
+          }
+
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //  Shadow hanya di sekitar input
-              DecoratedBox(
-                decoration: hasError
-                    ? const BoxDecoration() // tanpa shadow saat error
-                    : shadowDecoration,
-                child: TextField(
-                  focusNode: focusNode,
-                  controller: controller,
-                  obscureText: obscureText,
-                  readOnly: readOnly,
-                  onSubmitted: onsubmit,
-                  keyboardType: keyboardType,
-                  textInputAction: textInputAction,
-                  textCapitalization: textCapitalization,
-                  minLines: effectiveMinLines,
-                  maxLines: effectiveMaxLines,
-                  inputFormatters: inputFormatters,
-                  style: textStyle ?? DefaultTextStyle.of(context).style,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor:
-                        fillColor ?? (readOnly ? _kFillColor : _kFillColor),
-                    hintText: hintText,
-                    hintStyle:
-                        hintStyle ??
-                        TextStyle(color: theme.disabledColor, fontSize: 14),
-                    prefixIcon: prefixIcon,
-                    suffixIcon: suffix,
-                    contentPadding: effectiveContentPadding,
-                    border: inputBorder,
-                    enabledBorder: inputBorder,
-                    focusedBorder: inputFocusedBorder,
-                    disabledBorder: disabledBorder,
-                    errorBorder: errorBorder,
-                    focusedErrorBorder: focusedErrorBorder,
-                    suffixIconConstraints: suffixIconConstraints,
-                  ),
-                  onTap: onTap,
-                  onChanged: (value) {
-                    state.didChange(value);
-                    onChanged?.call(value);
-                  },
-                ),
-              ),
-              //  Error text di bawah shadow
+              inputField,
               if (errorWidget != null)
                 Padding(
-                  padding: const EdgeInsets.only(top: 6, left: 12),
+                  padding: const EdgeInsets.only(top: 8),
                   child: DefaultTextStyle.merge(
                     style: effectiveErrorStyle,
                     maxLines: errorMaxLines,
@@ -330,7 +297,7 @@ class CustomTextFormFieldWidget extends StatelessWidget {
       );
     }
 
-    //  label + field
+    // label + field
     Widget labeledField(Widget field) {
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -363,7 +330,7 @@ class CustomTextFormFieldWidget extends StatelessWidget {
       );
     }
 
-    //  build dengan ValueListenableBuilder bila ada controller
+    // build dengan ValueListenableBuilder bila ada controller
     if (controller != null) {
       return ValueListenableBuilder<TextEditingValue>(
         valueListenable: controller!,
@@ -413,6 +380,7 @@ class CustomPasswordFormFieldWidget extends StatefulWidget {
     this.borderRadius,
     this.contentPadding,
     this.suffixIconConstraints,
+    this.autovalidateMode,
   });
 
   final TextEditingController? controller;
@@ -445,6 +413,7 @@ class CustomPasswordFormFieldWidget extends StatefulWidget {
   final double? borderRadius;
   final EdgeInsetsGeometry? contentPadding;
   final BoxConstraints? suffixIconConstraints;
+  final AutovalidateMode? autovalidateMode;
 
   @override
   State<CustomPasswordFormFieldWidget> createState() =>
@@ -480,6 +449,7 @@ class _CustomPasswordFormFieldWidgetState
       borderRadius: widget.borderRadius,
       contentPadding: widget.contentPadding,
       suffixIconConstraints: widget.suffixIconConstraints,
+      autovalidateMode: widget.autovalidateMode,
       suffixIcon: GestureDetector(
         onTap: () => setState(() => _isObscuring = !_isObscuring),
         child: Icon(
@@ -532,6 +502,7 @@ class CustomEmailFormField extends StatefulWidget {
     this.useBorder = false,
     this.borderRadius,
     this.contentPadding,
+    this.autovalidateMode,
   }) : assert(
          error == null || errorText == null,
          'Only one of error and errorText can be specified.',
@@ -564,6 +535,7 @@ class CustomEmailFormField extends StatefulWidget {
   final bool useBorder;
   final double? borderRadius;
   final EdgeInsetsGeometry? contentPadding;
+  final AutovalidateMode? autovalidateMode;
 
   @override
   State<CustomEmailFormField> createState() => _CustomEmailFormFieldState();
@@ -737,12 +709,6 @@ class _CustomEmailFormFieldState extends State<CustomEmailFormField> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    //  border sesuai desain (sama dengan CustomTextFormFieldWidget)
-    // • enabled/empty      → no border
-    // • focused            → border primary (ungu) width 2
-    // • error              → border merah width 2
-    // • disabled           → no border, fill pudar
-    // • readOnly           → border grey tipis
     final effectiveBorderRadius = BorderRadius.circular(
       widget.borderRadius ?? 8,
     );
@@ -766,6 +732,36 @@ class _CustomEmailFormFieldState extends State<CustomEmailFormField> {
           ? BorderSide(color: effectiveBorderColor)
           : const BorderSide(color: Colors.transparent, width: 0),
     );
+
+    const shadowDeco = BoxDecoration(
+      borderRadius: BorderRadius.all(Radius.circular(12)),
+      boxShadow: [
+        BoxShadow(
+          color: Color(0x19000000),
+          blurRadius: 6,
+          offset: Offset(0, 4),
+          spreadRadius: -1,
+        ),
+        BoxShadow(
+          color: Color(0x0F000000),
+          blurRadius: 4,
+          offset: Offset(0, 2),
+          spreadRadius: -1,
+        ),
+      ],
+    );
+
+    final suffix = _currentInput.isNotEmpty && !widget.readOnly
+        ? GestureDetector(
+            onTap: () {
+              _controller.clear();
+              setState(() => _currentInput = '');
+              _hideSuggestions();
+              widget.onChanged?.call('');
+            },
+            child: const Icon(Icons.clear, size: 18),
+          )
+        : null;
 
     return CompositedTransformTarget(
       link: _layerLink,
@@ -791,76 +787,55 @@ class _CustomEmailFormFieldState extends State<CustomEmailFormField> {
                       ],
               ),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 8),
           ],
-          () {
-            //  shadow decoration
-            const shadowDeco = BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0x19000000),
-                  blurRadius: 6,
-                  offset: Offset(0, 4),
-                  spreadRadius: -1,
-                ),
-                BoxShadow(
-                  color: Color(0x0F000000),
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                  spreadRadius: -1,
-                ),
-              ],
-            );
+          FormField<String>(
+            autovalidateMode: widget.autovalidateMode,
+            initialValue: _controller.text,
+            validator: widget.validator ?? _defaultEmailValidator,
+            builder: (state) {
+              final validationErrorText = state.errorText;
+              final hasError =
+                  validationErrorText != null ||
+                  widget.error != null ||
+                  widget.errorText != null;
 
-            //  InputDecoration shared
-            InputDecoration emailInputDeco({bool hideError = false}) =>
-                InputDecoration(
-                  filled: true,
-                  fillColor: widget.fillColor ?? const Color(0xFFE8E8E8),
-                  hintText: widget.hintText,
-                  hintStyle:
-                      widget.hintStyle ??
-                      TextStyle(color: theme.disabledColor, fontSize: 14),
-                  prefixIcon: widget.prefixIcon,
-                  suffixIcon: _currentInput.isNotEmpty && !widget.readOnly
-                      ? GestureDetector(
-                          onTap: () {
-                            _controller.clear();
-                            setState(() => _currentInput = '');
-                            _hideSuggestions();
-                            widget.onChanged?.call('');
-                          },
-                          child: const Icon(Icons.clear, size: 18),
-                        )
-                      : null,
-                  contentPadding: effectiveContentPadding,
-                  border: noBorder,
-                  enabledBorder: widget.readOnly
-                      ? b(const Color(0xFFCCCCCC))
-                      : noBorder,
-                  focusedBorder: b(
+              final inputBorder = hasError
+                  ? b(const Color(0xFFDE1135))
+                  : (widget.readOnly ? b(const Color(0xFFCCCCCC)) : noBorder);
+
+              final inputFocusedBorder = hasError
+                  ? b(const Color(0xFFDE1135))
+                  : b(
                       widget.focusedBorderColor ?? theme.colorScheme.primary,
-                      2,
-                    ),
-                  disabledBorder: noBorder,
-                  errorBorder: b(theme.colorScheme.error, 2),
-                  focusedErrorBorder: b(theme.colorScheme.error, 2),
-                  error: widget.error,
-                  errorText: widget.errorText,
-                  errorStyle: hideError
-                      ? const TextStyle(fontSize: 0, height: 0)
-                      : widget.errorStyle ??
-                            TextStyle(
-                              color: theme.colorScheme.error,
-                              fontSize: 12,
-                            ),
-                  errorMaxLines: widget.errorMaxLines,
-                );
+                    );
 
-            // Tanpa shadow → TextFormField biasa
-            if (!widget.showShadow) {
-              return TextFormField(
+              final effectiveErrorStyle =
+                  widget.errorStyle ??
+                  const TextStyle(
+                    fontFamily: 'Satoshi',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                    color: Color(0xFFDE1135),
+                  );
+
+              final errorWidget =
+                  widget.error ??
+                  ((validationErrorText != null &&
+                              validationErrorText.isNotEmpty) ||
+                          (widget.errorText != null &&
+                              widget.errorText!.isNotEmpty)
+                      ? Text(
+                          validationErrorText ?? widget.errorText!,
+                          style: effectiveErrorStyle,
+                          maxLines: widget.errorMaxLines,
+                          overflow: widget.errorMaxLines == null
+                              ? null
+                              : TextOverflow.ellipsis,
+                        )
+                      : null);
+
+              Widget inputField = TextField(
                 key: widget.key,
                 controller: _controller,
                 focusNode: _focusNode,
@@ -868,144 +843,74 @@ class _CustomEmailFormFieldState extends State<CustomEmailFormField> {
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: widget.textInputAction,
                 style: widget.textStyle ?? DefaultTextStyle.of(context).style,
-                decoration: emailInputDeco(),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: widget.fillColor ?? const Color(0xFFE8E8E8),
+                  hintText: widget.hintText,
+                  hintStyle:
+                      widget.hintStyle ??
+                      TextStyle(
+                        color: theme.disabledColor,
+                        fontSize: 14,
+                      ),
+                  prefixIcon: widget.prefixIcon,
+                  suffixIcon: suffix,
+                  contentPadding: effectiveContentPadding,
+                  border: inputBorder,
+                  enabledBorder: inputBorder,
+                  focusedBorder: inputFocusedBorder,
+                  disabledBorder: noBorder,
+                  errorBorder: b(const Color(0xFFDE1135)),
+                  focusedErrorBorder: b(const Color(0xFFDE1135)),
+                ),
                 onTap: widget.onTap,
-                onChanged: _onTextChanged,
-                onFieldSubmitted: widget.onsubmit,
-                validator: widget.validator ?? _defaultEmailValidator,
+                onChanged: (value) {
+                  state.didChange(value);
+                  _onTextChanged(value);
+                },
+                onSubmitted: widget.onsubmit,
               );
-            }
 
-            // Dengan shadow → pisah input (shadow) dan error text
-            return FormField<String>(
-              initialValue: _controller.text,
-              validator: widget.validator ?? _defaultEmailValidator,
-              builder: (state) {
-                final validationErrorText = state.errorText;
-                final hasError =
-                    validationErrorText != null ||
-                    widget.error != null ||
-                    widget.errorText != null;
-                final inputBorder = hasError
-                    ? b(theme.colorScheme.error, 2)
-                    : (widget.readOnly ? b(const Color(0xFFCCCCCC)) : noBorder);
-                final inputFocusedBorder = hasError
-                    ? b(theme.colorScheme.error, 2)
-                    : b(
-                        widget.focusedBorderColor ??
-                            theme.colorScheme.primary,
-                        2,
-                      );
-                final effectiveErrorStyle =
-                    widget.errorStyle ??
-                    TextStyle(color: theme.colorScheme.error, fontSize: 12);
-                final errorWidget =
-                    widget.error ??
-                    (validationErrorText != null || widget.errorText != null
-                        ? Text(
-                            validationErrorText ?? widget.errorText!,
-                            style: effectiveErrorStyle,
-                            maxLines: widget.errorMaxLines,
-                            overflow: widget.errorMaxLines == null
-                                ? null
-                                : TextOverflow.ellipsis,
-                          )
-                        : null);
+              if (widget.showShadow) {
+                inputField = DecoratedBox(
+                  decoration: hasError ? const BoxDecoration() : shadowDeco,
+                  child: inputField,
+                );
+              }
 
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    DecoratedBox(
-                      decoration: hasError ? const BoxDecoration() : shadowDeco,
-                      child: TextField(
-                        controller: _controller,
-                        focusNode: _focusNode,
-                        readOnly: widget.readOnly,
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: widget.textInputAction,
-                        style:
-                            widget.textStyle ??
-                            DefaultTextStyle.of(context).style,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor:
-                              widget.fillColor ?? const Color(0xFFE8E8E8),
-                          hintText: widget.hintText,
-                          hintStyle:
-                              widget.hintStyle ??
-                              TextStyle(
-                                color: theme.disabledColor,
-                                fontSize: 14,
-                              ),
-                          prefixIcon: widget.prefixIcon,
-                          suffixIcon:
-                              _currentInput.isNotEmpty && !widget.readOnly
-                              ? GestureDetector(
-                                  onTap: () {
-                                    _controller.clear();
-                                    setState(() => _currentInput = '');
-                                    _hideSuggestions();
-                                    widget.onChanged?.call('');
-                                  },
-                                  child: const Icon(Icons.clear, size: 18),
-                                )
-                              // IconButton(
-                              //     icon: const Icon(Icons.clear, size: 18),
-                              //     onPressed: () {
-                              //       _controller.clear();
-                              //       setState(() => _currentInput = '');
-                              //       _hideSuggestions();
-                              //       widget.onChanged?.call('');
-                              //     },
-                              //   )
-                              : null,
-                          contentPadding: effectiveContentPadding,
-                          border: inputBorder,
-                          enabledBorder: inputBorder,
-                          focusedBorder: inputFocusedBorder,
-                          disabledBorder: noBorder,
-                          errorBorder: b(theme.colorScheme.error, 2),
-                          focusedErrorBorder: b(theme.colorScheme.error, 2),
-                        ),
-                        onTap: widget.onTap,
-                        onChanged: (value) {
-                          state.didChange(value);
-                          _onTextChanged(value);
-                        },
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  inputField,
+                  if (errorWidget != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: DefaultTextStyle.merge(
+                        style: effectiveErrorStyle,
+                        maxLines: widget.errorMaxLines,
+                        overflow: widget.errorMaxLines == null
+                            ? TextOverflow.clip
+                            : TextOverflow.ellipsis,
+                        child: errorWidget,
                       ),
                     ),
-                    if (errorWidget != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 6, left: 12),
-                        child: DefaultTextStyle.merge(
-                          style: effectiveErrorStyle,
-                          maxLines: widget.errorMaxLines,
-                          overflow: widget.errorMaxLines == null
-                              ? TextOverflow.clip
-                              : TextOverflow.ellipsis,
-                          child: errorWidget,
-                        ),
-                      ),
-                  ],
-                );
-              },
-            );
-          }(),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );
   }
 
   static String? _defaultEmailValidator(String? value) {
-    if (value == null || value.isEmpty) {
+    final cleanValue = value?.trim() ?? '';
+    if (cleanValue.isEmpty) {
       return 'Email tidak boleh kosong';
     }
-    final emailRegex = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    );
-    if (!emailRegex.hasMatch(value)) {
-      return 'Format email tidak valid';
+    if (!cleanValue.isEmail) {
+      return 'Emailya kurang pas nih. Coba dicek lagi, ya.';
     }
     return null;
   }
@@ -1042,6 +947,7 @@ class CustomPasswordFormField extends StatefulWidget {
     this.useBorder = false,
     this.borderRadius,
     this.focusedBorderColor,
+    this.autovalidateMode,
   });
 
   final TextEditingController? controller;
@@ -1072,6 +978,7 @@ class CustomPasswordFormField extends StatefulWidget {
   final bool useBorder;
   final double? borderRadius;
   final Color? focusedBorderColor;
+  final AutovalidateMode? autovalidateMode;
 
   @override
   State<CustomPasswordFormField> createState() =>
@@ -1107,6 +1014,7 @@ class _CustomPasswordFormFieldState extends State<CustomPasswordFormField> {
               ? widget.invisiblePasswordIcon
               : widget.visiblePasswordIcon,
           size: 16,
+          color: widget.colorLabelText ?? Colors.white,
         ),
       ),
       inputFormatters: widget.inputFormatters,
@@ -1122,6 +1030,7 @@ class _CustomPasswordFormFieldState extends State<CustomPasswordFormField> {
       useBorder: widget.useBorder,
       borderRadius: widget.borderRadius,
       focusedBorderColor: widget.focusedBorderColor,
+      autovalidateMode: widget.autovalidateMode,
     );
   }
 }
@@ -1150,6 +1059,7 @@ class CustomPhoneFormField extends StatelessWidget {
     this.errorMaxLines,
     this.colorBorder,
     this.useBorder = false,
+    this.autovalidateMode,
   });
 
   final TextEditingController? controller;
@@ -1173,6 +1083,7 @@ class CustomPhoneFormField extends StatelessWidget {
   final int? errorMaxLines;
   final Color? colorBorder;
   final bool useBorder;
+  final AutovalidateMode? autovalidateMode;
 
   @override
   Widget build(BuildContext context) {
@@ -1193,6 +1104,7 @@ class CustomPhoneFormField extends StatelessWidget {
       onsubmit: onsubmit,
       colorBorder: colorBorder,
       useBorder: useBorder,
+      autovalidateMode: autovalidateMode,
       inputFormatters: [
         FilteringTextInputFormatter.digitsOnly,
         LengthLimitingTextInputFormatter(17),
@@ -1354,7 +1266,8 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
     this.focusNode,
     this.minLines,
     this.maxLines = 1,
-    //  Glassmorphism
+    this.autovalidateMode,
+    // Glassmorphism
     this.useGlass = false,
     this.glassHeight,
     this.glassBlur = 18,
@@ -1409,8 +1322,9 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
   final FocusNode? focusNode;
   final int? minLines;
   final int? maxLines;
+  final AutovalidateMode? autovalidateMode;
 
-  //  Glassmorphism config
+  // Glassmorphism config
   /// Aktifkan style glassmorphism (mis. search bar transparan di atas gambar/gradient).
   final bool useGlass;
   final double? glassHeight;
@@ -1424,14 +1338,14 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
   final double glassContentPaddingStart;
   final double glassContentPaddingEnd;
 
-  //  Warna fill default
+  // Warna fill default
   static const Color _kFillColor = ColorPalette.kGray;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    //  suffix builder (dipakai di kedua mode: default & glass)
+    // suffix builder (dipakai di kedua mode: default & glass)
     Widget? buildSuffix({required bool showClear, Color? iconColor}) {
       final widgets = <Widget>[];
 
@@ -1455,72 +1369,127 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
     }
 
     // MODE GLASSMORPHIC
-
     if (useGlass) {
       final effectiveGlassRadius = BorderRadius.circular(borderRadius ?? 28);
       final effectiveGlassHeight = glassHeight ?? 56;
 
       Widget glassField({required Widget? suffix}) {
-        return GlassContainer.clearGlass(
-          height: effectiveGlassHeight,
-          width: double.infinity,
-          blur: glassBlur,
-          borderRadius: effectiveGlassRadius,
-          borderColor: glassBorderColor ?? Colors.white.withValues(alpha: 0.35),
-          borderWidth: glassBorderWidth,
-          color: glassColor ?? Colors.white.withValues(alpha: 0.08),
-          shadowColor: glassShadowColor ?? Colors.black.withValues(alpha: 0.1),
-          child: Row(
-            children: [
-              SizedBox(width: glassContentPaddingStart),
-              if (prefixIcon != null) ...[
-                prefixIcon!,
-                SizedBox(width: glassIconSpacing),
-              ],
-              Expanded(
-                child: TextField(
-                  focusNode: focusNode,
-                  controller: controller,
-                  obscureText: obscureText,
-                  readOnly: readOnly,
-                  onSubmitted: onsubmit,
-                  keyboardType: keyboardType,
-                  textInputAction: textInputAction,
-                  textCapitalization: textCapitalization,
-                  minLines: obscureText ? null : minLines,
-                  maxLines: obscureText ? 1 : maxLines,
-                  inputFormatters: inputFormatters,
-                  cursorColor: glassCursorColor ?? Colors.white,
-                  textAlignVertical: TextAlignVertical.center,
-                  style:
-                      textStyle ??
-                      const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    isDense: true,
-                    contentPadding: EdgeInsets.zero,
-                    hintText: hintText,
-                    hintStyle:
-                        hintStyle ??
-                        const TextStyle(
-                          color: Color(0xFFA6A6A6),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+        return FormField<String>(
+          autovalidateMode: autovalidateMode,
+          initialValue: controller?.text ?? initialValue ?? '',
+          validator: validator != null
+              ? (value) => validator!(controller?.text ?? value)
+              : null,
+          builder: (state) {
+            final validationErrorText = state.errorText;
+            final effectiveErrorStyle =
+                errorStyle ??
+                const TextStyle(
+                  fontFamily: 'Satoshi',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12,
+                  color: Color(0xFFDE1135),
+                );
+            final errorWidget =
+                error ??
+                ((validationErrorText != null &&
+                            validationErrorText.isNotEmpty) ||
+                        (errorText != null && errorText!.isNotEmpty)
+                    ? Text(
+                        validationErrorText ?? errorText!,
+                        style: effectiveErrorStyle,
+                        maxLines: errorMaxLines,
+                        overflow: errorMaxLines == null
+                            ? null
+                            : TextOverflow.ellipsis,
+                      )
+                    : null);
+
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GlassContainer.clearGlass(
+                  height: effectiveGlassHeight,
+                  width: double.infinity,
+                  blur: glassBlur,
+                  borderRadius: effectiveGlassRadius,
+                  borderColor:
+                      glassBorderColor ?? Colors.white.withValues(alpha: 0.35),
+                  borderWidth: glassBorderWidth,
+                  color: glassColor ?? Colors.white.withValues(alpha: 0.08),
+                  shadowColor:
+                      glassShadowColor ?? Colors.black.withValues(alpha: 0.1),
+                  child: Row(
+                    children: [
+                      SizedBox(width: glassContentPaddingStart),
+                      if (prefixIcon != null) ...[
+                        prefixIcon!,
+                        SizedBox(width: glassIconSpacing),
+                      ],
+                      Expanded(
+                        child: TextField(
+                          focusNode: focusNode,
+                          controller: controller,
+                          obscureText: obscureText,
+                          readOnly: readOnly,
+                          onSubmitted: onsubmit,
+                          keyboardType: keyboardType,
+                          textInputAction: textInputAction,
+                          textCapitalization: textCapitalization,
+                          minLines: obscureText ? null : minLines,
+                          maxLines: obscureText ? 1 : maxLines,
+                          inputFormatters: inputFormatters,
+                          cursorColor: glassCursorColor ?? Colors.white,
+                          textAlignVertical: TextAlignVertical.center,
+                          style:
+                              textStyle ??
+                              const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
+                            hintText: hintText,
+                            hintStyle:
+                                hintStyle ??
+                                const TextStyle(
+                                  color: Color(0xFFA6A6A6),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                            suffixIcon: suffix,
+                            suffixIconConstraints: suffixIconConstraints,
+                          ),
+                          onTap: onTap,
+                          onChanged: (value) {
+                            state.didChange(value);
+                            onChanged?.call(value);
+                          },
                         ),
-                    suffixIcon: suffix,
-                    suffixIconConstraints: suffixIconConstraints,
+                      ),
+                      SizedBox(width: glassContentPaddingEnd),
+                    ],
                   ),
-                  onTap: onTap,
-                  onChanged: onChanged,
                 ),
-              ),
-              SizedBox(width: glassContentPaddingEnd),
-            ],
-          ),
+                if (errorWidget != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: DefaultTextStyle.merge(
+                      style: effectiveErrorStyle,
+                      maxLines: errorMaxLines,
+                      overflow: errorMaxLines == null
+                          ? TextOverflow.clip
+                          : TextOverflow.ellipsis,
+                      child: errorWidget,
+                    ),
+                  ),
+              ],
+            );
+          },
         );
       }
 
@@ -1576,8 +1545,6 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
     }
 
     // MODE DEFAULT (border/fill biasa)
-
-    //  border helpers ─
     final effectiveBorderRadius = BorderRadius.circular(borderRadius ?? 8);
     final effectiveContentPadding =
         contentPadding ??
@@ -1600,7 +1567,7 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
     );
 
     final InputBorder enabledBorder = manualError
-        ? border(theme.colorScheme.error, 2)
+        ? border(const Color(0xFFDE1135))
         : (useBorder
               ? border(colorBorder ?? const Color(0xFF231F20))
               : readOnly
@@ -1608,20 +1575,20 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
               : noBorder);
 
     final InputBorder focusedBorder = manualError
-        ? border(theme.colorScheme.error, 2)
+        ? border(const Color(0xFFDE1135))
         : border(
             focusedBorderColor ?? colorBorder ?? theme.colorScheme.primary,
-            2,
           );
 
-    final InputBorder errorBorder = border(theme.colorScheme.error, 2);
-    final InputBorder focusedErrorBorder = border(theme.colorScheme.error, 2);
+    final InputBorder errorBorder = border(const Color(0xFFDE1135));
+    final InputBorder focusedErrorBorder = border(
+      const Color(0xFFDE1135),
+    );
 
     final InputBorder disabledBorder = useBorder
         ? border(theme.disabledColor.withValues(alpha: 0.2))
         : noBorder;
 
-    //  shadow decoration helper
     const shadowDecoration = BoxDecoration(
       borderRadius: BorderRadius.all(Radius.circular(12)),
       boxShadow: [
@@ -1640,79 +1607,39 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
       ],
     );
 
-    //  InputDecoration builder (reused below)
-    InputDecoration inputDecoration({bool hideError = false}) =>
-        InputDecoration(
-          filled: true,
-          fillColor: fillColor ?? (readOnly ? _kFillColor : _kFillColor),
-          hintText: hintText,
-          hintStyle:
-              hintStyle ?? TextStyle(color: theme.disabledColor, fontSize: 14),
-          prefixIcon: prefixIcon,
-          contentPadding: effectiveContentPadding,
-          border: enabledBorder,
-          enabledBorder: enabledBorder,
-          focusedBorder: focusedBorder,
-          disabledBorder: disabledBorder,
-          errorBorder: errorBorder,
-          focusedErrorBorder: focusedErrorBorder,
-          error: error,
-          errorText: errorText,
-          errorStyle: hideError
-              ? const TextStyle(fontSize: 0, height: 0)
-              : errorStyle ??
-                    TextStyle(color: theme.colorScheme.error, fontSize: 12),
-          errorMaxLines: errorMaxLines,
-          suffixIconConstraints: suffixIconConstraints,
-        );
-
-    //  core TextFormField
     Widget textField({required Widget? suffix}) {
-      // Tanpa shadow → pakai TextFormField biasa
-      if (!showShadow) {
-        return TextFormField(
-          key: key,
-          focusNode: focusNode,
-          controller: controller,
-          initialValue: controller == null ? initialValue : null,
-          obscureText: obscureText,
-          readOnly: readOnly,
-          onFieldSubmitted: onsubmit,
-          keyboardType: keyboardType,
-          textInputAction: textInputAction,
-          textCapitalization: textCapitalization,
-          minLines: effectiveMinLines,
-          maxLines: effectiveMaxLines,
-          inputFormatters: inputFormatters,
-          style: textStyle ?? DefaultTextStyle.of(context).style,
-          decoration: inputDecoration().copyWith(suffixIcon: suffix),
-          onTap: onTap,
-          onChanged: onChanged,
-          validator: validator,
-        );
-      }
-
-      // Dengan shadow → pisah input (shadow) dan error text (di bawah)
       return FormField<String>(
+        autovalidateMode: autovalidateMode,
         initialValue: controller?.text ?? initialValue ?? '',
         validator: validator != null
             ? (value) => validator!(controller?.text ?? value)
             : null,
         builder: (state) {
-          // Sync error dari FormField ke InputDecoration border
           final validationErrorText = state.errorText;
           final hasError =
-              validationErrorText != null || error != null || errorText != null;
+              validationErrorText != null ||
+              error != null ||
+              errorText != null ||
+              manualError;
           final inputBorder = hasError ? errorBorder : enabledBorder;
           final inputFocusedBorder = hasError
               ? focusedErrorBorder
               : focusedBorder;
+
           final effectiveErrorStyle =
               errorStyle ??
-              TextStyle(color: theme.colorScheme.error, fontSize: 12);
+              const TextStyle(
+                fontFamily: 'Satoshi',
+                fontWeight: FontWeight.w700,
+                fontSize: 12,
+                color: Color(0xFFDE1135),
+              );
+
           final errorWidget =
               error ??
-              (validationErrorText != null || errorText != null
+              ((validationErrorText != null &&
+                          validationErrorText.isNotEmpty) ||
+                      (errorText != null && errorText!.isNotEmpty)
                   ? Text(
                       validationErrorText ?? errorText!,
                       style: effectiveErrorStyle,
@@ -1723,58 +1650,60 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
                     )
                   : null);
 
+          Widget inputField = TextField(
+            key: key,
+            focusNode: focusNode,
+            controller: controller,
+            obscureText: obscureText,
+            readOnly: readOnly,
+            onSubmitted: onsubmit,
+            keyboardType: keyboardType,
+            textInputAction: textInputAction,
+            textCapitalization: textCapitalization,
+            minLines: effectiveMinLines,
+            maxLines: effectiveMaxLines,
+            inputFormatters: inputFormatters,
+            style: textStyle ?? DefaultTextStyle.of(context).style,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: fillColor ?? (readOnly ? _kFillColor : _kFillColor),
+              hintText: hintText,
+              hintStyle:
+                  hintStyle ??
+                  TextStyle(color: theme.disabledColor, fontSize: 14),
+              prefixIcon: prefixIcon,
+              suffixIcon: suffix,
+              contentPadding: effectiveContentPadding,
+              border: inputBorder,
+              enabledBorder: inputBorder,
+              focusedBorder: inputFocusedBorder,
+              disabledBorder: disabledBorder,
+              errorBorder: errorBorder,
+              focusedErrorBorder: focusedErrorBorder,
+              suffixIconConstraints: suffixIconConstraints,
+            ),
+            onTap: onTap,
+            onChanged: (value) {
+              state.didChange(value);
+              onChanged?.call(value);
+            },
+          );
+
+          if (showShadow) {
+            inputField = DecoratedBox(
+              decoration: hasError ? const BoxDecoration() : shadowDecoration,
+              child: inputField,
+            );
+          }
+
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //  Shadow hanya di sekitar input
-              DecoratedBox(
-                decoration: hasError
-                    ? const BoxDecoration() // tanpa shadow saat error
-                    : shadowDecoration,
-                child: TextField(
-                  focusNode: focusNode,
-                  controller: controller,
-                  obscureText: obscureText,
-                  readOnly: readOnly,
-                  onSubmitted: onsubmit,
-                  keyboardType: keyboardType,
-                  textInputAction: textInputAction,
-                  textCapitalization: textCapitalization,
-                  minLines: effectiveMinLines,
-                  maxLines: effectiveMaxLines,
-                  inputFormatters: inputFormatters,
-                  style: textStyle ?? DefaultTextStyle.of(context).style,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor:
-                        fillColor ?? (readOnly ? _kFillColor : _kFillColor),
-                    hintText: hintText,
-                    hintStyle:
-                        hintStyle ??
-                        TextStyle(color: theme.disabledColor, fontSize: 14),
-                    prefixIcon: prefixIcon,
-                    suffixIcon: suffix,
-                    contentPadding: effectiveContentPadding,
-                    border: inputBorder,
-                    enabledBorder: inputBorder,
-                    focusedBorder: inputFocusedBorder,
-                    disabledBorder: disabledBorder,
-                    errorBorder: errorBorder,
-                    focusedErrorBorder: focusedErrorBorder,
-                    suffixIconConstraints: suffixIconConstraints,
-                  ),
-                  onTap: onTap,
-                  onChanged: (value) {
-                    state.didChange(value);
-                    onChanged?.call(value);
-                  },
-                ),
-              ),
-              //  Error text di bawah shadow
+              inputField,
               if (errorWidget != null)
                 Padding(
-                  padding: const EdgeInsets.only(top: 6, left: 12),
+                  padding: const EdgeInsets.only(top: 8),
                   child: DefaultTextStyle.merge(
                     style: effectiveErrorStyle,
                     maxLines: errorMaxLines,
@@ -1790,7 +1719,6 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
       );
     }
 
-    //  label + field
     Widget labeledField(Widget field) {
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -1823,7 +1751,6 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
       );
     }
 
-    //  build dengan ValueListenableBuilder bila ada controller
     if (controller != null) {
       return ValueListenableBuilder<TextEditingValue>(
         valueListenable: controller!,
