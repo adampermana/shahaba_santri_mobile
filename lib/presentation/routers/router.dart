@@ -20,6 +20,7 @@ import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/controller/animation_controller.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/auth_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/greeting_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/calendar/calendar_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/chat/sahaba_ai_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/kisah/detail_kisah_screen.dart';
@@ -91,6 +92,10 @@ final GoRouter router = GoRouter(
       path: RouterPath.registerPath,
       builder: (context, state) =>
           const AuthScreen(initialMode: AuthMode.register),
+    ),
+    GoRoute(
+      path: RouterPath.greetingPath,
+      builder: (context, state) => const GreetingScreen(),
     ),
     // GoRoute(
     //   path: RouterPath.forgotPasswordPath,

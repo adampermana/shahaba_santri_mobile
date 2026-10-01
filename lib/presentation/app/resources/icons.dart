@@ -73,6 +73,11 @@ abstract class AppIcons {
   static const String iconApple = '$_path/icon-apple.svg';
   static const String iconLock = '$_path/icon-lock.svg';
   static const String iconEyeOff = '$_path/icon-eye-off.svg';
+
+  // Auth - Verification & Greeting
+  static const String verifEmailIcon = '$_path/auth/verif-email-icon.svg';
+  static const String greetingIllustration =
+      '$_path/auth/greeting-illustration.svg';
 }
 
 abstract class QiblaIcons {

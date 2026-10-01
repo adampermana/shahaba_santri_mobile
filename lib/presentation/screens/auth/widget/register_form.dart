@@ -1,9 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/auth_card.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_verif.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
@@ -63,7 +68,22 @@ class _RegisterFormState extends State<RegisterForm> {
 
   Future<void> _onDaftar() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    // TODO: proses register
+
+    await BottomSheetVerifEmail.show(
+      context,
+      email: _emailController.text.trim(),
+      onVerified: (_) {
+        Navigator.of(context).pop();
+        unawaited(_showGreetingScreen());
+      },
+    );
+  }
+
+  Future<void> _showGreetingScreen() async {
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+
+    context.go(RouterPath.greetingPath);
   }
 
   @override

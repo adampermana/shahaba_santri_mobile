@@ -3,8 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
-import 'package:sahaba_mobile/presentation/screens/auth/auth_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/auth_card.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_otp.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_password.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/devider_line.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
@@ -57,9 +57,21 @@ class LoginFormState extends State<LoginForm> {
         Navigator.of(context).pop();
         // TODO: proses login
       },
-      onLupaPassword: () {
+      onLupaPassword: () async {
         Navigator.of(context).pop();
-        // TODO: navigate ke forgot password
+        await WidgetsBinding.instance.endOfFrame;
+        if (!mounted) return;
+        await BottomSheetOtp.show(
+          context,
+          email: _emailController.text.trim(),
+          onVerified: (otp) {
+            Navigator.of(context).pop();
+            // TODO: verifikasi OTP forgot password lalu buka password baru
+          },
+          onResend: () {
+            // TODO: request OTP forgot password
+          },
+        );
       },
     );
   }

@@ -315,7 +315,9 @@
 //   }
 
 //   @override
-//   Future<Either<ServerFailures, bool>> sendAdLog(AdLogPayload payload) async {
+//   Future<Either<ServerFailures, bool>> sendAdLog(
+//     AdLogPayload payload,
+//   ) async {
 //     try {
 //       final result = await _remote.sendAddLog(payload);
 //       return Right(result);

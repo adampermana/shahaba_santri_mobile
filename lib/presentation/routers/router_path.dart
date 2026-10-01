@@ -14,6 +14,9 @@ class RouterPath {
   // [Login] => Lupa Password
   static const String forgotPasswordPath = '/forgot-password';
 
+  // [Register] => Greeting
+  static const String greetingPath = '/greeting';
+
   // [Login | Register | Forgot Password] => Verifikasi OTP
   static const String verifyAcountPath = 'verify-account';
 

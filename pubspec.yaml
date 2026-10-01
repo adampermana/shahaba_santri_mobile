@@ -98,6 +98,7 @@ flutter:
     - assets/svg/notif/
     - assets/svg/qibla/
     - assets/svg/onboarding/
+    - assets/svg/auth/
     - assets/svg/jadwal_sholat/
     - assets/lottie/
     - assets/audio/adzan-default.mp3
