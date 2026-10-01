@@ -5,6 +5,7 @@ import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
+import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
 class GreetingScreen extends StatelessWidget {
@@ -39,9 +40,8 @@ class GreetingScreen extends StatelessWidget {
                       stops: [0.0, 0.5, 0.75, 1.0],
                     ),
                   ),
-                  child: SvgPicture.asset(
-                    AppIcons.greetingIllustration,
-                    fit: BoxFit.cover,
+                  child: const CacheImageOrSvg(
+                    source: 'assets/images/greeting-illustration.png',
                   ),
                 ),
               ),
