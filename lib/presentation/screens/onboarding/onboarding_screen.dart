@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sahaba_mobile/business_logic/core_cubit/core_cubit.dart';
 import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
 
@@ -119,9 +122,7 @@ class OnboardingScreen extends StatelessWidget {
                     ? 224
                     : 224,
               ),
-              CacheImageOrSvg(
-                source: 'assets/svg/onboarding/keluiarga.svg',
-                fit: BoxFit.none,
+              _OnboardingLottieSlide3(
                 width: context.isTabletLarge
                     ? null
                     : context.isTabletMedium
@@ -333,6 +334,69 @@ class OnboardingScreen extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class _OnboardingLottieSlide3 extends StatefulWidget {
+  const _OnboardingLottieSlide3({this.width});
+
+  final double? width;
+
+  @override
+  State<_OnboardingLottieSlide3> createState() =>
+      _OnboardingLottieSlide3State();
+}
+
+class _OnboardingLottieSlide3State extends State<_OnboardingLottieSlide3>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  bool _isLoaded = false;
+  bool _isPlayingOrPlayed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onPageChanged(double page) {
+    final isSlide3 = page >= 1.5;
+    if (isSlide3 && !_isPlayingOrPlayed) {
+      _isPlayingOrPlayed = true;
+      if (_isLoaded) {
+        unawaited(_controller.forward(from: 0));
+      }
+    } else if (!isSlide3 && _isPlayingOrPlayed) {
+      _isPlayingOrPlayed = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final page = context.select<PageOffsetNotifier, double>(
+      (notifier) => notifier.page,
+    );
+    _onPageChanged(page);
+
+    return Lottie.asset(
+      'assets/lottie/onboarding.json',
+      controller: _controller,
+      fit: BoxFit.contain,
+      width: widget.width,
+      onLoaded: (composition) {
+        _controller.duration = composition.duration;
+        _isLoaded = true;
+        if (_isPlayingOrPlayed) {
+          unawaited(_controller.forward(from: 0));
+        }
+      },
     );
   }
 }
