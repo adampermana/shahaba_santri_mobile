@@ -17,7 +17,6 @@ import 'package:sahaba_mobile/domains/news/news_response.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/injector.dart';
-import 'package:sahaba_mobile/presentation/controller/animation_controller.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/auth_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/greeting_screen.dart';

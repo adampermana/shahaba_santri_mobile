@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/auth_card.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_verif.dart';
+import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
@@ -125,6 +125,16 @@ class _RegisterFormState extends State<RegisterForm> {
                 fontSize: 12,
                 color: ColorPalette.contentDisabled,
               ),
+              prefixIcon: const Padding(
+                padding: EdgeInsets.only(right: 10, left: 16),
+                child: CacheImageOrSvg(
+                  source: AppIcons.userLine,
+                  width: 18,
+                  height: 18,
+                  fit: BoxFit.contain,
+                  svgColor: ColorPalette.contentDisabled,
+                ),
+              ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'Isi nama kamu dulu, yuk!';
@@ -162,12 +172,14 @@ class _RegisterFormState extends State<RegisterForm> {
                 fontSize: 12,
                 color: ColorPalette.contentDisabled,
               ),
-              prefixIcon: Padding(
-                padding: const EdgeInsets.only(right: 10, left: 16),
-                child: SvgPicture.asset(
-                  AppIcons.iconMail,
+              prefixIcon: const Padding(
+                padding: EdgeInsets.only(right: 10, left: 16),
+                child: CacheImageOrSvg(
+                  source: AppIcons.iconMail,
+                  fit: BoxFit.contain,
                   width: 18,
                   height: 18,
+                  svgColor: ColorPalette.contentDisabled,
                 ),
               ),
               validator: (value) {
@@ -210,16 +222,14 @@ class _RegisterFormState extends State<RegisterForm> {
                 fontSize: 12,
                 color: ColorPalette.contentDisabled,
               ),
-              prefixIcon: Padding(
-                padding: const EdgeInsets.only(right: 10, left: 16),
-                child: SvgPicture.asset(
-                  AppIcons.iconLock,
+              prefixIcon: const Padding(
+                padding: EdgeInsets.only(right: 10, left: 16),
+                child: CacheImageOrSvg(
+                  source: AppIcons.iconLock,
                   width: 18,
                   height: 18,
-                  colorFilter: const ColorFilter.mode(
-                    ColorPalette.contentDisabled,
-                    BlendMode.srcIn,
-                  ),
+                  fit: BoxFit.contain,
+                  svgColor: ColorPalette.contentDisabled,
                 ),
               ),
               visiblePasswordIcon: Icons.visibility_outlined,
@@ -261,16 +271,14 @@ class _RegisterFormState extends State<RegisterForm> {
                 fontSize: 12,
                 color: ColorPalette.contentDisabled,
               ),
-              prefixIcon: Padding(
-                padding: const EdgeInsets.only(right: 10, left: 16),
-                child: SvgPicture.asset(
-                  AppIcons.iconLock,
+              prefixIcon: const Padding(
+                padding: EdgeInsets.only(right: 10, left: 16),
+                child: CacheImageOrSvg(
+                  source: AppIcons.iconLock,
                   width: 18,
                   height: 18,
-                  colorFilter: const ColorFilter.mode(
-                    ColorPalette.contentDisabled,
-                    BlendMode.srcIn,
-                  ),
+                  fit: BoxFit.contain,
+                  svgColor: ColorPalette.contentDisabled,
                 ),
               ),
               visiblePasswordIcon: Icons.visibility_outlined,

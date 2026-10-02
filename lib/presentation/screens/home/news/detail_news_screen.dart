@@ -8,22 +8,35 @@ import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 
-class DetailNewsScreen extends StatefulWidget {
-  const DetailNewsScreen({
-    required this.newsId,
-    super.key,
-    this.initialData,
-  });
+class DetailNewsScreen extends StatelessWidget {
+  const DetailNewsScreen({required this.newsId, this.initialData, super.key});
 
   final int newsId;
   final NewsData? initialData;
 
-  @override
-  State<DetailNewsScreen> createState() => _DetailNewsScreenState();
-}
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    return CustomAppBar.buildAppBarSimple(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      leadingWidth: 40,
+      bottom: const PreferredSize(
+        preferredSize: Size.fromHeight(40),
+        child: SizedBox.shrink(),
+      ),
+      leading: IconButton(
+        onPressed: () => Navigator.of(context).maybePop(),
+        icon: const Icon(
+          Icons.arrow_back_rounded,
+          color: ColorPalette.kWhite,
+          size: 22,
+        ),
+        padding: const EdgeInsets.only(left: 16),
+        constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+        splashRadius: 20,
+      ),
+    );
+  }
 
-class _DetailNewsScreenState extends State<DetailNewsScreen> {
-  @override
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
@@ -54,7 +67,7 @@ class _DetailNewsScreenState extends State<DetailNewsScreen> {
             );
           }
 
-          final detail = state.newsDetail ?? widget.initialData;
+          final detail = state.newsDetail ?? initialData;
           if (detail == null) return const SizedBox.shrink();
 
           return _buildContent(context, detail);
@@ -153,29 +166,6 @@ class _DetailNewsScreenState extends State<DetailNewsScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return CustomAppBar.buildAppBarSimple(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      leadingWidth: 40,
-      bottom: const PreferredSize(
-        preferredSize: Size.fromHeight(40),
-        child: SizedBox.shrink(),
-      ),
-      leading: IconButton(
-        onPressed: () => Navigator.of(context).maybePop(),
-        icon: const Icon(
-          Icons.arrow_back_rounded,
-          color: ColorPalette.kWhite,
-          size: 22,
-        ),
-        padding: const EdgeInsets.only(left: 16),
-        constraints: const BoxConstraints.tightFor(width: 40, height: 40),
-        splashRadius: 20,
       ),
     );
   }

@@ -545,4 +545,3 @@ class _FlipOtpCellState extends State<_FlipOtpCell>
     );
   }
 }
-

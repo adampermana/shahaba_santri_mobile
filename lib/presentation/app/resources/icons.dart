@@ -30,6 +30,7 @@ abstract class AppIcons {
   static const String shareLine = '$_path/share-line.svg';
   static const String sunFoggyLine = '$_path/sun-foggy-line.svg';
   static const String sunLine = '$_path/sun-line.svg';
+  static const String userLine = '$_path/user-line.svg';
   static const String volumeMuteLine = '$_path/volume-mute-line.svg';
   static const String volumeUpLine = '$_path/volume-up-line.svg';
 

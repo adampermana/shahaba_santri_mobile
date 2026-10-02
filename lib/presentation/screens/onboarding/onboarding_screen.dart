@@ -89,8 +89,8 @@ class OnboardingScreen extends StatelessWidget {
             indicatorType: IndicatorType.line,
             background: [
               CacheImageOrSvg(
-                source: 'assets/svg/onboarding/book.svg',
-                fit: BoxFit.none,
+                source: 'assets/images/book.webp',
+                fit: BoxFit.contain,
                 width: context.isTabletLarge
                     ? null
                     : context.isTabletMedium
@@ -391,7 +391,7 @@ class _OnboardingLottieSlide3State extends State<_OnboardingLottieSlide3>
       fit: BoxFit.contain,
       width: widget.width,
       onLoaded: (composition) {
-        _controller.duration = composition.duration;
+        _controller.duration = composition.duration * 4;
         _isLoaded = true;
         if (_isPlayingOrPlayed) {
           unawaited(_controller.forward(from: 0));

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
@@ -7,96 +8,74 @@ import 'package:sahaba_mobile/presentation/screens/auth/widget/auth_card.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_otp.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_password.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/devider_line.dart';
+import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
-class LoginForm extends StatefulWidget {
+final _emailRegex = RegExp(
+  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+);
+
+class LoginForm extends HookWidget {
   const LoginForm({required this.onSwitchToRegister, super.key});
 
   final VoidCallback onSwitchToRegister;
 
   @override
-  State<LoginForm> createState() => LoginFormState();
-}
-
-class LoginFormState extends State<LoginForm> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-
-  bool get isComplete {
-    final emailRegex = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    );
-    return emailRegex.hasMatch(_emailController.text.trim());
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _emailController.addListener(_rebuild);
-  }
-
-  void _rebuild() {
-    if (mounted) setState(() {});
-  }
-
-  @override
-  void dispose() {
-    _emailController
-      ..removeListener(_rebuild)
-      ..dispose();
-    super.dispose();
-  }
-
-  Future<void> _onLanjut() async {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
-    await BottomSheetPassword.show(
-      context,
-      email: _emailController.text.trim(),
-      onKonfirmasi: (password) {
-        Navigator.of(context).pop();
-        // TODO: proses login
-      },
-      onLupaPassword: () async {
-        Navigator.of(context).pop();
-        await WidgetsBinding.instance.endOfFrame;
-        if (!mounted) return;
-        await BottomSheetOtp.show(
-          context,
-          email: _emailController.text.trim(),
-          onVerified: (otp) {
-            Navigator.of(context).pop();
-            // TODO: verifikasi OTP forgot password lalu buka password baru
-          },
-          onResend: () {
-            // TODO: request OTP forgot password
-          },
-        );
-      },
-    );
-  }
-
-  void _onGoogle() {
-    // TODO: Google sign-in
-  }
-
-  void _onApple() {
-    // TODO: Apple sign-in
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final formKey = useMemoized(GlobalKey<FormState>.new);
+    final emailController = useTextEditingController();
+    final emailText = useValueListenable(emailController);
+
+    final isComplete = _emailRegex.hasMatch(emailText.text.trim());
+
+    Future<void> onLanjut() async {
+      if (!(formKey.currentState?.validate() ?? false)) return;
+      await BottomSheetPassword.show(
+        context,
+        email: emailController.text.trim(),
+        onKonfirmasi: (password) {
+          Navigator.of(context).pop();
+          // TODO: proses login
+        },
+        onLupaPassword: () async {
+          Navigator.of(context).pop();
+          await WidgetsBinding.instance.endOfFrame;
+          if (!context.mounted) return;
+          await BottomSheetOtp.show(
+            context,
+            email: emailController.text.trim(),
+            onVerified: (otp) {
+              Navigator.of(context).pop();
+              // TODO: verifikasi OTP forgot password lalu buka password baru
+            },
+            onResend: () {
+              // TODO: request OTP forgot password
+            },
+          );
+        },
+      );
+    }
+
+    void onGoogle() {
+      // TODO: Google sign-in
+    }
+
+    void onApple() {
+      // TODO: Apple sign-in
+    }
+
     return AuthCard(
       title: 'Masuk dulu, yuk!',
       footerNote: 'Dengan melanjutkan, Anda menyetujui \n',
       child: Form(
-        key: _formKey,
+        key: formKey,
         autovalidateMode: AutovalidateMode.disabled,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomEmailFormField(
-              controller: _emailController,
+              controller: emailController,
               hintText: 'Ketik emailmu di sini',
               labelText: 'Email kamu',
               labelTextColor: ColorPalette.inverseSecondary,
@@ -122,27 +101,26 @@ class LoginFormState extends State<LoginForm> {
                 fontSize: 12,
                 color: ColorPalette.contentDisabled,
               ),
-              prefixIcon: Padding(
-                padding: const EdgeInsets.only(right: 10, left: 16),
-                child: SvgPicture.asset(
-                  AppIcons.iconMail,
+              prefixIcon: const Padding(
+                padding: EdgeInsets.only(right: 10, left: 16),
+                child: CacheImageOrSvg(
+                  source: AppIcons.iconMail,
+                  fit: BoxFit.contain,
                   width: 18,
                   height: 18,
+                  svgColor: ColorPalette.contentDisabled,
                 ),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'Isi email kamu dulu, yuk!';
                 }
-                final emailRegex = RegExp(
-                  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-                );
-                if (!emailRegex.hasMatch(value.trim())) {
+                if (!_emailRegex.hasMatch(value.trim())) {
                   return 'Format email tidak valid';
                 }
                 return null;
               },
-              onsubmit: (_) => _onLanjut(),
+              onsubmit: (_) => onLanjut(),
             ),
 
             const SizedBox(height: 24),
@@ -162,7 +140,7 @@ class LoginFormState extends State<LoginForm> {
                 fontSize: 15,
                 color: ColorPalette.kWhite,
               ),
-              onPressed: _onLanjut,
+              onPressed: onLanjut,
             ),
 
             const SizedBox(height: 24),
@@ -209,7 +187,7 @@ class LoginFormState extends State<LoginForm> {
                       fontSize: 13,
                       color: ColorPalette.kWhite,
                     ),
-                    onPressed: _onGoogle,
+                    onPressed: onGoogle,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -231,7 +209,7 @@ class LoginFormState extends State<LoginForm> {
                       fontSize: 13,
                       color: ColorPalette.kWhite,
                     ),
-                    onPressed: _onApple,
+                    onPressed: onApple,
                   ),
                 ),
               ],
@@ -253,7 +231,7 @@ class LoginFormState extends State<LoginForm> {
                 ),
                 const SizedBox(width: 4),
                 GestureDetector(
-                  onTap: widget.onSwitchToRegister,
+                  onTap: onSwitchToRegister,
                   child: const Text(
                     'Daftar di sini, yuk!',
                     style: TextStyle(

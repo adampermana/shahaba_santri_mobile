@@ -44,10 +44,6 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
     _textController.clear();
   }
 
-  void _onChipTap(String chip) {
-    _onSend(chip);
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AiChatBloc, AiChatState>(
@@ -186,7 +182,7 @@ class _SahabaAiScreenState extends State<SahabaAiScreen> {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => _onChipTap(label),
+        onTap: () => _onSend(label),
         borderRadius: BorderRadius.circular(16),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),

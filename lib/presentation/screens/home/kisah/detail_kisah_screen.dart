@@ -15,7 +15,7 @@ import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart';
 
-// --- Konstanta ukuran teks (mengikuti pola detail_quran_screen) ---
+// Konstanta ukuran teks (mengikuti pola detail_quran_screen) ---
 const _minBodyTextSize = 12.0;
 const _defaultBodyTextSize = 14.0;
 const _maxBodyTextSize = 20.0;
