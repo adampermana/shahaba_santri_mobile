@@ -74,6 +74,12 @@ abstract class AppIcons {
   static const String iconApple = '$_path/icon-apple.svg';
   static const String iconLock = '$_path/icon-lock.svg';
   static const String iconEyeOff = '$_path/icon-eye-off.svg';
+  static const String passwordRuleEmpty = '$_path/auth/password-rule-empty.svg';
+  static const String passwordRuleFilled =
+      '$_path/auth/password-rule-filled.svg';
+  static const String pinDotFilled = '$_path/auth/pin-dot-filled.svg';
+  static const String pinDotEmpty = '$_path/auth/pin-dot-empty.svg';
+  static const String pinDelete = '$_path/auth/pin-delete.svg';
 
   // Auth - Verification & Greeting
   static const String verifEmailIcon = '$_path/auth/verif-email-icon.svg';

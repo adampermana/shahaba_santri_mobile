@@ -7,7 +7,7 @@ import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/auth_card.dart';
-import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_verif.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_otp.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
@@ -69,9 +69,10 @@ class _RegisterFormState extends State<RegisterForm> {
   Future<void> _onDaftar() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    await BottomSheetVerifEmail.show(
+    await OtpBottomSheet.show(
       context,
       email: _emailController.text.trim(),
+      variant: OtpBottomSheetVariant.verifyEmail,
       onVerified: (_) {
         Navigator.of(context).pop();
         unawaited(_showGreetingScreen());
@@ -93,7 +94,7 @@ class _RegisterFormState extends State<RegisterForm> {
       footerNote: 'Dengan mendaftar, Anda menyetujui \n',
       child: Form(
         key: _formKey,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
+        autovalidateMode: AutovalidateMode.disabled,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

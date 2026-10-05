@@ -1,14 +1,21 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/auth_card.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_credential.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_otp.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_password.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/devider_line.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/forgot_pin_flow.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
+import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
@@ -29,40 +36,106 @@ class LoginForm extends HookWidget {
 
     final isComplete = _emailRegex.hasMatch(emailText.text.trim());
 
-    Future<void> onLanjut() async {
-      if (!(formKey.currentState?.validate() ?? false)) return;
+    Future<void> goHome() async {
+      await WidgetsBinding.instance.endOfFrame;
+      if (!context.mounted) return;
+      context.go(RouterPath.mainPath);
+    }
+
+    Future<void> showPasswordSuccess() async {
+      await WidgetsBinding.instance.endOfFrame;
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          CustomSnackBar.authSuccess(
+            message: 'Kata sandi diperbarui. Silakan masuk kembali.',
+          ),
+        );
+    }
+
+    Future<void> showNewPassword() async {
+      await WidgetsBinding.instance.endOfFrame;
+      if (!context.mounted) return;
+      await CredentialBottomSheet.show(
+        context,
+        variant: CredentialBottomSheetVariant.newPassword,
+        onSubmitted: (_) {
+          Navigator.of(context).pop();
+          unawaited(showPasswordSuccess());
+        },
+      );
+    }
+
+    Future<void> showForgotPasswordOtp() async {
+      await WidgetsBinding.instance.endOfFrame;
+      if (!context.mounted) return;
+      await OtpBottomSheet.show(
+        context,
+        email: emailController.text.trim(),
+        variant: OtpBottomSheetVariant.forgotPassword,
+        onVerified: (_) {
+          Navigator.of(context).pop();
+          unawaited(showNewPassword());
+        },
+        onResend: () {
+          // TODO(adam): Hubungkan endpoint request OTP forgot password.
+        },
+      );
+    }
+
+    Future<void> showPasswordLogin() async {
+      await WidgetsBinding.instance.endOfFrame;
+      if (!context.mounted) return;
       await BottomSheetPassword.show(
         context,
         email: emailController.text.trim(),
-        onKonfirmasi: (password) {
+        onKonfirmasi: (_) {
           Navigator.of(context).pop();
-          // TODO: proses login
+          unawaited(goHome());
         },
-        onLupaPassword: () async {
+        onLupaPassword: () {
           Navigator.of(context).pop();
-          await WidgetsBinding.instance.endOfFrame;
-          if (!context.mounted) return;
-          await BottomSheetOtp.show(
-            context,
-            email: emailController.text.trim(),
-            onVerified: (otp) {
-              Navigator.of(context).pop();
-              // TODO: verifikasi OTP forgot password lalu buka password baru
-            },
-            onResend: () {
-              // TODO: request OTP forgot password
-            },
-          );
+          unawaited(showForgotPasswordOtp());
+        },
+      );
+    }
+
+    Future<void> showForgotPin() async {
+      await WidgetsBinding.instance.endOfFrame;
+      if (!context.mounted) return;
+      await ForgotPinFlow.show(
+        context,
+        email: emailController.text.trim(),
+      );
+    }
+
+    Future<void> onLanjut() async {
+      if (!(formKey.currentState?.validate() ?? false)) return;
+      await CredentialBottomSheet.show(
+        context,
+        variant: CredentialBottomSheetVariant.currentPin,
+        onSubmitted: (_) {
+          Navigator.of(context).pop();
+          unawaited(goHome());
+        },
+        onUsePassword: () {
+          Navigator.of(context).pop();
+          unawaited(showPasswordLogin());
+        },
+        onForgotPin: () {
+          Navigator.of(context).pop();
+          unawaited(showForgotPin());
         },
       );
     }
 
     void onGoogle() {
-      // TODO: Google sign-in
+      // TODO(adam): Hubungkan Google sign-in.
     }
 
     void onApple() {
-      // TODO: Apple sign-in
+      // TODO(adam): Hubungkan Apple sign-in.
     }
 
     return AuthCard(

@@ -3,7 +3,7 @@ import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 
 const Duration kSnackBarDuration = Duration(milliseconds: 1500);
 
-enum SnackBarType { success, failure, networkInfo, info, quran }
+enum SnackBarType { success, failure, networkInfo, info, quran, authSuccess }
 
 class CustomSnackBar extends SnackBar {
   CustomSnackBar({
@@ -20,6 +20,7 @@ class CustomSnackBar extends SnackBar {
          behavior: _getBehavior(type),
          shape: _getShape(type),
          width: _getWidth(type),
+         padding: _getPadding(type),
          margin: _getMargin(type, margin),
        );
   // Factory constructors untuk kemudahan penggunaan
@@ -29,6 +30,18 @@ class CustomSnackBar extends SnackBar {
     SnackBarAction? action,
   }) {
     return CustomSnackBar(message: message, key: key, action: action);
+  }
+
+  factory CustomSnackBar.authSuccess({
+    required String message,
+    Key? key,
+  }) {
+    return CustomSnackBar(
+      message: message,
+      key: key,
+      type: SnackBarType.authSuccess,
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+    );
   }
 
   factory CustomSnackBar.failure({
@@ -134,6 +147,17 @@ class CustomSnackBar extends SnackBar {
             fontWeight: FontWeight.w500,
           ),
         );
+      case SnackBarType.authSuccess:
+        return Text(
+          message,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontFamily: 'Satoshi',
+            color: ColorPalette.kWhite,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        );
     }
   }
 
@@ -149,6 +173,8 @@ class CustomSnackBar extends SnackBar {
         return const Color(0xFF171A20);
       case SnackBarType.quran:
         return ColorPalette.kWhite;
+      case SnackBarType.authSuccess:
+        return const Color(0xFF1F2738);
     }
   }
 
@@ -160,6 +186,7 @@ class CustomSnackBar extends SnackBar {
       case SnackBarType.failure:
       case SnackBarType.info:
       case SnackBarType.quran:
+      case SnackBarType.authSuccess:
         return kSnackBarDuration;
     }
   }
@@ -170,6 +197,7 @@ class CustomSnackBar extends SnackBar {
       case SnackBarType.networkInfo:
       case SnackBarType.info:
       case SnackBarType.quran:
+      case SnackBarType.authSuccess:
         return SnackBarBehavior.floating;
       case SnackBarType.success:
         return null;
@@ -180,7 +208,9 @@ class CustomSnackBar extends SnackBar {
     if (type == SnackBarType.networkInfo) {
       return const StadiumBorder();
     }
-    if (type == SnackBarType.info || type == SnackBarType.quran) {
+    if (type == SnackBarType.info ||
+        type == SnackBarType.quran ||
+        type == SnackBarType.authSuccess) {
       return RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
     }
     return null;
@@ -189,6 +219,13 @@ class CustomSnackBar extends SnackBar {
   static double? _getWidth(SnackBarType type) {
     if (type == SnackBarType.networkInfo) {
       return 180;
+    }
+    return null;
+  }
+
+  static EdgeInsetsGeometry? _getPadding(SnackBarType type) {
+    if (type == SnackBarType.authSuccess) {
+      return const EdgeInsets.all(16);
     }
     return null;
   }

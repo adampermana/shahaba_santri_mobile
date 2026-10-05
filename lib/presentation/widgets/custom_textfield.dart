@@ -934,6 +934,9 @@ class CustomPasswordFormField extends StatefulWidget {
     this.prefixIcon,
     this.visiblePasswordIcon,
     this.invisiblePasswordIcon,
+    this.obscureColor,
+    this.contentPadding,
+    this.passwordVisibilityIconBuilder,
     this.inputFormatters,
     this.onTap,
     this.onChanged,
@@ -978,6 +981,13 @@ class CustomPasswordFormField extends StatefulWidget {
   final bool useBorder;
   final double? borderRadius;
   final Color? focusedBorderColor;
+  final Color? obscureColor;
+  final EdgeInsetsGeometry? contentPadding;
+  final Widget Function({
+    required bool isObscuring,
+    required VoidCallback onToggle,
+  })?
+  passwordVisibilityIconBuilder;
   final AutovalidateMode? autovalidateMode;
 
   @override
@@ -990,6 +1000,10 @@ class _CustomPasswordFormFieldState extends State<CustomPasswordFormField> {
 
   @override
   Widget build(BuildContext context) {
+    void toggleObscuring() {
+      setState(() => _isObscuring = !_isObscuring);
+    }
+
     return CustomTextFormFieldWidget(
       key: context.widget.key,
       controller: widget.controller,
@@ -1007,16 +1021,23 @@ class _CustomPasswordFormFieldState extends State<CustomPasswordFormField> {
       colorLabelText: widget.colorLabelText,
       fillColor: widget.fillColor,
       prefixIcon: widget.prefixIcon,
-      suffixIcon: GestureDetector(
-        onTap: () => setState(() => _isObscuring = !_isObscuring),
-        child: Icon(
-          _isObscuring
-              ? widget.invisiblePasswordIcon
-              : widget.visiblePasswordIcon,
-          size: 16,
-          color: widget.colorLabelText ?? Colors.white,
-        ),
-      ),
+      suffixIcon:
+          widget.passwordVisibilityIconBuilder?.call(
+            isObscuring: _isObscuring,
+            onToggle: toggleObscuring,
+          ) ??
+          GestureDetector(
+            onTap: toggleObscuring,
+            child: Icon(
+              _isObscuring
+                  ? widget.invisiblePasswordIcon
+                  : widget.visiblePasswordIcon,
+              size: 16,
+              color:
+                  widget.obscureColor ?? widget.colorLabelText ?? Colors.white,
+            ),
+          ),
+      contentPadding: widget.contentPadding,
       inputFormatters: widget.inputFormatters,
       onTap: widget.onTap,
       onChanged: widget.onChanged,

@@ -9,10 +9,12 @@ import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
-// Bottom Sheet Verifikasi Email
-class BottomSheetOtp extends StatefulWidget {
-  const BottomSheetOtp({
+enum OtpBottomSheetVariant { verifyEmail, forgotPassword }
+
+class OtpBottomSheet extends StatefulWidget {
+  const OtpBottomSheet({
     required this.email,
+    required this.variant,
     super.key,
     this.onVerified,
     this.onResend,
@@ -20,6 +22,7 @@ class BottomSheetOtp extends StatefulWidget {
   });
 
   final String email;
+  final OtpBottomSheetVariant variant;
   final ValueChanged<String>? onVerified;
   final VoidCallback? onResend;
   final int cooldownSeconds;
@@ -27,6 +30,7 @@ class BottomSheetOtp extends StatefulWidget {
   static Future<void> show(
     BuildContext context, {
     required String email,
+    required OtpBottomSheetVariant variant,
     ValueChanged<String>? onVerified,
     VoidCallback? onResend,
     int cooldownSeconds = 59,
@@ -43,8 +47,9 @@ class BottomSheetOtp extends StatefulWidget {
         ),
         child: SingleChildScrollView(
           physics: const ClampingScrollPhysics(),
-          child: BottomSheetOtp(
+          child: OtpBottomSheet(
             email: email,
+            variant: variant,
             onVerified: onVerified,
             onResend: onResend,
             cooldownSeconds: cooldownSeconds,
@@ -55,16 +60,21 @@ class BottomSheetOtp extends StatefulWidget {
   }
 
   @override
-  State<BottomSheetOtp> createState() => _BottomSheetOtpState();
+  State<OtpBottomSheet> createState() => _OtpBottomSheetState();
 }
 
-class _BottomSheetOtpState extends State<BottomSheetOtp> {
+class _OtpBottomSheetState extends State<OtpBottomSheet> {
   final _pinController = TextEditingController();
   Timer? _timer;
   int _remainingSeconds = 0;
   bool _isLoading = false;
 
   bool get _isComplete => _pinController.text.trim().length >= 4;
+
+  String get _title => switch (widget.variant) {
+    OtpBottomSheetVariant.verifyEmail => 'Verifikasi Email Anda',
+    OtpBottomSheetVariant.forgotPassword => 'Cek Email Anda',
+  };
 
   String get _maskedEmail {
     final email = widget.email;
@@ -142,7 +152,6 @@ class _BottomSheetOtpState extends State<BottomSheetOtp> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Icon
           SizedBox(
             width: 120,
             height: 120,
@@ -151,10 +160,9 @@ class _BottomSheetOtpState extends State<BottomSheetOtp> {
 
           const SizedBox(height: 32),
 
-          // Title
-          const Text(
-            'Cek Email Anda',
-            style: TextStyle(
+          Text(
+            _title,
+            style: const TextStyle(
               fontFamily: 'Satoshi',
               fontWeight: FontWeight.w900,
               fontSize: 20,
@@ -164,7 +172,6 @@ class _BottomSheetOtpState extends State<BottomSheetOtp> {
 
           const SizedBox(height: 8),
 
-          // Subtitle
           SizedBox(
             width: 271,
             child: Text(
@@ -182,7 +189,6 @@ class _BottomSheetOtpState extends State<BottomSheetOtp> {
 
           const SizedBox(height: 32),
 
-          // Pin Code Fields
           _AnimatedOtpInput(
             controller: _pinController,
             length: 4,
@@ -191,7 +197,6 @@ class _BottomSheetOtpState extends State<BottomSheetOtp> {
 
           const SizedBox(height: 64),
 
-          // Resend timer
           Text(
             _remainingSeconds > 0
                 ? 'Kirim ulang kode dalam ${_formatTime(_remainingSeconds)}'
@@ -224,7 +229,6 @@ class _BottomSheetOtpState extends State<BottomSheetOtp> {
 
           const SizedBox(height: 32),
 
-          // Konfirmasi button
           SubmitButtonStylesWidget(
             style: SubmitButtonStyle.elevated,
             primaryColor: _isComplete
@@ -244,7 +248,6 @@ class _BottomSheetOtpState extends State<BottomSheetOtp> {
             onPressed: _onKonfirmasi,
           ),
 
-          // Safe area bottom
           SizedBox(height: MediaQuery.of(context).padding.bottom),
         ],
       ),
@@ -321,6 +324,16 @@ class _AnimatedOtpInputState extends State<_AnimatedOtpInput> {
     }
   }
 
+  // Fix: kalau node sudah hasFocus tapi keyboard dismiss,
+  // requestFocus() no-ops — paksa keyboard muncul via platform channel.
+  Future<void> _onTap() async {
+    if (_focusNode.hasFocus) {
+      await SystemChannels.textInput.invokeMethod<void>('TextInput.show');
+    } else {
+      _focusNode.requestFocus();
+    }
+  }
+
   List<_OtpCellData> _cells() {
     final value = widget.controller.text;
     return List.generate(widget.length, (index) {
@@ -342,7 +355,7 @@ class _AnimatedOtpInputState extends State<_AnimatedOtpInput> {
       textField: true,
       label: 'Kode verifikasi ${widget.length} digit',
       child: GestureDetector(
-        onTap: _focusNode.requestFocus,
+        onTap: _onTap,
         child: Column(
           children: [
             SizedBox(
@@ -488,8 +501,7 @@ class _FlipOtpCellState extends State<_FlipOtpCell>
         ? ColorPalette.primaryColor
         : const Color(0x29E8E8E8);
 
-    // Glyph '*' di Satoshi posisinya tinggi, jadi perlu digeser turun
-    // supaya terlihat center secara optis.
+    // Glyph '*' di Satoshi posisinya tinggi, perlu digeser turun supaya center.
     final isMask = _displaySymbol == '*';
 
     return AnimatedBuilder(
