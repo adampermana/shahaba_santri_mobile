@@ -32,11 +32,11 @@
 //       providers: [
 //         BlocProvider<CategoryProductBloc>(
 //           create: (context) =>
-//               sl<CategoryProductBloc>()..add(CategoryProductEvent.started(id)),
+//             sl<CategoryProductBloc>()..add(CategoryProductEvent.started(id)),
 //         ),
 //         BlocProvider<LocationBloc>(
 //           create: (context) => sl<LocationBloc>()
-//             ..add(const LocationEvent.getCurrentLocation(isGetPosition: true)),
+//          ..add(const LocationEvent.getCurrentLocation(isGetPosition: true)),
 //         ),
 //       ],
 //       child: BlocListener<LocationBloc, LocationState>(
@@ -93,7 +93,7 @@
 //           ),
 //           body: BlocBuilder<CategoryProductBloc, CategoryProductState>(
 //             builder: (context, state) {
-//               final currentLocation = GoRouterState.of(context).uri.toString();
+//             final currentLocation = GoRouterState.of(context).uri.toString();
 
 //               return Column(
 //                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,7 +176,7 @@
 //                                           );
 //                                           return;
 //                                         }
-//                                         context.read<CategoryProductBloc>().add(
+//                                      context.read<CategoryProductBloc>().add(
 //                                           CategoryProductEvent.adLog(
 //                                             item,
 //                                             coordinates,
@@ -209,7 +209,7 @@
 //                                       ScaffoldMessenger.of(
 //                                         context,
 //                                       ).showSnackBar(
-//                                         SnackBar(content: Text(e.toString())),
+//                                        SnackBar(content: Text(e.toString())),
 //                                       );
 //                                     }
 //                                   },

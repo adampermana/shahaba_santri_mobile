@@ -66,7 +66,7 @@
 //                         crossAxisAlignment: CrossAxisAlignment.start,
 //                         children: [
 //                           Padding(
-//                             padding: const EdgeInsets.symmetric(horizontal: 16),
+//                          padding: const EdgeInsets.symmetric(horizontal: 16),
 //                             child: Column(
 //                               crossAxisAlignment: CrossAxisAlignment.start,
 //                               children: [
@@ -74,17 +74,17 @@
 //                                   children: [
 //                                     Container(
 //                                       decoration: BoxDecoration(
-//                                         borderRadius: BorderRadius.circular(12),
+//                                      borderRadius: BorderRadius.circular(12),
 //                                       ),
 //                                       child: SizedBox(
 //                                         width: double.infinity,
 //                                         height: 300,
 //                                         child: ClipRRect(
-//                                           borderRadius: BorderRadius.circular(
+//                                          borderRadius: BorderRadius.circular(
 //                                             10,
 //                                           ),
 //                                           child: Image.network(
-//                                             state.product!.images!.first.image,
+//                                           state.product!.images!.first.image,
 //                                             fit: BoxFit.contain,
 //                                             // width: double.infinity,
 //                                             // height: 140,
@@ -149,7 +149,7 @@
 //                                               fontSize: 14,
 //                                               fontWeight: FontWeight.w700,
 //                                               color:
-//                                                   ColorPalette.contentDisabled,
+//                                                 ColorPalette.contentDisabled,
 //                                             ),
 //                                           ),
 //                                           Text(
@@ -171,7 +171,7 @@
 //                                             // - ${product.expireDate}',
 //                                             style: const TextStyle(
 //                                               color:
-//                                                   ColorPalette.inverseSecondary,
+//                                                ColorPalette.inverseSecondary,
 //                                               fontSize: 14,
 //                                               fontWeight: FontWeight.w500,
 //                                             ),
@@ -248,7 +248,7 @@
 //                                           product.partner ?? '-',
 //                                           style: const TextStyle(
 //                                             color:
-//                                                 ColorPalette.inverseSecondary,
+//                                                ColorPalette.inverseSecondary,
 //                                             fontSize: 14,
 //                                           ),
 //                                         ),

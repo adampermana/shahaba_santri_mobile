@@ -86,8 +86,9 @@ class ServerException extends ServerFailures implements Exception {
           break;
         }
 
-        // Parse flat response: { message, status, code, errors }
+        // Parse flat response: message, status, code, errors, error
         final responseMessage = _asString(responseData['message']);
+        final responseError = _asString(responseData['error']);
         final responseCode =
             _asStatusCode(responseData['status']) ??
             _asStatusCode(responseData['code']);
@@ -95,13 +96,14 @@ class ServerException extends ServerFailures implements Exception {
           responseData['errors'],
         );
         final cooldownOtp = _asInt(responseData['cooldown_otp']);
+        final topEmailVerified = responseData['email_verified'] as bool?;
         final validationMessage =
             (validationErrors.isEmpty ? null : validationErrors.values.first) ??
             _firstErrorMessage(responseData['errors']);
 
         // Parse data object
         final data = responseData['data'];
-        var requiresVerification = false;
+        var requiresVerification = topEmailVerified == false;
         var dataEmail = '';
         var dataPhone = '';
         String? tempToken;
@@ -110,7 +112,8 @@ class ServerException extends ServerFailures implements Exception {
         if (data is Map) {
           final dataMap = Map<String, dynamic>.from(data);
           requiresVerification =
-              dataMap['requiresVerification'] as bool? ?? false;
+              (dataMap['requiresVerification'] as bool?) ??
+              requiresVerification;
           dataEmail = _asString(dataMap['email']) ?? '';
           dataPhone = _asString(dataMap['phone']) ?? '';
           tempToken = _asString(dataMap['temp_token']);
@@ -131,8 +134,12 @@ class ServerException extends ServerFailures implements Exception {
 
         code = responseCode ?? code;
         message =
-            validationMessage ?? responseMessage ?? 'Something went wrong.';
-        title = responseMessage ?? 'Something went wrong';
+            validationMessage ??
+            (responseMessage != null && responseMessage.isNotEmpty
+                ? responseMessage
+                : responseError) ??
+            'Something went wrong.';
+        title = responseMessage ?? responseError ?? 'Something went wrong';
 
         // Return with all parsed data
         return ServerException._(

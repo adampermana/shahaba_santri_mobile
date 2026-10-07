@@ -43,7 +43,7 @@
 //               size: 22,
 //             ),
 //             padding: const EdgeInsets.only(left: 16),
-//             constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+//            constraints: const BoxConstraints.tightFor(width: 40, height: 40),
 //             splashRadius: 20,
 //           ),
 //           titleWidget: Text(
@@ -90,7 +90,7 @@
 //                                     child: Image.network(
 //                                       state.product?.images?.isEmpty ?? true
 //                                           ? ''
-//                                           : state.product!.images!.first.image,
+//                                         : state.product!.images!.first.image,
 //                                       fit: BoxFit.contain,
 //                                       // width: double.infinity,
 //                                       // height: 140,
@@ -169,7 +169,7 @@
 //                                       MainAxisAlignment.spaceBetween,
 //                                   children: [
 //                                     Text(
-//                                       'Terbit tanggal ${product?.registerDate}',
+//                                    'Terbit tanggal ${product?.registerDate}',
 //                                       //  - ${product.expireDate}',
 //                                       style: const TextStyle(
 //                                         color: ColorPalette.inverseSecondary,
@@ -204,7 +204,7 @@
 
 //                           const Divider(),
 //                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                             children: [
 //                               const Text(
 //                                 'Kategori',
@@ -226,7 +226,7 @@
 //                           const SizedBox(height: 12),
 //                           const Divider(),
 //                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                             children: [
 //                               const Text(
 //                                 'Produsen',
@@ -272,10 +272,10 @@
 //                     Visibility(
 //                       visible: !isAds && state.adsCarousel != null,
 //                       child: HistoryItems(
-//                         namaProduk: ad?.name ?? state.adsCarousel?.name ?? '-',
+//                       namaProduk: ad?.name ?? state.adsCarousel?.name ?? '-',
 //                         status: ad != null ? ad!.status! : 'Halal',
 //                         registerDate: ad != null ? ad!.expireDate! : '-',
-//                         imagePath: ad?.image ?? state.adsCarousel?.image ?? '',
+//                       imagePath: ad?.image ?? state.adsCarousel?.image ?? '',
 //                         id: ad?.id ?? state.adsCarousel?.productId ?? 0,
 //                         type: 'Iklan',
 //                         // namaProduk: ad != null

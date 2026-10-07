@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_it/get_it.dart';
 import 'package:sahaba_mobile/business_logic/ai_chat_bloc/ai_chat_bloc.dart';
+import 'package:sahaba_mobile/business_logic/auth/auth_account_bloc/auth_account_bloc.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/business_logic/calendar_bloc/calendar_bloc.dart';
 import 'package:sahaba_mobile/business_logic/city_search_bloc/city_search_bloc.dart';
@@ -117,7 +118,8 @@ Future<void> _initAuthFeature() async {
     ..registerLazySingleton<IAuthRepositories>(
       () => AuthRepositories(sl(), sl()),
     )
-    ..registerFactory(() => AuthBloc(sl(), sl()));
+    ..registerFactory(() => AuthBloc(sl(), sl()))
+    ..registerLazySingleton(() => AuthAccountBloc(sl()));
 }
 
 Future<void> _initQuranFeature() async {

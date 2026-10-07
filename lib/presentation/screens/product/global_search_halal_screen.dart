@@ -35,7 +35,7 @@
 //         ),
 //         BlocProvider<LocationBloc>(
 //           create: (context) => sl<LocationBloc>()
-//             ..add(const LocationEvent.getCurrentLocation(isGetPosition: true)),
+//           ..add(const LocationEvent.getCurrentLocation(isGetPosition: true)),
 //         ),
 //       ],
 //       child: MultiBlocListener(
@@ -75,7 +75,7 @@
 //             },
 //           ),
 //           BlocListener<LocationBloc, LocationState>(
-//             listenWhen: (previous, current) => previous.alert != current.alert,
+//           listenWhen: (previous, current) => previous.alert != current.alert,
 //             listener: (context, state) async {
 //               if (state.alert != null) {
 //                 await showAlertDialog(
@@ -88,7 +88,7 @@
 //                   backgroundColor: ColorPalette.scaffoldBackground,
 //                   message: state.messageError,
 //                   onRefresh: () => context.read<LocationBloc>().add(
-//                     const LocationEvent.getCurrentLocation(isGetPosition: true),
+//                  const LocationEvent.getCurrentLocation(isGetPosition: true),
 //                   ),
 //                 );
 //               }
@@ -175,7 +175,7 @@
 //                       child: Padding(
 //                         padding: const EdgeInsets.symmetric(horizontal: 16),
 //                         child: state.isLoading
-//                             ? const Center(child: CircularProgressIndicator())
+//                            ? const Center(child: CircularProgressIndicator())
 //                             : state.errorMessage != null
 //                             ? Text(state.errorMessage!)
 //                             : ListView.builder(
@@ -199,12 +199,12 @@
 //                                           );
 //                                           return;
 //                                         }
-//                                         context.read<ProductSearchBloc>().add(
+//                                        context.read<ProductSearchBloc>().add(
 //                                           const ProductSearchEvent
 //                                               .loadingClick(),
 //                                         );
 //                                         // if (item.type == 'Iklan') {
-//                                         context.read<ProductSearchBloc>().add(
+//                                        context.read<ProductSearchBloc>().add(
 //                                           ProductSearchEvent.adLog(
 //                                             item.campaignId ?? 0,
 //                                             'Click',
@@ -217,7 +217,7 @@
 //                                         ScaffoldMessenger.of(
 //                                           context,
 //                                         ).showSnackBar(
-//                                           SnackBar(content: Text(e.toString())),
+//                                        SnackBar(content: Text(e.toString())),
 //                                         );
 //                                       }
 //                                     },

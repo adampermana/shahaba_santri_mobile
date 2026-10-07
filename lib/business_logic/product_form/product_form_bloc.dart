@@ -53,7 +53,7 @@
 //     );
 //   }
 
-//   Future<void> _onSubmit(_Submit event, Emitter<ProductFormState> emit) async {
+// Future<void> _onSubmit(_Submit event, Emitter<ProductFormState> emit) async {
 //     final isValid = (state.formKey.currentState!).validate();
 //     if (isValid) {
 //       emit(state.copyWith(isLoading: true));
@@ -78,7 +78,7 @@
 //       );
 //       final result = await _repo.postReport(payload);
 //       result.fold(
-//         (l) => emit(state.copyWith(errorMessage: l.message, isLoading: false)),
+//       (l) => emit(state.copyWith(errorMessage: l.message, isLoading: false)),
 //         (r) => emit(state.copyWith(isSuccess: r, isLoading: false)),
 //       );
 //     }

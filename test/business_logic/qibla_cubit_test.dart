@@ -96,7 +96,8 @@ void main() {
     );
 
     blocTest<QiblaCubit, QiblaState>(
-      'emits [QiblaLoading, QiblaLoaded] when getQiblaDirection succeeds and compass emits data',
+      'emits [QiblaLoading, QiblaLoaded] when getQiblaDirection '
+      'succeeds and compass emits data',
       build: () {
         _setupCompassMock(initialData: [100.0, 0.0, 0.0]); // heading: 100.0
         when(

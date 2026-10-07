@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/ai_chat_bloc/ai_chat_bloc.dart';
+import 'package:sahaba_mobile/business_logic/auth/auth_account_bloc/auth_account_bloc.dart';
+import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/business_logic/core_cubit/core_cubit.dart';
 import 'package:sahaba_mobile/business_logic/kisah_bloc/kisah_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
@@ -18,6 +20,7 @@ import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
+import 'package:sahaba_mobile/presentation/routers/router_refresh_stream.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/auth_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/greeting_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/calendar/calendar_screen.dart';
@@ -35,27 +38,55 @@ import 'package:sahaba_mobile/presentation/screens/quran_screen/detail_quran_scr
 import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
+final _refreshStream = RouterRefreshStream([
+  sl<AuthAccountBloc>().stream,
+  sl<CoreCubit>().stream,
+]);
 final GoRouter router = GoRouter(
   debugLogDiagnostics: kDebugMode,
+  refreshListenable: _refreshStream,
   initialLocation: RouterPath.rootPath,
   redirect: (context, state) {
+    final authState = sl<AuthAccountBloc>().state;
+
+    final isAuthUser = authState.maybeWhen(
+      authenticatedUser: (authData, [aiData]) => true,
+      orElse: () => false,
+    );
+
+    final isAuthGuest = authState.maybeWhen(
+      authenticatedGuest: (_) => true,
+      orElse: () => false,
+    );
+
     final isOnBoarded = sl<CoreCubit>().state.isBoarding;
     final location = state.matchedLocation;
 
-    // Belum onboarding → arahkan ke onboarding
+    // 1. Belum onboarding — paksa ke onboarding
     if (!isOnBoarded) {
-      return location == RouterPath.onboardingPath
-          ? null
-          : RouterPath.onboardingPath;
+      if (location == RouterPath.onboardingPath) return null;
+      return RouterPath.onboardingPath;
     }
 
-    // Sudah onboarding, jangan biarkan akses ke onboarding / root
-    final isOnboardingOrRoot =
-        location == RouterPath.onboardingPath ||
-        location == RouterPath.rootPath;
-    if (isOnboardingOrRoot) {
+    final isPublic =
+        location.startsWith(RouterPath.loginPath) ||
+        location.startsWith(RouterPath.registerPath) ||
+        location.startsWith(RouterPath.greetingPath);
+
+    // 2. Belum login (unauthenticated) — hanya boleh akses area publik
+    if (!isAuthUser && !isAuthGuest) {
+      if (isPublic) return null;
       return RouterPath.loginPath;
     }
+
+    // 3. Sudah login sebagai guest atau user — cegah akses kembali ke onboarding/auth/greeting/root
+    final isAuthArea =
+        location == RouterPath.onboardingPath ||
+        location == RouterPath.rootPath ||
+        location.startsWith(RouterPath.loginPath) ||
+        location.startsWith(RouterPath.registerPath) ||
+        location.startsWith(RouterPath.greetingPath);
+    if (isAuthArea) return RouterPath.mainPath;
 
     return null;
   },
@@ -85,12 +116,17 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: RouterPath.loginPath,
-      builder: (context, state) => const AuthScreen(),
+      builder: (context, state) => BlocProvider(
+        create: (_) => sl<AuthBloc>(),
+        child: const AuthScreen(),
+      ),
     ),
     GoRoute(
       path: RouterPath.registerPath,
-      builder: (context, state) =>
-          const AuthScreen(initialMode: AuthMode.register),
+      builder: (context, state) => BlocProvider(
+        create: (_) => sl<AuthBloc>(),
+        child: const AuthScreen(initialMode: AuthMode.register),
+      ),
     ),
     GoRoute(
       path: RouterPath.greetingPath,

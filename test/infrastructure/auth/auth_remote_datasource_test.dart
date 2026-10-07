@@ -3,6 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_respon_ai.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_response.dart';
+import 'package:sahaba_mobile/domains/auth/register/register_response.dart';
+import 'package:sahaba_mobile/domains/auth/resend_otp/resend_otp_response.dart';
+import 'package:sahaba_mobile/domains/auth/verify_otp/verify_otp_response.dart';
 import 'package:sahaba_mobile/infrastructure/auth/datasources/i_auth_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/failures/exceptions.dart';
 
@@ -178,7 +181,6 @@ void main() {
 
         expect(result, isA<LoginResponse>());
         expect(result.data?.token, 'guest-token-abc');
-        expect(result.data?.name, 'Guest');
 
         verify(
           () => mockDio.post<Map<String, dynamic>>(
@@ -230,5 +232,254 @@ void main() {
         throwsA(isA<ServerException>()),
       );
     });
+  });
+
+  // ── postLoginUser ────────────────────────────────────────────────────────
+
+  group('postLoginUser', () {
+    const path = '/api/v1/public/auth/login';
+
+    final tSuccessJson = {
+      'success': true,
+      'message': 'Login successful',
+      'data': {
+        'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test',
+        'token_type': 'Bearer',
+        'expires_in': 24,
+      },
+    };
+
+    test(
+      'should POST to /api/v1/public/auth/login and return LoginResponse',
+      () async {
+        whenPost(
+          mockDio,
+          path,
+        ).thenAnswer((_) async => _resp(tSuccessJson, path: path));
+
+        final result = await datasource.postLoginUser(
+          identifier: 'yivahey454@aminavin.com',
+          password: 'secret123',
+        );
+
+        expect(result, isA<LoginResponse>());
+        expect(result.data?.token, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test');
+        expect(result.message, 'Login successful');
+
+        verify(
+          () => mockDio.post<Map<String, dynamic>>(
+            path,
+            data: {
+              'identifier': 'yivahey454@aminavin.com',
+              'password': 'secret123',
+            },
+          ),
+        ).called(1);
+      },
+    );
+
+    test('should throw ServerException on 401 invalid credentials', () async {
+      whenPost(mockDio, path).thenThrow(
+        _dioError(
+          type: DioExceptionType.badResponse,
+          statusCode: 401,
+          responseData: {
+            'success': false,
+            'message': 'invalid identifier or password',
+          },
+          path: path,
+        ),
+      );
+
+      expect(
+        () => datasource.postLoginUser(
+          identifier: 'yivahey454@aminavin.com',
+          password: 'wrongpassword',
+        ),
+        throwsA(
+          isA<ServerException>().having(
+            (e) => e.message,
+            'message',
+            'invalid identifier or password',
+          ),
+        ),
+      );
+    });
+  });
+
+  // ── postRegister ─────────────────────────────────────────────────────────
+
+  group('postRegister', () {
+    const path = '/api/v1/public/auth/register';
+
+    final tSuccessJson = {
+      'success': true,
+      'message':
+          'Account pending email verification; check your email for the code',
+      'data': {
+        'id': '39761b09-ce31-4f0d-879b-6a79e06e0ad7',
+        'email': 'daliras653@aminavin.com',
+        'name': '',
+        'photo_url': '',
+        'email_verified': false,
+        'status': 'pending',
+        'cooldown_otp': 60,
+        'created_at': '2026-10-06T11:20:35.522162397+07:00',
+        'updated_at': '2026-10-06T11:20:35.522162397+07:00',
+      },
+    };
+
+    test(
+      'should POST to /api/v1/public/auth/register and return RegisterResponse',
+      () async {
+        whenPost(
+          mockDio,
+          path,
+        ).thenAnswer((_) async => _resp(tSuccessJson, path: path));
+
+        final result = await datasource.postRegister(
+          email: 'daliras653@aminavin.com',
+          password: 'secret123',
+        );
+
+        expect(result, isA<RegisterResponse>());
+        expect(result.data?.email, 'daliras653@aminavin.com');
+        expect(result.data?.cooldownOtp, 60);
+
+        verify(
+          () => mockDio.post<Map<String, dynamic>>(
+            path,
+            data: {
+              'email': 'daliras653@aminavin.com',
+              'password': 'secret123',
+            },
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'should throw ServerException with requiresVerification on 409 conflict',
+      () async {
+        whenPost(mockDio, path).thenThrow(
+          _dioError(
+            type: DioExceptionType.badResponse,
+            statusCode: 409,
+            responseData: {
+              'success': false,
+              'message':
+                  'create pending registration: email already registered; '
+                  'verify the pending account or use the existing login',
+              'email_verified': false,
+            },
+            path: path,
+          ),
+        );
+
+        expect(
+          () => datasource.postRegister(
+            email: 'daliras653@aminavin.com',
+            password: 'secret123',
+          ),
+          throwsA(
+            isA<ServerException>().having(
+              (e) => e.requiresVerification,
+              'requiresVerification',
+              true,
+            ),
+          ),
+        );
+      },
+    );
+  });
+
+  // ── postVerifyEmail ──────────────────────────────────────────────────────
+
+  group('postVerifyEmail', () {
+    const path = '/api/v1/public/auth/verify-email';
+
+    final tSuccessJson = {
+      'success': true,
+      'message': 'Email verified; you can now log in',
+      'data': {
+        'id': '37c4119d-5607-40e3-9e01-d4c8ab9fea52',
+        'email': 'wowasi5376@abowned.com',
+        'name': '',
+        'photo_url': '',
+        'email_verified': true,
+        'status': 'active',
+        'created_at': '2026-10-06T13:40:19.786832+07:00',
+        'updated_at': '2026-10-06T13:45:54.770991204+07:00',
+      },
+    };
+
+    test(
+      'should POST to /api/v1/public/auth/verify-email and return response',
+      () async {
+        whenPost(
+          mockDio,
+          path,
+        ).thenAnswer((_) async => _resp(tSuccessJson, path: path));
+
+        final result = await datasource.postVerifyEmail(
+          code: '000044',
+          email: 'wowasi5376@abowned.com',
+        );
+
+        expect(result, isA<VerifyOtpResponse>());
+        expect(result.data?.emailVerified, isTrue);
+        expect(result.message, 'Email verified; you can now log in');
+
+        verify(
+          () => mockDio.post<Map<String, dynamic>>(
+            path,
+            data: {
+              'code': '000044',
+              'email': 'wowasi5376@abowned.com',
+            },
+          ),
+        ).called(1);
+      },
+    );
+  });
+
+  // ── postResendEmailOtp ───────────────────────────────────────────────────
+
+  group('postResendEmailOtp', () {
+    const path = '/api/v1/public/auth/resend-email-otp';
+
+    final tSuccessJson = {
+      'success': true,
+      'message': 'Verification code sent',
+      'data': {
+        'cooldown_otp': 60,
+      },
+    };
+
+    test(
+      'should POST to /api/v1/public/auth/resend-email-otp and return response',
+      () async {
+        whenPost(
+          mockDio,
+          path,
+        ).thenAnswer((_) async => _resp(tSuccessJson, path: path));
+
+        final result = await datasource.postResendEmailOtp(
+          email: 'wowasi5376@abowned.com',
+        );
+
+        expect(result, isA<ResendOtpResponse>());
+        expect(result.data?.cooldownOtp, 60);
+
+        verify(
+          () => mockDio.post<Map<String, dynamic>>(
+            path,
+            data: {
+              'email': 'wowasi5376@abowned.com',
+            },
+          ),
+        ).called(1);
+      },
+    );
   });
 }

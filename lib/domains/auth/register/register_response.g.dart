@@ -8,27 +8,18 @@ part of 'register_response.dart';
 
 _RegisterResponse _$RegisterResponseFromJson(Map<String, dynamic> json) =>
     _RegisterResponse(
-      meta: json['meta'] == null
-          ? null
-          : MetaResponse.fromJson(json['meta'] as Map<String, dynamic>),
+      success: json['success'] as bool?,
+      message: json['message'] as String?,
       data: json['data'] == null
           ? null
-          : RegisterData.fromJson(json['data'] as Map<String, dynamic>),
+          : AuthUserData.fromJson(json['data'] as Map<String, dynamic>),
+      emailVerified: json['email_verified'] as bool?,
     );
 
 Map<String, dynamic> _$RegisterResponseToJson(_RegisterResponse instance) =>
-    <String, dynamic>{'meta': instance.meta, 'data': instance.data};
-
-_RegisterData _$RegisterDataFromJson(Map<String, dynamic> json) =>
-    _RegisterData(
-      email: json['email'] as String?,
-      expiredIn: (json['expired_in'] as num?)?.toInt(),
-      resendIn: (json['resend_in'] as num?)?.toInt(),
-    );
-
-Map<String, dynamic> _$RegisterDataToJson(_RegisterData instance) =>
     <String, dynamic>{
-      'email': instance.email,
-      'expired_in': instance.expiredIn,
-      'resend_in': instance.resendIn,
+      'success': instance.success,
+      'message': instance.message,
+      'data': instance.data,
+      'email_verified': instance.emailVerified,
     };

@@ -109,13 +109,13 @@
 //                                       ScaffoldMessenger.of(
 //                                         context,
 //                                       ).showSnackBar(
-//                                         SnackBar(content: Text(e.toString())),
+//                                       SnackBar(content: Text(e.toString())),
 //                                       );
 //                                     }
 //                                   },
 //                                   child: DecoratedBox(
 //                                     decoration: BoxDecoration(
-//                                       color: item.type?.toLowerCase() == 'iklan'
+//                                    color: item.type?.toLowerCase() == 'iklan'
 //                                           ? const Color(
 //                                               0xff670075,
 //                                             ).withValues(alpha: 0.2)
@@ -125,7 +125,7 @@
 //                                       padding: EdgeInsets.symmetric(
 //                                         vertical: 8,
 //                                         horizontal:
-//                                             item.type?.toLowerCase() == 'iklan'
+//                                           item.type?.toLowerCase() == 'iklan'
 //                                             ? 16
 //                                             : 0,
 //                                       ),
@@ -149,15 +149,15 @@
 //                                               crossAxisAlignment:
 //                                                   CrossAxisAlignment.start,
 //                                               children: [
-//                                                 if (item.type?.toLowerCase() !=
+//                                               if (item.type?.toLowerCase() !=
 //                                                     'iklan')
 //                                                   const SizedBox.shrink()
 //                                                 else
 //                                                   DecoratedBox(
-//                                                     decoration: BoxDecoration(
-//                                                       color: Colors.deepPurple,
+//                                                    decoration: BoxDecoration(
+//                                                     color: Colors.deepPurple,
 //                                                       borderRadius:
-//                                                           BorderRadius.circular(
+//                                                        BorderRadius.circular(
 //                                                             10000,
 //                                                           ),
 //                                                     ),
@@ -165,14 +165,14 @@
 //                                                       padding:
 //                                                           const EdgeInsets
 //                                                               .symmetric(
-//                                                                 horizontal: 8,
+//                                                                horizontal: 8,
 //                                                                 vertical: 2,
 //                                                               ),
 //                                                       child: Text(
 //                                                         item.type ?? '',
-//                                                         style: const TextStyle(
+//                                                       style: const TextStyle(
 //                                                           fontSize: 16,
-//                                                           color: Colors.white,
+//                                                          color: Colors.white,
 //                                                         ),
 //                                                       ),
 //                                                     ),
@@ -181,8 +181,8 @@
 //                                                   item.name ?? '',
 //                                                   style: const TextStyle(
 //                                                     fontSize: 14,
-//                                                     fontWeight: FontWeight.w600,
-//                                                     color: ColorPalette.kWhite,
+//                                                  fontWeight: FontWeight.w600,
+//                                                   color: ColorPalette.kWhite,
 //                                                   ),
 //                                                 ),
 //                                                 const SizedBox(height: 4),
@@ -191,11 +191,11 @@
 //                                                     children: [
 //                                                       Text(
 //                                                         item.status ?? '',
-//                                                         style: const TextStyle(
+//                                                       style: const TextStyle(
 //                                                           color: ColorPalette
 //                                                               .kTeal,
 //                                                           fontWeight:
-//                                                               FontWeight.bold,
+//                                                              FontWeight.bold,
 //                                                           fontSize: 12,
 //                                                         ),
 //                                                       ),
@@ -212,10 +212,10 @@
 //                                                         width: 6,
 //                                                       ),
 //                                                       Text(
-//                                                         item.expireDate ?? '',
-//                                                         style: const TextStyle(
+//                                                        item.expireDate ?? '',
+//                                                       style: const TextStyle(
 //                                                           color: ColorPalette
-//                                                               .inverseOnSurface,
+//                                                            .inverseOnSurface,
 //                                                           fontSize: 12,
 //                                                         ),
 //                                                       ),
@@ -226,7 +226,7 @@
 //                                                     item.status ?? '',
 //                                                     style: const TextStyle(
 //                                                       color:
-//                                                           ColorPalette.kRed500,
+//                                                         ColorPalette.kRed500,
 //                                                       fontWeight:
 //                                                           FontWeight.bold,
 //                                                       fontSize: 12,
@@ -278,7 +278,7 @@
 //                             onPressed: () async {
 //                               final draggableController =
 //                                   DraggableScrollableController();
-//                               final locationBloc = context.read<LocationBloc>();
+//                            final locationBloc = context.read<LocationBloc>();
 
 //                               Navigator.pop(context); // kembali ke camera
 //                               await showModalBottomSheet<void>(
@@ -313,7 +313,7 @@
 //                             },
 //                             style: ElevatedButton.styleFrom(
 //                               backgroundColor: ColorPalette.primary,
-//                               padding: const EdgeInsets.symmetric(vertical: 14),
+//                            padding: const EdgeInsets.symmetric(vertical: 14),
 //                               shape: RoundedRectangleBorder(
 //                                 borderRadius: BorderRadius.circular(12),
 //                               ),

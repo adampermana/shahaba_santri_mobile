@@ -55,5 +55,5 @@
 //   @JsonKey(name: 'long')
 //   double? long;
 
-//   Map<String, dynamic> toJson() => _$FetchHistoryDataProductLimitToJson(this);
+//  Map<String, dynamic> toJson() => _$FetchHistoryDataProductLimitToJson(this);
 // }

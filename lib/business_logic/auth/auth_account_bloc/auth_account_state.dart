@@ -1,16 +1,14 @@
-// part of 'auth_account_bloc.dart';
+part of 'auth_account_bloc.dart';
 
-// @freezed
-// abstract class AuthAccountState with _$AuthAccountState {
-//   factory AuthAccountState.unauthenticated() = Unauthenticated;
-
-//   const factory AuthAccountState.authenticatedUser(AuthDataUserIsar auth) =
-//       AuthenticatedUser;
-
-//   const factory AuthAccountState.authenticatedGuest(AuthDataGuestIsar auth) =
-//       AuthenticatedGuest;
-
-//   // const factory AuthAccountState.loading(bool isLoading) = Loading;
-
-//   // const factory AuthAccountState.sessionExpired() = SessionExpired;
-// }
+@freezed
+sealed class AuthAccountState with _$AuthAccountState {
+  const factory AuthAccountState.loading() = AuthAccountLoading;
+  const factory AuthAccountState.unauthenticated() = AuthAccountUnauthenticated;
+  const factory AuthAccountState.authenticatedUser(
+    AuthDataHive authData, [
+    AuthDataKatanaraHive? aiData,
+  ]) = AuthAccountAuthenticatedUser;
+  const factory AuthAccountState.authenticatedGuest(
+    AuthDataHive authData,
+  ) = AuthAccountAuthenticatedGuest;
+}

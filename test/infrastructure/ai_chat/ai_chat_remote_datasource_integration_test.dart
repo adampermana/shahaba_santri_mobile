@@ -15,9 +15,7 @@ import 'package:sahaba_mobile/infrastructure/failures/exceptions.dart';
 /// - Test ini memerlukan koneksi internet aktif.
 
 /// ← Isi dengan Bearer token Katanara AI yang valid
-const String kTestToken =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjIsImVtYWlsIjoic2FoQG1haWwuY29tIiwibmFtZSI6IlNBSCIsInJvbGUiOiJtZW1iZXIiLCJleHAiOjE3ODY2OTA4NjIsImlhdCI6MTc4NjYwNDQ2Mn0.nENCw3Gyv--tjnPuYtiuhKP_j6M9LYhzpxJn6v6hZS8';
-
+const String kTestToken = '';
 Dio _buildTestDio({String? token}) {
   final dio = Dio(
     BaseOptions(

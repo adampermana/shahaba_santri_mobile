@@ -134,7 +134,7 @@
 //     );
 //   }
 
-//   Future<void> _onAdLog(_AdLog event, Emitter<SpecialProductState> emit) async {
+//Future<void> _onAdLog(_AdLog event, Emitter<SpecialProductState> emit) async {
 //     final result = await _locationInfoService.getCurrentPosition();
 //     await result.fold((_) async {}, (position) async {
 //       final location = {

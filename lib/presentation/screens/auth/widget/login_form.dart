@@ -3,17 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
-import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/auth_card.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_credential.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_otp.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_password.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/devider_line.dart';
-import 'package:sahaba_mobile/presentation/screens/auth/widget/forgot_pin_flow.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
@@ -35,12 +32,6 @@ class LoginForm extends HookWidget {
     final emailText = useValueListenable(emailController);
 
     final isComplete = _emailRegex.hasMatch(emailText.text.trim());
-
-    Future<void> goHome() async {
-      await WidgetsBinding.instance.endOfFrame;
-      if (!context.mounted) return;
-      context.go(RouterPath.mainPath);
-    }
 
     Future<void> showPasswordSuccess() async {
       await WidgetsBinding.instance.endOfFrame;
@@ -90,10 +81,6 @@ class LoginForm extends HookWidget {
       await BottomSheetPassword.show(
         context,
         email: emailController.text.trim(),
-        onKonfirmasi: (_) {
-          Navigator.of(context).pop();
-          unawaited(goHome());
-        },
         onLupaPassword: () {
           Navigator.of(context).pop();
           unawaited(showForgotPasswordOtp());
@@ -101,33 +88,9 @@ class LoginForm extends HookWidget {
       );
     }
 
-    Future<void> showForgotPin() async {
-      await WidgetsBinding.instance.endOfFrame;
-      if (!context.mounted) return;
-      await ForgotPinFlow.show(
-        context,
-        email: emailController.text.trim(),
-      );
-    }
-
     Future<void> onLanjut() async {
       if (!(formKey.currentState?.validate() ?? false)) return;
-      await CredentialBottomSheet.show(
-        context,
-        variant: CredentialBottomSheetVariant.currentPin,
-        onSubmitted: (_) {
-          Navigator.of(context).pop();
-          unawaited(goHome());
-        },
-        onUsePassword: () {
-          Navigator.of(context).pop();
-          unawaited(showPasswordLogin());
-        },
-        onForgotPin: () {
-          Navigator.of(context).pop();
-          unawaited(showForgotPin());
-        },
-      );
+      await showPasswordLogin();
     }
 
     void onGoogle() {

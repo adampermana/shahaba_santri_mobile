@@ -56,7 +56,7 @@
 
 //           await result.fold<Future<void>>(
 //             (l) async {
-//               final ocrText = await OcrService.extractBigText(state.imagePath);
+//             final ocrText = await OcrService.extractBigText(state.imagePath);
 
 //               final resultSearch = await _repo.getSearchProduct(ocrText);
 //               // debugPrint('==== error scan by image');
@@ -153,7 +153,7 @@
 //           );
 //         },
 //         startSaveLoading: (value) async {
-//           emit(state.copyWith(isLoadingSaveData: true, tempProduct: value.val));
+//        emit(state.copyWith(isLoadingSaveData: true, tempProduct: value.val));
 //         },
 //         addLocalData: (value) async {
 //           // debugPrint('==== ini event jalan addLocalData');
@@ -234,7 +234,7 @@
 //         filterData: (value) {
 //           final result = state.masterDataHistory
 //               .where(
-//                 (e) => e.name!.toLowerCase().contains(value.val.toLowerCase()),
+//               \(e) => e.name!.toLowerCase().contains(value.val.toLowerCase()),
 //               )
 //               .toList();
 //           emit(state.copyWith(dataHistory: result));
@@ -325,7 +325,7 @@
 //         },
 //         getProductLimitMultiple: (value) async {
 //           emit(
-//             state.copyWith(isLoadingProductMultiple: true, errorMessage: null),
+//           state.copyWith(isLoadingProductMultiple: true, errorMessage: null),
 //           );
 //           final params = ProductMultipleParams(
 //             userId: value.userId,

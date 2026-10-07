@@ -155,7 +155,7 @@
 //                     previous.isLoading != current.isLoading,
 //                 listener: (context, state) async {
 //                   final dataProduct = state.data
-//                       .where((p) => p.type!.toLowerCase().contains('organic'))
+//                      .where((p) => p.type!.toLowerCase().contains('organic'))
 //                       .toList();
 //                   if (state.isLoading && state.isCamera) {
 //                     LoadingOverlay.show(
@@ -199,10 +199,10 @@
 //                       state.isCamera) {
 //                     try {
 //                       final dataIklan = state.data
-//                           .where((p) => p.type!.toLowerCase().contains('iklan'))
+//                        .where((p) => p.type!.toLowerCase().contains('iklan'))
 //                           .firstOrNull;
 //                       final locationBloc = context.read<LocationBloc>();
-//                       final coordinates = scanCoordinates(locationBloc.state);
+//                      final coordinates = scanCoordinates(locationBloc.state);
 //                       if (coordinates == null) {
 //                         if (!context.mounted) return;
 //                         context.pop();
@@ -285,13 +285,13 @@
 //                 listener: (context, state) async {
 //                   if (state.isLoadingSaveData) {
 //                     final dataIklan = state.data
-//                         .where((p) => p.type!.toLowerCase().contains('iklan'))
+//                        .where((p) => p.type!.toLowerCase().contains('iklan'))
 //                         .firstOrNull;
 //                     await context.push(
 //                       '$currentLocation/${RouterPath.productDetailPath}',
 //                       extra: {
 //                         'isAds':
-//                             state.tempProduct!.type?.toLowerCase() == 'iklan',
+//                            state.tempProduct!.type?.toLowerCase() == 'iklan',
 //                         'ad': dataIklan,
 //                         'id': state.tempProduct!.id,
 //                       },
@@ -329,7 +329,7 @@
 //                         final productBloc = context.read<ProductBloc>();
 //                         final locationBloc = context.read<LocationBloc>();
 
-//                         var coordinates = scanCoordinates(locationBloc.state);
+//                        var coordinates = scanCoordinates(locationBloc.state);
 
 //                         if (coordinates == null) {
 //                           // Trigger GPS fetch
@@ -343,7 +343,7 @@
 //                           productBloc.add(const ProductEvent.startLoading());
 
 //                           // Await koordinat dari stream LocationBloc
-//                           final completer = Completer<Map<String, double>?>();
+//                          final completer = Completer<Map<String, double>?>();
 //                           late StreamSubscription<LocationState> sub;
 //                           sub = locationBloc.stream.listen((state) async {
 //                             final coords = scanCoordinates(state);
@@ -391,7 +391,7 @@
 //                           aspectRatio: _cameraFrameAspectRatio,
 //                         );
 
-//                         final compressedFile = await compressImageToTargetSize(
+//                       final compressedFile = await compressImageToTargetSize(
 //                           file: croppedFile,
 //                         );
 
@@ -591,7 +591,7 @@
 //       children: [
 //         ClipRRect(
 //           borderRadius: BorderRadius.circular(8),
-//           child: _cameraPreview(controller: controller, initFuture: initFuture),
+//        child: _cameraPreview(controller: controller, initFuture: initFuture),
 //         ),
 //         const IgnorePointer(
 //           child: CustomPaint(painter: ScannerOverlayPainter()),

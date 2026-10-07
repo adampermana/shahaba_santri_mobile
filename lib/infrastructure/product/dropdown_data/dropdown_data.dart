@@ -5,7 +5,7 @@
 
 // @Freezed(toJson: false)
 // abstract class DropdownDataResponse with _$DropdownDataResponse {
-//   const factory DropdownDataResponse({@Default([]) List<DropdownItems> data}) =
+// const factory DropdownDataResponse({@Default([]) List<DropdownItems> data}) =
 //       _DropdownDataResponse;
 
 //   factory DropdownDataResponse.fromJson(Map<String, dynamic> json) =>

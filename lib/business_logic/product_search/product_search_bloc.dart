@@ -12,7 +12,7 @@
 // part 'product_search_state.dart';
 // part 'product_search_bloc.freezed.dart';
 
-// class ProductSearchBloc extends Bloc<ProductSearchEvent, ProductSearchState> {
+//class ProductSearchBloc extends Bloc<ProductSearchEvent, ProductSearchState> {
 //   ProductSearchBloc(
 //     this._repo,
 //     this._localDataSource,
@@ -63,7 +63,7 @@
 //           );
 //         }
 
-//         emit(state.copyWith(products: r, isLoading: false, search: event.val));
+//       emit(state.copyWith(products: r, isLoading: false, search: event.val));
 //       },
 //     );
 //   }
@@ -75,8 +75,8 @@
 //     emit(state.copyWith(isLoadingClick: true));
 //   }
 
-//   Future<void> _onAdLog(_AdLog event, Emitter<ProductSearchState> emit) async {
-//     final locationDetail = await _locationInfoService.getAddressFromCoordinates(
+// Future<void> _onAdLog(_AdLog event, Emitter<ProductSearchState> emit) async {
+//  final locationDetail = await _locationInfoService.getAddressFromCoordinates(
 //       event.coordinates,
 //     );
 //     final dataLocal = _localDataSource.authGuestDataHive;
@@ -120,6 +120,6 @@
 //     if (event.item.type?.toLowerCase() == 'iklan') {
 //       await _repo.sendAdLog(payload);
 //     }
-//     emit(state.copyWith(selectedProducts: event.item, isLoadingClick: false));
+//   emit(state.copyWith(selectedProducts: event.item, isLoadingClick: false));
 //   }
 // }

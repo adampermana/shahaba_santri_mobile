@@ -354,7 +354,7 @@
 //                       product.name ?? '-',
 //                       maxLines: 2,
 //                       overflow: TextOverflow.ellipsis,
-//                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+//                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
 //                         color: ColorPalette.kWhite,
 //                         fontSize: 14,
 //                         fontWeight: FontWeight.w700,

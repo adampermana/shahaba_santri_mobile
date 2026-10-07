@@ -234,7 +234,7 @@
 //   }
 
 //   @override
-//   Future<Either<ServerFailures, bool>> postReport(ProductReport payload) async {
+//Future<Either<ServerFailures, bool>> postReport(ProductReport payload) async {
 //     try {
 //       final result = await _remote.postReport(payload);
 //       return Right(result);

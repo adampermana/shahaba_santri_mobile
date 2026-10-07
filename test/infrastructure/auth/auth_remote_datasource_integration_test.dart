@@ -193,12 +193,8 @@ void main() {
           debugPrint('');
           debugPrint('     Total time : ${stopwatch.elapsedMilliseconds}ms');
           debugPrint('     Result:');
-          debugPrint('     name            : ${result.data?.name}');
           debugPrint(
             '     token   : ${result.data?.token?.substring(0, 20)}...[HIDDEN]',
-          );
-          debugPrint(
-            '     isPendingDeletion: ${result.data?.isPendingDeletion}',
           );
 
           expect(result, isA<LoginResponse>());

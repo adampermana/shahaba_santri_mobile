@@ -18,9 +18,7 @@
 // /// - Ganti nilai [kTestToken] jika endpoint product membutuhkan Bearer token.
 // /// - Test POST/Mutasi sementara diskip agar tidak memenuhi database production/development dengan data sampah.
 
-// const String kTestToken =
-//     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODkxOTg0NDYsInVzZXJfaWQiOjExM30.JclEyljFP_49by4Y5aReSeUy40k6u5vWl7bod6aZXVs';
-
+// const String kTestToken = '
 // Dio _buildTestDio({String? token}) {
 //   final dio = Dio(
 //     BaseOptions(
@@ -90,7 +88,7 @@
 //         // Response bukan list, tampilkan semua key-value
 //         data.forEach((k, v) {
 //           final val = v.toString();
-//           final display = val.length > 80 ? '${val.substring(0, 80)}...' : val;
+//         final display = val.length > 80 ? '${val.substring(0, 80)}...' : val;
 //           debugPrint('     $k: $display');
 //         });
 //       }
@@ -134,7 +132,7 @@
 //             final result = await datasource.getBrandData();
 //             stopwatch.stop();
 
-//             debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
+//           debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
 //             debugPrint(
 //               '   Result     : ${result.data.length} brand(s) found',
 //             );
@@ -145,7 +143,7 @@
 //               debugPrint('    Endpoint requires authorization token.');
 //             } else if (e.statusCode == -1) {
 //               debugPrint(
-//                 'Backend lokal tidak dapat diakses (Pastikan server $baseUrl).',
+//              'Backend lokal tidak dapat diakses (Pastikan server $baseUrl).',
 //               );
 //             } else {
 //               rethrow;
@@ -163,7 +161,7 @@
 //             final result = await datasource.getProdusen();
 //             stopwatch.stop();
 
-//             debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
+//        debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
 //             debugPrint(
 //               '   Result     : ${result.data.length} produsen(s) found',
 //             );
@@ -192,7 +190,7 @@
 //             final result = await datasource.getCategory();
 //             stopwatch.stop();
 
-//             debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
+//             debugPrint(' Total time : ${stopwatch.elapsedMilliseconds}ms');
 //             debugPrint(
 //               '   Result     : ${result.data.length} categories found',
 //             );
@@ -221,7 +219,7 @@
 //             final result = await datasource.getAdsTopTen();
 //             stopwatch.stop();
 
-//             debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
+//            debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
 //             debugPrint(
 //               '   Result     : ${result.data?.length ?? 0} ads found',
 //             );
@@ -250,7 +248,7 @@
 //             final result = await datasource.getSearchProduct('indomie');
 //             stopwatch.stop();
 
-//             debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
+//            debugPrint('    Total time : ${stopwatch.elapsedMilliseconds}ms');
 //             debugPrint(
 //               '   Result     : ${result.data?.length ?? 0} product(s) found',
 //             );

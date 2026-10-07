@@ -10,7 +10,7 @@
 // part 'product_detail_state.dart';
 // part 'product_detail_bloc.freezed.dart';
 
-// class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
+//class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
 //   ProductDetailBloc(this._repo) : super(ProductDetailState.initial()) {
 //     on<_Started>(_onStarted);
 //   }

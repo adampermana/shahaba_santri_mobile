@@ -131,7 +131,7 @@
 //                                 ),
 //                                 const SizedBox(height: 4),
 //                                 Text(
-//                                   (eventTime != null && eventTime!.isNotEmpty)
+//                                  (eventTime != null && eventTime!.isNotEmpty)
 //                                       ? eventTime!
 //                                       : '-',
 //                                   style: const TextStyle(
@@ -192,7 +192,7 @@
 //                         child: Container(
 //                           width: double.infinity,
 //                           height: 200,
-//                           padding: const EdgeInsets.symmetric(horizontal: 16),
+//                          padding: const EdgeInsets.symmetric(horizontal: 16),
 //                           child: CacheImageOrSvg(
 //                             source: product.images?.first.image ?? '-',
 //                             fit: BoxFit.contain,
@@ -287,13 +287,13 @@
 //                                         style: TextStyle(
 //                                           fontSize: 14,
 //                                           fontWeight: FontWeight.w700,
-//                                           color: ColorPalette.contentDisabled,
+//                                          color: ColorPalette.contentDisabled,
 //                                         ),
 //                                       ),
 //                                       Text(
 //                                         product.certificateNumber ?? '-',
 //                                         style: const TextStyle(
-//                                           color: ColorPalette.inverseSecondary,
+//                                         color: ColorPalette.inverseSecondary,
 //                                           fontSize: 14,
 //                                           fontWeight: FontWeight.w500,
 //                                         ),
@@ -310,7 +310,7 @@
 //                                         '${product.registerDate ?? '-'}',
 //                                         //  - ${product.expireDate ?? '-'}',
 //                                         style: const TextStyle(
-//                                           color: ColorPalette.inverseSecondary,
+//                                         color: ColorPalette.inverseSecondary,
 //                                           fontSize: 14,
 //                                           fontWeight: FontWeight.w500,
 //                                         ),
@@ -348,7 +348,7 @@
 //                             ),
 //                             const SizedBox(height: 16),
 //                             Row(
-//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                               children: [
 //                                 const Text(
 //                                   'Kategori',
@@ -375,7 +375,7 @@
 //                             ),
 //                             const SizedBox(height: 16),
 //                             Row(
-//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                               children: [
 //                                 const Text(
 //                                   'Produsen',
@@ -394,7 +394,7 @@
 //                                       child: Text(
 //                                         product.partner ?? '-',
 //                                         style: const TextStyle(
-//                                           color: ColorPalette.inverseSecondary,
+//                                         color: ColorPalette.inverseSecondary,
 //                                           fontSize: 14,
 //                                         ),
 //                                       ),
@@ -574,7 +574,7 @@
 //         );
 //       canvas
 //         ..saveLayer(
-//           Rect.fromLTWH(0, 0, pictureInfo.size.width, pictureInfo.size.height),
+//         Rect.fromLTWH(0, 0, pictureInfo.size.width, pictureInfo.size.height),
 //           paint,
 //         )
 //         ..drawPicture(pictureInfo.picture)

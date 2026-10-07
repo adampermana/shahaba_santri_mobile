@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LoginResponse {
 
- MetaResponse? get meta; LoginData? get data;
+ bool? get success; String? get message; LoginData? get data;
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $LoginResponseCopyWith<LoginResponse> get copyWith => _$LoginResponseCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginResponse&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,meta,data);
+int get hashCode => Object.hash(runtimeType,success,message,data);
 
 @override
 String toString() {
-  return 'LoginResponse(meta: $meta, data: $data)';
+  return 'LoginResponse(success: $success, message: $message, data: $data)';
 }
 
 
@@ -48,11 +48,11 @@ abstract mixin class $LoginResponseCopyWith<$Res>  {
   factory $LoginResponseCopyWith(LoginResponse value, $Res Function(LoginResponse) _then) = _$LoginResponseCopyWithImpl;
 @useResult
 $Res call({
- MetaResponse? meta, LoginData? data
+ bool? success, String? message, LoginData? data
 });
 
 
-$MetaResponseCopyWith<$Res>? get meta;$LoginDataCopyWith<$Res>? get data;
+$LoginDataCopyWith<$Res>? get data;
 
 }
 /// @nodoc
@@ -65,26 +65,15 @@ class _$LoginResponseCopyWithImpl<$Res>
 
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? meta = freezed,Object? data = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? success = freezed,Object? message = freezed,Object? data = freezed,}) {
   return _then(_self.copyWith(
-meta: freezed == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
-as MetaResponse?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+success: freezed == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as LoginData?,
   ));
 }
 /// Create a copy of LoginResponse
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$MetaResponseCopyWith<$Res>? get meta {
-    if (_self.meta == null) {
-    return null;
-  }
-
-  return $MetaResponseCopyWith<$Res>(_self.meta!, (value) {
-    return _then(_self.copyWith(meta: value));
-  });
-}/// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -178,10 +167,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MetaResponse? meta,  LoginData? data)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool? success,  String? message,  LoginData? data)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LoginResponse() when $default != null:
-return $default(_that.meta,_that.data);case _:
+return $default(_that.success,_that.message,_that.data);case _:
   return orElse();
 
 }
@@ -199,10 +188,10 @@ return $default(_that.meta,_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MetaResponse? meta,  LoginData? data)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool? success,  String? message,  LoginData? data)  $default,) {final _that = this;
 switch (_that) {
 case _LoginResponse():
-return $default(_that.meta,_that.data);case _:
+return $default(_that.success,_that.message,_that.data);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -219,10 +208,10 @@ return $default(_that.meta,_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MetaResponse? meta,  LoginData? data)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool? success,  String? message,  LoginData? data)?  $default,) {final _that = this;
 switch (_that) {
 case _LoginResponse() when $default != null:
-return $default(_that.meta,_that.data);case _:
+return $default(_that.success,_that.message,_that.data);case _:
   return null;
 
 }
@@ -234,10 +223,11 @@ return $default(_that.meta,_that.data);case _:
 @JsonSerializable()
 
 class _LoginResponse implements LoginResponse {
-  const _LoginResponse({this.meta, this.data});
+  const _LoginResponse({this.success, this.message, this.data});
   factory _LoginResponse.fromJson(Map<String, dynamic> json) => _$LoginResponseFromJson(json);
 
-@override final  MetaResponse? meta;
+@override final  bool? success;
+@override final  String? message;
 @override final  LoginData? data;
 
 /// Create a copy of LoginResponse
@@ -253,16 +243,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginResponse&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,meta,data);
+int get hashCode => Object.hash(runtimeType,success,message,data);
 
 @override
 String toString() {
-  return 'LoginResponse(meta: $meta, data: $data)';
+  return 'LoginResponse(success: $success, message: $message, data: $data)';
 }
 
 
@@ -273,11 +263,11 @@ abstract mixin class _$LoginResponseCopyWith<$Res> implements $LoginResponseCopy
   factory _$LoginResponseCopyWith(_LoginResponse value, $Res Function(_LoginResponse) _then) = __$LoginResponseCopyWithImpl;
 @override @useResult
 $Res call({
- MetaResponse? meta, LoginData? data
+ bool? success, String? message, LoginData? data
 });
 
 
-@override $MetaResponseCopyWith<$Res>? get meta;@override $LoginDataCopyWith<$Res>? get data;
+@override $LoginDataCopyWith<$Res>? get data;
 
 }
 /// @nodoc
@@ -290,27 +280,16 @@ class __$LoginResponseCopyWithImpl<$Res>
 
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? meta = freezed,Object? data = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? success = freezed,Object? message = freezed,Object? data = freezed,}) {
   return _then(_LoginResponse(
-meta: freezed == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
-as MetaResponse?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+success: freezed == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
+as bool?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as LoginData?,
   ));
 }
 
 /// Create a copy of LoginResponse
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$MetaResponseCopyWith<$Res>? get meta {
-    if (_self.meta == null) {
-    return null;
-  }
-
-  return $MetaResponseCopyWith<$Res>(_self.meta!, (value) {
-    return _then(_self.copyWith(meta: value));
-  });
-}/// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -329,7 +308,7 @@ $LoginDataCopyWith<$Res>? get data {
 /// @nodoc
 mixin _$LoginData {
 
- int? get id; String? get token;@JsonKey(name: 'user_id') int? get userId; String? get name; int? get status;@JsonKey(name: 'is_pending_deletion') bool? get isPendingDeletion;@JsonKey(name: 'remaining_days') int? get remainingDays; String? get title; String? get description;@JsonKey(name: 'primary_action') String? get primaryAction;@JsonKey(name: 'secondary_action') String? get secondaryAction;
+ String? get token;@JsonKey(name: 'token_type') String? get tokenType;@JsonKey(name: 'expires_in') int? get expiresIn;
 /// Create a copy of LoginData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -342,16 +321,16 @@ $LoginDataCopyWith<LoginData> get copyWith => _$LoginDataCopyWithImpl<LoginData>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginData&&(identical(other.id, id) || other.id == id)&&(identical(other.token, token) || other.token == token)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.name, name) || other.name == name)&&(identical(other.status, status) || other.status == status)&&(identical(other.isPendingDeletion, isPendingDeletion) || other.isPendingDeletion == isPendingDeletion)&&(identical(other.remainingDays, remainingDays) || other.remainingDays == remainingDays)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.primaryAction, primaryAction) || other.primaryAction == primaryAction)&&(identical(other.secondaryAction, secondaryAction) || other.secondaryAction == secondaryAction));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginData&&(identical(other.token, token) || other.token == token)&&(identical(other.tokenType, tokenType) || other.tokenType == tokenType)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,token,userId,name,status,isPendingDeletion,remainingDays,title,description,primaryAction,secondaryAction);
+int get hashCode => Object.hash(runtimeType,token,tokenType,expiresIn);
 
 @override
 String toString() {
-  return 'LoginData(id: $id, token: $token, userId: $userId, name: $name, status: $status, isPendingDeletion: $isPendingDeletion, remainingDays: $remainingDays, title: $title, description: $description, primaryAction: $primaryAction, secondaryAction: $secondaryAction)';
+  return 'LoginData(token: $token, tokenType: $tokenType, expiresIn: $expiresIn)';
 }
 
 
@@ -362,7 +341,7 @@ abstract mixin class $LoginDataCopyWith<$Res>  {
   factory $LoginDataCopyWith(LoginData value, $Res Function(LoginData) _then) = _$LoginDataCopyWithImpl;
 @useResult
 $Res call({
- int? id, String? token,@JsonKey(name: 'user_id') int? userId, String? name, int? status,@JsonKey(name: 'is_pending_deletion') bool? isPendingDeletion,@JsonKey(name: 'remaining_days') int? remainingDays, String? title, String? description,@JsonKey(name: 'primary_action') String? primaryAction,@JsonKey(name: 'secondary_action') String? secondaryAction
+ String? token,@JsonKey(name: 'token_type') String? tokenType,@JsonKey(name: 'expires_in') int? expiresIn
 });
 
 
@@ -379,20 +358,12 @@ class _$LoginDataCopyWithImpl<$Res>
 
 /// Create a copy of LoginData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? token = freezed,Object? userId = freezed,Object? name = freezed,Object? status = freezed,Object? isPendingDeletion = freezed,Object? remainingDays = freezed,Object? title = freezed,Object? description = freezed,Object? primaryAction = freezed,Object? secondaryAction = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? token = freezed,Object? tokenType = freezed,Object? expiresIn = freezed,}) {
   return _then(_self.copyWith(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int?,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as String?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as int?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as int?,isPendingDeletion: freezed == isPendingDeletion ? _self.isPendingDeletion : isPendingDeletion // ignore: cast_nullable_to_non_nullable
-as bool?,remainingDays: freezed == remainingDays ? _self.remainingDays : remainingDays // ignore: cast_nullable_to_non_nullable
-as int?,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,primaryAction: freezed == primaryAction ? _self.primaryAction : primaryAction // ignore: cast_nullable_to_non_nullable
-as String?,secondaryAction: freezed == secondaryAction ? _self.secondaryAction : secondaryAction // ignore: cast_nullable_to_non_nullable
-as String?,
+token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+as String?,tokenType: freezed == tokenType ? _self.tokenType : tokenType // ignore: cast_nullable_to_non_nullable
+as String?,expiresIn: freezed == expiresIn ? _self.expiresIn : expiresIn // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -477,10 +448,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String? token, @JsonKey(name: 'user_id')  int? userId,  String? name,  int? status, @JsonKey(name: 'is_pending_deletion')  bool? isPendingDeletion, @JsonKey(name: 'remaining_days')  int? remainingDays,  String? title,  String? description, @JsonKey(name: 'primary_action')  String? primaryAction, @JsonKey(name: 'secondary_action')  String? secondaryAction)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LoginData() when $default != null:
-return $default(_that.id,_that.token,_that.userId,_that.name,_that.status,_that.isPendingDeletion,_that.remainingDays,_that.title,_that.description,_that.primaryAction,_that.secondaryAction);case _:
+return $default(_that.token,_that.tokenType,_that.expiresIn);case _:
   return orElse();
 
 }
@@ -498,10 +469,10 @@ return $default(_that.id,_that.token,_that.userId,_that.name,_that.status,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String? token, @JsonKey(name: 'user_id')  int? userId,  String? name,  int? status, @JsonKey(name: 'is_pending_deletion')  bool? isPendingDeletion, @JsonKey(name: 'remaining_days')  int? remainingDays,  String? title,  String? description, @JsonKey(name: 'primary_action')  String? primaryAction, @JsonKey(name: 'secondary_action')  String? secondaryAction)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn)  $default,) {final _that = this;
 switch (_that) {
 case _LoginData():
-return $default(_that.id,_that.token,_that.userId,_that.name,_that.status,_that.isPendingDeletion,_that.remainingDays,_that.title,_that.description,_that.primaryAction,_that.secondaryAction);case _:
+return $default(_that.token,_that.tokenType,_that.expiresIn);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -518,10 +489,10 @@ return $default(_that.id,_that.token,_that.userId,_that.name,_that.status,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String? token, @JsonKey(name: 'user_id')  int? userId,  String? name,  int? status, @JsonKey(name: 'is_pending_deletion')  bool? isPendingDeletion, @JsonKey(name: 'remaining_days')  int? remainingDays,  String? title,  String? description, @JsonKey(name: 'primary_action')  String? primaryAction, @JsonKey(name: 'secondary_action')  String? secondaryAction)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn)?  $default,) {final _that = this;
 switch (_that) {
 case _LoginData() when $default != null:
-return $default(_that.id,_that.token,_that.userId,_that.name,_that.status,_that.isPendingDeletion,_that.remainingDays,_that.title,_that.description,_that.primaryAction,_that.secondaryAction);case _:
+return $default(_that.token,_that.tokenType,_that.expiresIn);case _:
   return null;
 
 }
@@ -533,20 +504,12 @@ return $default(_that.id,_that.token,_that.userId,_that.name,_that.status,_that.
 @JsonSerializable()
 
 class _LoginData implements LoginData {
-  const _LoginData({this.id, this.token, @JsonKey(name: 'user_id') this.userId, this.name, this.status, @JsonKey(name: 'is_pending_deletion') this.isPendingDeletion, @JsonKey(name: 'remaining_days') this.remainingDays, this.title, this.description, @JsonKey(name: 'primary_action') this.primaryAction, @JsonKey(name: 'secondary_action') this.secondaryAction});
+  const _LoginData({this.token, @JsonKey(name: 'token_type') this.tokenType, @JsonKey(name: 'expires_in') this.expiresIn});
   factory _LoginData.fromJson(Map<String, dynamic> json) => _$LoginDataFromJson(json);
 
-@override final  int? id;
 @override final  String? token;
-@override@JsonKey(name: 'user_id') final  int? userId;
-@override final  String? name;
-@override final  int? status;
-@override@JsonKey(name: 'is_pending_deletion') final  bool? isPendingDeletion;
-@override@JsonKey(name: 'remaining_days') final  int? remainingDays;
-@override final  String? title;
-@override final  String? description;
-@override@JsonKey(name: 'primary_action') final  String? primaryAction;
-@override@JsonKey(name: 'secondary_action') final  String? secondaryAction;
+@override@JsonKey(name: 'token_type') final  String? tokenType;
+@override@JsonKey(name: 'expires_in') final  int? expiresIn;
 
 /// Create a copy of LoginData
 /// with the given fields replaced by the non-null parameter values.
@@ -561,16 +524,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginData&&(identical(other.id, id) || other.id == id)&&(identical(other.token, token) || other.token == token)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.name, name) || other.name == name)&&(identical(other.status, status) || other.status == status)&&(identical(other.isPendingDeletion, isPendingDeletion) || other.isPendingDeletion == isPendingDeletion)&&(identical(other.remainingDays, remainingDays) || other.remainingDays == remainingDays)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.primaryAction, primaryAction) || other.primaryAction == primaryAction)&&(identical(other.secondaryAction, secondaryAction) || other.secondaryAction == secondaryAction));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginData&&(identical(other.token, token) || other.token == token)&&(identical(other.tokenType, tokenType) || other.tokenType == tokenType)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,token,userId,name,status,isPendingDeletion,remainingDays,title,description,primaryAction,secondaryAction);
+int get hashCode => Object.hash(runtimeType,token,tokenType,expiresIn);
 
 @override
 String toString() {
-  return 'LoginData(id: $id, token: $token, userId: $userId, name: $name, status: $status, isPendingDeletion: $isPendingDeletion, remainingDays: $remainingDays, title: $title, description: $description, primaryAction: $primaryAction, secondaryAction: $secondaryAction)';
+  return 'LoginData(token: $token, tokenType: $tokenType, expiresIn: $expiresIn)';
 }
 
 
@@ -581,7 +544,7 @@ abstract mixin class _$LoginDataCopyWith<$Res> implements $LoginDataCopyWith<$Re
   factory _$LoginDataCopyWith(_LoginData value, $Res Function(_LoginData) _then) = __$LoginDataCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, String? token,@JsonKey(name: 'user_id') int? userId, String? name, int? status,@JsonKey(name: 'is_pending_deletion') bool? isPendingDeletion,@JsonKey(name: 'remaining_days') int? remainingDays, String? title, String? description,@JsonKey(name: 'primary_action') String? primaryAction,@JsonKey(name: 'secondary_action') String? secondaryAction
+ String? token,@JsonKey(name: 'token_type') String? tokenType,@JsonKey(name: 'expires_in') int? expiresIn
 });
 
 
@@ -598,20 +561,12 @@ class __$LoginDataCopyWithImpl<$Res>
 
 /// Create a copy of LoginData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? token = freezed,Object? userId = freezed,Object? name = freezed,Object? status = freezed,Object? isPendingDeletion = freezed,Object? remainingDays = freezed,Object? title = freezed,Object? description = freezed,Object? primaryAction = freezed,Object? secondaryAction = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? token = freezed,Object? tokenType = freezed,Object? expiresIn = freezed,}) {
   return _then(_LoginData(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int?,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as String?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as int?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as int?,isPendingDeletion: freezed == isPendingDeletion ? _self.isPendingDeletion : isPendingDeletion // ignore: cast_nullable_to_non_nullable
-as bool?,remainingDays: freezed == remainingDays ? _self.remainingDays : remainingDays // ignore: cast_nullable_to_non_nullable
-as int?,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,primaryAction: freezed == primaryAction ? _self.primaryAction : primaryAction // ignore: cast_nullable_to_non_nullable
-as String?,secondaryAction: freezed == secondaryAction ? _self.secondaryAction : secondaryAction // ignore: cast_nullable_to_non_nullable
-as String?,
+token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+as String?,tokenType: freezed == tokenType ? _self.tokenType : tokenType // ignore: cast_nullable_to_non_nullable
+as String?,expiresIn: freezed == expiresIn ? _self.expiresIn : expiresIn // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 

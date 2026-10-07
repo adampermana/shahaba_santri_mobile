@@ -34,7 +34,7 @@
 //               backgroundColor: ColorPalette.scaffoldBackground,
 //               context: context,
 //               shape: const RoundedRectangleBorder(
-//                 borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+//               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
 //               ),
 //               builder: (_) => const SuccessSheet(),
 //             );
@@ -75,7 +75,7 @@
 //                             ),
 //                             const SizedBox(height: 16),
 //                             Row(
-//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                               children: [
 //                                 const Text(
 //                                   'Masukan Detail Produk',
@@ -87,7 +87,7 @@
 //                                 ),
 //                                 IconButton(
 //                                   onPressed: () async {
-//                                     final shouldClose = await showDialog<bool>(
+//                                   final shouldClose = await showDialog<bool>(
 //                                       context: context,
 //                                       barrierDismissible: false,
 //                                       builder: (ctx) => Dialog(
@@ -101,7 +101,7 @@
 //                                           ),
 //                                           decoration: BoxDecoration(
 //                                             color: const Color(0xFF0F172A),
-//                                             borderRadius: BorderRadius.circular(
+//                                          borderRadius: BorderRadius.circular(
 //                                               8,
 //                                             ),
 //                                             boxShadow: const [
@@ -118,11 +118,11 @@
 //                                                 CrossAxisAlignment.start,
 //                                             children: [
 //                                               const Text(
-//                                                 'Apakah Anda ingin membatalkan '
+//                                              'Apakah Anda ingin membatalkan '
 //                                                 'laporan ?',
 //                                                 style: TextStyle(
 //                                                   fontSize: 16,
-//                                                   fontWeight: FontWeight.w500,
+//                                                  fontWeight: FontWeight.w500,
 //                                                   color: Color(0xFFDDDDDD),
 //                                                 ),
 //                                               ),
@@ -131,19 +131,19 @@
 //                                                 width: double.infinity,
 //                                                 height: 52,
 //                                                 child: ElevatedButton(
-//                                                   onPressed: () => Navigator.of(
+//                                                onPressed: () => Navigator.of(
 //                                                     ctx,
 //                                                   ).pop(true),
 //                                                   style:
-//                                                       ElevatedButton.styleFrom(
+//                                                     ElevatedButton.styleFrom(
 //                                                     backgroundColor:
 //                                                         const Color(
 //                                                           0xFFDE1135,
 //                                                         ),
 //                                                     shape:
-//                                                         RoundedRectangleBorder(
+//                                                       RoundedRectangleBorder(
 //                                                       borderRadius:
-//                                                           BorderRadius.circular(
+//                                                        BorderRadius.circular(
 //                                                             100,
 //                                                           ),
 //                                                     ),
@@ -164,7 +164,7 @@
 //                                                 width: double.infinity,
 //                                                 height: 52,
 //                                                 child: TextButton(
-//                                                   onPressed: () => Navigator.of(
+//                                                onPressed: () => Navigator.of(
 //                                                     ctx,
 //                                                   ).pop(false),
 //                                                   child: const Text(
@@ -173,7 +173,7 @@
 //                                                       fontSize: 16,
 //                                                       fontWeight:
 //                                                           FontWeight.w500,
-//                                                       color: Color(0xFFA6A6A6),
+//                                                     color: Color(0xFFA6A6A6),
 //                                                     ),
 //                                                   ),
 //                                                 ),
@@ -276,7 +276,7 @@
 //                                 //   ),
 //                                 // ),
 //                                 Column(
-//                                   crossAxisAlignment: CrossAxisAlignment.start,
+//                                 crossAxisAlignment: CrossAxisAlignment.start,
 //                                   children: [
 //                                     const Text(
 //                                       'Deskripsi Produk',
@@ -294,7 +294,7 @@
 //                                         decoration: ShapeDecoration(
 //                                           color: const Color(0x33E8E8E8),
 //                                           shape: RoundedRectangleBorder(
-//                                             borderRadius: BorderRadius.circular(
+//                                          borderRadius: BorderRadius.circular(
 //                                               8,
 //                                             ),
 //                                           ),
@@ -357,7 +357,7 @@
 //                                 //   ),
 //                                 // ),
 //                                 Column(
-//                                   crossAxisAlignment: CrossAxisAlignment.start,
+//                                 crossAxisAlignment: CrossAxisAlignment.start,
 //                                   children: [
 //                                     const Text.rich(
 //                                       TextSpan(
@@ -429,11 +429,11 @@
 //                                                 Icons.arrow_drop_down,
 //                                               ),
 //                                               items: state.dataProdusen
-//                                                   .map<DropdownMenuItem<int>>(
+//                                                  .map<DropdownMenuItem<int>>(
 //                                                     (e) =>
-//                                                         DropdownMenuItem<int>(
+//                                                        DropdownMenuItem<int>(
 //                                                           value: e.id,
-//                                                           child: Text(e.title),
+//                                                         child: Text(e.title),
 //                                                         ),
 //                                                   )
 //                                                   .toList(),
@@ -446,7 +446,7 @@
 //                                 ),
 
 //                                 Column(
-//                                   crossAxisAlignment: CrossAxisAlignment.start,
+//                                 crossAxisAlignment: CrossAxisAlignment.start,
 //                                   children: [
 //                                     const Text.rich(
 //                                       TextSpan(
@@ -518,11 +518,11 @@
 //                                                 Icons.arrow_drop_down,
 //                                               ),
 //                                               items: state.dataBrand
-//                                                   .map<DropdownMenuItem<int>>(
+//                                                  .map<DropdownMenuItem<int>>(
 //                                                     (e) =>
-//                                                         DropdownMenuItem<int>(
+//                                                        DropdownMenuItem<int>(
 //                                                           value: e.id,
-//                                                           child: Text(e.title),
+//                                                         child: Text(e.title),
 //                                                         ),
 //                                                   )
 //                                                   .toList(),
@@ -548,7 +548,7 @@
 //                                         .locations;
 //                                     if (coordinates == null) {
 //                                       context.read<LocationBloc>().add(
-//                                         const LocationEvent.getCurrentLocation(
+//                                       const LocationEvent.getCurrentLocation(
 //                                           isGetPosition: true,
 //                                         ),
 //                                       );
@@ -558,7 +558,7 @@
 //                                       ProductFormEvent.submit(coordinates),
 //                                     );
 //                                   } on Exception catch (e) {
-//                                     ScaffoldMessenger.of(context).showSnackBar(
+//                                   ScaffoldMessenger.of(context).showSnackBar(
 //                                       SnackBar(content: Text(e.toString())),
 //                                     );
 //                                   }

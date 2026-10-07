@@ -31,7 +31,7 @@
 //         ),
 //         BlocProvider<LocationBloc>(
 //           create: (context) => sl<LocationBloc>()
-//             ..add(const LocationEvent.getCurrentLocation(isGetPosition: true)),
+//          ..add(const LocationEvent.getCurrentLocation(isGetPosition: true)),
 //         ),
 //       ],
 //       child: AppScaffold(
@@ -61,7 +61,7 @@
 //               size: 22,
 //             ),
 //             padding: const EdgeInsets.only(left: 16),
-//             constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+//            constraints: const BoxConstraints.tightFor(width: 40, height: 40),
 //             splashRadius: 20,
 //           ),
 //           titleWidget: Text(
@@ -274,7 +274,7 @@
 //                                 children: [
 //                                   Container(
 //                                     decoration: BoxDecoration(
-//                                       borderRadius: BorderRadius.circular(14),
+//                                      borderRadius: BorderRadius.circular(14),
 //                                       image: const DecorationImage(
 //                                         image: AssetImage(
 //                                           'assets/images/motif-menu.png',
@@ -284,12 +284,12 @@
 //                                       ),
 //                                     ),
 //                                     foregroundDecoration: BoxDecoration(
-//                                       borderRadius: BorderRadius.circular(14),
+//                                      borderRadius: BorderRadius.circular(14),
 //                                       gradient: RadialGradient(
 //                                         radius: 0.72,
 //                                         colors: [
-//                                           Colors.white.withValues(alpha: 0.32),
-//                                           Colors.white.withValues(alpha: 0.08),
+//                                         Colors.white.withValues(alpha: 0.32),
+//                                         Colors.white.withValues(alpha: 0.08),
 //                                           Colors.transparent,
 //                                         ],
 //                                         stops: const [0, 0.48, 1],
@@ -456,7 +456,7 @@
 //                 padding: const EdgeInsets.only(top: 16),
 //                 physics: const NeverScrollableScrollPhysics(),
 //                 itemCount: 8,
-//                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
 //                   crossAxisCount: 4,
 //                   mainAxisExtent: 80,
 //                 ),

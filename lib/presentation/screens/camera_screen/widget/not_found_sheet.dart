@@ -92,7 +92,7 @@
 //                 height: 44,
 //                 child: ElevatedButton(
 //                   onPressed: () async {
-//                     final draggableController = DraggableScrollableController();
+//                  final draggableController = DraggableScrollableController();
 
 //                     Navigator.pop(context); // kembali ke camera
 //                     await showModalBottomSheet<void>(
@@ -116,7 +116,7 @@
 //                           expand: false,
 //                           shouldCloseOnMinExtent: false,
 //                           // snapSizes: [0.33, 0.45],
-//                           builder: (_, scrollController) => BlocProvider.value(
+//                         builder: (_, scrollController) => BlocProvider.value(
 //                             value: locationBloc,
 //                             child: FormSheet(image: state.imagePath),
 //                           ),

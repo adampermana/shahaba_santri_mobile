@@ -1,58 +1,54 @@
-// import 'dart:async';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:sahaba_mobile/domains/auth/hive/auth_data_hive.dart';
+import 'package:sahaba_mobile/domains/auth/hive/auth_data_katanara_hive.dart';
+import 'package:sahaba_mobile/infrastructure/auth/repositories/i_auth_repositories.dart';
 
-// import 'package:flutter/foundation.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:freezed_annotation/freezed_annotation.dart';
-// import 'package:halal_cam/domain/auth/isar/auth_data_isar.dart';
+part 'auth_account_bloc.freezed.dart';
+part 'auth_account_event.dart';
+part 'auth_account_state.dart';
 
-// import '../../../infrastructure/auth/datasources/auth_local_datasource.dart';
-// import '../../../infrastructure/auth/repositories/i_auth_repositories.dart';
+class AuthAccountBloc extends Bloc<AuthAccountEvent, AuthAccountState> {
+  AuthAccountBloc(this._authRepository)
+    : super(const AuthAccountState.loading()) {
+    on<_CheckAuthStatus>(_onCheckAuthStatus);
+    on<_SignedOut>(_onSignedOut);
+  }
 
-// part 'auth_account_bloc.freezed.dart';
-// part 'auth_account_event.dart';
-// part 'auth_account_state.dart';
+  final IAuthRepositories _authRepository;
 
-// class AuthAccountBloc extends Bloc<AuthAccountEvent, AuthAccountState> {
-//   AuthAccountBloc(this._authRepository, this._authLocalDatasource)
-//     : super(AuthAccountState.unauthenticated()) {
-//     on<_CheckAuthStatus>(_onCheckAuthStatus);
-//     on<_SignedOutUser>(_onSignOutUser);
-//     on<_SignedOutGuest>(_onSignOutGuest);
-//   }
+  Future<void> _onCheckAuthStatus(
+    _CheckAuthStatus event,
+    Emitter<AuthAccountState> emit,
+  ) async {
+    emit(const AuthAccountState.loading());
 
-//   final IAuthRepositories _authRepository;
-//   final IAuthLocalDatasource _authLocalDatasource;
+    final userHive = _authRepository.fetchDataLoginUser();
+    final guestHive = _authRepository.fetchDataLoginGuest();
+    final aiHive = _authRepository.fetchDataLoginAi();
 
-//   Future<void> _onCheckAuthStatus(
-//     _CheckAuthStatus event,
-//     Emitter<AuthAccountState> emit,
-//   ) async {
-//     final isAuthUser = await _authRepository.fetchDataLoginUser();
-//     final isAuthGuest = await _authRepository.fetchDataLoginGuest();
+    if (userHive != null &&
+        userHive.accessToken != null &&
+        userHive.accessToken!.isNotEmpty) {
+      emit(AuthAccountState.authenticatedUser(userHive, aiHive));
+      return;
+    }
 
-//     emit(
-//       isAuthUser != null
-//           ? AuthAccountState.authenticatedUser(isAuthUser)
-//           : isAuthGuest != null
-//           ? AuthAccountState.authenticatedGuest(isAuthGuest)
-//           : AuthAccountState.unauthenticated(),
-//     );
-//   }
+    if (guestHive != null &&
+        guestHive.accessToken != null &&
+        guestHive.accessToken!.isNotEmpty) {
+      emit(AuthAccountState.authenticatedGuest(guestHive));
+      return;
+    }
 
-//   Future<void> _onSignOutUser(
-//     _SignedOutUser event,
-//     Emitter<AuthAccountState> emit,
-//   ) async {
-//     await _authRepository.postLogoutUser(userId: event.userId);
-//     emit(AuthAccountState.unauthenticated());
-//   }
+    emit(const AuthAccountState.unauthenticated());
+  }
 
-//   Future<void> _onSignOutGuest(
-//     _SignedOutGuest event,
-//     Emitter<AuthAccountState> emit,
-//   ) async {
-//     await _authLocalDatasource.clearAuthGuest();
-//     debugPrint('=== SignOutGuest: state before emit => $state');
-//     emit(AuthAccountState.unauthenticated());
-//   }
-// }
+  Future<void> _onSignedOut(
+    _SignedOut event,
+    Emitter<AuthAccountState> emit,
+  ) async {
+    await _authRepository.clearAuthData();
+    emit(const AuthAccountState.unauthenticated());
+  }
+}
