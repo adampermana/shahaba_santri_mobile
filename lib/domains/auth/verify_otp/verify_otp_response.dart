@@ -9,6 +9,9 @@ abstract class VerifyOtpResponse with _$VerifyOtpResponse {
   const factory VerifyOtpResponse({
     bool? success,
     String? message,
+    String? token,
+    @JsonKey(name: 'token_type') String? tokenType,
+    @JsonKey(name: 'expires_in') int? expiresIn,
     AuthUserData? data,
   }) = _VerifyOtpResponse;
 

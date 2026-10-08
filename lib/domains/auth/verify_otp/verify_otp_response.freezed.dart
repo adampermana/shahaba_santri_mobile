@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$VerifyOtpResponse {
 
- bool? get success; String? get message; AuthUserData? get data;
+ bool? get success; String? get message; String? get token;@JsonKey(name: 'token_type') String? get tokenType;@JsonKey(name: 'expires_in') int? get expiresIn; AuthUserData? get data;
 /// Create a copy of VerifyOtpResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $VerifyOtpResponseCopyWith<VerifyOtpResponse> get copyWith => _$VerifyOtpRespons
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyOtpResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyOtpResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.token, token) || other.token == token)&&(identical(other.tokenType, tokenType) || other.tokenType == tokenType)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn)&&(identical(other.data, data) || other.data == data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,success,message,data);
+int get hashCode => Object.hash(runtimeType,success,message,token,tokenType,expiresIn,data);
 
 @override
 String toString() {
-  return 'VerifyOtpResponse(success: $success, message: $message, data: $data)';
+  return 'VerifyOtpResponse(success: $success, message: $message, token: $token, tokenType: $tokenType, expiresIn: $expiresIn, data: $data)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $VerifyOtpResponseCopyWith<$Res>  {
   factory $VerifyOtpResponseCopyWith(VerifyOtpResponse value, $Res Function(VerifyOtpResponse) _then) = _$VerifyOtpResponseCopyWithImpl;
 @useResult
 $Res call({
- bool? success, String? message, AuthUserData? data
+ bool? success, String? message, String? token,@JsonKey(name: 'token_type') String? tokenType,@JsonKey(name: 'expires_in') int? expiresIn, AuthUserData? data
 });
 
 
@@ -65,11 +65,14 @@ class _$VerifyOtpResponseCopyWithImpl<$Res>
 
 /// Create a copy of VerifyOtpResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? success = freezed,Object? message = freezed,Object? data = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? success = freezed,Object? message = freezed,Object? token = freezed,Object? tokenType = freezed,Object? expiresIn = freezed,Object? data = freezed,}) {
   return _then(_self.copyWith(
 success: freezed == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
 as bool?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as String?,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+as String?,tokenType: freezed == tokenType ? _self.tokenType : tokenType // ignore: cast_nullable_to_non_nullable
+as String?,expiresIn: freezed == expiresIn ? _self.expiresIn : expiresIn // ignore: cast_nullable_to_non_nullable
+as int?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as AuthUserData?,
   ));
 }
@@ -167,10 +170,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool? success,  String? message,  AuthUserData? data)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool? success,  String? message,  String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn,  AuthUserData? data)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VerifyOtpResponse() when $default != null:
-return $default(_that.success,_that.message,_that.data);case _:
+return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.expiresIn,_that.data);case _:
   return orElse();
 
 }
@@ -188,10 +191,10 @@ return $default(_that.success,_that.message,_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool? success,  String? message,  AuthUserData? data)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool? success,  String? message,  String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn,  AuthUserData? data)  $default,) {final _that = this;
 switch (_that) {
 case _VerifyOtpResponse():
-return $default(_that.success,_that.message,_that.data);case _:
+return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.expiresIn,_that.data);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -208,10 +211,10 @@ return $default(_that.success,_that.message,_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool? success,  String? message,  AuthUserData? data)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool? success,  String? message,  String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn,  AuthUserData? data)?  $default,) {final _that = this;
 switch (_that) {
 case _VerifyOtpResponse() when $default != null:
-return $default(_that.success,_that.message,_that.data);case _:
+return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.expiresIn,_that.data);case _:
   return null;
 
 }
@@ -223,11 +226,14 @@ return $default(_that.success,_that.message,_that.data);case _:
 @JsonSerializable()
 
 class _VerifyOtpResponse implements VerifyOtpResponse {
-  const _VerifyOtpResponse({this.success, this.message, this.data});
+  const _VerifyOtpResponse({this.success, this.message, this.token, @JsonKey(name: 'token_type') this.tokenType, @JsonKey(name: 'expires_in') this.expiresIn, this.data});
   factory _VerifyOtpResponse.fromJson(Map<String, dynamic> json) => _$VerifyOtpResponseFromJson(json);
 
 @override final  bool? success;
 @override final  String? message;
+@override final  String? token;
+@override@JsonKey(name: 'token_type') final  String? tokenType;
+@override@JsonKey(name: 'expires_in') final  int? expiresIn;
 @override final  AuthUserData? data;
 
 /// Create a copy of VerifyOtpResponse
@@ -243,16 +249,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VerifyOtpResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VerifyOtpResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.token, token) || other.token == token)&&(identical(other.tokenType, tokenType) || other.tokenType == tokenType)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn)&&(identical(other.data, data) || other.data == data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,success,message,data);
+int get hashCode => Object.hash(runtimeType,success,message,token,tokenType,expiresIn,data);
 
 @override
 String toString() {
-  return 'VerifyOtpResponse(success: $success, message: $message, data: $data)';
+  return 'VerifyOtpResponse(success: $success, message: $message, token: $token, tokenType: $tokenType, expiresIn: $expiresIn, data: $data)';
 }
 
 
@@ -263,7 +269,7 @@ abstract mixin class _$VerifyOtpResponseCopyWith<$Res> implements $VerifyOtpResp
   factory _$VerifyOtpResponseCopyWith(_VerifyOtpResponse value, $Res Function(_VerifyOtpResponse) _then) = __$VerifyOtpResponseCopyWithImpl;
 @override @useResult
 $Res call({
- bool? success, String? message, AuthUserData? data
+ bool? success, String? message, String? token,@JsonKey(name: 'token_type') String? tokenType,@JsonKey(name: 'expires_in') int? expiresIn, AuthUserData? data
 });
 
 
@@ -280,11 +286,14 @@ class __$VerifyOtpResponseCopyWithImpl<$Res>
 
 /// Create a copy of VerifyOtpResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? success = freezed,Object? message = freezed,Object? data = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? success = freezed,Object? message = freezed,Object? token = freezed,Object? tokenType = freezed,Object? expiresIn = freezed,Object? data = freezed,}) {
   return _then(_VerifyOtpResponse(
 success: freezed == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
 as bool?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as String?,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+as String?,tokenType: freezed == tokenType ? _self.tokenType : tokenType // ignore: cast_nullable_to_non_nullable
+as String?,expiresIn: freezed == expiresIn ? _self.expiresIn : expiresIn // ignore: cast_nullable_to_non_nullable
+as int?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as AuthUserData?,
   ));
 }

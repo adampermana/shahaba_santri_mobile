@@ -6,6 +6,21 @@ class AuthRemoteDatasource implements IAuthRemoteDatasource {
   final Dio _dioAi;
 
   @override
+  Future<ValidationEmailResponse> getValidationEmail({
+    required String email,
+  }) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/api/v1/public/auth/verif-email',
+        queryParameters: {'email': email},
+      );
+      return ValidationEmailResponse.fromJson(response.data!);
+    } on DioException catch (e) {
+      throw ServerException.withError(e);
+    }
+  }
+
+  @override
   Future<LoginResponse> postLoginUser({
     required String identifier,
     required String password,

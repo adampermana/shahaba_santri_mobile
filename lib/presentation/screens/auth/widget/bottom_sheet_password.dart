@@ -62,6 +62,7 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
   bool get isComplete => _passwordController.text.trim().length >= 4;
 
   final _formKey = GlobalKey<FormState>();
+  String? _passwordError;
 
   @override
   void initState() {
@@ -70,6 +71,9 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
   }
 
   void _onPasswordChanged() {
+    if (_passwordError != null) {
+      _passwordError = null;
+    }
     if (mounted) setState(() {});
   }
 
@@ -82,6 +86,9 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
   }
 
   void _onKonfirmasi() {
+    if (_passwordError != null) {
+      setState(() => _passwordError = null);
+    }
     if (!(_formKey.currentState?.validate() ?? false)) return;
     if (widget.onKonfirmasi != null) {
       widget.onKonfirmasi?.call(_passwordController.text);
@@ -112,18 +119,35 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
         return becameSuccessLogin || becameLoginError;
       },
       listener: (context, state) {
-        if (state.successLoginUser) {
+        if (state.successLoginUser || state.statusCode == 200) {
           Navigator.of(context).pop();
-          sl<AuthAccountBloc>().add(const AuthAccountEvent.checkAuthStatus());
-        } else if (!state.loadingUser &&
-            (state.alert != null || state.message != null)) {
-          final errorMessage = state.message;
-          if (errorMessage != null && errorMessage.isNotEmpty) {
+          final message = state.message;
+          if (message != null && message.isNotEmpty) {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
-                CustomSnackBar.failure(message: errorMessage),
+                CustomSnackBar.authSuccess(message: message),
               );
+          }
+          sl<AuthAccountBloc>().add(const AuthAccountEvent.checkAuthStatus());
+        } else if (!state.loadingUser &&
+            (state.alert != null || state.message != null)) {
+          final statusCode = state.statusCode;
+          final errorMessage = state.message;
+
+          if (statusCode == 400 || statusCode == 401) {
+            setState(() {
+              _passwordError = errorMessage ?? 'Kata sandi salah';
+            });
+            _formKey.currentState?.validate();
+          } else {
+            if (errorMessage != null && errorMessage.isNotEmpty) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  CustomSnackBar.failure(message: errorMessage),
+                );
+            }
           }
         }
       },
@@ -244,6 +268,9 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Kata sandi tidak boleh kosong';
+                        }
+                        if (_passwordError != null) {
+                          return _passwordError;
                         }
                         return null;
                       },

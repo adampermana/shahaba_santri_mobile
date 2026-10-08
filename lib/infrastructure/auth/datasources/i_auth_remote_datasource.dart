@@ -3,12 +3,17 @@ import 'package:sahaba_mobile/domains/auth/login/login_respon_ai.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_response.dart';
 import 'package:sahaba_mobile/domains/auth/register/register_response.dart';
 import 'package:sahaba_mobile/domains/auth/resend_otp/resend_otp_response.dart';
+import 'package:sahaba_mobile/domains/auth/validation_email/validation_email_response.dart';
 import 'package:sahaba_mobile/domains/auth/verify_otp/verify_otp_response.dart';
 import 'package:sahaba_mobile/infrastructure/failures/exceptions.dart';
 
 part 'auth_remote_datasource.dart';
 
 abstract class IAuthRemoteDatasource {
+  Future<ValidationEmailResponse> getValidationEmail({
+    required String email,
+  });
+
   Future<LoginResponse> postLoginUser({
     required String identifier,
     required String password,

@@ -418,7 +418,7 @@ return authenticatedGuest(_that.authData);case _:
 
 class AuthAccountLoading implements AuthAccountState {
   const AuthAccountLoading();
-
+  
 
 
 
@@ -450,7 +450,7 @@ String toString() {
 
 class AuthAccountUnauthenticated implements AuthAccountState {
   const AuthAccountUnauthenticated();
-
+  
 
 
 
@@ -482,7 +482,7 @@ String toString() {
 
 class AuthAccountAuthenticatedUser implements AuthAccountState {
   const AuthAccountAuthenticatedUser(this.authData, [this.aiData]);
-
+  
 
  final  AuthDataHive authData;
  final  AuthDataKatanaraHive? aiData;
@@ -545,15 +545,12 @@ as AuthDataKatanaraHive?,
 
 }
 
-
-
-
 /// @nodoc
 
 
 class AuthAccountAuthenticatedGuest implements AuthAccountState {
   const AuthAccountAuthenticatedGuest(this.authData);
-
+  
 
  final  AuthDataHive authData;
 

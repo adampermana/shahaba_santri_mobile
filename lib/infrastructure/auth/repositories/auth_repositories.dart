@@ -19,6 +19,18 @@ class AuthRepositories implements IAuthRepositories {
   AuthDataKatanaraHive? fetchDataLoginAi() => _localDatasource.authAiDataHive;
 
   @override
+  Future<Either<ServerFailures, ValidationEmailResponse>> getValidationEmail({
+    required String email,
+  }) async {
+    try {
+      final response = await _remoteDatasource.getValidationEmail(email: email);
+      return Right(response);
+    } on ServerFailures catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
   Future<Either<ServerFailures, LoginResponse>> postLoginUser({
     required String identifier,
     required String password,
@@ -39,13 +51,13 @@ class AuthRepositories implements IAuthRepositories {
         );
       }
 
-      final token = response.data?.token;
+      final token = response.token;
       if (token != null) {
         await _localDatasource.saveAuthUser(
           AuthDataHive(
             accessToken: token,
-            tokenType: response.data?.tokenType,
-            expiresIn: response.data?.expiresIn,
+            tokenType: response.tokenType,
+            expiresIn: response.expiresIn,
           ),
         );
       }
@@ -109,6 +121,17 @@ class AuthRepositories implements IAuthRepositories {
         );
       }
 
+      final token = response.token;
+      if (token != null) {
+        await _localDatasource.saveAuthUser(
+          AuthDataHive(
+            accessToken: token,
+            tokenType: response.tokenType,
+            expiresIn: response.expiresIn,
+          ),
+        );
+      }
+
       return Right(response);
     } on ServerFailures catch (e) {
       return Left(e);
@@ -149,7 +172,7 @@ class AuthRepositories implements IAuthRepositories {
         platform: platform,
       );
 
-      final token = response.data?.token;
+      final token = response.token;
       if (token != null) {
         await _localDatasource.saveAuthGuest(
           AuthDataHive(

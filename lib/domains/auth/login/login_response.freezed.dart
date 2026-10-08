@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LoginResponse {
 
- bool? get success; String? get message; LoginData? get data;
+ bool? get success; String? get message; String? get token;@JsonKey(name: 'token_type') String? get tokenType;@JsonKey(name: 'expires_in') int? get expiresIn; AuthUserData? get data;
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $LoginResponseCopyWith<LoginResponse> get copyWith => _$LoginResponseCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.token, token) || other.token == token)&&(identical(other.tokenType, tokenType) || other.tokenType == tokenType)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn)&&(identical(other.data, data) || other.data == data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,success,message,data);
+int get hashCode => Object.hash(runtimeType,success,message,token,tokenType,expiresIn,data);
 
 @override
 String toString() {
-  return 'LoginResponse(success: $success, message: $message, data: $data)';
+  return 'LoginResponse(success: $success, message: $message, token: $token, tokenType: $tokenType, expiresIn: $expiresIn, data: $data)';
 }
 
 
@@ -48,11 +48,11 @@ abstract mixin class $LoginResponseCopyWith<$Res>  {
   factory $LoginResponseCopyWith(LoginResponse value, $Res Function(LoginResponse) _then) = _$LoginResponseCopyWithImpl;
 @useResult
 $Res call({
- bool? success, String? message, LoginData? data
+ bool? success, String? message, String? token,@JsonKey(name: 'token_type') String? tokenType,@JsonKey(name: 'expires_in') int? expiresIn, AuthUserData? data
 });
 
 
-$LoginDataCopyWith<$Res>? get data;
+$AuthUserDataCopyWith<$Res>? get data;
 
 }
 /// @nodoc
@@ -65,24 +65,27 @@ class _$LoginResponseCopyWithImpl<$Res>
 
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? success = freezed,Object? message = freezed,Object? data = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? success = freezed,Object? message = freezed,Object? token = freezed,Object? tokenType = freezed,Object? expiresIn = freezed,Object? data = freezed,}) {
   return _then(_self.copyWith(
 success: freezed == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
 as bool?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as LoginData?,
+as String?,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+as String?,tokenType: freezed == tokenType ? _self.tokenType : tokenType // ignore: cast_nullable_to_non_nullable
+as String?,expiresIn: freezed == expiresIn ? _self.expiresIn : expiresIn // ignore: cast_nullable_to_non_nullable
+as int?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as AuthUserData?,
   ));
 }
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$LoginDataCopyWith<$Res>? get data {
+$AuthUserDataCopyWith<$Res>? get data {
     if (_self.data == null) {
     return null;
   }
 
-  return $LoginDataCopyWith<$Res>(_self.data!, (value) {
+  return $AuthUserDataCopyWith<$Res>(_self.data!, (value) {
     return _then(_self.copyWith(data: value));
   });
 }
@@ -167,10 +170,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool? success,  String? message,  LoginData? data)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool? success,  String? message,  String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn,  AuthUserData? data)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LoginResponse() when $default != null:
-return $default(_that.success,_that.message,_that.data);case _:
+return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.expiresIn,_that.data);case _:
   return orElse();
 
 }
@@ -188,10 +191,10 @@ return $default(_that.success,_that.message,_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool? success,  String? message,  LoginData? data)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool? success,  String? message,  String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn,  AuthUserData? data)  $default,) {final _that = this;
 switch (_that) {
 case _LoginResponse():
-return $default(_that.success,_that.message,_that.data);case _:
+return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.expiresIn,_that.data);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -208,10 +211,10 @@ return $default(_that.success,_that.message,_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool? success,  String? message,  LoginData? data)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool? success,  String? message,  String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn,  AuthUserData? data)?  $default,) {final _that = this;
 switch (_that) {
 case _LoginResponse() when $default != null:
-return $default(_that.success,_that.message,_that.data);case _:
+return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.expiresIn,_that.data);case _:
   return null;
 
 }
@@ -223,12 +226,15 @@ return $default(_that.success,_that.message,_that.data);case _:
 @JsonSerializable()
 
 class _LoginResponse implements LoginResponse {
-  const _LoginResponse({this.success, this.message, this.data});
+  const _LoginResponse({this.success, this.message, this.token, @JsonKey(name: 'token_type') this.tokenType, @JsonKey(name: 'expires_in') this.expiresIn, this.data});
   factory _LoginResponse.fromJson(Map<String, dynamic> json) => _$LoginResponseFromJson(json);
 
 @override final  bool? success;
 @override final  String? message;
-@override final  LoginData? data;
+@override final  String? token;
+@override@JsonKey(name: 'token_type') final  String? tokenType;
+@override@JsonKey(name: 'expires_in') final  int? expiresIn;
+@override final  AuthUserData? data;
 
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
@@ -243,16 +249,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.token, token) || other.token == token)&&(identical(other.tokenType, tokenType) || other.tokenType == tokenType)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn)&&(identical(other.data, data) || other.data == data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,success,message,data);
+int get hashCode => Object.hash(runtimeType,success,message,token,tokenType,expiresIn,data);
 
 @override
 String toString() {
-  return 'LoginResponse(success: $success, message: $message, data: $data)';
+  return 'LoginResponse(success: $success, message: $message, token: $token, tokenType: $tokenType, expiresIn: $expiresIn, data: $data)';
 }
 
 
@@ -263,11 +269,11 @@ abstract mixin class _$LoginResponseCopyWith<$Res> implements $LoginResponseCopy
   factory _$LoginResponseCopyWith(_LoginResponse value, $Res Function(_LoginResponse) _then) = __$LoginResponseCopyWithImpl;
 @override @useResult
 $Res call({
- bool? success, String? message, LoginData? data
+ bool? success, String? message, String? token,@JsonKey(name: 'token_type') String? tokenType,@JsonKey(name: 'expires_in') int? expiresIn, AuthUserData? data
 });
 
 
-@override $LoginDataCopyWith<$Res>? get data;
+@override $AuthUserDataCopyWith<$Res>? get data;
 
 }
 /// @nodoc
@@ -280,12 +286,15 @@ class __$LoginResponseCopyWithImpl<$Res>
 
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? success = freezed,Object? message = freezed,Object? data = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? success = freezed,Object? message = freezed,Object? token = freezed,Object? tokenType = freezed,Object? expiresIn = freezed,Object? data = freezed,}) {
   return _then(_LoginResponse(
 success: freezed == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
 as bool?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as LoginData?,
+as String?,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+as String?,tokenType: freezed == tokenType ? _self.tokenType : tokenType // ignore: cast_nullable_to_non_nullable
+as String?,expiresIn: freezed == expiresIn ? _self.expiresIn : expiresIn // ignore: cast_nullable_to_non_nullable
+as int?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as AuthUserData?,
   ));
 }
 
@@ -293,12 +302,12 @@ as LoginData?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$LoginDataCopyWith<$Res>? get data {
+$AuthUserDataCopyWith<$Res>? get data {
     if (_self.data == null) {
     return null;
   }
 
-  return $LoginDataCopyWith<$Res>(_self.data!, (value) {
+  return $AuthUserDataCopyWith<$Res>(_self.data!, (value) {
     return _then(_self.copyWith(data: value));
   });
 }

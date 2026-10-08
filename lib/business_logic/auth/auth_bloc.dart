@@ -8,6 +8,7 @@ import 'package:sahaba_mobile/domains/auth/login/login_respon_ai.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_response.dart';
 import 'package:sahaba_mobile/domains/auth/register/register_response.dart';
 import 'package:sahaba_mobile/domains/auth/resend_otp/resend_otp_response.dart';
+import 'package:sahaba_mobile/domains/auth/validation_email/validation_email_response.dart';
 import 'package:sahaba_mobile/domains/auth/verify_otp/verify_otp_response.dart';
 import 'package:sahaba_mobile/infrastructure/auth/repositories/i_auth_repositories.dart';
 import 'package:sahaba_mobile/infrastructure/failures/alert.dart';
@@ -21,6 +22,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(this._authRepositories, this._deviceInfoService)
     : super(AuthState.initial()) {
     on<_Started>(_onStarted);
+    on<_GetValidationEmail>(_onGetValidationEmail);
     on<_PostloginUser>(_onPostloginUser);
     on<_PostRegister>(_onPostRegister);
     on<_PostVerifyEmail>(_onPostVerifyEmail);
@@ -35,6 +37,44 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _onStarted(_Started event, Emitter<AuthState> emit) async {}
 
+  Future<void> _onGetValidationEmail(
+    _GetValidationEmail event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        loadingValidationEmail: true,
+        successValidationEmail: false,
+        statusCode: null,
+      ),
+    );
+
+    final result = await _authRepositories.getValidationEmail(
+      email: event.email,
+    );
+
+    result.fold(
+      (f) => emit(
+        state.copyWith(
+          successValidationEmail: false,
+          loadingValidationEmail: false,
+          statusCode: f.statusCode,
+          message: f.message,
+          alert: Alert.fromFailures(f),
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          loadingValidationEmail: false,
+          successValidationEmail: true,
+          statusCode: 200,
+          validationEmailResponse: r,
+          message: r.message,
+        ),
+      ),
+    );
+  }
+
   Future<void> _onPostloginUser(
     _PostloginUser event,
     Emitter<AuthState> emit,
@@ -43,6 +83,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       state.copyWith(
         loadingUser: true,
         successLoginUser: false,
+        statusCode: null,
       ),
     );
 
@@ -56,6 +97,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           successLoginUser: false,
           loadingUser: false,
+          statusCode: f.statusCode,
           message: f.message,
           alert: Alert.fromFailures(f),
         ),
@@ -64,6 +106,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           loadingUser: false,
           successLoginUser: true,
+          statusCode: 200,
           loginResponse: r,
           authDataHive: _authRepositories.fetchDataLoginUser(),
           message: r.message,
@@ -81,6 +124,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         loading: true,
         successRegister: false,
         isEmailUnverified: false,
+        statusCode: null,
       ),
     );
 
@@ -95,6 +139,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           successRegister: false,
           loading: false,
+          statusCode: f.statusCode,
           pendingEmail: f.requiresVerification ? event.email : null,
           isEmailUnverified: f.requiresVerification,
           cooldownOtp: f.cooldownOtp ?? 60,
@@ -106,6 +151,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           loading: false,
           successRegister: true,
+          statusCode: 200,
           isEmailUnverified: false,
           pendingEmail: event.email,
           cooldownOtp: r.data?.cooldownOtp ?? 60,
@@ -124,6 +170,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       state.copyWith(
         loadingVerifyEmail: true,
         successVerifyEmail: false,
+        statusCode: null,
       ),
     );
 
@@ -137,6 +184,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           successVerifyEmail: false,
           loadingVerifyEmail: false,
+          statusCode: f.statusCode,
           messageVerifyOtp: f.message,
           alert: Alert.fromFailures(f),
         ),
@@ -145,6 +193,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           loadingVerifyEmail: false,
           successVerifyEmail: true,
+          statusCode: 200,
           verifyEmailResponse: r,
           messageVerifyOtp: r.message,
         ),
@@ -160,6 +209,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       state.copyWith(
         loadingResendOtp: true,
         successResendOtp: false,
+        statusCode: null,
       ),
     );
 
@@ -172,6 +222,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           successResendOtp: false,
           loadingResendOtp: false,
+          statusCode: f.statusCode,
           alert: Alert.fromFailures(f),
         ),
       ),
@@ -179,6 +230,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           loadingResendOtp: false,
           successResendOtp: true,
+          statusCode: 200,
           cooldownOtp: r.data?.cooldownOtp ?? 60,
           resendOtpResponse: r,
         ),
@@ -194,6 +246,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       state.copyWith(
         loadingGuest: true,
         successLoginGuest: false,
+        statusCode: null,
       ),
     );
 
@@ -208,6 +261,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           successLoginGuest: false,
           loadingGuest: false,
+          statusCode: f.statusCode,
           message: f.message,
           alert: Alert.fromFailures(f),
         ),
@@ -216,6 +270,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           loadingGuest: false,
           successLoginGuest: true,
+          statusCode: 200,
           loginResponse: r,
           authDataHive: _authRepositories.fetchDataLoginGuest(),
           message: r.message,
@@ -232,6 +287,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       state.copyWith(
         loadingAi: true,
         successLoginAi: false,
+        statusCode: null,
       ),
     );
 
@@ -245,6 +301,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           successLoginAi: false,
           loadingAi: false,
+          statusCode: f.statusCode,
           message: f.message,
           alert: Alert.fromFailures(f),
         ),
@@ -253,6 +310,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           loadingAi: false,
           successLoginAi: true,
+          statusCode: 200,
           loginAiResponse: r,
           authAiDataHive: _authRepositories.fetchDataLoginAi(),
         ),
@@ -268,6 +326,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       state.copyWith(
         loadingRestoreAccount: true,
         successRestoreAccount: false,
+        statusCode: null,
       ),
     );
 
@@ -278,6 +337,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           successRestoreAccount: false,
           loadingRestoreAccount: false,
+          statusCode: f.statusCode,
           message: f.message,
           alert: Alert.fromFailures(f),
         ),
@@ -286,6 +346,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           loadingRestoreAccount: false,
           successRestoreAccount: true,
+          statusCode: 200,
           message: r.message,
         ),
       ),

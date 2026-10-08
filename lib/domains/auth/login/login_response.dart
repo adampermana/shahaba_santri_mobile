@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:sahaba_mobile/domains/auth/auth_user_data.dart';
 
 part 'login_response.freezed.dart';
 part 'login_response.g.dart';
@@ -8,7 +9,10 @@ abstract class LoginResponse with _$LoginResponse {
   const factory LoginResponse({
     bool? success,
     String? message,
-    LoginData? data,
+    String? token,
+    @JsonKey(name: 'token_type') String? tokenType,
+    @JsonKey(name: 'expires_in') int? expiresIn,
+    AuthUserData? data,
   }) = _LoginResponse;
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) =>

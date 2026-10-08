@@ -10,15 +10,21 @@ _LoginResponse _$LoginResponseFromJson(Map<String, dynamic> json) =>
     _LoginResponse(
       success: json['success'] as bool?,
       message: json['message'] as String?,
+      token: json['token'] as String?,
+      tokenType: json['token_type'] as String?,
+      expiresIn: (json['expires_in'] as num?)?.toInt(),
       data: json['data'] == null
           ? null
-          : LoginData.fromJson(json['data'] as Map<String, dynamic>),
+          : AuthUserData.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$LoginResponseToJson(_LoginResponse instance) =>
     <String, dynamic>{
       'success': instance.success,
       'message': instance.message,
+      'token': instance.token,
+      'token_type': instance.tokenType,
+      'expires_in': instance.expiresIn,
       'data': instance.data,
     };
 
