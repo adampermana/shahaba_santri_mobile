@@ -110,7 +110,11 @@ class CustomTextFormFieldWidget extends StatelessWidget {
               controller!.clear();
               onChanged?.call('');
             },
-            child: const Icon(Icons.clear, size: 18),
+            child: const Icon(
+              Icons.clear,
+              size: 18,
+              color: ColorPalette.contentDisabled,
+            ),
           ),
         );
       }
@@ -759,7 +763,11 @@ class _CustomEmailFormFieldState extends State<CustomEmailFormField> {
               _hideSuggestions();
               widget.onChanged?.call('');
             },
-            child: const Icon(Icons.clear, size: 18),
+            child: const Icon(
+              Icons.clear,
+              size: 18,
+              color: ColorPalette.contentDisabled,
+            ),
           )
         : null;
 
@@ -1379,7 +1387,11 @@ class CustomTextFormFieldGlassWidget extends StatelessWidget {
               controller!.clear();
               onChanged?.call('');
             },
-            child: Icon(Icons.clear, size: 18, color: iconColor),
+            child: Icon(
+              Icons.clear,
+              size: 18,
+              color: iconColor ?? ColorPalette.contentDisabled,
+            ),
           ),
         );
       }

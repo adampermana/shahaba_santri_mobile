@@ -58,11 +58,13 @@ class AuthRepositories implements IAuthRepositories {
 
   @override
   Future<Either<ServerFailures, RegisterResponse>> postRegister({
+    required String name,
     required String email,
     required String password,
   }) async {
     try {
       final response = await _remoteDatasource.postRegister(
+        name: name,
         email: email,
         password: password,
       );

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
@@ -13,85 +14,54 @@ import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
-class RegisterForm extends StatefulWidget {
+class RegisterForm extends HookWidget {
   const RegisterForm({required this.onSwitchToLogin, super.key});
 
   final VoidCallback onSwitchToLogin;
 
   @override
-  State<RegisterForm> createState() => _RegisterFormState();
-}
-
-class _RegisterFormState extends State<RegisterForm> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-
-  bool get isComplete =>
-      _nameController.text.trim().isNotEmpty &&
-      _emailController.text.trim().length >= 4 &&
-      _passwordController.text.isNotEmpty &&
-      _confirmPasswordController.text.isNotEmpty;
-
-  @override
-  void initState() {
-    super.initState();
-    for (final c in [
-      _nameController,
-      _emailController,
-      _passwordController,
-      _confirmPasswordController,
-    ]) {
-      c.addListener(_rebuild);
-    }
-  }
-
-  void _rebuild() {
-    if (mounted) setState(() {});
-  }
-
-  @override
-  void dispose() {
-    for (final c in [
-      _nameController,
-      _emailController,
-      _passwordController,
-      _confirmPasswordController,
-    ]) {
-      c
-        ..removeListener(_rebuild)
-        ..dispose();
-    }
-    super.dispose();
-  }
-
-  void _onDaftar() {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
-
-    context.read<AuthBloc>().add(
-      AuthEvent.postRegister(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-      ),
-    );
-  }
-
-  Future<void> _showOtpBottomSheet(int cooldownSeconds) async {
-    await WidgetsBinding.instance.endOfFrame;
-    if (!mounted) return;
-
-    await OtpBottomSheet.show(
-      context,
-      email: _emailController.text.trim(),
-      variant: OtpBottomSheetVariant.verifyEmail,
-      cooldownSeconds: cooldownSeconds,
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final formKey = useMemoized(GlobalKey<FormState>.new);
+    final nameController = useTextEditingController();
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    final confirmPasswordController = useTextEditingController();
+
+    final nameText = useValueListenable(nameController).text;
+    final emailText = useValueListenable(emailController).text;
+    final passwordText = useValueListenable(passwordController).text;
+    final confirmPasswordText =
+        useValueListenable(confirmPasswordController).text;
+
+    final isComplete = nameText.trim().isNotEmpty &&
+        emailText.trim().length >= 4 &&
+        passwordText.isNotEmpty &&
+        confirmPasswordText.isNotEmpty;
+
+    void onDaftar() {
+      if (!(formKey.currentState?.validate() ?? false)) return;
+
+      context.read<AuthBloc>().add(
+        AuthEvent.postRegister(
+          name: nameController.text.trim(),
+          email: emailController.text.trim(),
+          password: passwordController.text,
+        ),
+      );
+    }
+
+    Future<void> showOtpBottomSheet(int cooldownSeconds) async {
+      await WidgetsBinding.instance.endOfFrame;
+      if (!context.mounted) return;
+
+      await OtpBottomSheet.show(
+        context,
+        email: emailController.text.trim(),
+        variant: OtpBottomSheetVariant.verifyEmail,
+        cooldownSeconds: cooldownSeconds,
+      );
+    }
+
     return BlocConsumer<AuthBloc, AuthState>(
       listenWhen: (previous, current) {
         final becameSuccessRegister =
@@ -111,12 +81,12 @@ class _RegisterFormState extends State<RegisterForm> {
       },
       listener: (context, state) async {
         if (state.successRegister) {
-          await _showOtpBottomSheet(state.cooldownOtp);
+          await showOtpBottomSheet(state.cooldownOtp);
         } else if (!state.loading && state.isEmailUnverified) {
           context.read<AuthBloc>().add(
-            AuthEvent.postResendEmailOtp(email: _emailController.text.trim()),
+            AuthEvent.postResendEmailOtp(email: emailController.text.trim()),
           );
-          await _showOtpBottomSheet(state.cooldownOtp);
+          await showOtpBottomSheet(state.cooldownOtp);
         } else if (!state.loading &&
             state.message != null &&
             state.message!.isNotEmpty &&
@@ -135,14 +105,14 @@ class _RegisterFormState extends State<RegisterForm> {
           title: 'Daftar dulu, yuk!',
           footerNote: 'Dengan mendaftar, Anda menyetujui \n',
           child: Form(
-            key: _formKey,
+            key: formKey,
             autovalidateMode: AutovalidateMode.disabled,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Nama
                 CustomTextFormFieldWidget(
-                  controller: _nameController,
+                  controller: nameController,
                   hintText: 'Ketik namamu di sini',
                   labelText: 'Nama kamu',
                   colorLabelText: ColorPalette.inverseSecondary,
@@ -190,7 +160,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
                 // Email
                 CustomEmailFormField(
-                  controller: _emailController,
+                  controller: emailController,
                   hintText: 'Ketik emailmu di sini',
                   labelText: 'Email kamu',
                   labelTextColor: ColorPalette.inverseSecondary,
@@ -243,7 +213,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
                 // Password
                 CustomPasswordFormField(
-                  controller: _passwordController,
+                  controller: passwordController,
                   hintText: 'Ketik kata sandimu di sini',
                   labelText: 'Kata Sandi',
                   colorLabelText: ColorPalette.inverseSecondary,
@@ -292,7 +262,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
                 // Konfirmasi Password
                 CustomPasswordFormField(
-                  controller: _confirmPasswordController,
+                  controller: confirmPasswordController,
                   hintText: 'Ketik ulang kata sandimu di sini',
                   labelText: 'Konfirmasi Kata Sandi',
                   colorLabelText: ColorPalette.inverseSecondary,
@@ -330,7 +300,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     if (value == null || value.isEmpty) {
                       return 'Konfirmasi kata sandi tidak boleh kosong';
                     }
-                    if (value != _passwordController.text) {
+                    if (value != passwordController.text) {
                       return 'Kata sandi tidak sama';
                     }
                     return null;
@@ -355,7 +325,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     fontSize: 15,
                     color: ColorPalette.kWhite,
                   ),
-                  onPressed: _onDaftar,
+                  onPressed: onDaftar,
                 ),
 
                 const SizedBox(height: 24),
@@ -375,7 +345,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     ),
                     const SizedBox(width: 4),
                     GestureDetector(
-                      onTap: widget.onSwitchToLogin,
+                      onTap: onSwitchToLogin,
                       child: const Text(
                         'Masuk di sini, yuk!',
                         style: TextStyle(

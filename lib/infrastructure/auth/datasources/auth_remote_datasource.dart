@@ -33,13 +33,14 @@ class AuthRemoteDatasource implements IAuthRemoteDatasource {
 
   @override
   Future<RegisterResponse> postRegister({
+    required String name,
     required String email,
     required String password,
   }) async {
     try {
       final response = await _dio.post<Map<String, dynamic>>(
         '/api/v1/public/auth/register',
-        data: {'email': email, 'password': password},
+        data: {'name': name, 'email': email, 'password': password},
       );
       return RegisterResponse.fromJson(response.data!);
     } on DioException catch (e) {

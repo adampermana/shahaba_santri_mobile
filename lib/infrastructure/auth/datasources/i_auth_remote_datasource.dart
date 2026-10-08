@@ -15,6 +15,7 @@ abstract class IAuthRemoteDatasource {
   });
 
   Future<RegisterResponse> postRegister({
+    required String name,
     required String email,
     required String password,
   });

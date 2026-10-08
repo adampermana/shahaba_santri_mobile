@@ -85,6 +85,8 @@ abstract class AppIcons {
   static const String verifEmailIcon = '$_path/auth/verif-email-icon.svg';
   static const String greetingIllustration =
       '$_path/auth/greeting-illustration.svg';
+  static const String pinInfoIllustration =
+      '$_path/auth/pin-info-illustration.svg';
 }
 
 abstract class QiblaIcons {

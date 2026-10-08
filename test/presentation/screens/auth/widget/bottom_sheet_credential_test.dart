@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_credential.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_pin.dart';
 
 Widget _app(Widget child) {
   return MaterialApp(
@@ -15,8 +15,8 @@ void main() {
   ) async {
     await tester.pumpWidget(
       _app(
-        const CredentialBottomSheet(
-          variant: CredentialBottomSheetVariant.newPassword,
+        const PinBottomSheet(
+          variant: PinBottomSheetVariant.newPassword,
         ),
       ),
     );
@@ -40,8 +40,8 @@ void main() {
     String? submitted;
     await tester.pumpWidget(
       _app(
-        CredentialBottomSheet(
-          variant: CredentialBottomSheetVariant.newPassword,
+        PinBottomSheet(
+          variant: PinBottomSheetVariant.newPassword,
           onSubmitted: (value) => submitted = value,
         ),
       ),
@@ -64,8 +64,8 @@ void main() {
     String? submitted;
     await tester.pumpWidget(
       _app(
-        CredentialBottomSheet(
-          variant: CredentialBottomSheetVariant.newPin,
+        PinBottomSheet(
+          variant: PinBottomSheetVariant.newPin,
           onSubmitted: (value) => submitted = value,
         ),
       ),
@@ -87,8 +87,8 @@ void main() {
     var forgotPinCalled = false;
     await tester.pumpWidget(
       _app(
-        CredentialBottomSheet(
-          variant: CredentialBottomSheetVariant.currentPin,
+        PinBottomSheet(
+          variant: PinBottomSheetVariant.currentPin,
           onUsePassword: () => usePasswordCalled = true,
           onForgotPin: () => forgotPinCalled = true,
         ),

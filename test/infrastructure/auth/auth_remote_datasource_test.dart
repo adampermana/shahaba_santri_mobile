@@ -338,6 +338,7 @@ void main() {
         ).thenAnswer((_) async => _resp(tSuccessJson, path: path));
 
         final result = await datasource.postRegister(
+          name: 'Daliras',
           email: 'daliras653@aminavin.com',
           password: 'secret123',
         );
@@ -350,6 +351,7 @@ void main() {
           () => mockDio.post<Map<String, dynamic>>(
             path,
             data: {
+              'name': 'Daliras',
               'email': 'daliras653@aminavin.com',
               'password': 'secret123',
             },
@@ -378,6 +380,7 @@ void main() {
 
         expect(
           () => datasource.postRegister(
+            name: 'Daliras',
             email: 'daliras653@aminavin.com',
             password: 'secret123',
           ),

@@ -103,7 +103,7 @@ class _PostloginUser implements AuthEvent {
 abstract mixin class _$PostRegisterCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
   factory _$PostRegisterCopyWith(_PostRegister value, $Res Function(_PostRegister) _then) = __$PostRegisterCopyWithImpl;
   @useResult
-  $Res call({String email, String password});
+  $Res call({String name, String email, String password});
 }
 /// @nodoc
 class __$PostRegisterCopyWithImpl<$Res> implements _$PostRegisterCopyWith<$Res> {
@@ -112,8 +112,9 @@ class __$PostRegisterCopyWithImpl<$Res> implements _$PostRegisterCopyWith<$Res> 
   final $Res Function(_PostRegister) _then;
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? email = null, Object? password = null}) {
+  $Res call({Object? name = null, Object? email = null, Object? password = null}) {
     return _then(_PostRegister(
+      name: null == name ? _self.name : name as String,
       email: null == email ? _self.email : email as String,
       password: null == password ? _self.password : password as String,
     ));
@@ -122,7 +123,8 @@ class __$PostRegisterCopyWithImpl<$Res> implements _$PostRegisterCopyWith<$Res> 
 
 /// @nodoc
 class _PostRegister implements AuthEvent {
-  const _PostRegister({required this.email, required this.password});
+  const _PostRegister({required this.name, required this.email, required this.password});
+  final String name;
   final String email;
   final String password;
 
@@ -131,15 +133,16 @@ class _PostRegister implements AuthEvent {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _PostRegister &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.password, password) || other.password == password));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, email, password);
+  int get hashCode => Object.hash(runtimeType, name, email, password);
 
   @override
-  String toString() => 'AuthEvent.postRegister(email: $email, password: $password)';
+  String toString() => 'AuthEvent.postRegister(name: $name, email: $email, password: $password)';
 }
 
 /// @nodoc

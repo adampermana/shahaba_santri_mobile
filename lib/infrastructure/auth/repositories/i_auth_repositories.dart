@@ -24,6 +24,7 @@ abstract class IAuthRepositories {
   });
 
   Future<Either<ServerFailures, RegisterResponse>> postRegister({
+    required String name,
     required String email,
     required String password,
   });

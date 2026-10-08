@@ -6,15 +6,15 @@ import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
-enum CredentialBottomSheetVariant {
+enum PinBottomSheetVariant {
   newPassword,
   newPin,
   confirmPin,
   currentPin,
 }
 
-class CredentialBottomSheet extends StatefulWidget {
-  const CredentialBottomSheet({
+class PinBottomSheet extends StatefulWidget {
+  const PinBottomSheet({
     required this.variant,
     super.key,
     this.expectedPin,
@@ -23,7 +23,7 @@ class CredentialBottomSheet extends StatefulWidget {
     this.onForgotPin,
   });
 
-  final CredentialBottomSheetVariant variant;
+  final PinBottomSheetVariant variant;
   final String? expectedPin;
   final ValueChanged<String>? onSubmitted;
   final VoidCallback? onUsePassword;
@@ -31,7 +31,7 @@ class CredentialBottomSheet extends StatefulWidget {
 
   static Future<void> show(
     BuildContext context, {
-    required CredentialBottomSheetVariant variant,
+    required PinBottomSheetVariant variant,
     String? expectedPin,
     ValueChanged<String>? onSubmitted,
     VoidCallback? onUsePassword,
@@ -49,7 +49,7 @@ class CredentialBottomSheet extends StatefulWidget {
         ),
         child: SingleChildScrollView(
           physics: const ClampingScrollPhysics(),
-          child: CredentialBottomSheet(
+          child: PinBottomSheet(
             variant: variant,
             expectedPin: expectedPin,
             onSubmitted: onSubmitted,
@@ -62,24 +62,23 @@ class CredentialBottomSheet extends StatefulWidget {
   }
 
   @override
-  State<CredentialBottomSheet> createState() => _CredentialBottomSheetState();
+  State<PinBottomSheet> createState() => _PinBottomSheetState();
 }
 
-class _CredentialBottomSheetState extends State<CredentialBottomSheet> {
+class _PinBottomSheetState extends State<PinBottomSheet> {
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _pinController = TextEditingController();
   var _isLoading = false;
   var _hasSubmitted = false;
 
-  bool get _isPassword =>
-      widget.variant == CredentialBottomSheetVariant.newPassword;
+  bool get _isPassword => widget.variant == PinBottomSheetVariant.newPassword;
 
   String get _title => switch (widget.variant) {
-    CredentialBottomSheetVariant.newPassword => 'Masukin kata sandi Baru kamu',
-    CredentialBottomSheetVariant.newPin => 'Masukin PIN Baru kamu',
-    CredentialBottomSheetVariant.confirmPin => 'Konfirmasi PIN Baru kamu',
-    CredentialBottomSheetVariant.currentPin => 'Masukin PIN kamu',
+    PinBottomSheetVariant.newPassword => 'Masukin kata sandi Baru kamu',
+    PinBottomSheetVariant.newPin => 'Masukin PIN Baru kamu',
+    PinBottomSheetVariant.confirmPin => 'Konfirmasi PIN Baru kamu',
+    PinBottomSheetVariant.currentPin => 'Masukin PIN kamu',
   };
 
   @override
@@ -348,7 +347,7 @@ class _CredentialBottomSheetState extends State<CredentialBottomSheet> {
         _buildPinDots(),
         const SizedBox(height: 64),
         _buildKeypad(),
-        if (widget.variant == CredentialBottomSheetVariant.currentPin) ...[
+        if (widget.variant == PinBottomSheetVariant.currentPin) ...[
           const SizedBox(height: 24),
           _buildPinActions(),
         ],

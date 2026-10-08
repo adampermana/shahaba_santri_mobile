@@ -7,8 +7,6 @@ import 'package:sahaba_mobile/presentation/screens/auth/widget/login_form.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/register_form.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 
-/// AuthMode menentukan container mana yang tampil.
-
 class AuthScreen extends HookWidget {
   const AuthScreen({super.key, this.initialMode = AuthMode.login});
 
@@ -19,11 +17,8 @@ class AuthScreen extends HookWidget {
     final mode = useState(initialMode);
     final animController = useAnimationController(
       duration: const Duration(milliseconds: 380),
-      initialValue: 1,
+      initialValue: initialMode == AuthMode.register ? 1.0 : 0.0,
     );
-
-    // Rebuild setiap frame animasi agar kondisi `isAnimating` selalu fresh
-    useAnimation(animController);
 
     final slideAnim = useMemoized(
       () =>
@@ -44,14 +39,12 @@ class AuthScreen extends HookWidget {
     /// register → login: register slide turun keluar, login tetap diam
     Future<void> switchMode(AuthMode next) async {
       if (next == mode.value) return;
+      FocusManager.instance.primaryFocus?.unfocus();
+      mode.value = next;
       if (next == AuthMode.register) {
-        animController.value = 0.0;
-        mode.value = next;
         await animController.forward();
       } else {
         await animController.reverse();
-        if (!context.mounted) return;
-        mode.value = next;
       }
     }
 
@@ -62,7 +55,6 @@ class AuthScreen extends HookWidget {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          // Header SVG — fixed, tidak ikut animasi
           const Positioned(
             top: 0,
             left: 0,
@@ -80,8 +72,15 @@ class AuthScreen extends HookWidget {
               children: [
                 SizedBox(height: context.width * (290 / 440)),
                 Expanded(
-                  child: LoginForm(
-                    onSwitchToRegister: () => switchMode(AuthMode.register),
+                  child: AnimatedBuilder(
+                    animation: animController,
+                    builder: (context, child) => IgnorePointer(
+                      ignoring: animController.value > 0,
+                      child: child,
+                    ),
+                    child: LoginForm(
+                      onSwitchToRegister: () => switchMode(AuthMode.register),
+                    ),
                   ),
                 ),
               ],
@@ -89,23 +88,31 @@ class AuthScreen extends HookWidget {
           ),
 
           // Register — overlay slide naik/turun di atas login
-          if (mode.value == AuthMode.register || animController.isAnimating)
-            SafeArea(
+          AnimatedBuilder(
+            animation: animController,
+            builder: (context, child) {
+              if (animController.isDismissed) {
+                return const SizedBox.shrink();
+              }
+              return SlideTransition(
+                position: slideAnim,
+                child: child,
+              );
+            },
+            child: SafeArea(
               bottom: false,
               child: Column(
                 children: [
                   SizedBox(height: context.width * (290 / 440)),
                   Expanded(
-                    child: SlideTransition(
-                      position: slideAnim,
-                      child: RegisterForm(
-                        onSwitchToLogin: () => switchMode(AuthMode.login),
-                      ),
+                    child: RegisterForm(
+                      onSwitchToLogin: () => switchMode(AuthMode.login),
                     ),
                   ),
                 ],
               ),
             ),
+          ),
         ],
       ),
     );

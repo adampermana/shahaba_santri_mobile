@@ -7,9 +7,9 @@ import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/auth_card.dart';
-import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_credential.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_otp.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_password.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_pin.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/devider_line.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
@@ -48,9 +48,9 @@ class LoginForm extends HookWidget {
     Future<void> showNewPassword() async {
       await WidgetsBinding.instance.endOfFrame;
       if (!context.mounted) return;
-      await CredentialBottomSheet.show(
+      await PinBottomSheet.show(
         context,
-        variant: CredentialBottomSheetVariant.newPassword,
+        variant: PinBottomSheetVariant.newPassword,
         onSubmitted: (_) {
           Navigator.of(context).pop();
           unawaited(showPasswordSuccess());

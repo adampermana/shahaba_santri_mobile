@@ -85,6 +85,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
 
     final result = await _authRepositories.postRegister(
+      name: event.name,
       email: event.email,
       password: event.password,
     );

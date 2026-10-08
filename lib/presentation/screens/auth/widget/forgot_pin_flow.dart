@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_credential.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_otp.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_pin.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 
 typedef ResetPinCallback =
@@ -39,9 +39,9 @@ class ForgotPinFlow {
     }) async {
       await WidgetsBinding.instance.endOfFrame;
       if (!context.mounted) return;
-      await CredentialBottomSheet.show(
+      await PinBottomSheet.show(
         context,
-        variant: CredentialBottomSheetVariant.confirmPin,
+        variant: PinBottomSheetVariant.confirmPin,
         expectedPin: pin,
         onSubmitted: (confirmedPin) {
           Navigator.of(context).pop();
@@ -62,9 +62,9 @@ class ForgotPinFlow {
     Future<void> showNewPin(String otp) async {
       await WidgetsBinding.instance.endOfFrame;
       if (!context.mounted) return;
-      await CredentialBottomSheet.show(
+      await PinBottomSheet.show(
         context,
-        variant: CredentialBottomSheetVariant.newPin,
+        variant: PinBottomSheetVariant.newPin,
         onSubmitted: (pin) {
           Navigator.of(context).pop();
           unawaited(showConfirmPin(otp: otp, pin: pin));

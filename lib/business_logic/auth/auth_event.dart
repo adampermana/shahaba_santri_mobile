@@ -10,6 +10,7 @@ class AuthEvent with _$AuthEvent {
   }) = _PostloginUser;
 
   const factory AuthEvent.postRegister({
+    required String name,
     required String email,
     required String password,
   }) = _PostRegister;
