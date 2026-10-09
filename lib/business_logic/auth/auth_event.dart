@@ -32,4 +32,15 @@ class AuthEvent with _$AuthEvent {
   const factory AuthEvent.postloginAi() = _PostloginAi;
   const factory AuthEvent.postRestoreAccount({required String jwt}) =
       _PostRestoreAccount;
+  const factory AuthEvent.postCreatePin({
+    required String pin,
+  }) = _PostCreatePin;
+  const factory AuthEvent.postRequestResetPinOtp({
+    required String email,
+  }) = _PostRequestResetPinOtp;
+  const factory AuthEvent.postResetPin({
+    required String email,
+    required String code,
+    required String pin,
+  }) = _PostResetPin;
 }

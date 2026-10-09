@@ -11,6 +11,7 @@ abstract class AuthUserData with _$AuthUserData {
     String? name,
     @JsonKey(name: 'photo_url') String? photoUrl,
     @JsonKey(name: 'email_verified') bool? emailVerified,
+    @JsonKey(name: 'is_pin') bool? isPin,
     String? status,
     @JsonKey(name: 'cooldown_otp') int? cooldownOtp,
     @JsonKey(name: 'created_at') String? createdAt,

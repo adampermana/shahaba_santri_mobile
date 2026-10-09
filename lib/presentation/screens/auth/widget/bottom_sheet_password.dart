@@ -16,12 +16,14 @@ import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 class BottomSheetPassword extends StatefulWidget {
   const BottomSheetPassword({
     required this.email,
+    required this.parentContext,
     super.key,
     this.onKonfirmasi,
     this.onLupaPassword,
   });
 
   final String email;
+  final BuildContext parentContext;
   final ValueChanged<String>? onKonfirmasi;
   final VoidCallback? onLupaPassword;
 
@@ -45,6 +47,7 @@ class BottomSheetPassword extends StatefulWidget {
           ),
           child: BottomSheetPassword(
             email: email,
+            parentContext: context,
             onKonfirmasi: onKonfirmasi,
             onLupaPassword: onLupaPassword,
           ),
@@ -121,9 +124,10 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
       listener: (context, state) {
         if (state.successLoginUser || state.statusCode == 200) {
           Navigator.of(context).pop();
+
           final message = state.message;
           if (message != null && message.isNotEmpty) {
-            ScaffoldMessenger.of(context)
+            ScaffoldMessenger.of(widget.parentContext)
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 CustomSnackBar.authSuccess(message: message),

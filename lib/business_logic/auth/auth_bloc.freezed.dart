@@ -55,7 +55,7 @@ extension AuthEventPatterns on AuthEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _GetValidationEmail value)?  getValidationEmail,TResult Function( _PostloginUser value)?  postloginUser,TResult Function( _PostRegister value)?  postRegister,TResult Function( _PostVerifyEmail value)?  postVerifyEmail,TResult Function( _PostResendEmailOtp value)?  postResendEmailOtp,TResult Function( _PostloginGuest value)?  postloginGuest,TResult Function( _PostloginAi value)?  postloginAi,TResult Function( _PostRestoreAccount value)?  postRestoreAccount,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _GetValidationEmail value)?  getValidationEmail,TResult Function( _PostloginUser value)?  postloginUser,TResult Function( _PostRegister value)?  postRegister,TResult Function( _PostVerifyEmail value)?  postVerifyEmail,TResult Function( _PostResendEmailOtp value)?  postResendEmailOtp,TResult Function( _PostloginGuest value)?  postloginGuest,TResult Function( _PostloginAi value)?  postloginAi,TResult Function( _PostRestoreAccount value)?  postRestoreAccount,TResult Function( _PostCreatePin value)?  postCreatePin,TResult Function( _PostRequestResetPinOtp value)?  postRequestResetPinOtp,TResult Function( _PostResetPin value)?  postResetPin,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
@@ -67,7 +67,10 @@ return postVerifyEmail(_that);case _PostResendEmailOtp() when postResendEmailOtp
 return postResendEmailOtp(_that);case _PostloginGuest() when postloginGuest != null:
 return postloginGuest(_that);case _PostloginAi() when postloginAi != null:
 return postloginAi(_that);case _PostRestoreAccount() when postRestoreAccount != null:
-return postRestoreAccount(_that);case _:
+return postRestoreAccount(_that);case _PostCreatePin() when postCreatePin != null:
+return postCreatePin(_that);case _PostRequestResetPinOtp() when postRequestResetPinOtp != null:
+return postRequestResetPinOtp(_that);case _PostResetPin() when postResetPin != null:
+return postResetPin(_that);case _:
   return orElse();
 
 }
@@ -85,7 +88,7 @@ return postRestoreAccount(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _GetValidationEmail value)  getValidationEmail,required TResult Function( _PostloginUser value)  postloginUser,required TResult Function( _PostRegister value)  postRegister,required TResult Function( _PostVerifyEmail value)  postVerifyEmail,required TResult Function( _PostResendEmailOtp value)  postResendEmailOtp,required TResult Function( _PostloginGuest value)  postloginGuest,required TResult Function( _PostloginAi value)  postloginAi,required TResult Function( _PostRestoreAccount value)  postRestoreAccount,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _GetValidationEmail value)  getValidationEmail,required TResult Function( _PostloginUser value)  postloginUser,required TResult Function( _PostRegister value)  postRegister,required TResult Function( _PostVerifyEmail value)  postVerifyEmail,required TResult Function( _PostResendEmailOtp value)  postResendEmailOtp,required TResult Function( _PostloginGuest value)  postloginGuest,required TResult Function( _PostloginAi value)  postloginAi,required TResult Function( _PostRestoreAccount value)  postRestoreAccount,required TResult Function( _PostCreatePin value)  postCreatePin,required TResult Function( _PostRequestResetPinOtp value)  postRequestResetPinOtp,required TResult Function( _PostResetPin value)  postResetPin,}){
 final _that = this;
 switch (_that) {
 case _Started():
@@ -97,7 +100,10 @@ return postVerifyEmail(_that);case _PostResendEmailOtp():
 return postResendEmailOtp(_that);case _PostloginGuest():
 return postloginGuest(_that);case _PostloginAi():
 return postloginAi(_that);case _PostRestoreAccount():
-return postRestoreAccount(_that);case _:
+return postRestoreAccount(_that);case _PostCreatePin():
+return postCreatePin(_that);case _PostRequestResetPinOtp():
+return postRequestResetPinOtp(_that);case _PostResetPin():
+return postResetPin(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -114,7 +120,7 @@ return postRestoreAccount(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _GetValidationEmail value)?  getValidationEmail,TResult? Function( _PostloginUser value)?  postloginUser,TResult? Function( _PostRegister value)?  postRegister,TResult? Function( _PostVerifyEmail value)?  postVerifyEmail,TResult? Function( _PostResendEmailOtp value)?  postResendEmailOtp,TResult? Function( _PostloginGuest value)?  postloginGuest,TResult? Function( _PostloginAi value)?  postloginAi,TResult? Function( _PostRestoreAccount value)?  postRestoreAccount,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _GetValidationEmail value)?  getValidationEmail,TResult? Function( _PostloginUser value)?  postloginUser,TResult? Function( _PostRegister value)?  postRegister,TResult? Function( _PostVerifyEmail value)?  postVerifyEmail,TResult? Function( _PostResendEmailOtp value)?  postResendEmailOtp,TResult? Function( _PostloginGuest value)?  postloginGuest,TResult? Function( _PostloginAi value)?  postloginAi,TResult? Function( _PostRestoreAccount value)?  postRestoreAccount,TResult? Function( _PostCreatePin value)?  postCreatePin,TResult? Function( _PostRequestResetPinOtp value)?  postRequestResetPinOtp,TResult? Function( _PostResetPin value)?  postResetPin,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
@@ -126,7 +132,10 @@ return postVerifyEmail(_that);case _PostResendEmailOtp() when postResendEmailOtp
 return postResendEmailOtp(_that);case _PostloginGuest() when postloginGuest != null:
 return postloginGuest(_that);case _PostloginAi() when postloginAi != null:
 return postloginAi(_that);case _PostRestoreAccount() when postRestoreAccount != null:
-return postRestoreAccount(_that);case _:
+return postRestoreAccount(_that);case _PostCreatePin() when postCreatePin != null:
+return postCreatePin(_that);case _PostRequestResetPinOtp() when postRequestResetPinOtp != null:
+return postRequestResetPinOtp(_that);case _PostResetPin() when postResetPin != null:
+return postResetPin(_that);case _:
   return null;
 
 }
@@ -143,7 +152,7 @@ return postRestoreAccount(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String email)?  getValidationEmail,TResult Function( String identifier,  String password)?  postloginUser,TResult Function( String name,  String email,  String password)?  postRegister,TResult Function( String email,  String code)?  postVerifyEmail,TResult Function( String email)?  postResendEmailOtp,TResult Function()?  postloginGuest,TResult Function()?  postloginAi,TResult Function( String jwt)?  postRestoreAccount,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String email)?  getValidationEmail,TResult Function( String identifier,  String password)?  postloginUser,TResult Function( String name,  String email,  String password)?  postRegister,TResult Function( String email,  String code)?  postVerifyEmail,TResult Function( String email)?  postResendEmailOtp,TResult Function()?  postloginGuest,TResult Function()?  postloginAi,TResult Function( String jwt)?  postRestoreAccount,TResult Function( String pin)?  postCreatePin,TResult Function( String email)?  postRequestResetPinOtp,TResult Function( String email,  String code,  String pin)?  postResetPin,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _GetValidationEmail() when getValidationEmail != null:
@@ -154,7 +163,10 @@ return postVerifyEmail(_that.email,_that.code);case _PostResendEmailOtp() when p
 return postResendEmailOtp(_that.email);case _PostloginGuest() when postloginGuest != null:
 return postloginGuest();case _PostloginAi() when postloginAi != null:
 return postloginAi();case _PostRestoreAccount() when postRestoreAccount != null:
-return postRestoreAccount(_that.jwt);case _:
+return postRestoreAccount(_that.jwt);case _PostCreatePin() when postCreatePin != null:
+return postCreatePin(_that.pin);case _PostRequestResetPinOtp() when postRequestResetPinOtp != null:
+return postRequestResetPinOtp(_that.email);case _PostResetPin() when postResetPin != null:
+return postResetPin(_that.email,_that.code,_that.pin);case _:
   return orElse();
 
 }
@@ -172,7 +184,7 @@ return postRestoreAccount(_that.jwt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String email)  getValidationEmail,required TResult Function( String identifier,  String password)  postloginUser,required TResult Function( String name,  String email,  String password)  postRegister,required TResult Function( String email,  String code)  postVerifyEmail,required TResult Function( String email)  postResendEmailOtp,required TResult Function()  postloginGuest,required TResult Function()  postloginAi,required TResult Function( String jwt)  postRestoreAccount,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String email)  getValidationEmail,required TResult Function( String identifier,  String password)  postloginUser,required TResult Function( String name,  String email,  String password)  postRegister,required TResult Function( String email,  String code)  postVerifyEmail,required TResult Function( String email)  postResendEmailOtp,required TResult Function()  postloginGuest,required TResult Function()  postloginAi,required TResult Function( String jwt)  postRestoreAccount,required TResult Function( String pin)  postCreatePin,required TResult Function( String email)  postRequestResetPinOtp,required TResult Function( String email,  String code,  String pin)  postResetPin,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started();case _GetValidationEmail():
@@ -183,7 +195,10 @@ return postVerifyEmail(_that.email,_that.code);case _PostResendEmailOtp():
 return postResendEmailOtp(_that.email);case _PostloginGuest():
 return postloginGuest();case _PostloginAi():
 return postloginAi();case _PostRestoreAccount():
-return postRestoreAccount(_that.jwt);case _:
+return postRestoreAccount(_that.jwt);case _PostCreatePin():
+return postCreatePin(_that.pin);case _PostRequestResetPinOtp():
+return postRequestResetPinOtp(_that.email);case _PostResetPin():
+return postResetPin(_that.email,_that.code,_that.pin);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,7 +215,7 @@ return postRestoreAccount(_that.jwt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String email)?  getValidationEmail,TResult? Function( String identifier,  String password)?  postloginUser,TResult? Function( String name,  String email,  String password)?  postRegister,TResult? Function( String email,  String code)?  postVerifyEmail,TResult? Function( String email)?  postResendEmailOtp,TResult? Function()?  postloginGuest,TResult? Function()?  postloginAi,TResult? Function( String jwt)?  postRestoreAccount,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String email)?  getValidationEmail,TResult? Function( String identifier,  String password)?  postloginUser,TResult? Function( String name,  String email,  String password)?  postRegister,TResult? Function( String email,  String code)?  postVerifyEmail,TResult? Function( String email)?  postResendEmailOtp,TResult? Function()?  postloginGuest,TResult? Function()?  postloginAi,TResult? Function( String jwt)?  postRestoreAccount,TResult? Function( String pin)?  postCreatePin,TResult? Function( String email)?  postRequestResetPinOtp,TResult? Function( String email,  String code,  String pin)?  postResetPin,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _GetValidationEmail() when getValidationEmail != null:
@@ -211,7 +226,10 @@ return postVerifyEmail(_that.email,_that.code);case _PostResendEmailOtp() when p
 return postResendEmailOtp(_that.email);case _PostloginGuest() when postloginGuest != null:
 return postloginGuest();case _PostloginAi() when postloginAi != null:
 return postloginAi();case _PostRestoreAccount() when postRestoreAccount != null:
-return postRestoreAccount(_that.jwt);case _:
+return postRestoreAccount(_that.jwt);case _PostCreatePin() when postCreatePin != null:
+return postCreatePin(_that.pin);case _PostRequestResetPinOtp() when postRequestResetPinOtp != null:
+return postRequestResetPinOtp(_that.email);case _PostResetPin() when postResetPin != null:
+return postResetPin(_that.email,_that.code,_that.pin);case _:
   return null;
 
 }
@@ -720,9 +738,211 @@ as String,
 }
 
 /// @nodoc
+
+
+class _PostCreatePin implements AuthEvent {
+  const _PostCreatePin({required this.pin});
+  
+
+ final  String pin;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PostCreatePinCopyWith<_PostCreatePin> get copyWith => __$PostCreatePinCopyWithImpl<_PostCreatePin>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PostCreatePin&&(identical(other.pin, pin) || other.pin == pin));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,pin);
+
+@override
+String toString() {
+  return 'AuthEvent.postCreatePin(pin: $pin)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PostCreatePinCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory _$PostCreatePinCopyWith(_PostCreatePin value, $Res Function(_PostCreatePin) _then) = __$PostCreatePinCopyWithImpl;
+@useResult
+$Res call({
+ String pin
+});
+
+
+
+
+}
+/// @nodoc
+class __$PostCreatePinCopyWithImpl<$Res>
+    implements _$PostCreatePinCopyWith<$Res> {
+  __$PostCreatePinCopyWithImpl(this._self, this._then);
+
+  final _PostCreatePin _self;
+  final $Res Function(_PostCreatePin) _then;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? pin = null,}) {
+  return _then(_PostCreatePin(
+pin: null == pin ? _self.pin : pin // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _PostRequestResetPinOtp implements AuthEvent {
+  const _PostRequestResetPinOtp({required this.email});
+  
+
+ final  String email;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PostRequestResetPinOtpCopyWith<_PostRequestResetPinOtp> get copyWith => __$PostRequestResetPinOtpCopyWithImpl<_PostRequestResetPinOtp>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PostRequestResetPinOtp&&(identical(other.email, email) || other.email == email));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,email);
+
+@override
+String toString() {
+  return 'AuthEvent.postRequestResetPinOtp(email: $email)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PostRequestResetPinOtpCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory _$PostRequestResetPinOtpCopyWith(_PostRequestResetPinOtp value, $Res Function(_PostRequestResetPinOtp) _then) = __$PostRequestResetPinOtpCopyWithImpl;
+@useResult
+$Res call({
+ String email
+});
+
+
+
+
+}
+/// @nodoc
+class __$PostRequestResetPinOtpCopyWithImpl<$Res>
+    implements _$PostRequestResetPinOtpCopyWith<$Res> {
+  __$PostRequestResetPinOtpCopyWithImpl(this._self, this._then);
+
+  final _PostRequestResetPinOtp _self;
+  final $Res Function(_PostRequestResetPinOtp) _then;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? email = null,}) {
+  return _then(_PostRequestResetPinOtp(
+email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _PostResetPin implements AuthEvent {
+  const _PostResetPin({required this.email, required this.code, required this.pin});
+  
+
+ final  String email;
+ final  String code;
+ final  String pin;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PostResetPinCopyWith<_PostResetPin> get copyWith => __$PostResetPinCopyWithImpl<_PostResetPin>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PostResetPin&&(identical(other.email, email) || other.email == email)&&(identical(other.code, code) || other.code == code)&&(identical(other.pin, pin) || other.pin == pin));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,email,code,pin);
+
+@override
+String toString() {
+  return 'AuthEvent.postResetPin(email: $email, code: $code, pin: $pin)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PostResetPinCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory _$PostResetPinCopyWith(_PostResetPin value, $Res Function(_PostResetPin) _then) = __$PostResetPinCopyWithImpl;
+@useResult
+$Res call({
+ String email, String code, String pin
+});
+
+
+
+
+}
+/// @nodoc
+class __$PostResetPinCopyWithImpl<$Res>
+    implements _$PostResetPinCopyWith<$Res> {
+  __$PostResetPinCopyWithImpl(this._self, this._then);
+
+  final _PostResetPin _self;
+  final $Res Function(_PostResetPin) _then;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? email = null,Object? code = null,Object? pin = null,}) {
+  return _then(_PostResetPin(
+email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
+as String,pin: null == pin ? _self.pin : pin // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
 mixin _$AuthState {
 
- String? get message; String? get messageVerifyOtp; bool get loading; bool get loadingUser; bool get loadingGuest; bool get loadingAi; bool get loadingVerifyEmail; bool get loadingResendOtp; bool get loadingRestoreAccount; bool get loadingValidationEmail; bool get successLoginUser; bool get successLoginGuest; bool get successLoginAi; bool get successRegister; bool get successVerifyEmail; bool get successResendOtp; bool get successRestoreAccount; bool get successValidationEmail; int? get statusCode; bool get isEmailUnverified; int get cooldownOtp; String? get pendingEmail; ValidationEmailResponse? get validationEmailResponse; LoginResponse? get loginResponse; LoginResponAI? get loginAiResponse; RegisterResponse? get registerResponse; VerifyOtpResponse? get verifyEmailResponse; ResendOtpResponse? get resendOtpResponse; AuthDataHive? get authDataHive; AuthDataKatanaraHive? get authAiDataHive; Alert? get alert;
+ String? get message; String? get messageVerifyOtp; bool get loading; bool get loadingUser; bool get loadingGuest; bool get loadingAi; bool get loadingVerifyEmail; bool get loadingResendOtp; bool get loadingRestoreAccount; bool get loadingValidationEmail; bool get loadingCreatePin; bool get loadingRequestResetPinOtp; bool get loadingResetPin; bool get successLoginUser; bool get successLoginGuest; bool get successLoginAi; bool get successRegister; bool get successVerifyEmail; bool get successResendOtp; bool get successRestoreAccount; bool get successValidationEmail; bool get successCreatePin; bool get successRequestResetPinOtp; bool get successResetPin; int? get statusCode; bool get isEmailUnverified; int get cooldownOtp; String? get pendingEmail; ValidationEmailResponse? get validationEmailResponse; LoginResponse? get loginResponse; LoginResponAI? get loginAiResponse; RegisterResponse? get registerResponse; VerifyOtpResponse? get verifyEmailResponse; ResendOtpResponse? get resendOtpResponse; PinResponse? get createPinResponse; RequestResetPinResponse? get requestResetPinResponse; PinResponse? get resetPinResponse; AuthDataHive? get authDataHive; AuthDataKatanaraHive? get authAiDataHive; Alert? get alert;
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -733,16 +953,16 @@ $AuthStateCopyWith<AuthState> get copyWith => _$AuthStateCopyWithImpl<AuthState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.message, message) || other.message == message)&&(identical(other.messageVerifyOtp, messageVerifyOtp) || other.messageVerifyOtp == messageVerifyOtp)&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.loadingUser, loadingUser) || other.loadingUser == loadingUser)&&(identical(other.loadingGuest, loadingGuest) || other.loadingGuest == loadingGuest)&&(identical(other.loadingAi, loadingAi) || other.loadingAi == loadingAi)&&(identical(other.loadingVerifyEmail, loadingVerifyEmail) || other.loadingVerifyEmail == loadingVerifyEmail)&&(identical(other.loadingResendOtp, loadingResendOtp) || other.loadingResendOtp == loadingResendOtp)&&(identical(other.loadingRestoreAccount, loadingRestoreAccount) || other.loadingRestoreAccount == loadingRestoreAccount)&&(identical(other.loadingValidationEmail, loadingValidationEmail) || other.loadingValidationEmail == loadingValidationEmail)&&(identical(other.successLoginUser, successLoginUser) || other.successLoginUser == successLoginUser)&&(identical(other.successLoginGuest, successLoginGuest) || other.successLoginGuest == successLoginGuest)&&(identical(other.successLoginAi, successLoginAi) || other.successLoginAi == successLoginAi)&&(identical(other.successRegister, successRegister) || other.successRegister == successRegister)&&(identical(other.successVerifyEmail, successVerifyEmail) || other.successVerifyEmail == successVerifyEmail)&&(identical(other.successResendOtp, successResendOtp) || other.successResendOtp == successResendOtp)&&(identical(other.successRestoreAccount, successRestoreAccount) || other.successRestoreAccount == successRestoreAccount)&&(identical(other.successValidationEmail, successValidationEmail) || other.successValidationEmail == successValidationEmail)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode)&&(identical(other.isEmailUnverified, isEmailUnverified) || other.isEmailUnverified == isEmailUnverified)&&(identical(other.cooldownOtp, cooldownOtp) || other.cooldownOtp == cooldownOtp)&&(identical(other.pendingEmail, pendingEmail) || other.pendingEmail == pendingEmail)&&(identical(other.validationEmailResponse, validationEmailResponse) || other.validationEmailResponse == validationEmailResponse)&&(identical(other.loginResponse, loginResponse) || other.loginResponse == loginResponse)&&(identical(other.loginAiResponse, loginAiResponse) || other.loginAiResponse == loginAiResponse)&&(identical(other.registerResponse, registerResponse) || other.registerResponse == registerResponse)&&(identical(other.verifyEmailResponse, verifyEmailResponse) || other.verifyEmailResponse == verifyEmailResponse)&&(identical(other.resendOtpResponse, resendOtpResponse) || other.resendOtpResponse == resendOtpResponse)&&(identical(other.authDataHive, authDataHive) || other.authDataHive == authDataHive)&&(identical(other.authAiDataHive, authAiDataHive) || other.authAiDataHive == authAiDataHive)&&(identical(other.alert, alert) || other.alert == alert));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.message, message) || other.message == message)&&(identical(other.messageVerifyOtp, messageVerifyOtp) || other.messageVerifyOtp == messageVerifyOtp)&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.loadingUser, loadingUser) || other.loadingUser == loadingUser)&&(identical(other.loadingGuest, loadingGuest) || other.loadingGuest == loadingGuest)&&(identical(other.loadingAi, loadingAi) || other.loadingAi == loadingAi)&&(identical(other.loadingVerifyEmail, loadingVerifyEmail) || other.loadingVerifyEmail == loadingVerifyEmail)&&(identical(other.loadingResendOtp, loadingResendOtp) || other.loadingResendOtp == loadingResendOtp)&&(identical(other.loadingRestoreAccount, loadingRestoreAccount) || other.loadingRestoreAccount == loadingRestoreAccount)&&(identical(other.loadingValidationEmail, loadingValidationEmail) || other.loadingValidationEmail == loadingValidationEmail)&&(identical(other.loadingCreatePin, loadingCreatePin) || other.loadingCreatePin == loadingCreatePin)&&(identical(other.loadingRequestResetPinOtp, loadingRequestResetPinOtp) || other.loadingRequestResetPinOtp == loadingRequestResetPinOtp)&&(identical(other.loadingResetPin, loadingResetPin) || other.loadingResetPin == loadingResetPin)&&(identical(other.successLoginUser, successLoginUser) || other.successLoginUser == successLoginUser)&&(identical(other.successLoginGuest, successLoginGuest) || other.successLoginGuest == successLoginGuest)&&(identical(other.successLoginAi, successLoginAi) || other.successLoginAi == successLoginAi)&&(identical(other.successRegister, successRegister) || other.successRegister == successRegister)&&(identical(other.successVerifyEmail, successVerifyEmail) || other.successVerifyEmail == successVerifyEmail)&&(identical(other.successResendOtp, successResendOtp) || other.successResendOtp == successResendOtp)&&(identical(other.successRestoreAccount, successRestoreAccount) || other.successRestoreAccount == successRestoreAccount)&&(identical(other.successValidationEmail, successValidationEmail) || other.successValidationEmail == successValidationEmail)&&(identical(other.successCreatePin, successCreatePin) || other.successCreatePin == successCreatePin)&&(identical(other.successRequestResetPinOtp, successRequestResetPinOtp) || other.successRequestResetPinOtp == successRequestResetPinOtp)&&(identical(other.successResetPin, successResetPin) || other.successResetPin == successResetPin)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode)&&(identical(other.isEmailUnverified, isEmailUnverified) || other.isEmailUnverified == isEmailUnverified)&&(identical(other.cooldownOtp, cooldownOtp) || other.cooldownOtp == cooldownOtp)&&(identical(other.pendingEmail, pendingEmail) || other.pendingEmail == pendingEmail)&&(identical(other.validationEmailResponse, validationEmailResponse) || other.validationEmailResponse == validationEmailResponse)&&(identical(other.loginResponse, loginResponse) || other.loginResponse == loginResponse)&&(identical(other.loginAiResponse, loginAiResponse) || other.loginAiResponse == loginAiResponse)&&(identical(other.registerResponse, registerResponse) || other.registerResponse == registerResponse)&&(identical(other.verifyEmailResponse, verifyEmailResponse) || other.verifyEmailResponse == verifyEmailResponse)&&(identical(other.resendOtpResponse, resendOtpResponse) || other.resendOtpResponse == resendOtpResponse)&&(identical(other.createPinResponse, createPinResponse) || other.createPinResponse == createPinResponse)&&(identical(other.requestResetPinResponse, requestResetPinResponse) || other.requestResetPinResponse == requestResetPinResponse)&&(identical(other.resetPinResponse, resetPinResponse) || other.resetPinResponse == resetPinResponse)&&(identical(other.authDataHive, authDataHive) || other.authDataHive == authDataHive)&&(identical(other.authAiDataHive, authAiDataHive) || other.authAiDataHive == authAiDataHive)&&(identical(other.alert, alert) || other.alert == alert));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,message,messageVerifyOtp,loading,loadingUser,loadingGuest,loadingAi,loadingVerifyEmail,loadingResendOtp,loadingRestoreAccount,loadingValidationEmail,successLoginUser,successLoginGuest,successLoginAi,successRegister,successVerifyEmail,successResendOtp,successRestoreAccount,successValidationEmail,statusCode,isEmailUnverified,cooldownOtp,pendingEmail,validationEmailResponse,loginResponse,loginAiResponse,registerResponse,verifyEmailResponse,resendOtpResponse,authDataHive,authAiDataHive,alert]);
+int get hashCode => Object.hashAll([runtimeType,message,messageVerifyOtp,loading,loadingUser,loadingGuest,loadingAi,loadingVerifyEmail,loadingResendOtp,loadingRestoreAccount,loadingValidationEmail,loadingCreatePin,loadingRequestResetPinOtp,loadingResetPin,successLoginUser,successLoginGuest,successLoginAi,successRegister,successVerifyEmail,successResendOtp,successRestoreAccount,successValidationEmail,successCreatePin,successRequestResetPinOtp,successResetPin,statusCode,isEmailUnverified,cooldownOtp,pendingEmail,validationEmailResponse,loginResponse,loginAiResponse,registerResponse,verifyEmailResponse,resendOtpResponse,createPinResponse,requestResetPinResponse,resetPinResponse,authDataHive,authAiDataHive,alert]);
 
 @override
 String toString() {
-  return 'AuthState(message: $message, messageVerifyOtp: $messageVerifyOtp, loading: $loading, loadingUser: $loadingUser, loadingGuest: $loadingGuest, loadingAi: $loadingAi, loadingVerifyEmail: $loadingVerifyEmail, loadingResendOtp: $loadingResendOtp, loadingRestoreAccount: $loadingRestoreAccount, loadingValidationEmail: $loadingValidationEmail, successLoginUser: $successLoginUser, successLoginGuest: $successLoginGuest, successLoginAi: $successLoginAi, successRegister: $successRegister, successVerifyEmail: $successVerifyEmail, successResendOtp: $successResendOtp, successRestoreAccount: $successRestoreAccount, successValidationEmail: $successValidationEmail, statusCode: $statusCode, isEmailUnverified: $isEmailUnverified, cooldownOtp: $cooldownOtp, pendingEmail: $pendingEmail, validationEmailResponse: $validationEmailResponse, loginResponse: $loginResponse, loginAiResponse: $loginAiResponse, registerResponse: $registerResponse, verifyEmailResponse: $verifyEmailResponse, resendOtpResponse: $resendOtpResponse, authDataHive: $authDataHive, authAiDataHive: $authAiDataHive, alert: $alert)';
+  return 'AuthState(message: $message, messageVerifyOtp: $messageVerifyOtp, loading: $loading, loadingUser: $loadingUser, loadingGuest: $loadingGuest, loadingAi: $loadingAi, loadingVerifyEmail: $loadingVerifyEmail, loadingResendOtp: $loadingResendOtp, loadingRestoreAccount: $loadingRestoreAccount, loadingValidationEmail: $loadingValidationEmail, loadingCreatePin: $loadingCreatePin, loadingRequestResetPinOtp: $loadingRequestResetPinOtp, loadingResetPin: $loadingResetPin, successLoginUser: $successLoginUser, successLoginGuest: $successLoginGuest, successLoginAi: $successLoginAi, successRegister: $successRegister, successVerifyEmail: $successVerifyEmail, successResendOtp: $successResendOtp, successRestoreAccount: $successRestoreAccount, successValidationEmail: $successValidationEmail, successCreatePin: $successCreatePin, successRequestResetPinOtp: $successRequestResetPinOtp, successResetPin: $successResetPin, statusCode: $statusCode, isEmailUnverified: $isEmailUnverified, cooldownOtp: $cooldownOtp, pendingEmail: $pendingEmail, validationEmailResponse: $validationEmailResponse, loginResponse: $loginResponse, loginAiResponse: $loginAiResponse, registerResponse: $registerResponse, verifyEmailResponse: $verifyEmailResponse, resendOtpResponse: $resendOtpResponse, createPinResponse: $createPinResponse, requestResetPinResponse: $requestResetPinResponse, resetPinResponse: $resetPinResponse, authDataHive: $authDataHive, authAiDataHive: $authAiDataHive, alert: $alert)';
 }
 
 
@@ -753,11 +973,11 @@ abstract mixin class $AuthStateCopyWith<$Res>  {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) _then) = _$AuthStateCopyWithImpl;
 @useResult
 $Res call({
- String? message, String? messageVerifyOtp, bool loading, bool loadingUser, bool loadingGuest, bool loadingAi, bool loadingVerifyEmail, bool loadingResendOtp, bool loadingRestoreAccount, bool loadingValidationEmail, bool successLoginUser, bool successLoginGuest, bool successLoginAi, bool successRegister, bool successVerifyEmail, bool successResendOtp, bool successRestoreAccount, bool successValidationEmail, int? statusCode, bool isEmailUnverified, int cooldownOtp, String? pendingEmail, ValidationEmailResponse? validationEmailResponse, LoginResponse? loginResponse, LoginResponAI? loginAiResponse, RegisterResponse? registerResponse, VerifyOtpResponse? verifyEmailResponse, ResendOtpResponse? resendOtpResponse, AuthDataHive? authDataHive, AuthDataKatanaraHive? authAiDataHive, Alert? alert
+ String? message, String? messageVerifyOtp, bool loading, bool loadingUser, bool loadingGuest, bool loadingAi, bool loadingVerifyEmail, bool loadingResendOtp, bool loadingRestoreAccount, bool loadingValidationEmail, bool loadingCreatePin, bool loadingRequestResetPinOtp, bool loadingResetPin, bool successLoginUser, bool successLoginGuest, bool successLoginAi, bool successRegister, bool successVerifyEmail, bool successResendOtp, bool successRestoreAccount, bool successValidationEmail, bool successCreatePin, bool successRequestResetPinOtp, bool successResetPin, int? statusCode, bool isEmailUnverified, int cooldownOtp, String? pendingEmail, ValidationEmailResponse? validationEmailResponse, LoginResponse? loginResponse, LoginResponAI? loginAiResponse, RegisterResponse? registerResponse, VerifyOtpResponse? verifyEmailResponse, ResendOtpResponse? resendOtpResponse, PinResponse? createPinResponse, RequestResetPinResponse? requestResetPinResponse, PinResponse? resetPinResponse, AuthDataHive? authDataHive, AuthDataKatanaraHive? authAiDataHive, Alert? alert
 });
 
 
-$ValidationEmailResponseCopyWith<$Res>? get validationEmailResponse;$LoginResponseCopyWith<$Res>? get loginResponse;$RegisterResponseCopyWith<$Res>? get registerResponse;$VerifyOtpResponseCopyWith<$Res>? get verifyEmailResponse;$ResendOtpResponseCopyWith<$Res>? get resendOtpResponse;
+$ValidationEmailResponseCopyWith<$Res>? get validationEmailResponse;$LoginResponseCopyWith<$Res>? get loginResponse;$RegisterResponseCopyWith<$Res>? get registerResponse;$VerifyOtpResponseCopyWith<$Res>? get verifyEmailResponse;$ResendOtpResponseCopyWith<$Res>? get resendOtpResponse;$PinResponseCopyWith<$Res>? get createPinResponse;$RequestResetPinResponseCopyWith<$Res>? get requestResetPinResponse;$PinResponseCopyWith<$Res>? get resetPinResponse;
 
 }
 /// @nodoc
@@ -770,7 +990,7 @@ class _$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? message = freezed,Object? messageVerifyOtp = freezed,Object? loading = null,Object? loadingUser = null,Object? loadingGuest = null,Object? loadingAi = null,Object? loadingVerifyEmail = null,Object? loadingResendOtp = null,Object? loadingRestoreAccount = null,Object? loadingValidationEmail = null,Object? successLoginUser = null,Object? successLoginGuest = null,Object? successLoginAi = null,Object? successRegister = null,Object? successVerifyEmail = null,Object? successResendOtp = null,Object? successRestoreAccount = null,Object? successValidationEmail = null,Object? statusCode = freezed,Object? isEmailUnverified = null,Object? cooldownOtp = null,Object? pendingEmail = freezed,Object? validationEmailResponse = freezed,Object? loginResponse = freezed,Object? loginAiResponse = freezed,Object? registerResponse = freezed,Object? verifyEmailResponse = freezed,Object? resendOtpResponse = freezed,Object? authDataHive = freezed,Object? authAiDataHive = freezed,Object? alert = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? message = freezed,Object? messageVerifyOtp = freezed,Object? loading = null,Object? loadingUser = null,Object? loadingGuest = null,Object? loadingAi = null,Object? loadingVerifyEmail = null,Object? loadingResendOtp = null,Object? loadingRestoreAccount = null,Object? loadingValidationEmail = null,Object? loadingCreatePin = null,Object? loadingRequestResetPinOtp = null,Object? loadingResetPin = null,Object? successLoginUser = null,Object? successLoginGuest = null,Object? successLoginAi = null,Object? successRegister = null,Object? successVerifyEmail = null,Object? successResendOtp = null,Object? successRestoreAccount = null,Object? successValidationEmail = null,Object? successCreatePin = null,Object? successRequestResetPinOtp = null,Object? successResetPin = null,Object? statusCode = freezed,Object? isEmailUnverified = null,Object? cooldownOtp = null,Object? pendingEmail = freezed,Object? validationEmailResponse = freezed,Object? loginResponse = freezed,Object? loginAiResponse = freezed,Object? registerResponse = freezed,Object? verifyEmailResponse = freezed,Object? resendOtpResponse = freezed,Object? createPinResponse = freezed,Object? requestResetPinResponse = freezed,Object? resetPinResponse = freezed,Object? authDataHive = freezed,Object? authAiDataHive = freezed,Object? alert = freezed,}) {
   return _then(_self.copyWith(
 message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String?,messageVerifyOtp: freezed == messageVerifyOtp ? _self.messageVerifyOtp : messageVerifyOtp // ignore: cast_nullable_to_non_nullable
@@ -782,6 +1002,9 @@ as bool,loadingVerifyEmail: null == loadingVerifyEmail ? _self.loadingVerifyEmai
 as bool,loadingResendOtp: null == loadingResendOtp ? _self.loadingResendOtp : loadingResendOtp // ignore: cast_nullable_to_non_nullable
 as bool,loadingRestoreAccount: null == loadingRestoreAccount ? _self.loadingRestoreAccount : loadingRestoreAccount // ignore: cast_nullable_to_non_nullable
 as bool,loadingValidationEmail: null == loadingValidationEmail ? _self.loadingValidationEmail : loadingValidationEmail // ignore: cast_nullable_to_non_nullable
+as bool,loadingCreatePin: null == loadingCreatePin ? _self.loadingCreatePin : loadingCreatePin // ignore: cast_nullable_to_non_nullable
+as bool,loadingRequestResetPinOtp: null == loadingRequestResetPinOtp ? _self.loadingRequestResetPinOtp : loadingRequestResetPinOtp // ignore: cast_nullable_to_non_nullable
+as bool,loadingResetPin: null == loadingResetPin ? _self.loadingResetPin : loadingResetPin // ignore: cast_nullable_to_non_nullable
 as bool,successLoginUser: null == successLoginUser ? _self.successLoginUser : successLoginUser // ignore: cast_nullable_to_non_nullable
 as bool,successLoginGuest: null == successLoginGuest ? _self.successLoginGuest : successLoginGuest // ignore: cast_nullable_to_non_nullable
 as bool,successLoginAi: null == successLoginAi ? _self.successLoginAi : successLoginAi // ignore: cast_nullable_to_non_nullable
@@ -790,6 +1013,9 @@ as bool,successVerifyEmail: null == successVerifyEmail ? _self.successVerifyEmai
 as bool,successResendOtp: null == successResendOtp ? _self.successResendOtp : successResendOtp // ignore: cast_nullable_to_non_nullable
 as bool,successRestoreAccount: null == successRestoreAccount ? _self.successRestoreAccount : successRestoreAccount // ignore: cast_nullable_to_non_nullable
 as bool,successValidationEmail: null == successValidationEmail ? _self.successValidationEmail : successValidationEmail // ignore: cast_nullable_to_non_nullable
+as bool,successCreatePin: null == successCreatePin ? _self.successCreatePin : successCreatePin // ignore: cast_nullable_to_non_nullable
+as bool,successRequestResetPinOtp: null == successRequestResetPinOtp ? _self.successRequestResetPinOtp : successRequestResetPinOtp // ignore: cast_nullable_to_non_nullable
+as bool,successResetPin: null == successResetPin ? _self.successResetPin : successResetPin // ignore: cast_nullable_to_non_nullable
 as bool,statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
 as int?,isEmailUnverified: null == isEmailUnverified ? _self.isEmailUnverified : isEmailUnverified // ignore: cast_nullable_to_non_nullable
 as bool,cooldownOtp: null == cooldownOtp ? _self.cooldownOtp : cooldownOtp // ignore: cast_nullable_to_non_nullable
@@ -800,7 +1026,10 @@ as LoginResponse?,loginAiResponse: freezed == loginAiResponse ? _self.loginAiRes
 as LoginResponAI?,registerResponse: freezed == registerResponse ? _self.registerResponse : registerResponse // ignore: cast_nullable_to_non_nullable
 as RegisterResponse?,verifyEmailResponse: freezed == verifyEmailResponse ? _self.verifyEmailResponse : verifyEmailResponse // ignore: cast_nullable_to_non_nullable
 as VerifyOtpResponse?,resendOtpResponse: freezed == resendOtpResponse ? _self.resendOtpResponse : resendOtpResponse // ignore: cast_nullable_to_non_nullable
-as ResendOtpResponse?,authDataHive: freezed == authDataHive ? _self.authDataHive : authDataHive // ignore: cast_nullable_to_non_nullable
+as ResendOtpResponse?,createPinResponse: freezed == createPinResponse ? _self.createPinResponse : createPinResponse // ignore: cast_nullable_to_non_nullable
+as PinResponse?,requestResetPinResponse: freezed == requestResetPinResponse ? _self.requestResetPinResponse : requestResetPinResponse // ignore: cast_nullable_to_non_nullable
+as RequestResetPinResponse?,resetPinResponse: freezed == resetPinResponse ? _self.resetPinResponse : resetPinResponse // ignore: cast_nullable_to_non_nullable
+as PinResponse?,authDataHive: freezed == authDataHive ? _self.authDataHive : authDataHive // ignore: cast_nullable_to_non_nullable
 as AuthDataHive?,authAiDataHive: freezed == authAiDataHive ? _self.authAiDataHive : authAiDataHive // ignore: cast_nullable_to_non_nullable
 as AuthDataKatanaraHive?,alert: freezed == alert ? _self.alert : alert // ignore: cast_nullable_to_non_nullable
 as Alert?,
@@ -865,6 +1094,42 @@ $ResendOtpResponseCopyWith<$Res>? get resendOtpResponse {
 
   return $ResendOtpResponseCopyWith<$Res>(_self.resendOtpResponse!, (value) {
     return _then(_self.copyWith(resendOtpResponse: value));
+  });
+}/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PinResponseCopyWith<$Res>? get createPinResponse {
+    if (_self.createPinResponse == null) {
+    return null;
+  }
+
+  return $PinResponseCopyWith<$Res>(_self.createPinResponse!, (value) {
+    return _then(_self.copyWith(createPinResponse: value));
+  });
+}/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RequestResetPinResponseCopyWith<$Res>? get requestResetPinResponse {
+    if (_self.requestResetPinResponse == null) {
+    return null;
+  }
+
+  return $RequestResetPinResponseCopyWith<$Res>(_self.requestResetPinResponse!, (value) {
+    return _then(_self.copyWith(requestResetPinResponse: value));
+  });
+}/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PinResponseCopyWith<$Res>? get resetPinResponse {
+    if (_self.resetPinResponse == null) {
+    return null;
+  }
+
+  return $PinResponseCopyWith<$Res>(_self.resetPinResponse!, (value) {
+    return _then(_self.copyWith(resetPinResponse: value));
   });
 }
 }
@@ -948,10 +1213,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? message,  String? messageVerifyOtp,  bool loading,  bool loadingUser,  bool loadingGuest,  bool loadingAi,  bool loadingVerifyEmail,  bool loadingResendOtp,  bool loadingRestoreAccount,  bool loadingValidationEmail,  bool successLoginUser,  bool successLoginGuest,  bool successLoginAi,  bool successRegister,  bool successVerifyEmail,  bool successResendOtp,  bool successRestoreAccount,  bool successValidationEmail,  int? statusCode,  bool isEmailUnverified,  int cooldownOtp,  String? pendingEmail,  ValidationEmailResponse? validationEmailResponse,  LoginResponse? loginResponse,  LoginResponAI? loginAiResponse,  RegisterResponse? registerResponse,  VerifyOtpResponse? verifyEmailResponse,  ResendOtpResponse? resendOtpResponse,  AuthDataHive? authDataHive,  AuthDataKatanaraHive? authAiDataHive,  Alert? alert)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? message,  String? messageVerifyOtp,  bool loading,  bool loadingUser,  bool loadingGuest,  bool loadingAi,  bool loadingVerifyEmail,  bool loadingResendOtp,  bool loadingRestoreAccount,  bool loadingValidationEmail,  bool loadingCreatePin,  bool loadingRequestResetPinOtp,  bool loadingResetPin,  bool successLoginUser,  bool successLoginGuest,  bool successLoginAi,  bool successRegister,  bool successVerifyEmail,  bool successResendOtp,  bool successRestoreAccount,  bool successValidationEmail,  bool successCreatePin,  bool successRequestResetPinOtp,  bool successResetPin,  int? statusCode,  bool isEmailUnverified,  int cooldownOtp,  String? pendingEmail,  ValidationEmailResponse? validationEmailResponse,  LoginResponse? loginResponse,  LoginResponAI? loginAiResponse,  RegisterResponse? registerResponse,  VerifyOtpResponse? verifyEmailResponse,  ResendOtpResponse? resendOtpResponse,  PinResponse? createPinResponse,  RequestResetPinResponse? requestResetPinResponse,  PinResponse? resetPinResponse,  AuthDataHive? authDataHive,  AuthDataKatanaraHive? authAiDataHive,  Alert? alert)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when $default != null:
-return $default(_that.message,_that.messageVerifyOtp,_that.loading,_that.loadingUser,_that.loadingGuest,_that.loadingAi,_that.loadingVerifyEmail,_that.loadingResendOtp,_that.loadingRestoreAccount,_that.loadingValidationEmail,_that.successLoginUser,_that.successLoginGuest,_that.successLoginAi,_that.successRegister,_that.successVerifyEmail,_that.successResendOtp,_that.successRestoreAccount,_that.successValidationEmail,_that.statusCode,_that.isEmailUnverified,_that.cooldownOtp,_that.pendingEmail,_that.validationEmailResponse,_that.loginResponse,_that.loginAiResponse,_that.registerResponse,_that.verifyEmailResponse,_that.resendOtpResponse,_that.authDataHive,_that.authAiDataHive,_that.alert);case _:
+return $default(_that.message,_that.messageVerifyOtp,_that.loading,_that.loadingUser,_that.loadingGuest,_that.loadingAi,_that.loadingVerifyEmail,_that.loadingResendOtp,_that.loadingRestoreAccount,_that.loadingValidationEmail,_that.loadingCreatePin,_that.loadingRequestResetPinOtp,_that.loadingResetPin,_that.successLoginUser,_that.successLoginGuest,_that.successLoginAi,_that.successRegister,_that.successVerifyEmail,_that.successResendOtp,_that.successRestoreAccount,_that.successValidationEmail,_that.successCreatePin,_that.successRequestResetPinOtp,_that.successResetPin,_that.statusCode,_that.isEmailUnverified,_that.cooldownOtp,_that.pendingEmail,_that.validationEmailResponse,_that.loginResponse,_that.loginAiResponse,_that.registerResponse,_that.verifyEmailResponse,_that.resendOtpResponse,_that.createPinResponse,_that.requestResetPinResponse,_that.resetPinResponse,_that.authDataHive,_that.authAiDataHive,_that.alert);case _:
   return orElse();
 
 }
@@ -969,10 +1234,10 @@ return $default(_that.message,_that.messageVerifyOtp,_that.loading,_that.loading
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? message,  String? messageVerifyOtp,  bool loading,  bool loadingUser,  bool loadingGuest,  bool loadingAi,  bool loadingVerifyEmail,  bool loadingResendOtp,  bool loadingRestoreAccount,  bool loadingValidationEmail,  bool successLoginUser,  bool successLoginGuest,  bool successLoginAi,  bool successRegister,  bool successVerifyEmail,  bool successResendOtp,  bool successRestoreAccount,  bool successValidationEmail,  int? statusCode,  bool isEmailUnverified,  int cooldownOtp,  String? pendingEmail,  ValidationEmailResponse? validationEmailResponse,  LoginResponse? loginResponse,  LoginResponAI? loginAiResponse,  RegisterResponse? registerResponse,  VerifyOtpResponse? verifyEmailResponse,  ResendOtpResponse? resendOtpResponse,  AuthDataHive? authDataHive,  AuthDataKatanaraHive? authAiDataHive,  Alert? alert)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? message,  String? messageVerifyOtp,  bool loading,  bool loadingUser,  bool loadingGuest,  bool loadingAi,  bool loadingVerifyEmail,  bool loadingResendOtp,  bool loadingRestoreAccount,  bool loadingValidationEmail,  bool loadingCreatePin,  bool loadingRequestResetPinOtp,  bool loadingResetPin,  bool successLoginUser,  bool successLoginGuest,  bool successLoginAi,  bool successRegister,  bool successVerifyEmail,  bool successResendOtp,  bool successRestoreAccount,  bool successValidationEmail,  bool successCreatePin,  bool successRequestResetPinOtp,  bool successResetPin,  int? statusCode,  bool isEmailUnverified,  int cooldownOtp,  String? pendingEmail,  ValidationEmailResponse? validationEmailResponse,  LoginResponse? loginResponse,  LoginResponAI? loginAiResponse,  RegisterResponse? registerResponse,  VerifyOtpResponse? verifyEmailResponse,  ResendOtpResponse? resendOtpResponse,  PinResponse? createPinResponse,  RequestResetPinResponse? requestResetPinResponse,  PinResponse? resetPinResponse,  AuthDataHive? authDataHive,  AuthDataKatanaraHive? authAiDataHive,  Alert? alert)  $default,) {final _that = this;
 switch (_that) {
 case _Initial():
-return $default(_that.message,_that.messageVerifyOtp,_that.loading,_that.loadingUser,_that.loadingGuest,_that.loadingAi,_that.loadingVerifyEmail,_that.loadingResendOtp,_that.loadingRestoreAccount,_that.loadingValidationEmail,_that.successLoginUser,_that.successLoginGuest,_that.successLoginAi,_that.successRegister,_that.successVerifyEmail,_that.successResendOtp,_that.successRestoreAccount,_that.successValidationEmail,_that.statusCode,_that.isEmailUnverified,_that.cooldownOtp,_that.pendingEmail,_that.validationEmailResponse,_that.loginResponse,_that.loginAiResponse,_that.registerResponse,_that.verifyEmailResponse,_that.resendOtpResponse,_that.authDataHive,_that.authAiDataHive,_that.alert);case _:
+return $default(_that.message,_that.messageVerifyOtp,_that.loading,_that.loadingUser,_that.loadingGuest,_that.loadingAi,_that.loadingVerifyEmail,_that.loadingResendOtp,_that.loadingRestoreAccount,_that.loadingValidationEmail,_that.loadingCreatePin,_that.loadingRequestResetPinOtp,_that.loadingResetPin,_that.successLoginUser,_that.successLoginGuest,_that.successLoginAi,_that.successRegister,_that.successVerifyEmail,_that.successResendOtp,_that.successRestoreAccount,_that.successValidationEmail,_that.successCreatePin,_that.successRequestResetPinOtp,_that.successResetPin,_that.statusCode,_that.isEmailUnverified,_that.cooldownOtp,_that.pendingEmail,_that.validationEmailResponse,_that.loginResponse,_that.loginAiResponse,_that.registerResponse,_that.verifyEmailResponse,_that.resendOtpResponse,_that.createPinResponse,_that.requestResetPinResponse,_that.resetPinResponse,_that.authDataHive,_that.authAiDataHive,_that.alert);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -989,10 +1254,10 @@ return $default(_that.message,_that.messageVerifyOtp,_that.loading,_that.loading
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? message,  String? messageVerifyOtp,  bool loading,  bool loadingUser,  bool loadingGuest,  bool loadingAi,  bool loadingVerifyEmail,  bool loadingResendOtp,  bool loadingRestoreAccount,  bool loadingValidationEmail,  bool successLoginUser,  bool successLoginGuest,  bool successLoginAi,  bool successRegister,  bool successVerifyEmail,  bool successResendOtp,  bool successRestoreAccount,  bool successValidationEmail,  int? statusCode,  bool isEmailUnverified,  int cooldownOtp,  String? pendingEmail,  ValidationEmailResponse? validationEmailResponse,  LoginResponse? loginResponse,  LoginResponAI? loginAiResponse,  RegisterResponse? registerResponse,  VerifyOtpResponse? verifyEmailResponse,  ResendOtpResponse? resendOtpResponse,  AuthDataHive? authDataHive,  AuthDataKatanaraHive? authAiDataHive,  Alert? alert)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? message,  String? messageVerifyOtp,  bool loading,  bool loadingUser,  bool loadingGuest,  bool loadingAi,  bool loadingVerifyEmail,  bool loadingResendOtp,  bool loadingRestoreAccount,  bool loadingValidationEmail,  bool loadingCreatePin,  bool loadingRequestResetPinOtp,  bool loadingResetPin,  bool successLoginUser,  bool successLoginGuest,  bool successLoginAi,  bool successRegister,  bool successVerifyEmail,  bool successResendOtp,  bool successRestoreAccount,  bool successValidationEmail,  bool successCreatePin,  bool successRequestResetPinOtp,  bool successResetPin,  int? statusCode,  bool isEmailUnverified,  int cooldownOtp,  String? pendingEmail,  ValidationEmailResponse? validationEmailResponse,  LoginResponse? loginResponse,  LoginResponAI? loginAiResponse,  RegisterResponse? registerResponse,  VerifyOtpResponse? verifyEmailResponse,  ResendOtpResponse? resendOtpResponse,  PinResponse? createPinResponse,  RequestResetPinResponse? requestResetPinResponse,  PinResponse? resetPinResponse,  AuthDataHive? authDataHive,  AuthDataKatanaraHive? authAiDataHive,  Alert? alert)?  $default,) {final _that = this;
 switch (_that) {
 case _Initial() when $default != null:
-return $default(_that.message,_that.messageVerifyOtp,_that.loading,_that.loadingUser,_that.loadingGuest,_that.loadingAi,_that.loadingVerifyEmail,_that.loadingResendOtp,_that.loadingRestoreAccount,_that.loadingValidationEmail,_that.successLoginUser,_that.successLoginGuest,_that.successLoginAi,_that.successRegister,_that.successVerifyEmail,_that.successResendOtp,_that.successRestoreAccount,_that.successValidationEmail,_that.statusCode,_that.isEmailUnverified,_that.cooldownOtp,_that.pendingEmail,_that.validationEmailResponse,_that.loginResponse,_that.loginAiResponse,_that.registerResponse,_that.verifyEmailResponse,_that.resendOtpResponse,_that.authDataHive,_that.authAiDataHive,_that.alert);case _:
+return $default(_that.message,_that.messageVerifyOtp,_that.loading,_that.loadingUser,_that.loadingGuest,_that.loadingAi,_that.loadingVerifyEmail,_that.loadingResendOtp,_that.loadingRestoreAccount,_that.loadingValidationEmail,_that.loadingCreatePin,_that.loadingRequestResetPinOtp,_that.loadingResetPin,_that.successLoginUser,_that.successLoginGuest,_that.successLoginAi,_that.successRegister,_that.successVerifyEmail,_that.successResendOtp,_that.successRestoreAccount,_that.successValidationEmail,_that.successCreatePin,_that.successRequestResetPinOtp,_that.successResetPin,_that.statusCode,_that.isEmailUnverified,_that.cooldownOtp,_that.pendingEmail,_that.validationEmailResponse,_that.loginResponse,_that.loginAiResponse,_that.registerResponse,_that.verifyEmailResponse,_that.resendOtpResponse,_that.createPinResponse,_that.requestResetPinResponse,_that.resetPinResponse,_that.authDataHive,_that.authAiDataHive,_that.alert);case _:
   return null;
 
 }
@@ -1004,7 +1269,7 @@ return $default(_that.message,_that.messageVerifyOtp,_that.loading,_that.loading
 
 
 class _Initial implements AuthState {
-  const _Initial({required this.message, required this.messageVerifyOtp, required this.loading, required this.loadingUser, required this.loadingGuest, required this.loadingAi, required this.loadingVerifyEmail, required this.loadingResendOtp, required this.loadingRestoreAccount, required this.loadingValidationEmail, required this.successLoginUser, required this.successLoginGuest, required this.successLoginAi, required this.successRegister, required this.successVerifyEmail, required this.successResendOtp, required this.successRestoreAccount, required this.successValidationEmail, required this.statusCode, required this.isEmailUnverified, required this.cooldownOtp, required this.pendingEmail, required this.validationEmailResponse, required this.loginResponse, required this.loginAiResponse, required this.registerResponse, required this.verifyEmailResponse, required this.resendOtpResponse, required this.authDataHive, required this.authAiDataHive, required this.alert});
+  const _Initial({required this.message, required this.messageVerifyOtp, required this.loading, required this.loadingUser, required this.loadingGuest, required this.loadingAi, required this.loadingVerifyEmail, required this.loadingResendOtp, required this.loadingRestoreAccount, required this.loadingValidationEmail, required this.loadingCreatePin, required this.loadingRequestResetPinOtp, required this.loadingResetPin, required this.successLoginUser, required this.successLoginGuest, required this.successLoginAi, required this.successRegister, required this.successVerifyEmail, required this.successResendOtp, required this.successRestoreAccount, required this.successValidationEmail, required this.successCreatePin, required this.successRequestResetPinOtp, required this.successResetPin, required this.statusCode, required this.isEmailUnverified, required this.cooldownOtp, required this.pendingEmail, required this.validationEmailResponse, required this.loginResponse, required this.loginAiResponse, required this.registerResponse, required this.verifyEmailResponse, required this.resendOtpResponse, required this.createPinResponse, required this.requestResetPinResponse, required this.resetPinResponse, required this.authDataHive, required this.authAiDataHive, required this.alert});
   
 
 @override final  String? message;
@@ -1017,6 +1282,9 @@ class _Initial implements AuthState {
 @override final  bool loadingResendOtp;
 @override final  bool loadingRestoreAccount;
 @override final  bool loadingValidationEmail;
+@override final  bool loadingCreatePin;
+@override final  bool loadingRequestResetPinOtp;
+@override final  bool loadingResetPin;
 @override final  bool successLoginUser;
 @override final  bool successLoginGuest;
 @override final  bool successLoginAi;
@@ -1025,6 +1293,9 @@ class _Initial implements AuthState {
 @override final  bool successResendOtp;
 @override final  bool successRestoreAccount;
 @override final  bool successValidationEmail;
+@override final  bool successCreatePin;
+@override final  bool successRequestResetPinOtp;
+@override final  bool successResetPin;
 @override final  int? statusCode;
 @override final  bool isEmailUnverified;
 @override final  int cooldownOtp;
@@ -1035,6 +1306,9 @@ class _Initial implements AuthState {
 @override final  RegisterResponse? registerResponse;
 @override final  VerifyOtpResponse? verifyEmailResponse;
 @override final  ResendOtpResponse? resendOtpResponse;
+@override final  PinResponse? createPinResponse;
+@override final  RequestResetPinResponse? requestResetPinResponse;
+@override final  PinResponse? resetPinResponse;
 @override final  AuthDataHive? authDataHive;
 @override final  AuthDataKatanaraHive? authAiDataHive;
 @override final  Alert? alert;
@@ -1049,16 +1323,16 @@ _$InitialCopyWith<_Initial> get copyWith => __$InitialCopyWithImpl<_Initial>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.message, message) || other.message == message)&&(identical(other.messageVerifyOtp, messageVerifyOtp) || other.messageVerifyOtp == messageVerifyOtp)&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.loadingUser, loadingUser) || other.loadingUser == loadingUser)&&(identical(other.loadingGuest, loadingGuest) || other.loadingGuest == loadingGuest)&&(identical(other.loadingAi, loadingAi) || other.loadingAi == loadingAi)&&(identical(other.loadingVerifyEmail, loadingVerifyEmail) || other.loadingVerifyEmail == loadingVerifyEmail)&&(identical(other.loadingResendOtp, loadingResendOtp) || other.loadingResendOtp == loadingResendOtp)&&(identical(other.loadingRestoreAccount, loadingRestoreAccount) || other.loadingRestoreAccount == loadingRestoreAccount)&&(identical(other.loadingValidationEmail, loadingValidationEmail) || other.loadingValidationEmail == loadingValidationEmail)&&(identical(other.successLoginUser, successLoginUser) || other.successLoginUser == successLoginUser)&&(identical(other.successLoginGuest, successLoginGuest) || other.successLoginGuest == successLoginGuest)&&(identical(other.successLoginAi, successLoginAi) || other.successLoginAi == successLoginAi)&&(identical(other.successRegister, successRegister) || other.successRegister == successRegister)&&(identical(other.successVerifyEmail, successVerifyEmail) || other.successVerifyEmail == successVerifyEmail)&&(identical(other.successResendOtp, successResendOtp) || other.successResendOtp == successResendOtp)&&(identical(other.successRestoreAccount, successRestoreAccount) || other.successRestoreAccount == successRestoreAccount)&&(identical(other.successValidationEmail, successValidationEmail) || other.successValidationEmail == successValidationEmail)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode)&&(identical(other.isEmailUnverified, isEmailUnverified) || other.isEmailUnverified == isEmailUnverified)&&(identical(other.cooldownOtp, cooldownOtp) || other.cooldownOtp == cooldownOtp)&&(identical(other.pendingEmail, pendingEmail) || other.pendingEmail == pendingEmail)&&(identical(other.validationEmailResponse, validationEmailResponse) || other.validationEmailResponse == validationEmailResponse)&&(identical(other.loginResponse, loginResponse) || other.loginResponse == loginResponse)&&(identical(other.loginAiResponse, loginAiResponse) || other.loginAiResponse == loginAiResponse)&&(identical(other.registerResponse, registerResponse) || other.registerResponse == registerResponse)&&(identical(other.verifyEmailResponse, verifyEmailResponse) || other.verifyEmailResponse == verifyEmailResponse)&&(identical(other.resendOtpResponse, resendOtpResponse) || other.resendOtpResponse == resendOtpResponse)&&(identical(other.authDataHive, authDataHive) || other.authDataHive == authDataHive)&&(identical(other.authAiDataHive, authAiDataHive) || other.authAiDataHive == authAiDataHive)&&(identical(other.alert, alert) || other.alert == alert));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.message, message) || other.message == message)&&(identical(other.messageVerifyOtp, messageVerifyOtp) || other.messageVerifyOtp == messageVerifyOtp)&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.loadingUser, loadingUser) || other.loadingUser == loadingUser)&&(identical(other.loadingGuest, loadingGuest) || other.loadingGuest == loadingGuest)&&(identical(other.loadingAi, loadingAi) || other.loadingAi == loadingAi)&&(identical(other.loadingVerifyEmail, loadingVerifyEmail) || other.loadingVerifyEmail == loadingVerifyEmail)&&(identical(other.loadingResendOtp, loadingResendOtp) || other.loadingResendOtp == loadingResendOtp)&&(identical(other.loadingRestoreAccount, loadingRestoreAccount) || other.loadingRestoreAccount == loadingRestoreAccount)&&(identical(other.loadingValidationEmail, loadingValidationEmail) || other.loadingValidationEmail == loadingValidationEmail)&&(identical(other.loadingCreatePin, loadingCreatePin) || other.loadingCreatePin == loadingCreatePin)&&(identical(other.loadingRequestResetPinOtp, loadingRequestResetPinOtp) || other.loadingRequestResetPinOtp == loadingRequestResetPinOtp)&&(identical(other.loadingResetPin, loadingResetPin) || other.loadingResetPin == loadingResetPin)&&(identical(other.successLoginUser, successLoginUser) || other.successLoginUser == successLoginUser)&&(identical(other.successLoginGuest, successLoginGuest) || other.successLoginGuest == successLoginGuest)&&(identical(other.successLoginAi, successLoginAi) || other.successLoginAi == successLoginAi)&&(identical(other.successRegister, successRegister) || other.successRegister == successRegister)&&(identical(other.successVerifyEmail, successVerifyEmail) || other.successVerifyEmail == successVerifyEmail)&&(identical(other.successResendOtp, successResendOtp) || other.successResendOtp == successResendOtp)&&(identical(other.successRestoreAccount, successRestoreAccount) || other.successRestoreAccount == successRestoreAccount)&&(identical(other.successValidationEmail, successValidationEmail) || other.successValidationEmail == successValidationEmail)&&(identical(other.successCreatePin, successCreatePin) || other.successCreatePin == successCreatePin)&&(identical(other.successRequestResetPinOtp, successRequestResetPinOtp) || other.successRequestResetPinOtp == successRequestResetPinOtp)&&(identical(other.successResetPin, successResetPin) || other.successResetPin == successResetPin)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode)&&(identical(other.isEmailUnverified, isEmailUnverified) || other.isEmailUnverified == isEmailUnverified)&&(identical(other.cooldownOtp, cooldownOtp) || other.cooldownOtp == cooldownOtp)&&(identical(other.pendingEmail, pendingEmail) || other.pendingEmail == pendingEmail)&&(identical(other.validationEmailResponse, validationEmailResponse) || other.validationEmailResponse == validationEmailResponse)&&(identical(other.loginResponse, loginResponse) || other.loginResponse == loginResponse)&&(identical(other.loginAiResponse, loginAiResponse) || other.loginAiResponse == loginAiResponse)&&(identical(other.registerResponse, registerResponse) || other.registerResponse == registerResponse)&&(identical(other.verifyEmailResponse, verifyEmailResponse) || other.verifyEmailResponse == verifyEmailResponse)&&(identical(other.resendOtpResponse, resendOtpResponse) || other.resendOtpResponse == resendOtpResponse)&&(identical(other.createPinResponse, createPinResponse) || other.createPinResponse == createPinResponse)&&(identical(other.requestResetPinResponse, requestResetPinResponse) || other.requestResetPinResponse == requestResetPinResponse)&&(identical(other.resetPinResponse, resetPinResponse) || other.resetPinResponse == resetPinResponse)&&(identical(other.authDataHive, authDataHive) || other.authDataHive == authDataHive)&&(identical(other.authAiDataHive, authAiDataHive) || other.authAiDataHive == authAiDataHive)&&(identical(other.alert, alert) || other.alert == alert));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,message,messageVerifyOtp,loading,loadingUser,loadingGuest,loadingAi,loadingVerifyEmail,loadingResendOtp,loadingRestoreAccount,loadingValidationEmail,successLoginUser,successLoginGuest,successLoginAi,successRegister,successVerifyEmail,successResendOtp,successRestoreAccount,successValidationEmail,statusCode,isEmailUnverified,cooldownOtp,pendingEmail,validationEmailResponse,loginResponse,loginAiResponse,registerResponse,verifyEmailResponse,resendOtpResponse,authDataHive,authAiDataHive,alert]);
+int get hashCode => Object.hashAll([runtimeType,message,messageVerifyOtp,loading,loadingUser,loadingGuest,loadingAi,loadingVerifyEmail,loadingResendOtp,loadingRestoreAccount,loadingValidationEmail,loadingCreatePin,loadingRequestResetPinOtp,loadingResetPin,successLoginUser,successLoginGuest,successLoginAi,successRegister,successVerifyEmail,successResendOtp,successRestoreAccount,successValidationEmail,successCreatePin,successRequestResetPinOtp,successResetPin,statusCode,isEmailUnverified,cooldownOtp,pendingEmail,validationEmailResponse,loginResponse,loginAiResponse,registerResponse,verifyEmailResponse,resendOtpResponse,createPinResponse,requestResetPinResponse,resetPinResponse,authDataHive,authAiDataHive,alert]);
 
 @override
 String toString() {
-  return 'AuthState(message: $message, messageVerifyOtp: $messageVerifyOtp, loading: $loading, loadingUser: $loadingUser, loadingGuest: $loadingGuest, loadingAi: $loadingAi, loadingVerifyEmail: $loadingVerifyEmail, loadingResendOtp: $loadingResendOtp, loadingRestoreAccount: $loadingRestoreAccount, loadingValidationEmail: $loadingValidationEmail, successLoginUser: $successLoginUser, successLoginGuest: $successLoginGuest, successLoginAi: $successLoginAi, successRegister: $successRegister, successVerifyEmail: $successVerifyEmail, successResendOtp: $successResendOtp, successRestoreAccount: $successRestoreAccount, successValidationEmail: $successValidationEmail, statusCode: $statusCode, isEmailUnverified: $isEmailUnverified, cooldownOtp: $cooldownOtp, pendingEmail: $pendingEmail, validationEmailResponse: $validationEmailResponse, loginResponse: $loginResponse, loginAiResponse: $loginAiResponse, registerResponse: $registerResponse, verifyEmailResponse: $verifyEmailResponse, resendOtpResponse: $resendOtpResponse, authDataHive: $authDataHive, authAiDataHive: $authAiDataHive, alert: $alert)';
+  return 'AuthState(message: $message, messageVerifyOtp: $messageVerifyOtp, loading: $loading, loadingUser: $loadingUser, loadingGuest: $loadingGuest, loadingAi: $loadingAi, loadingVerifyEmail: $loadingVerifyEmail, loadingResendOtp: $loadingResendOtp, loadingRestoreAccount: $loadingRestoreAccount, loadingValidationEmail: $loadingValidationEmail, loadingCreatePin: $loadingCreatePin, loadingRequestResetPinOtp: $loadingRequestResetPinOtp, loadingResetPin: $loadingResetPin, successLoginUser: $successLoginUser, successLoginGuest: $successLoginGuest, successLoginAi: $successLoginAi, successRegister: $successRegister, successVerifyEmail: $successVerifyEmail, successResendOtp: $successResendOtp, successRestoreAccount: $successRestoreAccount, successValidationEmail: $successValidationEmail, successCreatePin: $successCreatePin, successRequestResetPinOtp: $successRequestResetPinOtp, successResetPin: $successResetPin, statusCode: $statusCode, isEmailUnverified: $isEmailUnverified, cooldownOtp: $cooldownOtp, pendingEmail: $pendingEmail, validationEmailResponse: $validationEmailResponse, loginResponse: $loginResponse, loginAiResponse: $loginAiResponse, registerResponse: $registerResponse, verifyEmailResponse: $verifyEmailResponse, resendOtpResponse: $resendOtpResponse, createPinResponse: $createPinResponse, requestResetPinResponse: $requestResetPinResponse, resetPinResponse: $resetPinResponse, authDataHive: $authDataHive, authAiDataHive: $authAiDataHive, alert: $alert)';
 }
 
 
@@ -1069,11 +1343,11 @@ abstract mixin class _$InitialCopyWith<$Res> implements $AuthStateCopyWith<$Res>
   factory _$InitialCopyWith(_Initial value, $Res Function(_Initial) _then) = __$InitialCopyWithImpl;
 @override @useResult
 $Res call({
- String? message, String? messageVerifyOtp, bool loading, bool loadingUser, bool loadingGuest, bool loadingAi, bool loadingVerifyEmail, bool loadingResendOtp, bool loadingRestoreAccount, bool loadingValidationEmail, bool successLoginUser, bool successLoginGuest, bool successLoginAi, bool successRegister, bool successVerifyEmail, bool successResendOtp, bool successRestoreAccount, bool successValidationEmail, int? statusCode, bool isEmailUnverified, int cooldownOtp, String? pendingEmail, ValidationEmailResponse? validationEmailResponse, LoginResponse? loginResponse, LoginResponAI? loginAiResponse, RegisterResponse? registerResponse, VerifyOtpResponse? verifyEmailResponse, ResendOtpResponse? resendOtpResponse, AuthDataHive? authDataHive, AuthDataKatanaraHive? authAiDataHive, Alert? alert
+ String? message, String? messageVerifyOtp, bool loading, bool loadingUser, bool loadingGuest, bool loadingAi, bool loadingVerifyEmail, bool loadingResendOtp, bool loadingRestoreAccount, bool loadingValidationEmail, bool loadingCreatePin, bool loadingRequestResetPinOtp, bool loadingResetPin, bool successLoginUser, bool successLoginGuest, bool successLoginAi, bool successRegister, bool successVerifyEmail, bool successResendOtp, bool successRestoreAccount, bool successValidationEmail, bool successCreatePin, bool successRequestResetPinOtp, bool successResetPin, int? statusCode, bool isEmailUnverified, int cooldownOtp, String? pendingEmail, ValidationEmailResponse? validationEmailResponse, LoginResponse? loginResponse, LoginResponAI? loginAiResponse, RegisterResponse? registerResponse, VerifyOtpResponse? verifyEmailResponse, ResendOtpResponse? resendOtpResponse, PinResponse? createPinResponse, RequestResetPinResponse? requestResetPinResponse, PinResponse? resetPinResponse, AuthDataHive? authDataHive, AuthDataKatanaraHive? authAiDataHive, Alert? alert
 });
 
 
-@override $ValidationEmailResponseCopyWith<$Res>? get validationEmailResponse;@override $LoginResponseCopyWith<$Res>? get loginResponse;@override $RegisterResponseCopyWith<$Res>? get registerResponse;@override $VerifyOtpResponseCopyWith<$Res>? get verifyEmailResponse;@override $ResendOtpResponseCopyWith<$Res>? get resendOtpResponse;
+@override $ValidationEmailResponseCopyWith<$Res>? get validationEmailResponse;@override $LoginResponseCopyWith<$Res>? get loginResponse;@override $RegisterResponseCopyWith<$Res>? get registerResponse;@override $VerifyOtpResponseCopyWith<$Res>? get verifyEmailResponse;@override $ResendOtpResponseCopyWith<$Res>? get resendOtpResponse;@override $PinResponseCopyWith<$Res>? get createPinResponse;@override $RequestResetPinResponseCopyWith<$Res>? get requestResetPinResponse;@override $PinResponseCopyWith<$Res>? get resetPinResponse;
 
 }
 /// @nodoc
@@ -1086,7 +1360,7 @@ class __$InitialCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? message = freezed,Object? messageVerifyOtp = freezed,Object? loading = null,Object? loadingUser = null,Object? loadingGuest = null,Object? loadingAi = null,Object? loadingVerifyEmail = null,Object? loadingResendOtp = null,Object? loadingRestoreAccount = null,Object? loadingValidationEmail = null,Object? successLoginUser = null,Object? successLoginGuest = null,Object? successLoginAi = null,Object? successRegister = null,Object? successVerifyEmail = null,Object? successResendOtp = null,Object? successRestoreAccount = null,Object? successValidationEmail = null,Object? statusCode = freezed,Object? isEmailUnverified = null,Object? cooldownOtp = null,Object? pendingEmail = freezed,Object? validationEmailResponse = freezed,Object? loginResponse = freezed,Object? loginAiResponse = freezed,Object? registerResponse = freezed,Object? verifyEmailResponse = freezed,Object? resendOtpResponse = freezed,Object? authDataHive = freezed,Object? authAiDataHive = freezed,Object? alert = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? message = freezed,Object? messageVerifyOtp = freezed,Object? loading = null,Object? loadingUser = null,Object? loadingGuest = null,Object? loadingAi = null,Object? loadingVerifyEmail = null,Object? loadingResendOtp = null,Object? loadingRestoreAccount = null,Object? loadingValidationEmail = null,Object? loadingCreatePin = null,Object? loadingRequestResetPinOtp = null,Object? loadingResetPin = null,Object? successLoginUser = null,Object? successLoginGuest = null,Object? successLoginAi = null,Object? successRegister = null,Object? successVerifyEmail = null,Object? successResendOtp = null,Object? successRestoreAccount = null,Object? successValidationEmail = null,Object? successCreatePin = null,Object? successRequestResetPinOtp = null,Object? successResetPin = null,Object? statusCode = freezed,Object? isEmailUnverified = null,Object? cooldownOtp = null,Object? pendingEmail = freezed,Object? validationEmailResponse = freezed,Object? loginResponse = freezed,Object? loginAiResponse = freezed,Object? registerResponse = freezed,Object? verifyEmailResponse = freezed,Object? resendOtpResponse = freezed,Object? createPinResponse = freezed,Object? requestResetPinResponse = freezed,Object? resetPinResponse = freezed,Object? authDataHive = freezed,Object? authAiDataHive = freezed,Object? alert = freezed,}) {
   return _then(_Initial(
 message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String?,messageVerifyOtp: freezed == messageVerifyOtp ? _self.messageVerifyOtp : messageVerifyOtp // ignore: cast_nullable_to_non_nullable
@@ -1098,6 +1372,9 @@ as bool,loadingVerifyEmail: null == loadingVerifyEmail ? _self.loadingVerifyEmai
 as bool,loadingResendOtp: null == loadingResendOtp ? _self.loadingResendOtp : loadingResendOtp // ignore: cast_nullable_to_non_nullable
 as bool,loadingRestoreAccount: null == loadingRestoreAccount ? _self.loadingRestoreAccount : loadingRestoreAccount // ignore: cast_nullable_to_non_nullable
 as bool,loadingValidationEmail: null == loadingValidationEmail ? _self.loadingValidationEmail : loadingValidationEmail // ignore: cast_nullable_to_non_nullable
+as bool,loadingCreatePin: null == loadingCreatePin ? _self.loadingCreatePin : loadingCreatePin // ignore: cast_nullable_to_non_nullable
+as bool,loadingRequestResetPinOtp: null == loadingRequestResetPinOtp ? _self.loadingRequestResetPinOtp : loadingRequestResetPinOtp // ignore: cast_nullable_to_non_nullable
+as bool,loadingResetPin: null == loadingResetPin ? _self.loadingResetPin : loadingResetPin // ignore: cast_nullable_to_non_nullable
 as bool,successLoginUser: null == successLoginUser ? _self.successLoginUser : successLoginUser // ignore: cast_nullable_to_non_nullable
 as bool,successLoginGuest: null == successLoginGuest ? _self.successLoginGuest : successLoginGuest // ignore: cast_nullable_to_non_nullable
 as bool,successLoginAi: null == successLoginAi ? _self.successLoginAi : successLoginAi // ignore: cast_nullable_to_non_nullable
@@ -1106,6 +1383,9 @@ as bool,successVerifyEmail: null == successVerifyEmail ? _self.successVerifyEmai
 as bool,successResendOtp: null == successResendOtp ? _self.successResendOtp : successResendOtp // ignore: cast_nullable_to_non_nullable
 as bool,successRestoreAccount: null == successRestoreAccount ? _self.successRestoreAccount : successRestoreAccount // ignore: cast_nullable_to_non_nullable
 as bool,successValidationEmail: null == successValidationEmail ? _self.successValidationEmail : successValidationEmail // ignore: cast_nullable_to_non_nullable
+as bool,successCreatePin: null == successCreatePin ? _self.successCreatePin : successCreatePin // ignore: cast_nullable_to_non_nullable
+as bool,successRequestResetPinOtp: null == successRequestResetPinOtp ? _self.successRequestResetPinOtp : successRequestResetPinOtp // ignore: cast_nullable_to_non_nullable
+as bool,successResetPin: null == successResetPin ? _self.successResetPin : successResetPin // ignore: cast_nullable_to_non_nullable
 as bool,statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
 as int?,isEmailUnverified: null == isEmailUnverified ? _self.isEmailUnverified : isEmailUnverified // ignore: cast_nullable_to_non_nullable
 as bool,cooldownOtp: null == cooldownOtp ? _self.cooldownOtp : cooldownOtp // ignore: cast_nullable_to_non_nullable
@@ -1116,7 +1396,10 @@ as LoginResponse?,loginAiResponse: freezed == loginAiResponse ? _self.loginAiRes
 as LoginResponAI?,registerResponse: freezed == registerResponse ? _self.registerResponse : registerResponse // ignore: cast_nullable_to_non_nullable
 as RegisterResponse?,verifyEmailResponse: freezed == verifyEmailResponse ? _self.verifyEmailResponse : verifyEmailResponse // ignore: cast_nullable_to_non_nullable
 as VerifyOtpResponse?,resendOtpResponse: freezed == resendOtpResponse ? _self.resendOtpResponse : resendOtpResponse // ignore: cast_nullable_to_non_nullable
-as ResendOtpResponse?,authDataHive: freezed == authDataHive ? _self.authDataHive : authDataHive // ignore: cast_nullable_to_non_nullable
+as ResendOtpResponse?,createPinResponse: freezed == createPinResponse ? _self.createPinResponse : createPinResponse // ignore: cast_nullable_to_non_nullable
+as PinResponse?,requestResetPinResponse: freezed == requestResetPinResponse ? _self.requestResetPinResponse : requestResetPinResponse // ignore: cast_nullable_to_non_nullable
+as RequestResetPinResponse?,resetPinResponse: freezed == resetPinResponse ? _self.resetPinResponse : resetPinResponse // ignore: cast_nullable_to_non_nullable
+as PinResponse?,authDataHive: freezed == authDataHive ? _self.authDataHive : authDataHive // ignore: cast_nullable_to_non_nullable
 as AuthDataHive?,authAiDataHive: freezed == authAiDataHive ? _self.authAiDataHive : authAiDataHive // ignore: cast_nullable_to_non_nullable
 as AuthDataKatanaraHive?,alert: freezed == alert ? _self.alert : alert // ignore: cast_nullable_to_non_nullable
 as Alert?,
@@ -1182,6 +1465,42 @@ $ResendOtpResponseCopyWith<$Res>? get resendOtpResponse {
 
   return $ResendOtpResponseCopyWith<$Res>(_self.resendOtpResponse!, (value) {
     return _then(_self.copyWith(resendOtpResponse: value));
+  });
+}/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PinResponseCopyWith<$Res>? get createPinResponse {
+    if (_self.createPinResponse == null) {
+    return null;
+  }
+
+  return $PinResponseCopyWith<$Res>(_self.createPinResponse!, (value) {
+    return _then(_self.copyWith(createPinResponse: value));
+  });
+}/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RequestResetPinResponseCopyWith<$Res>? get requestResetPinResponse {
+    if (_self.requestResetPinResponse == null) {
+    return null;
+  }
+
+  return $RequestResetPinResponseCopyWith<$Res>(_self.requestResetPinResponse!, (value) {
+    return _then(_self.copyWith(requestResetPinResponse: value));
+  });
+}/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PinResponseCopyWith<$Res>? get resetPinResponse {
+    if (_self.resetPinResponse == null) {
+    return null;
+  }
+
+  return $PinResponseCopyWith<$Res>(_self.resetPinResponse!, (value) {
+    return _then(_self.copyWith(resetPinResponse: value));
   });
 }
 }

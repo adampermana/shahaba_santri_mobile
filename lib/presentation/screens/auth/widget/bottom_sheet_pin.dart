@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
@@ -37,24 +40,28 @@ class PinBottomSheet extends StatefulWidget {
     VoidCallback? onUsePassword,
     VoidCallback? onForgotPin,
   }) {
+    final authBloc = context.read<AuthBloc>();
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (sheetContext) => AnimatedPadding(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOut,
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
-        ),
-        child: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          child: PinBottomSheet(
-            variant: variant,
-            expectedPin: expectedPin,
-            onSubmitted: onSubmitted,
-            onUsePassword: onUsePassword,
-            onForgotPin: onForgotPin,
+      builder: (sheetContext) => BlocProvider.value(
+        value: authBloc,
+        child: AnimatedPadding(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
+          ),
+          child: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            child: PinBottomSheet(
+              variant: variant,
+              expectedPin: expectedPin,
+              onSubmitted: onSubmitted,
+              onUsePassword: onUsePassword,
+              onForgotPin: onForgotPin,
+            ),
           ),
         ),
       ),
@@ -156,7 +163,23 @@ class _PinBottomSheetState extends State<PinBottomSheet> {
   void _onDigit(String digit) {
     if (_hasSubmitted || _pinController.text.length >= 6) return;
     _pinController.text = '${_pinController.text}$digit';
-    if (_isPinComplete) _submitPin();
+    if (_isPinComplete) {
+      if (_isPinValid) {
+        _submitPin();
+      } else {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (!mounted) return;
+          _pinController.clear();
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              CustomSnackBar.failure(
+                message: 'PIN tidak cocok. Silakan coba lagi.',
+              ),
+            );
+        });
+      }
+    }
   }
 
   void _onBackspace() {

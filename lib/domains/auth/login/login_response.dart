@@ -12,6 +12,7 @@ abstract class LoginResponse with _$LoginResponse {
     String? token,
     @JsonKey(name: 'token_type') String? tokenType,
     @JsonKey(name: 'expires_in') int? expiresIn,
+    @JsonKey(name: 'is_pin') bool? isPin,
     AuthUserData? data,
   }) = _LoginResponse;
 

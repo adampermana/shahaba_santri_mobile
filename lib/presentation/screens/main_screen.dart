@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sahaba_mobile/business_logic/auth/auth_account_bloc/auth_account_bloc.dart';
+import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location/location_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
 import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
@@ -15,6 +17,7 @@ import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/create_pin_flow.dart';
 import 'package:sahaba_mobile/presentation/screens/home/home_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/bottom_navigation_bar.dart';
@@ -63,6 +66,9 @@ class MainProvider extends StatelessWidget {
             return cubit;
           })(),
         ),
+        BlocProvider(
+          create: (_) => sl<AuthBloc>(),
+        ),
       ],
       child: const _MainScreen(),
     );
@@ -83,7 +89,29 @@ class _MainScreenState extends State<_MainScreen> {
   DateTime? _lastBackPressedAt;
   // AdResponseData? _pendingSplashAd;
   bool _isLocationAlertShowing = false;
-  // bool _isSplashDialogShowing = false;
+  bool _hasPromptedPin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkPinStatus();
+    });
+  }
+
+  void _checkPinStatus() {
+    if (_hasPromptedPin || !mounted) return;
+    final authState = sl<AuthAccountBloc>().state;
+    authState.maybeWhen(
+      authenticatedUser: (authData, _) {
+        if (authData.isPin == false) {
+          _hasPromptedPin = true;
+          unawaited(CreatePinFlow.show(context));
+        }
+      },
+      orElse: () {},
+    );
+  }
 
   List<Widget> get _screens => [
     HomeScreen(isActive: _selectedIndex == 0),
@@ -408,6 +436,23 @@ class _MainScreenState extends State<_MainScreen> {
 
           body: MultiBlocListener(
             listeners: [
+              BlocListener<AuthAccountBloc, AuthAccountState>(
+                listener: (context, state) {
+                  state.maybeWhen(
+                    authenticatedUser: (authData, _) {
+                      if (authData.isPin == false && !_hasPromptedPin) {
+                        _hasPromptedPin = true;
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (mounted) {
+                            unawaited(CreatePinFlow.show(context));
+                          }
+                        });
+                      }
+                    },
+                    orElse: () {},
+                  );
+                },
+              ),
               // Location Alert Dialog
               BlocListener<LocationBloc, LocationState>(
                 listenWhen: (previous, current) =>

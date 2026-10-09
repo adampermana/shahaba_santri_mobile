@@ -3,6 +3,8 @@ import 'package:sahaba_mobile/domains/auth/hive/auth_data_hive.dart';
 import 'package:sahaba_mobile/domains/auth/hive/auth_data_katanara_hive.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_respon_ai.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_response.dart';
+import 'package:sahaba_mobile/domains/auth/pin/pin_response.dart';
+import 'package:sahaba_mobile/domains/auth/pin/request_reset_pin_response.dart';
 import 'package:sahaba_mobile/domains/auth/register/register_response.dart';
 import 'package:sahaba_mobile/domains/auth/resend_otp/resend_otp_response.dart';
 import 'package:sahaba_mobile/domains/auth/validation_email/validation_email_response.dart';
@@ -55,6 +57,19 @@ abstract class IAuthRepositories {
     String email,
     String password,
   );
+
+  Future<Either<ServerFailures, PinResponse>> postCreatePin({
+    required String pin,
+  });
+
+  Future<Either<ServerFailures, RequestResetPinResponse>>
+  postRequestResetPinOtp({required String email});
+
+  Future<Either<ServerFailures, PinResponse>> postResetPin({
+    required String email,
+    required String code,
+    required String pin,
+  });
 
   Future<void> clearAuthData();
 }

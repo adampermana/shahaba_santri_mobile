@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_otp.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_pin.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
@@ -21,14 +23,16 @@ class ForgotPinFlow {
     ResetPinCallback? onResetPin,
     VoidCallback? onResend,
   }) async {
-    Future<void> showSuccess() async {
+    final authBloc = context.read<AuthBloc>();
+
+    Future<void> showSuccess([String? message]) async {
       await WidgetsBinding.instance.endOfFrame;
       if (!context.mounted) return;
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
           CustomSnackBar.authSuccess(
-            message: 'Sip! PIN baru sudah disimpan.',
+            message: message ?? 'Sip! PIN baru sudah disimpan.',
           ),
         );
     }
@@ -72,6 +76,8 @@ class ForgotPinFlow {
       );
     }
 
+    authBloc.add(AuthEvent.postRequestResetPinOtp(email: email));
+
     await OtpBottomSheet.show(
       context,
       email: email,
@@ -80,7 +86,13 @@ class ForgotPinFlow {
         Navigator.of(context).pop();
         unawaited(showNewPin(otp));
       },
-      onResend: onResend,
+      onResend: () {
+        if (onResend != null) {
+          onResend();
+        } else {
+          authBloc.add(AuthEvent.postRequestResetPinOtp(email: email));
+        }
+      },
     );
   }
 
@@ -90,12 +102,55 @@ class ForgotPinFlow {
     required String otp,
     required String pin,
     required ResetPinCallback? onResetPin,
-    required Future<void> Function() onSuccess,
+    required Future<void> Function([String? message]) onSuccess,
   }) async {
     if (!context.mounted) return;
-    final success = onResetPin == null
-        ? null
-        : await onResetPin(email: email, otp: otp, pin: pin);
-    if ((success ?? true) && context.mounted) await onSuccess();
+    if (onResetPin != null) {
+      final success = await onResetPin(email: email, otp: otp, pin: pin);
+      if (success && context.mounted) await onSuccess();
+      return;
+    }
+
+    final authBloc = context.read<AuthBloc>();
+    final completer = Completer<bool>();
+    late final StreamSubscription<AuthState> subscription;
+
+    subscription = authBloc.stream.listen((state) {
+      if (!state.loadingResetPin) {
+        if (state.successResetPin) {
+          unawaited(subscription.cancel());
+          if (!completer.isCompleted) completer.complete(true);
+        } else if (state.message != null && state.message!.isNotEmpty) {
+          unawaited(subscription.cancel());
+          if (!completer.isCompleted) completer.complete(false);
+        }
+      }
+    });
+
+    authBloc.add(
+      AuthEvent.postResetPin(
+        email: email,
+        code: otp,
+        pin: pin,
+      ),
+    );
+
+    final isSuccess = await completer.future;
+
+    if (!context.mounted) return;
+
+    if (isSuccess) {
+      final successMsg =
+          authBloc.state.resetPinResponse?.message ?? 'PIN reset successfully';
+      await onSuccess(successMsg);
+    } else {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          CustomSnackBar.failure(
+            message: authBloc.state.message ?? 'Gagal mereset PIN',
+          ),
+        );
+    }
   }
 }

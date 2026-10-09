@@ -13,6 +13,7 @@ _LoginResponse _$LoginResponseFromJson(Map<String, dynamic> json) =>
       token: json['token'] as String?,
       tokenType: json['token_type'] as String?,
       expiresIn: (json['expires_in'] as num?)?.toInt(),
+      isPin: json['is_pin'] as bool?,
       data: json['data'] == null
           ? null
           : AuthUserData.fromJson(json['data'] as Map<String, dynamic>),
@@ -25,6 +26,7 @@ Map<String, dynamic> _$LoginResponseToJson(_LoginResponse instance) =>
       'token': instance.token,
       'token_type': instance.tokenType,
       'expires_in': instance.expiresIn,
+      'is_pin': instance.isPin,
       'data': instance.data,
     };
 

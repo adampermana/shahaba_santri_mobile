@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
@@ -20,13 +22,17 @@ class PinInfoBottomSheet extends StatelessWidget {
     VoidCallback? onSetPin,
     VoidCallback? onSkip,
   }) {
+    final authBloc = context.read<AuthBloc>();
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => PinInfoBottomSheet(
-        onSetPin: onSetPin,
-        onSkip: onSkip,
+      builder: (_) => BlocProvider.value(
+        value: authBloc,
+        child: PinInfoBottomSheet(
+          onSetPin: onSetPin,
+          onSkip: onSkip,
+        ),
       ),
     );
   }

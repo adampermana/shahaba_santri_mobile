@@ -25,13 +25,14 @@ class AuthDataHiveAdapter extends TypeAdapter<AuthDataHive> {
       tokenType: fields[5] as String?,
       expiresIn: (fields[6] as num?)?.toInt(),
       isProfileCompleted: fields[7] as bool?,
+      isPin: fields[8] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AuthDataHive obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class AuthDataHiveAdapter extends TypeAdapter<AuthDataHive> {
       ..writeByte(6)
       ..write(obj.expiresIn)
       ..writeByte(7)
-      ..write(obj.isProfileCompleted);
+      ..write(obj.isProfileCompleted)
+      ..writeByte(8)
+      ..write(obj.isPin);
   }
 
   @override

@@ -162,4 +162,82 @@ class AuthRemoteDatasource implements IAuthRemoteDatasource {
       throw ServerException.withError(e);
     }
   }
+
+  @override
+  Future<PinResponse> postCreatePin({
+    required String pin,
+  }) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/api/v1/auth/pin',
+        data: {'pin': pin},
+      );
+      return PinResponse.fromJson(response.data!);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.badResponse &&
+          (e.response?.statusCode == 400 ||
+              e.response?.statusCode == 409 ||
+              e.response?.statusCode == 503)) {
+        final raw = e.response?.data;
+        if (raw is Map<String, dynamic>) {
+          return PinResponse.fromJson(raw);
+        }
+      }
+      throw ServerException.withError(e);
+    }
+  }
+
+  @override
+  Future<RequestResetPinResponse> postRequestResetPinOtp({
+    required String email,
+  }) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/api/v1/public/auth/pin/reset/request',
+        data: {'email': email},
+      );
+      return RequestResetPinResponse.fromJson(response.data!);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.badResponse &&
+          (e.response?.statusCode == 400 ||
+              e.response?.statusCode == 409 ||
+              e.response?.statusCode == 503)) {
+        final raw = e.response?.data;
+        if (raw is Map<String, dynamic>) {
+          return RequestResetPinResponse.fromJson(raw);
+        }
+      }
+      throw ServerException.withError(e);
+    }
+  }
+
+  @override
+  Future<PinResponse> postResetPin({
+    required String email,
+    required String code,
+    required String pin,
+  }) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/api/v1/public/auth/pin/reset',
+        data: {
+          'email': email,
+          'code': code,
+          'pin': pin,
+        },
+      );
+      return PinResponse.fromJson(response.data!);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.badResponse &&
+          (e.response?.statusCode == 400 ||
+              e.response?.statusCode == 409 ||
+              e.response?.statusCode == 503)) {
+        final raw = e.response?.data;
+        if (raw is Map<String, dynamic>) {
+          return PinResponse.fromJson(raw);
+        }
+      }
+      throw ServerException.withError(e);
+    }
+  }
 }

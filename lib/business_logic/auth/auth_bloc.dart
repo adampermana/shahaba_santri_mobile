@@ -6,6 +6,8 @@ import 'package:sahaba_mobile/domains/auth/hive/auth_data_hive.dart';
 import 'package:sahaba_mobile/domains/auth/hive/auth_data_katanara_hive.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_respon_ai.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_response.dart';
+import 'package:sahaba_mobile/domains/auth/pin/pin_response.dart';
+import 'package:sahaba_mobile/domains/auth/pin/request_reset_pin_response.dart';
 import 'package:sahaba_mobile/domains/auth/register/register_response.dart';
 import 'package:sahaba_mobile/domains/auth/resend_otp/resend_otp_response.dart';
 import 'package:sahaba_mobile/domains/auth/validation_email/validation_email_response.dart';
@@ -30,6 +32,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<_PostloginGuest>(_onPostloginGuest);
     on<_PostloginAi>(_onPostloginAi);
     on<_PostRestoreAccount>(_onPostRestoreAccount);
+    on<_PostCreatePin>(_onPostCreatePin);
+    on<_PostRequestResetPinOtp>(_onPostRequestResetPinOtp);
+    on<_PostResetPin>(_onPostResetPin);
   }
 
   final IAuthRepositories _authRepositories;
@@ -347,6 +352,123 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           loadingRestoreAccount: false,
           successRestoreAccount: true,
           statusCode: 200,
+          message: r.message,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onPostCreatePin(
+    _PostCreatePin event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        loadingCreatePin: true,
+        successCreatePin: false,
+        statusCode: null,
+      ),
+    );
+
+    final result = await _authRepositories.postCreatePin(
+      pin: event.pin,
+    );
+
+    result.fold(
+      (f) => emit(
+        state.copyWith(
+          successCreatePin: false,
+          loadingCreatePin: false,
+          statusCode: f.statusCode,
+          message: f.message,
+          alert: Alert.fromFailures(f),
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          loadingCreatePin: false,
+          successCreatePin: true,
+          statusCode: 200,
+          createPinResponse: r,
+          message: r.message,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onPostRequestResetPinOtp(
+    _PostRequestResetPinOtp event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        loadingRequestResetPinOtp: true,
+        successRequestResetPinOtp: false,
+        statusCode: null,
+      ),
+    );
+
+    final result = await _authRepositories.postRequestResetPinOtp(
+      email: event.email,
+    );
+
+    result.fold(
+      (f) => emit(
+        state.copyWith(
+          successRequestResetPinOtp: false,
+          loadingRequestResetPinOtp: false,
+          statusCode: f.statusCode,
+          message: f.message,
+          alert: Alert.fromFailures(f),
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          loadingRequestResetPinOtp: false,
+          successRequestResetPinOtp: true,
+          statusCode: 200,
+          cooldownOtp: r.data?.cooldownOtp ?? 60,
+          requestResetPinResponse: r,
+          message: r.message,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onPostResetPin(
+    _PostResetPin event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        loadingResetPin: true,
+        successResetPin: false,
+        statusCode: null,
+      ),
+    );
+
+    final result = await _authRepositories.postResetPin(
+      email: event.email,
+      code: event.code,
+      pin: event.pin,
+    );
+
+    result.fold(
+      (f) => emit(
+        state.copyWith(
+          successResetPin: false,
+          loadingResetPin: false,
+          statusCode: f.statusCode,
+          message: f.message,
+          alert: Alert.fromFailures(f),
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          loadingResetPin: false,
+          successResetPin: true,
+          statusCode: 200,
+          resetPinResponse: r,
           message: r.message,
         ),
       ),

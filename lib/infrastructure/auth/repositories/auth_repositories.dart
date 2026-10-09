@@ -52,12 +52,14 @@ class AuthRepositories implements IAuthRepositories {
       }
 
       final token = response.token;
+      final isPin = response.isPin ?? response.data?.isPin;
       if (token != null) {
         await _localDatasource.saveAuthUser(
           AuthDataHive(
             accessToken: token,
             tokenType: response.tokenType,
             expiresIn: response.expiresIn,
+            isPin: isPin,
           ),
         );
       }
@@ -236,5 +238,91 @@ class AuthRepositories implements IAuthRepositories {
     await _localDatasource.clearAuthUser();
     await _localDatasource.clearAuthGuest();
     await _localDatasource.clearAuthAi();
+  }
+
+  @override
+  Future<Either<ServerFailures, PinResponse>> postCreatePin({
+    required String pin,
+  }) async {
+    try {
+      final response = await _remoteDatasource.postCreatePin(pin: pin);
+
+      if (response.success == false) {
+        return Left(
+          ServerFailures(
+            statusCode: 400,
+            title: 'Buat PIN gagal',
+            message: response.message ?? 'Gagal membuat PIN',
+          ),
+        );
+      }
+
+      final current = _localDatasource.authUserDataHive;
+      if (current != null) {
+        await _localDatasource.saveAuthUser(current.copyWith(isPin: true));
+      }
+
+      return Right(response);
+    } on ServerFailures catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<ServerFailures, RequestResetPinResponse>>
+  postRequestResetPinOtp({required String email}) async {
+    try {
+      final response = await _remoteDatasource.postRequestResetPinOtp(
+        email: email,
+      );
+
+      if (response.success == false) {
+        return Left(
+          ServerFailures(
+            statusCode: 400,
+            title: 'Request OTP gagal',
+            message: response.message ?? 'Gagal mengirim kode reset PIN',
+          ),
+        );
+      }
+
+      return Right(response);
+    } on ServerFailures catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<ServerFailures, PinResponse>> postResetPin({
+    required String email,
+    required String code,
+    required String pin,
+  }) async {
+    try {
+      final response = await _remoteDatasource.postResetPin(
+        email: email,
+        code: code,
+        pin: pin,
+      );
+
+      if (response.success == false) {
+        return Left(
+          ServerFailures(
+            statusCode: 400,
+            title: 'Reset PIN gagal',
+            message: response.message ?? 'Gagal mereset PIN',
+          ),
+        );
+      }
+
+      final current = _localDatasource.authUserDataHive;
+      if (current != null) {
+        await _localDatasource.saveAuthUser(current.copyWith(isPin: true));
+      }
+
+      return Right(response);
+    } on ServerFailures catch (e) {
+      return Left(e);
+    }
   }
 }

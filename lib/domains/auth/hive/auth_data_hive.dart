@@ -13,6 +13,7 @@ class AuthDataHive {
     this.tokenType,
     this.expiresIn,
     this.isProfileCompleted,
+    this.isPin,
   });
 
   factory AuthDataHive.fromMap(Map<String, dynamic> json) => AuthDataHive(
@@ -24,6 +25,7 @@ class AuthDataHive {
     tokenType: json['token_type'] as String?,
     expiresIn: json['expires_in'] as int?,
     isProfileCompleted: json['is_profile_completed'] as bool?,
+    isPin: json['is_pin'] as bool?,
   );
 
   @HiveField(0)
@@ -50,6 +52,9 @@ class AuthDataHive {
   @HiveField(7)
   bool? isProfileCompleted;
 
+  @HiveField(8)
+  bool? isPin;
+
   AuthDataHive copyWith({
     int? id,
     String? name,
@@ -59,6 +64,7 @@ class AuthDataHive {
     String? tokenType,
     int? expiresIn,
     bool? isProfileCompleted,
+    bool? isPin,
   }) => AuthDataHive(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -68,6 +74,7 @@ class AuthDataHive {
     tokenType: tokenType ?? this.tokenType,
     expiresIn: expiresIn ?? this.expiresIn,
     isProfileCompleted: isProfileCompleted ?? this.isProfileCompleted,
+    isPin: isPin ?? this.isPin,
   );
 
   Map<String, dynamic> toMap() => {
@@ -79,5 +86,6 @@ class AuthDataHive {
     'token_type': tokenType,
     'expires_in': expiresIn,
     'is_profile_completed': isProfileCompleted,
+    'is_pin': isPin,
   };
 }

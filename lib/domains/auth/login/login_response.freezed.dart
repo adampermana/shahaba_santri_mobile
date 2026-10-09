@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LoginResponse {
 
- bool? get success; String? get message; String? get token;@JsonKey(name: 'token_type') String? get tokenType;@JsonKey(name: 'expires_in') int? get expiresIn; AuthUserData? get data;
+ bool? get success; String? get message; String? get token;@JsonKey(name: 'token_type') String? get tokenType;@JsonKey(name: 'expires_in') int? get expiresIn;@JsonKey(name: 'is_pin') bool? get isPin; AuthUserData? get data;
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $LoginResponseCopyWith<LoginResponse> get copyWith => _$LoginResponseCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.token, token) || other.token == token)&&(identical(other.tokenType, tokenType) || other.tokenType == tokenType)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn)&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.token, token) || other.token == token)&&(identical(other.tokenType, tokenType) || other.tokenType == tokenType)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn)&&(identical(other.isPin, isPin) || other.isPin == isPin)&&(identical(other.data, data) || other.data == data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,success,message,token,tokenType,expiresIn,data);
+int get hashCode => Object.hash(runtimeType,success,message,token,tokenType,expiresIn,isPin,data);
 
 @override
 String toString() {
-  return 'LoginResponse(success: $success, message: $message, token: $token, tokenType: $tokenType, expiresIn: $expiresIn, data: $data)';
+  return 'LoginResponse(success: $success, message: $message, token: $token, tokenType: $tokenType, expiresIn: $expiresIn, isPin: $isPin, data: $data)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $LoginResponseCopyWith<$Res>  {
   factory $LoginResponseCopyWith(LoginResponse value, $Res Function(LoginResponse) _then) = _$LoginResponseCopyWithImpl;
 @useResult
 $Res call({
- bool? success, String? message, String? token,@JsonKey(name: 'token_type') String? tokenType,@JsonKey(name: 'expires_in') int? expiresIn, AuthUserData? data
+ bool? success, String? message, String? token,@JsonKey(name: 'token_type') String? tokenType,@JsonKey(name: 'expires_in') int? expiresIn,@JsonKey(name: 'is_pin') bool? isPin, AuthUserData? data
 });
 
 
@@ -65,14 +65,15 @@ class _$LoginResponseCopyWithImpl<$Res>
 
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? success = freezed,Object? message = freezed,Object? token = freezed,Object? tokenType = freezed,Object? expiresIn = freezed,Object? data = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? success = freezed,Object? message = freezed,Object? token = freezed,Object? tokenType = freezed,Object? expiresIn = freezed,Object? isPin = freezed,Object? data = freezed,}) {
   return _then(_self.copyWith(
 success: freezed == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
 as bool?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String?,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
 as String?,tokenType: freezed == tokenType ? _self.tokenType : tokenType // ignore: cast_nullable_to_non_nullable
 as String?,expiresIn: freezed == expiresIn ? _self.expiresIn : expiresIn // ignore: cast_nullable_to_non_nullable
-as int?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as int?,isPin: freezed == isPin ? _self.isPin : isPin // ignore: cast_nullable_to_non_nullable
+as bool?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as AuthUserData?,
   ));
 }
@@ -170,10 +171,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool? success,  String? message,  String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn,  AuthUserData? data)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool? success,  String? message,  String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn, @JsonKey(name: 'is_pin')  bool? isPin,  AuthUserData? data)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LoginResponse() when $default != null:
-return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.expiresIn,_that.data);case _:
+return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.expiresIn,_that.isPin,_that.data);case _:
   return orElse();
 
 }
@@ -191,10 +192,10 @@ return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.ex
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool? success,  String? message,  String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn,  AuthUserData? data)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool? success,  String? message,  String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn, @JsonKey(name: 'is_pin')  bool? isPin,  AuthUserData? data)  $default,) {final _that = this;
 switch (_that) {
 case _LoginResponse():
-return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.expiresIn,_that.data);case _:
+return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.expiresIn,_that.isPin,_that.data);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -211,10 +212,10 @@ return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.ex
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool? success,  String? message,  String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn,  AuthUserData? data)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool? success,  String? message,  String? token, @JsonKey(name: 'token_type')  String? tokenType, @JsonKey(name: 'expires_in')  int? expiresIn, @JsonKey(name: 'is_pin')  bool? isPin,  AuthUserData? data)?  $default,) {final _that = this;
 switch (_that) {
 case _LoginResponse() when $default != null:
-return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.expiresIn,_that.data);case _:
+return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.expiresIn,_that.isPin,_that.data);case _:
   return null;
 
 }
@@ -226,7 +227,7 @@ return $default(_that.success,_that.message,_that.token,_that.tokenType,_that.ex
 @JsonSerializable()
 
 class _LoginResponse implements LoginResponse {
-  const _LoginResponse({this.success, this.message, this.token, @JsonKey(name: 'token_type') this.tokenType, @JsonKey(name: 'expires_in') this.expiresIn, this.data});
+  const _LoginResponse({this.success, this.message, this.token, @JsonKey(name: 'token_type') this.tokenType, @JsonKey(name: 'expires_in') this.expiresIn, @JsonKey(name: 'is_pin') this.isPin, this.data});
   factory _LoginResponse.fromJson(Map<String, dynamic> json) => _$LoginResponseFromJson(json);
 
 @override final  bool? success;
@@ -234,6 +235,7 @@ class _LoginResponse implements LoginResponse {
 @override final  String? token;
 @override@JsonKey(name: 'token_type') final  String? tokenType;
 @override@JsonKey(name: 'expires_in') final  int? expiresIn;
+@override@JsonKey(name: 'is_pin') final  bool? isPin;
 @override final  AuthUserData? data;
 
 /// Create a copy of LoginResponse
@@ -249,16 +251,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.token, token) || other.token == token)&&(identical(other.tokenType, tokenType) || other.tokenType == tokenType)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn)&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginResponse&&(identical(other.success, success) || other.success == success)&&(identical(other.message, message) || other.message == message)&&(identical(other.token, token) || other.token == token)&&(identical(other.tokenType, tokenType) || other.tokenType == tokenType)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn)&&(identical(other.isPin, isPin) || other.isPin == isPin)&&(identical(other.data, data) || other.data == data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,success,message,token,tokenType,expiresIn,data);
+int get hashCode => Object.hash(runtimeType,success,message,token,tokenType,expiresIn,isPin,data);
 
 @override
 String toString() {
-  return 'LoginResponse(success: $success, message: $message, token: $token, tokenType: $tokenType, expiresIn: $expiresIn, data: $data)';
+  return 'LoginResponse(success: $success, message: $message, token: $token, tokenType: $tokenType, expiresIn: $expiresIn, isPin: $isPin, data: $data)';
 }
 
 
@@ -269,7 +271,7 @@ abstract mixin class _$LoginResponseCopyWith<$Res> implements $LoginResponseCopy
   factory _$LoginResponseCopyWith(_LoginResponse value, $Res Function(_LoginResponse) _then) = __$LoginResponseCopyWithImpl;
 @override @useResult
 $Res call({
- bool? success, String? message, String? token,@JsonKey(name: 'token_type') String? tokenType,@JsonKey(name: 'expires_in') int? expiresIn, AuthUserData? data
+ bool? success, String? message, String? token,@JsonKey(name: 'token_type') String? tokenType,@JsonKey(name: 'expires_in') int? expiresIn,@JsonKey(name: 'is_pin') bool? isPin, AuthUserData? data
 });
 
 
@@ -286,14 +288,15 @@ class __$LoginResponseCopyWithImpl<$Res>
 
 /// Create a copy of LoginResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? success = freezed,Object? message = freezed,Object? token = freezed,Object? tokenType = freezed,Object? expiresIn = freezed,Object? data = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? success = freezed,Object? message = freezed,Object? token = freezed,Object? tokenType = freezed,Object? expiresIn = freezed,Object? isPin = freezed,Object? data = freezed,}) {
   return _then(_LoginResponse(
 success: freezed == success ? _self.success : success // ignore: cast_nullable_to_non_nullable
 as bool?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String?,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
 as String?,tokenType: freezed == tokenType ? _self.tokenType : tokenType // ignore: cast_nullable_to_non_nullable
 as String?,expiresIn: freezed == expiresIn ? _self.expiresIn : expiresIn // ignore: cast_nullable_to_non_nullable
-as int?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as int?,isPin: freezed == isPin ? _self.isPin : isPin // ignore: cast_nullable_to_non_nullable
+as bool?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as AuthUserData?,
   ));
 }
