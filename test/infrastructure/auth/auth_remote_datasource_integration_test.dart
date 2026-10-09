@@ -194,13 +194,13 @@ void main() {
           debugPrint('     Total time : ${stopwatch.elapsedMilliseconds}ms');
           debugPrint('     Result:');
           debugPrint(
-            '     token   : ${result.data?.token?.substring(0, 20)}...[HIDDEN]',
+            '     token   : ${result.token?.substring(0, 20)}...[HIDDEN]',
           );
 
           expect(result, isA<LoginResponse>());
           expect(result.data, isNotNull);
-          expect(result.data!.token, isNotNull);
-          expect(result.data!.token, isNotEmpty);
+          expect(result.token, isNotNull);
+          expect(result.token, isNotEmpty);
         },
         timeout: const Timeout(Duration(seconds: 30)),
       );

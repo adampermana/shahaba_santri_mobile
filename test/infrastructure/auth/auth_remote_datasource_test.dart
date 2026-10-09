@@ -180,7 +180,7 @@ void main() {
         );
 
         expect(result, isA<LoginResponse>());
-        expect(result.data?.token, 'guest-token-abc');
+        expect(result.token, 'guest-token-abc');
 
         verify(
           () => mockDio.post<Map<String, dynamic>>(
@@ -263,7 +263,7 @@ void main() {
         );
 
         expect(result, isA<LoginResponse>());
-        expect(result.data?.token, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test');
+        expect(result.token, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test');
         expect(result.message, 'Login successful');
 
         verify(
