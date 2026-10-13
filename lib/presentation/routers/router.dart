@@ -35,6 +35,7 @@ import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/select_city_scr
 import 'package:sahaba_mobile/presentation/screens/main_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/onboarding/onboarding_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/detail_quran_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/quran_screen/history_collection_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
@@ -47,48 +48,68 @@ final GoRouter router = GoRouter(
   refreshListenable: _refreshStream,
   initialLocation: RouterPath.rootPath,
   redirect: (context, state) {
-    final authState = sl<AuthAccountBloc>().state;
-
-    final isAuthUser = authState.maybeWhen(
-      authenticatedUser: (authData, [aiData]) => true,
-      orElse: () => false,
-    );
-
-    final isAuthGuest = authState.maybeWhen(
-      authenticatedGuest: (_) => true,
-      orElse: () => false,
-    );
 
     final isOnBoarded = sl<CoreCubit>().state.isBoarding;
     final location = state.matchedLocation;
 
-    // 1. Belum onboarding — paksa ke onboarding
+    // Belum onboarding → arahkan ke onboarding
     if (!isOnBoarded) {
-      if (location == RouterPath.onboardingPath) return null;
-      return RouterPath.onboardingPath;
+      return location == RouterPath.onboardingPath
+          ? null
+          : RouterPath.onboardingPath;
     }
 
-    final isPublic =
-        location.startsWith(RouterPath.loginPath) ||
-        location.startsWith(RouterPath.registerPath) ||
-        location.startsWith(RouterPath.greetingPath);
-
-    // 2. Belum login (unauthenticated) — hanya boleh akses area publik
-    if (!isAuthUser && !isAuthGuest) {
-      if (isPublic) return null;
+    // Sudah onboarding, jangan biarkan akses ke onboarding / root
+    final isOnboardingOrRoot =
+        location == RouterPath.onboardingPath ||
+            location == RouterPath.rootPath;
+    if (isOnboardingOrRoot) {
       return RouterPath.loginPath;
     }
 
-    // 3. Sudah login sebagai guest atau user — cegah akses kembali ke onboarding/auth/greeting/root
-    final isAuthArea =
-        location == RouterPath.onboardingPath ||
-        location == RouterPath.rootPath ||
-        location.startsWith(RouterPath.loginPath) ||
-        location.startsWith(RouterPath.registerPath) ||
-        location.startsWith(RouterPath.greetingPath);
-    if (isAuthArea) return RouterPath.mainPath;
-
     return null;
+    // final authState = sl<AuthAccountBloc>().state;
+    //
+    // final isAuthUser = authState.maybeWhen(
+    //   authenticatedUser: (authData, [aiData]) => true,
+    //   orElse: () => false,
+    // );
+    //
+    // final isAuthGuest = authState.maybeWhen(
+    //   authenticatedGuest: (_) => true,
+    //   orElse: () => false,
+    // );
+    //
+    // final isOnBoarded = sl<CoreCubit>().state.isBoarding;
+    // final location = state.matchedLocation;
+    //
+    // // 1. Belum onboarding — paksa ke onboarding
+    // if (!isOnBoarded) {
+    //   if (location == RouterPath.onboardingPath) return null;
+    //   return RouterPath.onboardingPath;
+    // }
+    //
+    // final isPublic =
+    //     location.startsWith(RouterPath.loginPath) ||
+    //     location.startsWith(RouterPath.registerPath) ||
+    //     location.startsWith(RouterPath.greetingPath);
+    //
+    // // 2. Belum login (unauthenticated) — hanya boleh akses area publik
+    // if (!isAuthUser && !isAuthGuest) {
+    //   if (isPublic) return null;
+    //   return RouterPath.loginPath;
+    // }
+    //
+    // // 3. Sudah login sebagai guest atau user — cegah akses kembali ke onboarding/auth/greeting/root
+    // final isAuthArea =
+    //     location == RouterPath.onboardingPath ||
+    //     location == RouterPath.rootPath ||
+    //     location.startsWith(RouterPath.loginPath) ||
+    //     location.startsWith(RouterPath.registerPath) ||
+    //     location.startsWith(RouterPath.greetingPath);
+    // if (isAuthArea) return RouterPath.mainPath;
+    //
+    // return null;
   },
 
   errorBuilder: (context, state) {
@@ -432,6 +453,14 @@ final GoRouter router = GoRouter(
             return const SearchQuranScreen(
               args: SearchQuranArgs(surahs: [], juzList: []),
             );
+          },
+        ),
+
+        // History Collection (Bookmark & Catatan)
+        GoRoute(
+          path: '${RouterPath.quranPath}/${RouterPath.historyCollectionPath}',
+          builder: (context, state) {
+            return const HistoryCollectionScreen();
           },
         ),
       ],

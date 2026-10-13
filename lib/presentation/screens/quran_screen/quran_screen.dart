@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
+import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/juz_card.dart';
@@ -107,21 +109,29 @@ class _QuranViewState extends State<_QuranView> {
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return AppBar(
-      toolbarHeight: 88,
-      automaticallyImplyLeading: false,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      scrolledUnderElevation: 0,
-      bottom: const PreferredSize(
-        preferredSize: Size.fromHeight(30),
-        child: SizedBox.shrink(),
-      ),
-      surfaceTintColor: Colors.transparent,
-      titleSpacing: 16,
-      title: QuranSearchBar(
-        readOnly: true,
-        onTap: () => _openSearch(context),
+    final topPadding = MediaQuery.paddingOf(context).top;
+
+    return PreferredSize(
+      preferredSize: Size.fromHeight(topPadding + 44),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: Row(
+            children: [
+              Expanded(
+                child: QuranSearchBar(
+                  readOnly: true,
+                  onTap: () => _openSearch(context),
+                ),
+              ),
+              const SizedBox(width: 12),
+              _BookmarkButton(
+                onTap: () => _openBookmark(context),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -136,6 +146,55 @@ class _QuranViewState extends State<_QuranView> {
         extra: SearchQuranArgs(
           surahs: state.surahs,
           juzList: state.juzList,
+        ),
+      ),
+    );
+  }
+
+  void _openBookmark(BuildContext context) {
+    unawaited(
+      context.push(
+        '${RouterPath.mainPath}/${RouterPath.quranPath}/'
+        '${RouterPath.historyCollectionPath}',
+      ),
+    );
+  }
+}
+
+class _BookmarkButton extends StatelessWidget {
+  const _BookmarkButton({this.onTap});
+
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Ink(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: const Color(0x1FFFFFFF),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: const Color(0x29E8E8E8),
+              width: 0.9,
+            ),
+          ),
+          child: Center(
+            child: SvgPicture.asset(
+              AppIcons.bookmarkLine,
+              width: 20,
+              height: 20,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -169,7 +228,7 @@ class _SurahList extends StatelessWidget {
       separatorBuilder: (_, _) => const Divider(
         height: 1,
         thickness: 1,
-        color: Color(0x33E8E8E8),
+        color: Color(0x29E8E8E8),
       ),
       itemBuilder: (context, index) {
         final surah = surahs[index];
@@ -219,7 +278,7 @@ class _JuzList extends StatelessWidget {
       separatorBuilder: (_, _) => const Divider(
         height: 1,
         thickness: 1,
-        color: Color(0x33E8E8E8),
+        color: Color(0x29E8E8E8),
       ),
       itemBuilder: (context, index) {
         final juz = juzList[index];

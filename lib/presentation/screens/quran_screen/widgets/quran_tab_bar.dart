@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 
 class QuranTabBar extends StatelessWidget {
   const QuranTabBar({
@@ -12,6 +11,9 @@ class QuranTabBar extends StatelessWidget {
   final ValueChanged<int> onTabChanged;
 
   static const _tabs = ['Surah', 'Juz'];
+  static const _activeColor = Color(0xFF007D56);
+  static const _inactiveColor = Color(0xFFA6A6A6);
+  static const _borderColor = Color(0x33E8E8E8); // rgba(232, 232, 232, 0.2)
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class QuranTabBar extends StatelessWidget {
       decoration: const BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: ColorPalette.borderTransparent,
+            color: _borderColor,
           ),
         ),
       ),
@@ -36,7 +38,7 @@ class QuranTabBar extends StatelessWidget {
                   border: isActive
                       ? const Border(
                           bottom: BorderSide(
-                            color: ColorPalette.kWhite,
+                            color: _activeColor,
                             width: 2,
                           ),
                         )
@@ -46,11 +48,10 @@ class QuranTabBar extends StatelessWidget {
                   child: Text(
                     _tabs[index],
                     style: TextStyle(
+                      fontFamily: 'Satoshi',
                       fontSize: 14,
                       fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
-                      color: isActive
-                          ? ColorPalette.kWhite
-                          : ColorPalette.contentDisabled,
+                      color: isActive ? _activeColor : _inactiveColor,
                     ),
                   ),
                 ),

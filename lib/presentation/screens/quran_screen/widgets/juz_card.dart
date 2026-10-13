@@ -7,61 +7,42 @@ class JuzCard extends StatelessWidget {
     required this.juz,
     super.key,
     this.onTap,
+    this.isSelected = false,
   });
 
   final JuzModel juz;
   final VoidCallback? onTap;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final startVerse = juz.verseStartNumber;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        // borderRadius: BorderRadius.circular(16),
         child: Ink(
-          height: 88,
-          padding: const EdgeInsets.all(16),
-          decoration: const BoxDecoration(
-            color: ColorPalette.scaffoldBackground,
-            // borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0x14000000),
-                blurRadius: 2,
-              ),
-              BoxShadow(
-                color: Color(0x11000000),
-                blurRadius: 4,
-              ),
-              BoxShadow(
-                color: Color(0x0A000000),
-                blurRadius: 5,
-              ),
-              BoxShadow(
-                color: Color(0x02000000),
-                blurRadius: 6,
-              ),
-            ],
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0x14FFFFFF) : Colors.transparent,
           ),
           child: Row(
-            spacing: 24,
-            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                '${int.tryParse(juz.index ?? '') ?? juz.index}',
-                style: const TextStyle(
-                  color: ColorPalette.primaryColor,
-                  fontSize: 40,
-                  fontFamily: 'Satoshi',
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.60,
+              SizedBox(
+                width: 44,
+                child: Text(
+                  '${int.tryParse(juz.index ?? '') ?? juz.index}',
+                  style: const TextStyle(
+                    color: Color(0xFF00C6BF),
+                    fontSize: 32,
+                    fontFamily: 'Satoshi',
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.60,
+                  ),
                 ),
               ),
-
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -71,10 +52,11 @@ class JuzCard extends StatelessWidget {
                       'Juz ${int.tryParse(juz.index ?? '') ?? juz.index}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: textTheme.titleLarge?.copyWith(
+                      style: const TextStyle(
+                        fontFamily: 'Satoshi',
                         fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: ColorPalette.kWhite,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -82,8 +64,12 @@ class JuzCard extends StatelessWidget {
                       'Mulai Dari ${juz.start?.name ?? ''} Ayat $startVerse',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: textTheme.labelSmall?.copyWith(
+                      style: const TextStyle(
+                        fontFamily: 'Satoshi',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
                         color: ColorPalette.inverseSecondary,
+                        letterSpacing: 0.60,
                       ),
                     ),
                   ],
