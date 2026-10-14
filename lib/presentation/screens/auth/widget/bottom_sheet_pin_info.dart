@@ -17,15 +17,16 @@ class PinInfoBottomSheet extends StatelessWidget {
   final VoidCallback? onSetPin;
   final VoidCallback? onSkip;
 
-  static Future<void> show(
+  static Future<bool?> show(
     BuildContext context, {
     VoidCallback? onSetPin,
     VoidCallback? onSkip,
   }) {
     final authBloc = context.read<AuthBloc>();
-    return showModalBottomSheet<void>(
+    return showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       builder: (_) => BlocProvider.value(
         value: authBloc,
@@ -117,7 +118,7 @@ class PinInfoBottomSheet extends StatelessWidget {
             color: ColorPalette.kWhite,
           ),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(true);
             onSetPin?.call();
           },
         ),
@@ -134,7 +135,7 @@ class PinInfoBottomSheet extends StatelessWidget {
             color: ColorPalette.kWhite,
           ),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(false);
             onSkip?.call();
           },
         ),

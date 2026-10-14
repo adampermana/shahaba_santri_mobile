@@ -13,6 +13,7 @@ import 'package:sahaba_mobile/business_logic/prayer_schedule_cubit/prayer_schedu
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
+import 'package:sahaba_mobile/domains/auth/hive/auth_data_hive.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
@@ -101,16 +102,24 @@ class _MainScreenState extends State<_MainScreen> {
 
   void _checkPinStatus() {
     if (_hasPromptedPin || !mounted) return;
-    final authState = sl<AuthAccountBloc>().state;
-    authState.maybeWhen(
-      authenticatedUser: (authData, _) {
-        if (authData.isPin == false) {
-          _hasPromptedPin = true;
-          unawaited(CreatePinFlow.show(context));
-        }
-      },
+    sl<AuthAccountBloc>().state.maybeWhen(
+      authenticatedUser: (authData, _) => _promptPinIfNeeded(authData),
       orElse: () {},
     );
+  }
+
+  void _promptPinIfNeeded(AuthDataHive authData) {
+    if (!CreatePinFlow.shouldPromptOnMain) return;
+    CreatePinFlow.shouldPromptOnMain = false;
+
+    if (authData.isPin != true && !_hasPromptedPin) {
+      _hasPromptedPin = true;
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) {
+          unawaited(CreatePinFlow.show(context));
+        }
+      });
+    }
   }
 
   List<Widget> get _screens => [
@@ -437,18 +446,10 @@ class _MainScreenState extends State<_MainScreen> {
           body: MultiBlocListener(
             listeners: [
               BlocListener<AuthAccountBloc, AuthAccountState>(
-                listener: (context, state) {
+                listener: (_, state) {
                   state.maybeWhen(
-                    authenticatedUser: (authData, _) {
-                      if (authData.isPin == false && !_hasPromptedPin) {
-                        _hasPromptedPin = true;
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          if (mounted) {
-                            unawaited(CreatePinFlow.show(context));
-                          }
-                        });
-                      }
-                    },
+                    authenticatedUser: (authData, _) =>
+                        _promptPinIfNeeded(authData),
                     orElse: () {},
                   );
                 },

@@ -26,13 +26,13 @@ class ForgotPinFlow {
     final authBloc = context.read<AuthBloc>();
 
     Future<void> showSuccess([String? message]) async {
-      await WidgetsBinding.instance.endOfFrame;
+      await Future<void>.delayed(const Duration(milliseconds: 200));
       if (!context.mounted) return;
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
           CustomSnackBar.authSuccess(
-            message: message ?? 'Sip! PIN baru sudah disimpan.',
+            message: 'Sip! PIN baru sudah disimpan.',
           ),
         );
     }

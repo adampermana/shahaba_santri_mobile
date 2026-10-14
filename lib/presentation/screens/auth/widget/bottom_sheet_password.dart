@@ -9,6 +9,7 @@ import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/create_pin_flow.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
@@ -39,11 +40,13 @@ class BottomSheetPassword extends StatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => BlocProvider.value(
+      builder: (sheetContext) => BlocProvider.value(
         value: authBloc,
-        child: Padding(
+        child: AnimatedPadding(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
           padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
+            bottom: MediaQuery.maybeViewInsetsOf(sheetContext)?.bottom ?? 0,
           ),
           child: BottomSheetPassword(
             email: email,
@@ -123,16 +126,21 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
       },
       listener: (context, state) {
         if (state.successLoginUser || state.statusCode == 200) {
-          Navigator.of(context).pop();
+          final messenger = ScaffoldMessenger.maybeOf(context) ??
+              ScaffoldMessenger.maybeOf(widget.parentContext);
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
 
           final message = state.message;
-          if (message != null && message.isNotEmpty) {
-            ScaffoldMessenger.of(widget.parentContext)
+          if (message != null && message.isNotEmpty && messenger != null) {
+            messenger
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 CustomSnackBar.authSuccess(message: message),
               );
           }
+          CreatePinFlow.shouldPromptOnMain = true;
           sl<AuthAccountBloc>().add(const AuthAccountEvent.checkAuthStatus());
         } else if (!state.loadingUser &&
             (state.alert != null || state.message != null)) {

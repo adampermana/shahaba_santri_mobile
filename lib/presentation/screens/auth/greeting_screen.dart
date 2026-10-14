@@ -3,6 +3,7 @@ import 'package:sahaba_mobile/business_logic/auth/auth_account_bloc/auth_account
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/create_pin_flow.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
@@ -81,6 +82,7 @@ class GreetingScreen extends StatelessWidget {
                 primaryColor: const Color(0xFF007D56),
                 textButton: 'Lanjut ke Beranda',
                 onPressed: () {
+                  CreatePinFlow.shouldPromptOnMain = true;
                   sl<AuthAccountBloc>().add(
                     const AuthAccountEvent.checkAuthStatus(),
                   );

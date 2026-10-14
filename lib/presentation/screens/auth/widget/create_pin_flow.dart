@@ -12,6 +12,9 @@ import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 class CreatePinFlow {
   const CreatePinFlow._();
 
+  /// Flag agar prompt PIN hanya muncul tepat setelah flow login atau register.
+  static bool shouldPromptOnMain = false;
+
   static Future<void> show(
     BuildContext context, {
     VoidCallback? onComplete,
@@ -54,8 +57,7 @@ class CreatePinFlow {
           ..hideCurrentSnackBar()
           ..showSnackBar(
             CustomSnackBar.authSuccess(
-              message: authBloc.state.createPinResponse?.message ??
-                  'PIN berhasil dibuat.',
+              message: 'Sip! PIN baru sudah disimpan.',
             ),
           );
         finishAuth();
@@ -71,7 +73,7 @@ class CreatePinFlow {
     }
 
     Future<void> showConfirmPin(String pin) async {
-      await WidgetsBinding.instance.endOfFrame;
+      await Future<void>.delayed(const Duration(milliseconds: 200));
       if (!context.mounted) return;
       await PinBottomSheet.show(
         context,
@@ -85,7 +87,7 @@ class CreatePinFlow {
     }
 
     Future<void> showNewPin() async {
-      await WidgetsBinding.instance.endOfFrame;
+      await Future<void>.delayed(const Duration(milliseconds: 200));
       if (!context.mounted) return;
       await PinBottomSheet.show(
         context,
@@ -97,18 +99,21 @@ class CreatePinFlow {
       );
     }
 
-    await PinInfoBottomSheet.show(
+    final wantsPin = await PinInfoBottomSheet.show(
       context,
-      onSetPin: () {
-        unawaited(showNewPin());
-      },
-      onSkip: () {
-        if (onSkip != null) {
-          onSkip();
-        } else {
-          finishAuth();
-        }
-      },
+      onSkip: onSkip,
     );
+
+    if (!context.mounted) return;
+
+    if (wantsPin == true) {
+      await showNewPin();
+    } else {
+      if (onSkip != null) {
+        onSkip();
+      } else {
+        finishAuth();
+      }
+    }
   }
 }

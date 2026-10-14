@@ -48,68 +48,48 @@ final GoRouter router = GoRouter(
   refreshListenable: _refreshStream,
   initialLocation: RouterPath.rootPath,
   redirect: (context, state) {
+    final authState = sl<AuthAccountBloc>().state;
+
+    final isAuthUser = authState.maybeWhen(
+      authenticatedUser: (authData, [aiData]) => true,
+      orElse: () => false,
+    );
+
+    final isAuthGuest = authState.maybeWhen(
+      authenticatedGuest: (_) => true,
+      orElse: () => false,
+    );
 
     final isOnBoarded = sl<CoreCubit>().state.isBoarding;
     final location = state.matchedLocation;
 
-    // Belum onboarding → arahkan ke onboarding
+    // 1. Belum onboarding — paksa ke onboarding
     if (!isOnBoarded) {
-      return location == RouterPath.onboardingPath
-          ? null
-          : RouterPath.onboardingPath;
+      if (location == RouterPath.onboardingPath) return null;
+      return RouterPath.onboardingPath;
     }
 
-    // Sudah onboarding, jangan biarkan akses ke onboarding / root
-    final isOnboardingOrRoot =
-        location == RouterPath.onboardingPath ||
-            location == RouterPath.rootPath;
-    if (isOnboardingOrRoot) {
+    final isPublic =
+        location.startsWith(RouterPath.loginPath) ||
+        location.startsWith(RouterPath.registerPath) ||
+        location.startsWith(RouterPath.greetingPath);
+
+    // 2. Belum login (unauthenticated) — hanya boleh akses area publik
+    if (!isAuthUser && !isAuthGuest) {
+      if (isPublic) return null;
       return RouterPath.loginPath;
     }
 
+    // 3. Sudah login sebagai guest atau user — cegah akses kembali ke onboarding/auth/greeting/root
+    final isAuthArea =
+        location == RouterPath.onboardingPath ||
+        location == RouterPath.rootPath ||
+        location.startsWith(RouterPath.loginPath) ||
+        location.startsWith(RouterPath.registerPath) ||
+        location.startsWith(RouterPath.greetingPath);
+    if (isAuthArea) return RouterPath.mainPath;
+
     return null;
-    // final authState = sl<AuthAccountBloc>().state;
-    //
-    // final isAuthUser = authState.maybeWhen(
-    //   authenticatedUser: (authData, [aiData]) => true,
-    //   orElse: () => false,
-    // );
-    //
-    // final isAuthGuest = authState.maybeWhen(
-    //   authenticatedGuest: (_) => true,
-    //   orElse: () => false,
-    // );
-    //
-    // final isOnBoarded = sl<CoreCubit>().state.isBoarding;
-    // final location = state.matchedLocation;
-    //
-    // // 1. Belum onboarding — paksa ke onboarding
-    // if (!isOnBoarded) {
-    //   if (location == RouterPath.onboardingPath) return null;
-    //   return RouterPath.onboardingPath;
-    // }
-    //
-    // final isPublic =
-    //     location.startsWith(RouterPath.loginPath) ||
-    //     location.startsWith(RouterPath.registerPath) ||
-    //     location.startsWith(RouterPath.greetingPath);
-    //
-    // // 2. Belum login (unauthenticated) — hanya boleh akses area publik
-    // if (!isAuthUser && !isAuthGuest) {
-    //   if (isPublic) return null;
-    //   return RouterPath.loginPath;
-    // }
-    //
-    // // 3. Sudah login sebagai guest atau user — cegah akses kembali ke onboarding/auth/greeting/root
-    // final isAuthArea =
-    //     location == RouterPath.onboardingPath ||
-    //     location == RouterPath.rootPath ||
-    //     location.startsWith(RouterPath.loginPath) ||
-    //     location.startsWith(RouterPath.registerPath) ||
-    //     location.startsWith(RouterPath.greetingPath);
-    // if (isAuthArea) return RouterPath.mainPath;
-    //
-    // return null;
   },
 
   errorBuilder: (context, state) {

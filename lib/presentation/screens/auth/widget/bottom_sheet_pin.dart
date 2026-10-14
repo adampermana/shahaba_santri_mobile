@@ -44,6 +44,7 @@ class PinBottomSheet extends StatefulWidget {
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       builder: (sheetContext) => BlocProvider.value(
         value: authBloc,

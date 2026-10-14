@@ -22,6 +22,7 @@ class CustomSnackBar extends SnackBar {
          width: _getWidth(type),
          padding: _getPadding(type),
          margin: _getMargin(type, margin),
+         elevation: _getElevation(type),
        );
   // Factory constructors untuk kemudahan penggunaan
   factory CustomSnackBar.success({
@@ -174,7 +175,7 @@ class CustomSnackBar extends SnackBar {
       case SnackBarType.quran:
         return ColorPalette.kWhite;
       case SnackBarType.authSuccess:
-        return const Color(0xFF1F2738);
+        return const Color(0xFF222A3B);
     }
   }
 
@@ -212,6 +213,13 @@ class CustomSnackBar extends SnackBar {
         type == SnackBarType.quran ||
         type == SnackBarType.authSuccess) {
       return RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
+    }
+    return null;
+  }
+
+  static double? _getElevation(SnackBarType type) {
+    if (type == SnackBarType.authSuccess) {
+      return 4;
     }
     return null;
   }

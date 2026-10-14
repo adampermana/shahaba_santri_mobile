@@ -130,6 +130,7 @@ class AuthRepositories implements IAuthRepositories {
             accessToken: token,
             tokenType: response.tokenType,
             expiresIn: response.expiresIn,
+            isPin: false,
           ),
         );
       }

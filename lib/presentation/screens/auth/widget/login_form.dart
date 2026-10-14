@@ -4,15 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sahaba_mobile/business_logic/auth/auth_account_bloc/auth_account_bloc.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
+import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/auth_card.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_otp.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_password.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_pin.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/create_pin_flow.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/devider_line.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/forgot_pin_flow.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
@@ -91,6 +95,41 @@ class LoginForm extends HookWidget {
       );
     }
 
+    Future<void> showForgotPin() async {
+      await WidgetsBinding.instance.endOfFrame;
+      if (!context.mounted) return;
+      await ForgotPinFlow.show(
+        context,
+        email: emailController.text.trim(),
+      );
+    }
+
+    Future<void> showPinLogin() async {
+      await WidgetsBinding.instance.endOfFrame;
+      if (!context.mounted) return;
+      await PinBottomSheet.show(
+        context,
+        variant: PinBottomSheetVariant.currentPin,
+        onSubmitted: (pin) {
+          Navigator.of(context).pop();
+          context.read<AuthBloc>().add(
+            AuthEvent.postloginUser(
+              identifier: emailController.text.trim(),
+              password: pin,
+            ),
+          );
+        },
+        onUsePassword: () {
+          Navigator.of(context).pop();
+          unawaited(showPasswordLogin());
+        },
+        onForgotPin: () {
+          Navigator.of(context).pop();
+          unawaited(showForgotPin());
+        },
+      );
+    }
+
     void onLanjut() {
       emailValidationError.value = null;
       if (!(formKey.currentState?.validate() ?? false)) return;
@@ -120,8 +159,19 @@ class LoginForm extends HookWidget {
             current.message!.isNotEmpty &&
             (previous.loadingValidationEmail ||
                 previous.message != current.message);
+        final becameSuccessLogin =
+            !previous.successLoginUser && current.successLoginUser;
+        final becameLoginError =
+            previous.loadingUser &&
+            !current.loadingUser &&
+            !current.successLoginUser &&
+            current.message != null &&
+            current.message!.isNotEmpty;
 
-        return becameSuccessValidation || becameValidationError;
+        return becameSuccessValidation ||
+            becameValidationError ||
+            becameSuccessLogin ||
+            becameLoginError;
       },
       listener: (context, state) async {
         if (state.successValidationEmail) {
@@ -139,8 +189,22 @@ class LoginForm extends HookWidget {
             formKey.currentState?.validate();
           } else {
             emailValidationError.value = null;
-            await showPasswordLogin();
+            final isPin = data?.isPin ?? false;
+            if (isPin) {
+              await showPinLogin();
+            } else {
+              await showPasswordLogin();
+            }
           }
+        } else if (state.successLoginUser) {
+          CreatePinFlow.shouldPromptOnMain = true;
+          final message = state.message;
+          if (message != null && message.isNotEmpty) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(CustomSnackBar.authSuccess(message: message));
+          }
+          sl<AuthAccountBloc>().add(const AuthAccountEvent.checkAuthStatus());
         } else if (!state.loadingValidationEmail &&
             state.message != null &&
             state.message!.isNotEmpty &&
