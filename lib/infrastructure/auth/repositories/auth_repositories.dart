@@ -326,4 +326,104 @@ class AuthRepositories implements IAuthRepositories {
       return Left(e);
     }
   }
+
+  @override
+  Future<Either<ServerFailures, ForgotPasswordResponse>>
+  postRequestForgotPasswordOtp({required String email}) async {
+    try {
+      final response = await _remoteDatasource.postRequestForgotPasswordOtp(
+        email: email,
+      );
+
+      if (response.success == false) {
+        return Left(
+          ServerFailures(
+            statusCode: 400,
+            title: 'Request OTP gagal',
+            message: response.message ?? 'Gagal mengirim kode reset kata sandi',
+          ),
+        );
+      }
+
+      return Right(response);
+    } on ServerFailures catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<ServerFailures, ResetPasswordResponse>> postResetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await _remoteDatasource.postResetPassword(
+        email: email,
+        code: code,
+        newPassword: newPassword,
+      );
+
+      if (response.success == false) {
+        return Left(
+          ServerFailures(
+            statusCode: 400,
+            title: 'Reset kata sandi gagal',
+            message: response.message ?? 'Gagal mereset kata sandi',
+          ),
+        );
+      }
+
+      final current = _localDatasource.authUserDataHive;
+      if (current != null && response.data?.isPin != null) {
+        await _localDatasource.saveAuthUser(
+          current.copyWith(isPin: response.data?.isPin),
+        );
+      }
+
+      return Right(response);
+    } on ServerFailures catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<ServerFailures, LoginResponse>> postLoginPin({
+    required String identifier,
+    required String pin,
+  }) async {
+    try {
+      final response = await _remoteDatasource.postLoginPin(
+        identifier: identifier,
+        pin: pin,
+      );
+
+      if (response.success == false) {
+        return Left(
+          ServerFailures(
+            statusCode: 401,
+            title: 'Login gagal',
+            message: response.message ?? 'Identifier atau PIN salah',
+          ),
+        );
+      }
+
+      final token = response.token;
+      final isPin = response.isPin ?? response.data?.isPin;
+      if (token != null) {
+        await _localDatasource.saveAuthUser(
+          AuthDataHive(
+            accessToken: token,
+            tokenType: response.tokenType,
+            expiresIn: response.expiresIn,
+            isPin: isPin,
+          ),
+        );
+      }
+
+      return Right(response);
+    } on ServerFailures catch (e) {
+      return Left(e);
+    }
+  }
 }

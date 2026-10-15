@@ -240,4 +240,85 @@ class AuthRemoteDatasource implements IAuthRemoteDatasource {
       throw ServerException.withError(e);
     }
   }
+
+  @override
+  Future<ForgotPasswordResponse> postRequestForgotPasswordOtp({
+    required String email,
+  }) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/api/v1/public/auth/forgot-password',
+        data: {'email': email},
+      );
+      return ForgotPasswordResponse.fromJson(response.data!);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.badResponse &&
+          (e.response?.statusCode == 400 ||
+              e.response?.statusCode == 409 ||
+              e.response?.statusCode == 503)) {
+        final raw = e.response?.data;
+        if (raw is Map<String, dynamic>) {
+          return ForgotPasswordResponse.fromJson(raw);
+        }
+      }
+      throw ServerException.withError(e);
+    }
+  }
+
+  @override
+  Future<ResetPasswordResponse> postResetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/api/v1/public/auth/reset-password',
+        data: {
+          'code': code,
+          'email': email,
+          'new_password': newPassword,
+        },
+      );
+      return ResetPasswordResponse.fromJson(response.data!);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.badResponse &&
+          (e.response?.statusCode == 400 ||
+              e.response?.statusCode == 409 ||
+              e.response?.statusCode == 503)) {
+        final raw = e.response?.data;
+        if (raw is Map<String, dynamic>) {
+          return ResetPasswordResponse.fromJson(raw);
+        }
+      }
+      throw ServerException.withError(e);
+    }
+  }
+
+  @override
+  Future<LoginResponse> postLoginPin({
+    required String identifier,
+    required String pin,
+  }) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/api/v1/public/auth/login/pin',
+        data: {
+          'identifier': identifier,
+          'pin': pin,
+        },
+      );
+      return LoginResponse.fromJson(response.data!);
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.badResponse &&
+          (e.response?.statusCode == 401 ||
+              e.response?.statusCode == 400)) {
+        final raw = e.response?.data;
+        if (raw is Map<String, dynamic>) {
+          return LoginResponse.fromJson(raw);
+        }
+      }
+      throw ServerException.withError(e);
+    }
+  }
 }

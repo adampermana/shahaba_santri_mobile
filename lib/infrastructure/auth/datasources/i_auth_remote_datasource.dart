@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_respon_ai.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_response.dart';
+import 'package:sahaba_mobile/domains/auth/password/forgot_password_response.dart';
+import 'package:sahaba_mobile/domains/auth/password/reset_password_response.dart';
 import 'package:sahaba_mobile/domains/auth/pin/pin_response.dart';
 import 'package:sahaba_mobile/domains/auth/pin/request_reset_pin_response.dart';
 import 'package:sahaba_mobile/domains/auth/register/register_response.dart';
@@ -59,6 +61,21 @@ abstract class IAuthRemoteDatasource {
   Future<PinResponse> postResetPin({
     required String email,
     required String code,
+    required String pin,
+  });
+
+  Future<ForgotPasswordResponse> postRequestForgotPasswordOtp({
+    required String email,
+  });
+
+  Future<ResetPasswordResponse> postResetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  });
+
+  Future<LoginResponse> postLoginPin({
+    required String identifier,
     required String pin,
   });
 }

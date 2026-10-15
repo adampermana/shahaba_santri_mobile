@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
+import 'package:sahaba_mobile/domains/auth/login/login_response.dart';
 import 'package:sahaba_mobile/domains/auth/pin/pin_response.dart';
 import 'package:sahaba_mobile/domains/auth/pin/request_reset_pin_response.dart';
 import 'package:sahaba_mobile/infrastructure/auth/repositories/i_auth_repositories.dart';
@@ -169,6 +170,79 @@ void main() {
               'isPin',
               isTrue,
             ),
+      ],
+    );
+
+    blocTest<AuthBloc, AuthState>(
+      'emits [loadingLoginPin: true, successLoginPin: true] '
+      'when postLoginPin succeeds',
+      build: () {
+        when(
+          () => mockRepo.postLoginPin(
+            identifier: 'test@example.com',
+            pin: '123456',
+          ),
+        ).thenAnswer(
+          (_) async => const Right(
+            LoginResponse(
+              success: true,
+              message: 'Login berhasil',
+              token: 'jwt-token',
+              isPin: true,
+            ),
+          ),
+        );
+        return AuthBloc(mockRepo, mockDeviceInfo);
+      },
+      act: (bloc) => bloc.add(
+        const AuthEvent.postLoginPin(
+          identifier: 'test@example.com',
+          pin: '123456',
+        ),
+      ),
+      expect: () => [
+        isA<AuthState>()
+            .having((s) => s.loadingLoginPin, 'loadingLoginPin', isTrue)
+            .having((s) => s.successLoginPin, 'successLoginPin', isFalse),
+        isA<AuthState>()
+            .having((s) => s.loadingLoginPin, 'loadingLoginPin', isFalse)
+            .having((s) => s.successLoginPin, 'successLoginPin', isTrue)
+            .having((s) => s.statusCode, 'statusCode', 200)
+            .having(
+              (s) => s.loginResponse?.token,
+              'token',
+              'jwt-token',
+            ),
+      ],
+    );
+
+    blocTest<AuthBloc, AuthState>(
+      'emits [loadingLoginPin: true, successLoginPin: false] '
+      'with 401 error when postLoginPin fails',
+      build: () {
+        when(
+          () => mockRepo.postLoginPin(
+            identifier: 'test@example.com',
+            pin: '000000',
+          ),
+        ).thenAnswer((_) async => const Left(failure));
+        return AuthBloc(mockRepo, mockDeviceInfo);
+      },
+      act: (bloc) => bloc.add(
+        const AuthEvent.postLoginPin(
+          identifier: 'test@example.com',
+          pin: '000000',
+        ),
+      ),
+      expect: () => [
+        isA<AuthState>()
+            .having((s) => s.loadingLoginPin, 'loadingLoginPin', isTrue)
+            .having((s) => s.successLoginPin, 'successLoginPin', isFalse),
+        isA<AuthState>()
+            .having((s) => s.loadingLoginPin, 'loadingLoginPin', isFalse)
+            .having((s) => s.successLoginPin, 'successLoginPin', isFalse)
+            .having((s) => s.statusCode, 'statusCode', 400)
+            .having((s) => s.message, 'message', 'Permintaan tidak valid'),
       ],
     );
   });

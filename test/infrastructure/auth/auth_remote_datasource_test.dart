@@ -396,6 +396,70 @@ void main() {
     );
   });
 
+  // ── postLoginPin ─────────────────────────────────────────────────────────
+
+  group('postLoginPin', () {
+    const path = '/api/v1/public/auth/login/pin';
+
+    final tSuccessJson = {
+      'success': true,
+      'message': 'Login via PIN successful',
+      'token': 'pin-jwt-token',
+      'token_type': 'Bearer',
+      'expires_in': 3600,
+      'is_pin': true,
+    };
+
+    test(
+      'should POST to /api/v1/public/auth/login/pin and return LoginResponse',
+      () async {
+        whenPost(
+          mockDio,
+          path,
+        ).thenAnswer((_) async => _resp(tSuccessJson, path: path));
+
+        final result = await datasource.postLoginPin(
+          identifier: 'yivahey454@aminavin.com',
+          pin: '123456',
+        );
+
+        expect(result, isA<LoginResponse>());
+        expect(result.token, 'pin-jwt-token');
+        expect(result.isPin, isTrue);
+        expect(result.message, 'Login via PIN successful');
+
+        verify(
+          () => mockDio.post<Map<String, dynamic>>(
+            path,
+            data: {
+              'identifier': 'yivahey454@aminavin.com',
+              'pin': '123456',
+            },
+          ),
+        ).called(1);
+      },
+    );
+
+    test('should throw ServerException on 500 server error', () async {
+      whenPost(mockDio, path).thenThrow(
+        _dioError(
+          type: DioExceptionType.badResponse,
+          statusCode: 500,
+          responseData: {'message': 'Internal Server Error'},
+          path: path,
+        ),
+      );
+
+      expect(
+        () => datasource.postLoginPin(
+          identifier: 'yivahey454@aminavin.com',
+          pin: '123456',
+        ),
+        throwsA(isA<ServerException>()),
+      );
+    });
+  });
+
   // ── postVerifyEmail ──────────────────────────────────────────────────────
 
   group('postVerifyEmail', () {

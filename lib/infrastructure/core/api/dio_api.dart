@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:sahaba_mobile/infrastructure/core/api/dio_interceptors.dart';
 
 // New Url
-const String baseUrl = 'http://192.168.100.73:8246';
+const String baseUrl = 'http://192.168.100.77:8246';
 // const String baseUrl = 'http://192.168.10.52:8123';
 const String baseAIUrl = 'https://api-katanara.solu.co.id';
 // const String baseUrl = 'http://192.168.10.42:8123';

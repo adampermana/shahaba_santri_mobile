@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sahaba_mobile/business_logic/auth/auth_account_bloc/auth_account_bloc.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
+import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/screens/auth/widget/create_pin_flow.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
@@ -193,7 +196,7 @@ class _PinBottomSheetState extends State<PinBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final sheet = Container(
       width: double.infinity,
       decoration: const BoxDecoration(
         color: ColorPalette.background,
@@ -201,6 +204,52 @@ class _PinBottomSheetState extends State<PinBottomSheet> {
       ),
       padding: const EdgeInsets.fromLTRB(16, 32, 16, 0),
       child: _isPassword ? _buildPasswordSheet() : _buildPinSheet(),
+    );
+
+    if (widget.variant != PinBottomSheetVariant.currentPin) {
+      return sheet;
+    }
+
+    return BlocListener<AuthBloc, AuthState>(
+      listenWhen: (previous, current) {
+        final becameSuccess =
+            !previous.successLoginPin && current.successLoginPin;
+        final becameError = previous.loadingLoginPin &&
+            !current.loadingLoginPin &&
+            !current.successLoginPin &&
+            current.message != null &&
+            current.message!.isNotEmpty;
+        return becameSuccess || becameError;
+      },
+      listener: (context, state) {
+        if (state.successLoginPin) {
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
+          CreatePinFlow.shouldPromptOnMain = false;
+          final message = state.message;
+          if (message != null && message.isNotEmpty) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(CustomSnackBar.authSuccess(message: message));
+          }
+          sl<AuthAccountBloc>().add(const AuthAccountEvent.checkAuthStatus());
+        } else if (!state.loadingLoginPin &&
+            !state.successLoginPin &&
+            state.message != null) {
+          setState(() {
+            _isLoading = false;
+            _hasSubmitted = false;
+            _pinController.clear();
+          });
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              CustomSnackBar.failure(message: state.message!),
+            );
+        }
+      },
+      child: sheet,
     );
   }
 

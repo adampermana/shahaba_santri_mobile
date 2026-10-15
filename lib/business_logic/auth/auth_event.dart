@@ -43,4 +43,19 @@ class AuthEvent with _$AuthEvent {
     required String code,
     required String pin,
   }) = _PostResetPin;
+
+  const factory AuthEvent.postRequestForgotPasswordOtp({
+    required String email,
+  }) = _PostRequestForgotPasswordOtp;
+
+  const factory AuthEvent.postResetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) = _PostResetPassword;
+
+  const factory AuthEvent.postLoginPin({
+    required String identifier,
+    required String pin,
+  }) = _PostLoginPin;
 }

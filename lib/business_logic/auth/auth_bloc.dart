@@ -6,6 +6,8 @@ import 'package:sahaba_mobile/domains/auth/hive/auth_data_hive.dart';
 import 'package:sahaba_mobile/domains/auth/hive/auth_data_katanara_hive.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_respon_ai.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_response.dart';
+import 'package:sahaba_mobile/domains/auth/password/forgot_password_response.dart';
+import 'package:sahaba_mobile/domains/auth/password/reset_password_response.dart';
 import 'package:sahaba_mobile/domains/auth/pin/pin_response.dart';
 import 'package:sahaba_mobile/domains/auth/pin/request_reset_pin_response.dart';
 import 'package:sahaba_mobile/domains/auth/register/register_response.dart';
@@ -35,6 +37,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<_PostCreatePin>(_onPostCreatePin);
     on<_PostRequestResetPinOtp>(_onPostRequestResetPinOtp);
     on<_PostResetPin>(_onPostResetPin);
+    on<_PostRequestForgotPasswordOtp>(_onPostRequestForgotPasswordOtp);
+    on<_PostResetPassword>(_onPostResetPassword);
+    on<_PostLoginPin>(_onPostLoginPin);
   }
 
   final IAuthRepositories _authRepositories;
@@ -88,6 +93,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       state.copyWith(
         loadingUser: true,
         successLoginUser: false,
+        successValidationEmail: false,
         statusCode: null,
       ),
     );
@@ -469,6 +475,126 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           successResetPin: true,
           statusCode: 200,
           resetPinResponse: r,
+          message: r.message,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onPostRequestForgotPasswordOtp(
+    _PostRequestForgotPasswordOtp event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        loadingRequestForgotPasswordOtp: true,
+        successRequestForgotPasswordOtp: false,
+        statusCode: null,
+      ),
+    );
+
+    final result = await _authRepositories.postRequestForgotPasswordOtp(
+      email: event.email,
+    );
+
+    result.fold(
+      (f) => emit(
+        state.copyWith(
+          successRequestForgotPasswordOtp: false,
+          loadingRequestForgotPasswordOtp: false,
+          statusCode: f.statusCode,
+          message: f.message,
+          alert: Alert.fromFailures(f),
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          loadingRequestForgotPasswordOtp: false,
+          successRequestForgotPasswordOtp: true,
+          statusCode: 200,
+          cooldownOtp: r.data?.cooldownOtp ?? 60,
+          forgotPasswordResponse: r,
+          message: r.message,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onPostResetPassword(
+    _PostResetPassword event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        loadingResetPassword: true,
+        successResetPassword: false,
+        statusCode: null,
+      ),
+    );
+
+    final result = await _authRepositories.postResetPassword(
+      email: event.email,
+      code: event.code,
+      newPassword: event.newPassword,
+    );
+
+    result.fold(
+      (f) => emit(
+        state.copyWith(
+          successResetPassword: false,
+          loadingResetPassword: false,
+          statusCode: f.statusCode,
+          message: f.message,
+          alert: Alert.fromFailures(f),
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          loadingResetPassword: false,
+          successResetPassword: true,
+          statusCode: 200,
+          resetPasswordResponse: r,
+          message: r.message,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onPostLoginPin(
+    _PostLoginPin event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        loadingLoginPin: true,
+        successLoginPin: false,
+        successValidationEmail: false,
+        statusCode: null,
+      ),
+    );
+
+    final result = await _authRepositories.postLoginPin(
+      identifier: event.identifier,
+      pin: event.pin,
+    );
+
+    result.fold(
+      (f) => emit(
+        state.copyWith(
+          successLoginPin: false,
+          loadingLoginPin: false,
+          statusCode: f.statusCode,
+          message: f.message,
+          alert: Alert.fromFailures(f),
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          loadingLoginPin: false,
+          successLoginPin: true,
+          statusCode: 200,
+          loginResponse: r,
+          authDataHive: _authRepositories.fetchDataLoginUser(),
           message: r.message,
         ),
       ),
