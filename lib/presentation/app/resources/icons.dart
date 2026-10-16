@@ -36,6 +36,12 @@ abstract class AppIcons {
   static const String volumeMuteLine = '$_path/volume-mute-line.svg';
   static const String volumeUpLine = '$_path/volume-up-line.svg';
 
+  // Onboarding
+  static const String onboardingCirclePlay =
+      '$_path/onboarding/circle-play.svg';
+  static const String onboardingMic = '$_path/onboarding/mic.svg';
+  static const String onboardingBookOpen = '$_path/onboarding/book-open.svg';
+
   // Jadwal Sholat
   static const String jadwalSholatCloud = '$_path/jadwal_sholat/cloud.svg';
   static const String jadwalSholatMountLeft =
