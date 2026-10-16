@@ -5,7 +5,8 @@ import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extensi
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/login_form.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/register_form.dart';
-import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
+import 'package:sahaba_mobile/presentation/widgets/onboarding_background_glow.dart';
+import 'package:sahaba_mobile/presentation/widgets/onboarding_illustration.dart';
 
 class AuthScreen extends HookWidget {
   const AuthScreen({super.key, this.initialMode = AuthMode.login});
@@ -21,17 +22,16 @@ class AuthScreen extends HookWidget {
     );
 
     final slideAnim = useMemoized(
-      () =>
-          Tween<Offset>(
-            begin: const Offset(0, 1),
-            end: Offset.zero,
-          ).animate(
-            CurvedAnimation(
-              parent: animController,
-              curve: Curves.easeOutCubic,
-              reverseCurve: Curves.easeInCubic,
-            ),
-          ),
+      () => Tween<Offset>(
+        begin: const Offset(0, 1),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(
+          parent: animController,
+          curve: Curves.easeOutCubic,
+          reverseCurve: Curves.easeInCubic,
+        ),
+      ),
       [animController],
     );
 
@@ -48,72 +48,91 @@ class AuthScreen extends HookWidget {
       }
     }
 
-    return Scaffold(
-      backgroundColor: ColorPalette.background,
-      // Keyboard inset ditangani manual di _AuthContainer supaya kita bisa
-      // menyembunyikan footer saat keyboard terbuka.
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          const Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: CacheImageOrSvg(
-              source: 'assets/images/auth_header.webp',
-              fit: BoxFit.fitWidth,
-            ),
-          ),
+    final topSpacerHeight = context.width * (310 / 402);
 
-          // Login — selalu stay, tidak pernah bergerak
-          SafeArea(
-            bottom: false,
-            child: Column(
-              children: [
-                SizedBox(height: context.width * (290 / 440)),
-                Expanded(
-                  child: AnimatedBuilder(
-                    animation: animController,
-                    builder: (context, child) => IgnorePointer(
-                      ignoring: animController.value > 0,
-                      child: child,
-                    ),
-                    child: LoginForm(
-                      onSwitchToRegister: () => switchMode(AuthMode.register),
-                    ),
+    return Scaffold(
+      backgroundColor: const Color(0xFF09383B),
+      resizeToAvoidBottomInset: false,
+      body: OnboardingBackgroundGlow(
+        child: Stack(
+          children: [
+            // Top elements (Brand Logo SAHABA & Illustration)
+            const SafeArea(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 16),
+                      Text(
+                        'SAHABA',
+                        style: TextStyle(
+                          fontFamily: 'Satoshi',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                          color: ColorPalette.kWhite,
+                          letterSpacing: 2.5,
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      OnboardingIllustration(scale: 0.95),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
 
-          // Register — overlay slide naik/turun di atas login
-          AnimatedBuilder(
-            animation: animController,
-            builder: (context, child) {
-              if (animController.isDismissed) {
-                return const SizedBox.shrink();
-              }
-              return SlideTransition(
-                position: slideAnim,
-                child: child,
-              );
-            },
-            child: SafeArea(
+            // Login — selalu stay, tidak pernah bergerak
+            SafeArea(
               bottom: false,
               child: Column(
                 children: [
-                  SizedBox(height: context.width * (290 / 440)),
+                  SizedBox(height: topSpacerHeight),
                   Expanded(
-                    child: RegisterForm(
-                      onSwitchToLogin: () => switchMode(AuthMode.login),
+                    child: AnimatedBuilder(
+                      animation: animController,
+                      builder: (context, child) => IgnorePointer(
+                        ignoring: animController.value > 0,
+                        child: child,
+                      ),
+                      child: LoginForm(
+                        onSwitchToRegister: () => switchMode(AuthMode.register),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+
+            // Register — overlay slide naik/turun di atas login
+            AnimatedBuilder(
+              animation: animController,
+              builder: (context, child) {
+                if (animController.isDismissed) {
+                  return const SizedBox.shrink();
+                }
+                return SlideTransition(
+                  position: slideAnim,
+                  child: child,
+                );
+              },
+              child: SafeArea(
+                bottom: false,
+                child: Column(
+                  children: [
+                    SizedBox(height: topSpacerHeight),
+                    Expanded(
+                      child: RegisterForm(
+                        onSwitchToLogin: () => switchMode(AuthMode.login),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

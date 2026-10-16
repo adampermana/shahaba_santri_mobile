@@ -22,8 +22,15 @@ class AuthCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
-        color: ColorPalette.background,
+        color: ColorPalette.surfaceForm,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x38000000),
+            blurRadius: 48,
+            offset: Offset(0, -16),
+          ),
+        ],
       ),
       padding: EdgeInsets.only(bottom: keyboardHeight),
       child: Column(
@@ -38,7 +45,7 @@ class AuthCard extends StatelessWidget {
                   fontFamily: 'Satoshi',
                   fontWeight: FontWeight.w900,
                   fontSize: 20,
-                  color: ColorPalette.kWhite,
+                  color: Color(0xFF007D56),
                 ),
               ),
             ),
@@ -64,9 +71,9 @@ class AuthCard extends StatelessWidget {
                       TextSpan(
                         text: footerNote,
                         style: const TextStyle(
-                          color: ColorPalette.contentDisabled,
+                          color: ColorPalette.contentTertiary,
                           fontSize: 12,
-                          fontFamily: 'Satoshi Variable',
+                          fontFamily: 'Satoshi',
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -75,16 +82,16 @@ class AuthCard extends StatelessWidget {
                         style: TextStyle(
                           color: Color(0xFF007D56),
                           fontSize: 12,
-                          fontFamily: 'Satoshi Variable',
+                          fontFamily: 'Satoshi',
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       const TextSpan(
                         text: ' serta Kebijakan Privasi kami.',
                         style: TextStyle(
-                          color: ColorPalette.contentDisabled,
+                          color: ColorPalette.contentTertiary,
                           fontSize: 12,
-                          fontFamily: 'Satoshi Variable',
+                          fontFamily: 'Satoshi',
                           fontWeight: FontWeight.w400,
                         ),
                       ),

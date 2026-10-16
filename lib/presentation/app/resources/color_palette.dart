@@ -41,6 +41,7 @@ class ColorPalette {
   static const Color surfaceContainerHigh = Color(0xFFE2EBDF);
   static const Color surfaceContainerHighest = Color(0xFFDCE5D9);
   static const Color surfaceTertiary = Color(0xFFE8E8E8);
+  static const Color surfaceForm = Color(0xFFF3F3F3);
   static const Color surfaceTint = Color(0xFF1B8354);
   static const Color background = Color(0xFF0F172A);
   static const Color scaffoldBackground = background;
