@@ -1,7 +1,12 @@
 import 'dart:async';
+import 'dart:math' as math;
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sahaba_mobile/business_logic/auth/auth_account_bloc/auth_account_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_state.dart';
 import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
@@ -12,8 +17,6 @@ import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_state.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_state.dart';
-import 'package:sahaba_mobile/domains/ads/ads_response.dart';
-import 'package:sahaba_mobile/domains/news/news_response.dart';
 import 'package:sahaba_mobile/domains/prayer_schedule/prayer_schedule_model.dart';
 import 'package:sahaba_mobile/domains/quran/juz_model.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
@@ -21,31 +24,49 @@ import 'package:sahaba_mobile/domains/quran/surah_model.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
+import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:sahaba_mobile/presentation/widgets/search_bar_widget.dart';
 
-const _heroSurfaceShadow = [
-  BoxShadow(
-    color: Color(0x14000000),
-    blurRadius: 4,
-    offset: Offset(0, 2),
-  ),
-  BoxShadow(
-    color: Color(0x11000000),
-    blurRadius: 6,
-    offset: Offset(0, 6),
-  ),
-  BoxShadow(
-    color: Color(0x33000000),
-    blurRadius: 24,
-    offset: Offset(0, 12),
-  ),
-  BoxShadow(
-    color: Color.fromARGB(26, 255, 255, 255),
-    blurRadius: 12,
-    offset: Offset(0, 4),
-  ),
-];
+/// Font yang dipakai di project. Di Figma teks memakai Plus Jakarta Sans
+/// (label/tombol) + Synonym (judul berita) + Inter (sapaan). Kalau mau ikut
+/// Figma 100%, ganti nilai ini setelah font-nya didaftarkan di pubspec.yaml.
+const String _fontFamily = 'Satoshi';
+
+/// Token dari Figma (Home 1284:2789) yang belum tentu ada di ColorPalette.
+/// Kalau sudah ada padanannya di ColorPalette, ganti dengan token itu.
+class _HomeTokens {
+  const _HomeTokens._();
+
+  /// primitive/primary
+  static const Color primary = Color(0xFF0F172A);
+
+  /// semantic/background/tertiary
+  static const Color bgTertiary = Color(0xFFE8E8E8);
+
+  /// semantic/border/transparent
+  static const Color borderTransparent = Color(0x14000000);
+
+  /// semantic/content/tertiary
+  static const Color contentTertiary = Color(0xFF5E5E5E);
+
+  /// Gradient banner & prayer card
+  static const Color tealDark = Color(0xFF09383B);
+  static const Color tealLight = Color(0xFF1999A1);
+
+  /// Effect style "below/high"
+  static const List<BoxShadow> belowHigh = [
+    BoxShadow(color: Color(0x14000000), offset: Offset(0, 2), blurRadius: 4),
+    BoxShadow(color: Color(0x12000000), offset: Offset(0, 6), blurRadius: 6),
+    BoxShadow(color: Color(0x0A000000), offset: Offset(0, 14), blurRadius: 9),
+    BoxShadow(color: Color(0x03000000), offset: Offset(0, 26), blurRadius: 10),
+  ];
+
+  /// Effect style "Below / Medium"
+  static const List<BoxShadow> belowMedium = [
+    BoxShadow(color: Color(0x2B000000), offset: Offset(0, 8), blurRadius: 36),
+  ];
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, this.isActive = true});
@@ -57,8 +78,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static const double _maxCarouselHeight = 262;
-
   String? _lastPrayerScheduleCityId;
   DateTime? _lastPrayerScheduleDate;
 
@@ -94,212 +113,816 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final currentLocation = GoRouterState.of(context).uri.toString();
-
-    final bottomInset = MediaQuery.of(context).padding.bottom;
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
 
     return BlocListener<LocationCubit, LocationState>(
       listener: (context, state) => _loadPrayerScheduleIfReady(state),
-      child: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: _maxCarouselHeight + 70,
+      child: DecoratedBox(
+        decoration: const BoxDecoration(
+          color: ColorPalette.surfaceSecondary,
+        ),
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  _buildCarousel(
-                    context,
-                    _maxCarouselHeight,
-                    0,
-                  ),
-                  const Positioned(
-                    left: 0,
-                    right: 0,
-                    top: 220,
-                    bottom: 0,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Color(0x000F172A), ColorPalette.background],
-                          stops: [0, 0.3],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: _maxCarouselHeight - 30,
-                    left: 16,
-                    right: 16,
-                    child: GestureDetector(
-                      child: _buildJadwalSholat(context),
-                      onTap: () => context.push(
-                        '$currentLocation/${RouterPath.jadwalSholatPath}',
+                  _buildBannerBackground(),
+                  SafeArea(
+                    bottom: false,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 8),
+                          _buildTopBar(context),
+                          const SizedBox(height: 16),
+                          _buildDynamicTopicBanner(context),
+                          const SizedBox(height: 16),
+                          GestureDetector(
+                            onTap: () => context.push(
+                              '$currentLocation/${RouterPath.jadwalSholatPath}',
+                            ),
+                            child: _buildJadwalSholat(context),
+                          ),
+                          const SizedBox(height: 16),
+                          _buildMenuHarian(context, currentLocation),
+                          const SizedBox(height: 24),
+                          _buildKabarHariIni(context, currentLocation),
+                          SizedBox(height: bottomInset + 16),
+                        ],
                       ),
                     ),
                   ),
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Banner background (Figma: Dynamic Topic Banner 1284:2799, 402 x 273)
+  // ---------------------------------------------------------------------------
+  Widget _buildBannerBackground() {
+    return Positioned.fill(
+      bottom: 410,
+      // height: 273,
+      child: DecoratedBox(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment(0.50, -0.60),
+            end: Alignment(0.50, 2),
+            colors: [Color(0xFF09383B), Color(0x001898A1)],
           ),
-          SliverToBoxAdapter(
-            child: Column(
-              spacing: 16,
-              mainAxisSize: MainAxisSize.min,
+        ),
+        child: Stack(
+          // hardEdge = overflow-clip di Figma
+          children: [
+            // Vector 1 (1284:2800) - flip vertikal
+            Positioned(
+              // top: 101.26,
+              top: 98.98,
+              right: -10.04,
+              // bottom: 10,
+              child: ImageFiltered(
+                imageFilter: ImageFilter.blur(
+                  sigmaX: 3,
+                  sigmaY: 3,
+                ),
+                child: SvgPicture.asset(
+                  AppIcons.homeBannerVector1,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            // Vector 2 (1284:2801) - flip vertikal + rotasi -17.3 derajat
+            Positioned(
+              top: 98.98,
+              // left: -89.18,
+              child: ImageFiltered(
+                imageFilter: ImageFilter.blur(
+                  sigmaX: 3,
+                  sigmaY: 3,
+                ),
+                child: SvgPicture.asset(
+                  AppIcons.homeBannerVector2,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Top bar: search + notification
+  // ---------------------------------------------------------------------------
+  Widget _buildTopBar(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: SearchBarWidget(
+            readOnly: true,
+            onTap: () => _openSearch(context),
+            hintText: 'Cari surah, ayat, atau tafsir apa hari ini?',
+            useGlass: true,
+          ),
+        ),
+        const SizedBox(width: 12),
+        _buildNotificationButton(),
+      ],
+    );
+  }
+
+  Widget _buildNotificationButton() {
+    return SizedBox(
+      width: 36,
+      height: 36,
+      child: Material(
+        color: Colors.white.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12.6),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12.6),
+          onTap: () {},
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.6),
+              border: Border.all(
+                color: const Color(0x52E8E8E8),
+                width: 0.9,
+              ),
+            ),
+            child: Center(
+              child: SvgPicture.asset(
+                AppIcons.homeNotification,
+                width: 22.5,
+                height: 22.5,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Dynamic topic banner (sapaan + streak + tombol Tahsin AI)
+  // ---------------------------------------------------------------------------
+  Widget _buildDynamicTopicBanner(BuildContext context) {
+    return BlocBuilder<AuthAccountBloc, AuthAccountState>(
+      builder: (context, authState) {
+        final userName = authState.maybeWhen(
+          authenticatedUser: (authData, _) {
+            final name = authData.name?.trim() ?? '';
+            if (name.isNotEmpty) {
+              return name.split(' ').first;
+            }
+            return 'Sahabat';
+          },
+          authenticatedGuest: (_) => 'Sahabat',
+          orElse: () => 'Sahabat',
+        );
+
+        return BlocBuilder<StreakCubit, StreakState>(
+          builder: (context, streakState) {
+            final streakCount = streakState is StreakLoaded
+                ? streakState.currentStreak
+                : 1;
+
+            return BlocBuilder<LastReadCubit, LastReadState>(
+              builder: (context, lastReadState) {
+                final lastRead = lastReadState is LastReadLoaded
+                    ? lastReadState.lastRead
+                    : null;
+                final verse = lastRead?.verse;
+                final subtitleText = verse != null
+                    ? 'Lanjut ngaji ${verse.surahName} '
+                          'ayat ${verse.verseNumber}, yuk'
+                    : 'Lanjut ngaji Al-Fatihah ayat 7, yuk';
+
+                return Padding(
+                  // Figma: konten banner mulai di x = 32 (16 page + 16)
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 22,
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(100),
+                          border: Border.all(
+                            color: const Color(0x52E8E8E8),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SvgPicture.asset(
+                              AppIcons.homeStreakFlame,
+                              width: 12,
+                              height: 12,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              ' $streakCount Hari Istiqomah Ngaji',
+                              style: const TextStyle(
+                                fontFamily: _fontFamily,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 8,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "Assalamu'alaikum, $userName!",
+                        style: const TextStyle(
+                          fontFamily: _fontFamily,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                          height: 28 / 20,
+                          letterSpacing: 1.6,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        subtitleText,
+                        style: const TextStyle(
+                          fontFamily: _fontFamily,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 10,
+                          height: 24 / 10,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(1000),
+                          boxShadow: _HomeTokens.belowHigh,
+                        ),
+                        child: Material(
+                          color: _HomeTokens.primary,
+                          borderRadius: BorderRadius.circular(1000),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(1000),
+                            onTap: () => _openLastRead(context),
+                            child: Container(
+                              height: 32,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 4,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Text(
+                                    'Lanjut Tahsin AI',
+                                    style: TextStyle(
+                                      fontFamily: _fontFamily,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 12,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SvgPicture.asset(
+                                    AppIcons.arrowDropRightLine,
+                                    width: 24,
+                                    height: 24,
+                                    colorFilter: const ColorFilter.mode(
+                                      Colors.white,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Menu Harian
+  // ---------------------------------------------------------------------------
+  Widget _buildMenuHarian(BuildContext context, String currentLocation) {
+    final streakState = context.watch<StreakCubit>().state;
+    final streakCount = streakState is StreakLoaded
+        ? streakState.currentStreak
+        : 1;
+
+    // Ukuran icon = ukuran frame asli di Figma (bukan ukuran wrapper 56).
+    final menuItems = [
+      _MenuItem(
+        label: 'Al - Quran',
+        icon: AppIcons.homeQuran, // Figma 1284:2835 (48 x 48)
+        iconWidth: 48,
+        iconHeight: 48,
+        onTap: () => context.push(
+          '${RouterPath.mainPath}/${RouterPath.quranPath}',
+        ),
+      ),
+      _MenuItem(
+        label: 'Studio Qur’an',
+        icon: AppIcons.homeQiraah, // Figma 1284:2878 (BARU)
+        iconWidth: 56,
+        iconHeight: 52.12,
+        iconDy: 4.06,
+        onTap: () => context.push(
+          '${RouterPath.mainPath}/${RouterPath.quranPath}',
+        ),
+      ),
+      _MenuItem(
+        label: 'Jadwal Salat',
+        icon: AppIcons.homeSalat, // Figma 1284:2892 (42 x 42)
+        iconWidth: 42,
+        iconHeight: 42,
+        badgeCount: streakCount,
+        onTap: () => context.push(
+          '$currentLocation/${RouterPath.jadwalSholatPath}',
+        ),
+      ),
+      _MenuItem(
+        label: 'Kalendar',
+        icon: AppIcons.homeCalendar, // Figma 1284:2914 (40 x 40)
+        iconWidth: 40,
+        iconHeight: 40,
+        onTap: () => context.push(
+          '$currentLocation/${RouterPath.calendarPath}',
+        ),
+      ),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Menu Harian',
+          style: TextStyle(
+            color: _HomeTokens.primary,
+            fontFamily: _fontFamily,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            height: 28 / 16,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (var i = 0; i < menuItems.length; i++) ...[
+              if (i > 0) const SizedBox(width: 16),
+              Expanded(child: _buildMenuHarianItem(menuItems[i])),
+            ],
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMenuHarianItem(_MenuItem item) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: item.onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
               children: [
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _featureSection(
-                    context,
-                    onQiblatTap: () => context.push(
-                      '$currentLocation/${RouterPath.qiblaPath}',
-                    ),
-                    onJadwalSolatTap: () => context.push(
-                      '$currentLocation/${RouterPath.jadwalSholatPath}',
-                    ),
-                    onKalendarTap: () => context.push(
-                      '$currentLocation/${RouterPath.calendarPath}',
-                    ),
-                    // onProdukHalalTap: () => context.push(
-                    //   '$currentLocation/${RouterPath.productHalalPath}',
-                    // ),
-                    onKisahTap: () => context.push(
-                      '$currentLocation/${RouterPath.kisahPath}',
+                // Icon Wrapper: 56 x 56, radius 14, bg tertiary
+                Container(
+                  width: 56,
+                  height: 56,
+                  alignment: Alignment.center,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    color: _HomeTokens.bgTertiary,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: _HomeTokens.borderTransparent),
+                  ),
+                  child: Transform.translate(
+                    offset: Offset(0, item.iconDy),
+                    child: SvgPicture.asset(
+                      item.icon,
+                      width: item.iconWidth,
+                      height: item.iconHeight,
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _buildContinueReading(context),
-                ),
-                const SizedBox(height: 4),
-                const _BeritaIslamSection(),
-                SizedBox(height: bottomInset),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCarousel(
-    BuildContext context,
-    double height,
-    double shrinkProgress,
-  ) {
-    final currentLocation = GoRouterState.of(context).uri.toString();
-
-    return _CarouselContent(
-      height: height,
-      shrinkProgress: shrinkProgress,
-      ads: const [],
-      currentLocation: currentLocation,
-      isActive: widget.isActive,
-      onSahabaTap: () => context.push(
-        '$currentLocation/${RouterPath.sahabaAiPath}',
-      ),
-    );
-  }
-
-  Widget _buildJadwalSholat(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(minHeight: 95),
-      clipBehavior: Clip.antiAlias,
-      decoration: ShapeDecoration(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-      ),
-      child: Stack(
-        children: [
-          const Positioned.fill(
-            child: CacheImageOrSvg(
-              source: 'assets/images/motif-prayer.png',
-              fit: BoxFit.fill,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
-              builder: (context, scheduleState) {
-                final loadedState = scheduleState is PrayerScheduleLoaded
-                    ? scheduleState
-                    : null;
-                final schedule =
-                    loadedState?.todaySchedule ?? loadedState?.response.jadwal;
-                final nextPrayerLabel =
-                    loadedState?.nextPrayer?.label ??
-                    _nextPrayerLabelFromActive(
-                      loadedState?.activePrayer?.label,
-                    );
-
-                final nextPrayer = _resolvePrayerByLabel(
-                  nextPrayerLabel,
-                  schedule,
-                );
-                final countdownText = _getCountdownText(nextPrayer);
-
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
+                if (item.badgeCount != null)
+                  Positioned(
+                    top: 0,
+                    left: -10,
+                    child: Container(
+                      height: 19,
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      decoration: BoxDecoration(
+                        color: ColorPalette.badgeRed, // Figma: #DE1135
+                        borderRadius: BorderRadius.circular(28),
+                      ),
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            nextPrayer.label,
-                            style: const TextStyle(
-                              color: Color(0xFFDDDDDD),
-                              fontFamily: 'Satoshi',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                            overflow: TextOverflow.ellipsis,
+                          SvgPicture.asset(
+                            AppIcons.homeBadgeFire,
+                            width: 12,
+                            height: 12,
                           ),
+                          const SizedBox(width: 2),
                           Text(
-                            nextPrayer.time,
+                            '${item.badgeCount}',
                             style: const TextStyle(
                               color: Colors.white,
-                              fontFamily: 'Satoshi',
-                              fontSize: 40,
-                              fontWeight: FontWeight.w700,
+                              fontFamily: _fontFamily,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              height: 1,
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: Colors.white),
-                      ),
-                      child: Text(
-                        countdownText,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Satoshi',
-                          fontSize: 10,
+                  ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              item.label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: ColorPalette.kBlack,
+                fontFamily: _fontFamily,
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Kabar Hari Ini
+  // ---------------------------------------------------------------------------
+  Widget _buildKabarHariIni(BuildContext context, String currentLocation) {
+    return BlocBuilder<NewsBloc, NewsState>(
+      builder: (context, newsState) {
+        final newsList = (newsState.newsResponse?.data ?? []).take(3).toList();
+        final isLoading = newsState.fetchNewsLoading;
+
+        if (isLoading) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 32),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (newsList.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Kabar Hari Ini',
+                  style: TextStyle(
+                    color: ColorPalette.kBlack,
+                    fontFamily: _fontFamily,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    height: 28 / 16,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => context.push(
+                    '$currentLocation/${RouterPath.listAllNewsPath}',
+                  ),
+                  child: Row(
+                    children: [
+                      const Text(
+                        'Cek semuanya',
+                        style: TextStyle(
+                          color: ColorPalette.mainGreen,
+                          fontFamily: _fontFamily,
+                          fontSize: 14,
                           fontWeight: FontWeight.w700,
+                          height: 28 / 14,
                         ),
-                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SvgPicture.asset(
+                        AppIcons.homeArrowGreen,
+                        width: 20,
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ...List.generate(newsList.length, (index) {
+              final item = newsList[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: ColorPalette.surfaceSecondary,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: _HomeTokens.belowHigh,
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(16),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () {
+                        unawaited(
+                          context.push(
+                            '$currentLocation/${RouterPath.detailNewsPath}',
+                            extra: item,
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Gambar: tinggi 160, radius 16 di semua sudut
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: CacheImageOrSvg(
+                                source: item.pictureUrl ?? '',
+                                width: double.infinity,
+                                height: 160,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.title ?? '',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: _HomeTokens.primary,
+                                      fontFamily: _fontFamily,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      height: 28 / 14,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.calendar_month_outlined,
+                                        color: _HomeTokens.contentTertiary,
+                                        size: 16,
+                                      ),
+                                      const SizedBox(width: 7),
+                                      Text(
+                                        item.createdAt ?? '',
+                                        style: const TextStyle(
+                                          color: _HomeTokens.contentTertiary,
+                                          fontFamily: _fontFamily,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                          height: 28 / 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ],
-                );
-              },
+                  ),
+                ),
+              );
+            }),
+          ],
+        );
+      },
+    );
+  }
+
+  void _openSearch(BuildContext context) {
+    final state = context.read<QuranBloc>().state;
+    unawaited(
+      context.push(
+        '${RouterPath.mainPath}/${RouterPath.quranPath}/'
+        '${RouterPath.searchQuranPath}',
+        extra: SearchQuranArgs(
+          surahs: state.surahs,
+          juzList: state.juzList,
+        ),
+      ),
+    );
+  }
+
+  void _openLastRead(BuildContext context) {
+    final lastReadState = context.read<LastReadCubit>().state;
+    final lastRead = lastReadState is LastReadLoaded
+        ? lastReadState.lastRead
+        : null;
+    final quranState = context.read<QuranBloc>().state;
+
+    if (lastRead == null) {
+      unawaited(
+        context.push(
+          '${RouterPath.mainPath}/${RouterPath.quranPath}',
+        ),
+      );
+      return;
+    }
+
+    SurahModel? findSurah(List<SurahModel> surahs, String? index) {
+      if (index == null) return null;
+      for (final surah in surahs) {
+        if (surah.index == index) return surah;
+      }
+      return null;
+    }
+
+    JuzModel? findJuz(List<JuzModel> juzList, String? index) {
+      if (index == null) return null;
+      for (final juz in juzList) {
+        if (juz.index == index) return juz;
+      }
+      return null;
+    }
+
+    final surah = findSurah(quranState.surahs, lastRead.verse.surahIndex);
+    final juz = findJuz(quranState.juzList, lastRead.juzIndex);
+
+    final args = lastRead.type == QuranDetailType.juz && juz != null
+        ? QuranDetailArgs.juz(
+            juz,
+            allSurahs: quranState.surahs,
+            allJuz: quranState.juzList,
+            initialVerseKey: lastRead.verse.verseKey,
+          )
+        : surah != null
+        ? QuranDetailArgs.surah(
+            surah,
+            allSurahs: quranState.surahs,
+            allJuz: quranState.juzList,
+            initialVerseNumber: lastRead.verse.verseNumber,
+            initialVerseKey: lastRead.verse.verseKey,
+          )
+        : null;
+
+    if (args != null) {
+      unawaited(
+        context.push(
+          '${RouterPath.mainPath}/${RouterPath.quranPath}/'
+          '${RouterPath.detailQuranPath}',
+          extra: args,
+        ),
+      );
+    } else {
+      unawaited(
+        context.push(
+          '${RouterPath.mainPath}/${RouterPath.quranPath}',
+        ),
+      );
+    }
+  }
+
+  // Prayer Time Card
+  Widget _buildJadwalSholat(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 95),
+        child: Stack(
+          children: [
+            const Positioned.fill(
+              child: CacheImageOrSvg(
+                source: 'assets/images/motif-prayer.png',
+                fit: BoxFit.fill,
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: BlocBuilder<PrayerScheduleCubit, PrayerScheduleState>(
+                builder: (context, scheduleState) {
+                  final loadedState = scheduleState is PrayerScheduleLoaded
+                      ? scheduleState
+                      : null;
+                  final schedule =
+                      loadedState?.todaySchedule ??
+                      loadedState?.response.jadwal;
+                  final nextPrayerLabel =
+                      loadedState?.nextPrayer?.label ??
+                      _nextPrayerLabelFromActive(
+                        loadedState?.activePrayer?.label,
+                      );
+
+                  final nextPrayer = _resolvePrayerByLabel(
+                    nextPrayerLabel,
+                    schedule,
+                  );
+                  final countdownText = _getCountdownText(nextPrayer);
+
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              nextPrayer.label,
+                              style: const TextStyle(
+                                color: Color(0xFFDDDDDD),
+                                fontFamily: _fontFamily,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              nextPrayer.time,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontFamily: _fontFamily,
+                                fontSize: 40,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(color: Colors.white),
+                        ),
+                        child: Text(
+                          countdownText,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: _fontFamily,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -407,12 +1030,13 @@ class _HomeScreenState extends State<HomeScreen> {
     final hours = totalMinutes ~/ 60;
     final minutes = totalMinutes % 60;
 
+    // Figma: "2 jam 10 menit lagi"
     if (hours > 0 && minutes > 0) {
-      return 'Dalam $hours Jam $minutes Menit';
+      return '$hours jam $minutes menit lagi';
     }
 
-    if (hours > 0) return 'Dalam $hours Jam';
-    return 'Dalam $minutes Menit';
+    if (hours > 0) return '$hours jam lagi';
+    return '$minutes menit lagi';
   }
 }
 
@@ -427,1115 +1051,30 @@ class _PrayerInfo {
   final int hour;
   final int minute;
 
+  /// Figma: "15 : 15" (ada spasi di sekitar titik dua)
   String get time {
     final h = hour.toString().padLeft(2, '0');
     final m = minute.toString().padLeft(2, '0');
-    return '$h:$m';
+    return '$h : $m';
   }
 }
 
-Widget _buildContinueReading(BuildContext context) {
-  SurahModel? findSurah(List<SurahModel> surahs, String? index) {
-    if (index == null) return null;
-    for (final surah in surahs) {
-      if (surah.index == index) return surah;
-    }
-    return null;
-  }
-
-  JuzModel? findJuz(List<JuzModel> juzList, String? index) {
-    if (index == null) return null;
-    for (final juz in juzList) {
-      if (juz.index == index) return juz;
-    }
-    return null;
-  }
-
-  return BlocBuilder<LastReadCubit, LastReadState>(
-    builder: (context, lastReadState) {
-      final lastRead = lastReadState is LastReadLoaded
-          ? lastReadState.lastRead
-          : null;
-      final verse = lastRead?.verse;
-      return BlocBuilder<QuranBloc, QuranState>(
-        builder: (context, quranState) {
-          return _ContinueReadingContent(
-            lastRead: lastRead,
-            surah: findSurah(quranState.surahs, verse?.surahIndex),
-            juz: findJuz(quranState.juzList, lastRead?.juzIndex),
-          );
-        },
-      );
-    },
-  );
-}
-
-Widget _featureSection(
-  BuildContext context, {
-  VoidCallback? onQiblatTap,
-  VoidCallback? onJadwalSolatTap,
-  VoidCallback? onKalendarTap,
-  // VoidCallback? onProdukHalalTap,
-  VoidCallback? onKisahTap,
-}) {
-  final items = [
-    {
-      'label': 'Kiblat',
-      'icon': QiblaIcons.kabah,
-      // 'iconWidth': 40.0,
-      // 'iconHeight': 40.0,
-      'onTap': onQiblatTap,
-    },
-    {
-      'label': 'Jadwal Salat',
-      'icon': AppIcons.jadwalSholat,
-      // 'iconWidth': 40.0,
-      // 'iconHeight': 40.0,
-      'onTap': onJadwalSolatTap,
-      'badgeType': 'fire',
-    },
-    {
-      'label': 'Kalendar',
-      'icon': AppIcons.calendar,
-      // 'iconWidth': 40.0,
-      // 'iconHeight': 40.0,
-      'onTap': onKalendarTap,
-    },
-    {
-      'label': 'Kisah',
-      'icon': AppIcons.kisah,
-      // 'iconWidth': 40.0,
-      // 'iconHeight': 40.0,
-      'onTap': onKisahTap,
-    },
-  ];
-
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'Fitur kami',
-        style: TextStyle(
-          color: Colors.white,
-          fontFamily: 'Satoshi',
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          height: 1.75,
-        ),
-      ),
-      const SizedBox(height: 12),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: items.map((item) {
-          final label = item['label']! as String;
-          final iconPath = item['icon']! as String;
-          // final iconWidth = item['iconWidth']! as double;
-          // final iconHeight = item['iconHeight']! as double;
-          final onTap = item['onTap'] as VoidCallback?;
-          final badgeType = item['badgeType'] as String?;
-
-          return Expanded(
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: onTap,
-                borderRadius: BorderRadius.circular(14),
-                splashColor: Colors.white.withValues(alpha: 0.06),
-                highlightColor: Colors.white.withValues(alpha: 0.04),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: 56,
-                        height: 56,
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: 56,
-                              height: 56,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: ShapeDecoration(
-                                color: Colors.white.withValues(alpha: 0.12),
-                                shadows: const [
-                                  BoxShadow(
-                                    color: Color(0x51000000),
-                                    blurRadius: 8,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                    strokeAlign: BorderSide.strokeAlignCenter,
-                                    color: Color(0x28E8E8E8),
-                                  ),
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                              ),
-                              foregroundDecoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
-                                gradient: RadialGradient(
-                                  radius: 0.72,
-                                  colors: [
-                                    Colors.white.withValues(alpha: 0.20),
-                                    Colors.white.withValues(alpha: 0.05),
-                                    Colors.transparent,
-                                  ],
-                                  stops: const [0, 0.48, 1],
-                                ),
-                              ),
-                              child: Center(
-                                child: CacheImageOrSvg(
-                                  source: iconPath,
-                                  // width: iconWidth,
-                                  // height: iconHeight,
-                                  // fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                            if (badgeType == 'fire')
-                              Builder(
-                                builder: (context) {
-                                  final streakState = context
-                                      .watch<StreakCubit>()
-                                      .state;
-                                  final streakCount =
-                                      streakState is StreakLoaded
-                                      ? streakState.currentStreak
-                                      : 1;
-                                  return Positioned(
-                                    top: -4,
-                                    left: -4,
-                                    child: Container(
-                                      height: 19,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 4,
-                                      ),
-                                      decoration: ShapeDecoration(
-                                        color: const Color(
-                                          0xFFDE1135,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            28,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const CacheImageOrSvg(
-                                            source: AppIcons.api,
-                                            width: 12,
-                                            height: 12,
-                                            fit: BoxFit.contain,
-                                          ),
-                                          const SizedBox(width: 2),
-                                          Text(
-                                            '$streakCount',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Satoshi',
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                              height: 1,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Color(0xFFDDDDDD),
-                          fontFamily: 'Satoshi',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          height: 1.35,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        }).toList(),
-      ),
-    ],
-  );
-}
-
-class _BeritaIslamSection extends StatelessWidget {
-  const _BeritaIslamSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final currentLocation = GoRouterState.of(context).uri.toString();
-    final textTheme = Theme.of(context).textTheme;
-
-    return BlocBuilder<NewsBloc, NewsState>(
-      builder: (context, newsState) {
-        final newsList = (newsState.newsResponse?.data ?? []).take(3).toList();
-        final isLoading = newsState.fetchNewsLoading;
-
-        if (isLoading) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 32),
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        if (newsList.isEmpty) {
-          return const SizedBox.shrink();
-        }
-
-        return Column(
-          spacing: 16,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Berita Islami',
-                    style: textTheme.titleMedium?.copyWith(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => context.push(
-                      '$currentLocation/${RouterPath.listAllNewsPath}',
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Lihat Semua',
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: const Color(0xFF00C6BF),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: Color(0xFF00C6BF),
-                          size: 14,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            ...List.generate(newsList.length, (index) {
-              final item = newsList[index];
-              final isLast = index == newsList.length - 1;
-              return Column(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      unawaited(
-                        context.push(
-                          '$currentLocation/${RouterPath.detailNewsPath}',
-                          extra: item,
-                        ),
-                      );
-                    },
-                    splashColor: Colors.white.withValues(alpha: 0.06),
-                    highlightColor: Colors.white.withValues(alpha: 0.04),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: _NewsCard(item: item),
-                    ),
-                  ),
-                  if (!isLast)
-                    const SizedBox(
-                      width: double.infinity,
-                      height: 4,
-                      child: Divider(
-                        color: Color(0x33E8E8E8),
-                        thickness: 2,
-                      ),
-                    ),
-                ],
-              );
-            }),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _NewsCard extends StatelessWidget {
-  const _NewsCard({required this.item});
-
-  final NewsData item;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: CacheImageOrSvg(
-            source: item.pictureUrl ?? '',
-            width: double.infinity,
-            height: 160,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          item.title ?? '',
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-          style: textTheme.bodyMedium?.copyWith(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            height: 1.4,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            const Icon(
-              Icons.calendar_month_outlined,
-              color: Color(0xFFDDDDDD),
-              size: 16,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              item.createdAt ?? '',
-              style: textTheme.bodySmall?.copyWith(
-                color: const Color(0xFFDDDDDD),
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-// Carousel Content (with autoPlay)
-
-class _CarouselContent extends StatefulWidget {
-  const _CarouselContent({
-    required this.height,
-    required this.shrinkProgress,
-    required this.ads,
-    required this.currentLocation,
-    required this.isActive,
-    required this.onSahabaTap,
+class _MenuItem {
+  const _MenuItem({
+    required this.label,
+    required this.icon,
+    required this.iconWidth,
+    required this.iconHeight,
+    required this.onTap,
+    this.iconDy = 0,
+    this.badgeCount,
   });
 
-  final double height;
-  final double shrinkProgress;
-  final List<AdResponseData> ads;
-  final String currentLocation;
-  final bool isActive;
-  final VoidCallback onSahabaTap;
-
-  @override
-  State<_CarouselContent> createState() => _CarouselContentState();
-}
-
-class _CarouselContentState extends State<_CarouselContent> {
-  static const Duration _autoSlideInterval = Duration(seconds: 4);
-  static const Duration _autoSlideAnimationDuration = Duration(
-    milliseconds: 450,
-  );
-
-  late final PageController _pageController;
-  Timer? _autoSlideTimer;
-  Timer? _resumeTimer;
-  int _currentIndex = 0;
-  bool _isUserInteracting = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-    _syncCurrentIndex();
-    _scheduleAutoSlide();
-  }
-
-  @override
-  void didUpdateWidget(covariant _CarouselContent oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    final adsChanged = oldWidget.ads.length != widget.ads.length;
-    final activeChanged = oldWidget.isActive != widget.isActive;
-
-    if (adsChanged) {
-      _syncCurrentIndex();
-      if (_pageController.hasClients) {
-        _pageController.jumpToPage(_currentIndex);
-      }
-    }
-
-    if (adsChanged || activeChanged) {
-      _scheduleAutoSlide();
-    }
-  }
-
-  @override
-  void dispose() {
-    _autoSlideTimer?.cancel();
-    _resumeTimer?.cancel();
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final carouselItems = _carouselItems;
-    final currentAd =
-        carouselItems[_currentIndex.clamp(0, carouselItems.length - 1)];
-
-    return SizedBox(
-      height: widget.height,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          DecoratedBox(
-            decoration: const BoxDecoration(boxShadow: _heroSurfaceShadow),
-            child: NotificationListener<ScrollNotification>(
-              onNotification: _handlePageScrollNotification,
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: (index) => setState(() => _currentIndex = index),
-                itemCount: carouselItems.length,
-                itemBuilder: (context, index) {
-                  final ad = carouselItems[index];
-                  return GestureDetector(
-                    onTap: () => _handleAdTap(context, ad),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: _imageProviderFor(ad),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.transparent,
-                              Colors.transparent,
-                              Colors.black.withValues(alpha: 0.38),
-                              Colors.black.withValues(alpha: 0.88),
-                            ],
-                            stops: const [0.0, 0.58, 0.78, 1.0],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-          Positioned(
-            left: 16,
-            right: 16,
-            bottom: 48,
-            child: _CarouselOverlayWidget(
-              title: currentAd?.campaignName ?? 'Pasang Iklan Sekarang',
-              currentIndex: _currentIndex,
-              totalItems: carouselItems.length,
-              shrinkProgress: widget.shrinkProgress,
-              onSahabaTap: widget.onSahabaTap,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  List<AdResponseData?> get _carouselItems => [...widget.ads, null];
-
-  int get _carouselItemCount => _carouselItems.length;
-
-  bool get _canAutoSlide {
-    return mounted &&
-        widget.isActive &&
-        !_isUserInteracting &&
-        _carouselItemCount > 1;
-  }
-
-  ImageProvider _imageProviderFor(AdResponseData? ad) {
-    if ((ad?.image ?? '').isEmpty) {
-      return const AssetImage('assets/images/empty-carousel.png');
-    }
-
-    return NetworkImage(ad!.image!);
-  }
-
-  bool _handlePageScrollNotification(ScrollNotification notification) {
-    if (notification.metrics.axis != Axis.horizontal) {
-      return false;
-    }
-
-    if (notification is ScrollStartNotification &&
-        notification.dragDetails != null) {
-      _pauseAutoSlideForInteraction();
-    }
-
-    if (notification is ScrollUpdateNotification &&
-        notification.dragDetails != null) {
-      _pauseAutoSlideForInteraction();
-    }
-
-    if (notification is ScrollEndNotification) {
-      _resumeAutoSlideWithDelay();
-    }
-
-    return false;
-  }
-
-  void _pauseAutoSlideForInteraction() {
-    _isUserInteracting = true;
-    _autoSlideTimer?.cancel();
-    _resumeTimer?.cancel();
-  }
-
-  void _resumeAutoSlideWithDelay() {
-    _isUserInteracting = false;
-    _resumeTimer?.cancel();
-    _resumeTimer = Timer(const Duration(seconds: 2), _scheduleAutoSlide);
-  }
-
-  void _scheduleAutoSlide() {
-    _autoSlideTimer?.cancel();
-
-    if (!_canAutoSlide) {
-      return;
-    }
-
-    _autoSlideTimer = Timer.periodic(_autoSlideInterval, (_) {
-      if (!_canAutoSlide || !_pageController.hasClients) {
-        return;
-      }
-
-      final nextIndex = (_currentIndex + 1) % _carouselItemCount;
-      unawaited(
-        _pageController.animateToPage(
-          nextIndex,
-          duration: _autoSlideAnimationDuration,
-          curve: Curves.easeInOut,
-        ),
-      );
-    });
-  }
-
-  void _syncCurrentIndex() {
-    if (_carouselItemCount == 0) {
-      _currentIndex = 0;
-      return;
-    }
-
-    if (_currentIndex >= _carouselItemCount) {
-      _currentIndex = 0;
-    }
-  }
-
-  Future<void> _handleAdTap(BuildContext context, AdResponseData? ad) async {
-    // final currentLocation = GoRouterState.of(context).uri.toString();
-
-    if (ad == null) {
-      final uri = Uri.tryParse('https://sah.solu.co.id/');
-      if (uri != null) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      }
-      return;
-    }
-
-    // switch (ad.type?.toUpperCase()) {
-    //   case 'PRODUCT':
-    //     final productId = ad.productId;
-    //     if (productId != null && productId > 0) {
-    //       await context.push(
-    //         '$currentLocation/${RouterPath.productDetailPath}',
-    //         extra: {'id': productId, 'isAds': true},
-    //       );
-    //     }
-    //     return;
-    //   case 'URL':
-    //     final target = ad.target?.trim();
-    //     if (target == null || target.isEmpty) return;
-
-    //     var url = target;
-
-    //     if (!url.startsWith('http://') && !url.startsWith('https://')) {
-    //       url = 'https://$url';
-    //     }
-
-    //     final uri = Uri.tryParse(url);
-    //     if (uri == null) return;
-
-    //     await launchUrl(uri, mode: LaunchMode.externalApplication);
-    //     return;
-    // }
-  }
-}
-
-class _CarouselOverlayWidget extends StatelessWidget {
-  const _CarouselOverlayWidget({
-    required this.title,
-    required this.currentIndex,
-    required this.totalItems,
-    required this.shrinkProgress,
-    required this.onSahabaTap,
-  });
-
-  final String title;
-  final int currentIndex;
-  final int totalItems;
-  final double shrinkProgress;
-  final VoidCallback onSahabaTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final visibilityProgress = (1 - (shrinkProgress / 0.6)).clamp(0.0, 1.0);
-    final verticalOffset = 18 * shrinkProgress.clamp(0.0, 1.0);
-    final isHidden = visibilityProgress < 0.05;
-
-    return IgnorePointer(
-      ignoring: isHidden,
-      child: AnimatedSlide(
-        duration: const Duration(milliseconds: 220),
-        curve: Curves.easeOut,
-        offset: Offset(0, verticalOffset / 100),
-        child: AnimatedOpacity(
-          duration: const Duration(milliseconds: 220),
-          curve: Curves.easeOut,
-          opacity: visibilityProgress,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (totalItems > 1) ...[
-                      const SizedBox(height: 8),
-                      Row(
-                        children: List.generate(totalItems, (index) {
-                          return Container(
-                            margin: const EdgeInsets.only(right: 8),
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: index == currentIndex
-                                  ? Colors.white
-                                  : Colors.white.withValues(alpha: 0.4),
-                              shape: BoxShape.circle,
-                            ),
-                          );
-                        }),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              // const SizedBox(width: 12),
-              // SubmitButtonStylesWidget(
-              //   style: SubmitButtonStyle.elevatedGlass,
-              //   width: 150,
-              //   height: 32,
-              //   radius: 24,
-              //   padding: const EdgeInsets.symmetric(
-              //     horizontal: 12,
-              //     vertical: 6,
-              //   ),
-              //   textButton: 'Tanya Sahaba',
-              //   textStyle: const TextStyle(
-              //     color: ColorPalette.kWhite,
-              //     fontSize: 12,
-              //     fontFamily: 'Satoshi',
-              //     fontWeight: FontWeight.w600,
-              //     height: -0.4,
-              //   ),
-              //   icon: const CacheImageOrSvg(
-              //     source: 'assets/images/icon-images/icon-ai.png',
-              //     width: 32,
-              //     height: 32,
-              //   ),
-              //   onPressed: onSahabaTap,
-              // ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Delegate untuk carousel yang mengecil (shrink) mengikuti scroll,
-/// lalu pinned di [minHeight] setelah full collapse.
-class CarouselHeaderDelegate extends SliverPersistentHeaderDelegate {
-  CarouselHeaderDelegate({
-    required this.maxHeight,
-    required this.minHeight,
-    required this.builder,
-  });
-
-  final double maxHeight;
-  final double minHeight;
-  final Widget Function(
-    BuildContext context,
-    double height,
-    double shrinkProgress,
-  )
-  builder;
-
-  @override
-  double get minExtent => minHeight;
-
-  @override
-  double get maxExtent => maxHeight;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    final currentHeight = (maxHeight - shrinkOffset).clamp(
-      minHeight,
-      maxHeight,
-    );
-    final progress = ((maxHeight - currentHeight) / (maxHeight - minHeight))
-        .clamp(0.0, 1.0);
-    return builder(context, currentHeight, progress);
-  }
-
-  @override
-  bool shouldRebuild(covariant CarouselHeaderDelegate oldDelegate) {
-    return maxHeight != oldDelegate.maxHeight ||
-        minHeight != oldDelegate.minHeight;
-  }
-}
-
-class _ContinueReadingContent extends StatelessWidget {
-  const _ContinueReadingContent({
-    required this.lastRead,
-    required this.surah,
-    required this.juz,
-  });
-
-  final QuranLastReadModel? lastRead;
-  final SurahModel? surah;
-  final JuzModel? juz;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final verse = lastRead?.verse;
-    final hasHistory = verse != null;
-    final canOpen = lastRead?.type == QuranDetailType.juz
-        ? juz != null
-        : surah != null;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Lanjutkan baca',
-          style: textTheme.titleMedium?.copyWith(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            height: 1.75,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Container(
-          width: double.infinity,
-          clipBehavior: Clip.antiAlias,
-          decoration: ShapeDecoration(
-            color: hasHistory
-                ? Colors.white.withValues(alpha: 0.12)
-                : const Color(0xFF2C3446),
-            shadows: const [
-              BoxShadow(
-                color: Color(0x14000000),
-                blurRadius: 4,
-                offset: Offset(0, 2),
-              ),
-              BoxShadow(
-                color: Color(0x11000000),
-                blurRadius: 6,
-                offset: Offset(0, 6),
-              ),
-              BoxShadow(
-                color: Color(0x0A000000),
-                blurRadius: 9,
-                offset: Offset(0, 14),
-              ),
-              BoxShadow(
-                color: Color(0x02000000),
-                blurRadius: 10,
-                offset: Offset(0, 26),
-              ),
-              BoxShadow(
-                color: Color(0x00000000),
-                blurRadius: 11,
-                offset: Offset(0, 40),
-              ),
-            ],
-            shape: RoundedRectangleBorder(
-              side: BorderSide(
-                strokeAlign: BorderSide.strokeAlignCenter,
-                color: hasHistory
-                    ? const Color(0x28E8E8E8)
-                    : const Color(0x28E8E8E8),
-              ),
-              borderRadius: BorderRadius.circular(14),
-            ),
-          ),
-
-          // decoration: BoxDecoration(
-          //   borderRadius: BorderRadius.circular(16),
-          //   gradient: hasHistory
-          //       ? const LinearGradient(
-          //           begin: Alignment(-0.2, -0.4),
-          //           end: Alignment(1.1, 1.4),
-          //           colors: [
-          //             Color(0xFFB39164),
-          //             Color(0xFF4A2E15),
-          //           ],
-          //         )
-          //       : null,
-          //   color: hasHistory ? null : const Color(0xFF2C3446),
-          //   boxShadow: const [
-          //     BoxShadow(
-          //       color: Color(0x14000000),
-          //       blurRadius: 4,
-          //       offset: Offset(0, 2),
-          //     ),
-          //     BoxShadow(
-          //       color: Color(0x11000000),
-          //       blurRadius: 6,
-          //       offset: Offset(0, 6),
-          //     ),
-          //     BoxShadow(
-          //       color: Color(0x0A000000),
-          //       blurRadius: 9,
-          //       offset: Offset(0, 14),
-          //     ),
-          //   ],
-          // ),
-          child: hasHistory
-              ? Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      verse.surahName,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: textTheme.headlineSmall?.copyWith(
-                                        color: ColorPalette.kWhite,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Ayat ${verse.verseNumber}',
-                                      style: textTheme.bodySmall?.copyWith(
-                                        color: ColorPalette.kWhite,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 12,
-                                        letterSpacing: 0.6,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Text(
-                                verse.surahNameAr,
-                                textDirection: TextDirection.rtl,
-                                style: textTheme.displaySmall?.copyWith(
-                                  color: Colors.white,
-                                  fontFamily: 'lpmq',
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: canOpen
-                                  ? () => _openLastRead(context)
-                                  : null,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF007D56),
-                                foregroundColor: Colors.white,
-                                disabledBackgroundColor: Colors.white
-                                    .withValues(alpha: 0.25),
-                                disabledForegroundColor: Colors.white
-                                    .withValues(alpha: 0.6),
-                                elevation: 0,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(999),
-                                ),
-                              ),
-                              child: Text(
-                                'Lanjutkan',
-                                style: textTheme.bodySmall?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12,
-                                  letterSpacing: 0.6,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              // ==========================
-              // EMPTY STATE
-              // ==========================
-              : Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 42,
-                      ),
-                      child: Center(
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: textTheme.bodyMedium?.copyWith(
-                              color: Colors.white.withValues(alpha: 0.62),
-                              fontSize: 16,
-                              height: 1.55,
-                            ),
-                            children: const [
-                              TextSpan(
-                                text:
-                                    'Belum ada riwayat. Tap ayat '
-                                    'Qur’an lalu pilih\n',
-                                style: TextStyle(
-                                  color: Color(
-                                    0xFFA6A6A6,
-                                  ) /* semantic-content-inverse-tertiary */,
-                                  fontSize: 12,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.67,
-                                ),
-                              ),
-                              TextSpan(
-                                text: '“Tandai Terakhir Baca”',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.67,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-        ),
-      ],
-    );
-  }
-
-  void _openLastRead(BuildContext context) {
-    final quranState = context.read<QuranBloc>().state;
-    final args = lastRead?.type == QuranDetailType.juz
-        ? QuranDetailArgs.juz(
-            juz!,
-            allSurahs: quranState.surahs,
-            allJuz: quranState.juzList,
-            initialVerseKey: lastRead!.verse.verseKey,
-          )
-        : QuranDetailArgs.surah(
-            surah!,
-            allSurahs: quranState.surahs,
-            allJuz: quranState.juzList,
-            initialVerseNumber: lastRead!.verse.verseNumber,
-            initialVerseKey: lastRead!.verse.verseKey,
-          );
-
-    unawaited(
-      context.push(
-        '${RouterPath.mainPath}/${RouterPath.quranPath}/'
-        '${RouterPath.detailQuranPath}',
-        extra: args,
-      ),
-    );
-  }
+  final String label;
+  final String icon;
+  final double iconWidth;
+  final double iconHeight;
+  final double iconDy;
+  final VoidCallback onTap;
+  final int? badgeCount;
 }

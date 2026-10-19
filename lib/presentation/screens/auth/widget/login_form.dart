@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_account_bloc/auth_account_bloc.dart';
 import 'package:sahaba_mobile/business_logic/auth/auth_bloc.dart';
 import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/auth_card.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_pin.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/create_pin_flow.dart';
-import 'package:sahaba_mobile/presentation/screens/auth/widget/forgot_password_flow.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/forgot_pin_flow.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';
@@ -40,14 +41,14 @@ class LoginForm extends HookWidget {
     final isComplete =
         _emailRegex.hasMatch(emailText.trim()) && passwordText.isNotEmpty;
 
-    Future<void> showForgotPassword() async {
-      await WidgetsBinding.instance.endOfFrame;
-      if (!context.mounted) return;
-      await ForgotPasswordFlow.show(
-        context,
-        email: emailController.text.trim(),
-      );
-    }
+    // Future<void> showForgotPassword() async {
+    //   await WidgetsBinding.instance.endOfFrame;
+    //   if (!context.mounted) return;
+    //   await ForgotPasswordFlow.show(
+    //     context,
+    //     email: emailController.text.trim(),
+    //   );
+    // }
 
     Future<void> showForgotPin() async {
       await WidgetsBinding.instance.endOfFrame;
@@ -84,12 +85,13 @@ class LoginForm extends HookWidget {
 
     void onLanjut() {
       if (!(formKey.currentState?.validate() ?? false)) return;
-      context.read<AuthBloc>().add(
-        AuthEvent.postloginUser(
-          identifier: emailController.text.trim(),
-          password: passwordController.text,
-        ),
-      );
+      unawaited(context.push(RouterPath.mainPath));
+      // context.read<AuthBloc>().add(
+      //   AuthEvent.postloginUser(
+      //     identifier: emailController.text.trim(),
+      //     password: passwordController.text,
+      //   ),
+      // );
     }
 
     return BlocConsumer<AuthBloc, AuthState>(

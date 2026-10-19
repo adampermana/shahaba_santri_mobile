@@ -42,10 +42,18 @@ class ColorPalette {
   static const Color surfaceContainerHighest = Color(0xFFDCE5D9);
   static const Color surfaceTertiary = Color(0xFFE8E8E8);
   static const Color surfaceForm = Color(0xFFF3F3F3);
+  static const Color surfaceSecondary = Color(0xFFF3F3F3);
   static const Color surfaceTint = Color(0xFF1B8354);
   static const Color background = Color(0xFF0F172A);
   static const Color scaffoldBackground = background;
   static const Color scaffoldBackgroundAppBar = background;
+
+  // New Figma Theme Colors
+  static const Color headerTeal = Color(0xFF09383B);
+  static const Color headerTealEnd = Color(0xFF1999A1);
+  static const Color mainGreen = Color(0xFF007D56);
+  static const Color badgeRed = Color(0xFFDE1135);
+  static const Color borderSubtle = Color(0x33E8E8E8);
 
   // Content / text colors (semantic — matches Figma design tokens)
   static const Color onSurface = Color(0xFF161D16);

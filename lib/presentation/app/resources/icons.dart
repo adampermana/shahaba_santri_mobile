@@ -95,6 +95,18 @@ abstract class AppIcons {
       '$_path/auth/greeting-illustration.svg';
   static const String pinInfoIllustration =
       '$_path/auth/pin-info-illustration.svg';
+
+  // Home New UI
+  static const String homeQuran = '$_path/home_quran.svg';
+  static const String homeQiraah = '$_path/home_qiraah.svg';
+  static const String homeSalat = '$_path/home_salat.svg';
+  static const String homeCalendar = '$_path/home_calendar.svg';
+  static const String homeStreakFlame = '$_path/home_streak_flame.svg';
+  static const String homeBannerVector1 = '$_path/home_banner_vector1.svg';
+  static const String homeBannerVector2 = '$_path/home_banner_vector2.svg';
+  static const String homeNotification = '$_path/home_notification.svg';
+  static const String homeArrowGreen = '$_path/home_arrow_green.svg';
+  static const String homeBadgeFire = '$_path/home_badge_fire.svg';
 }
 
 abstract class QiblaIcons {
