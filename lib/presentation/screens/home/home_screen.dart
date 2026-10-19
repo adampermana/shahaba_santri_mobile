@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -164,9 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // Banner background (Figma: Dynamic Topic Banner 1284:2799, 402 x 273)
-  // ---------------------------------------------------------------------------
+  // Banner background
   Widget _buildBannerBackground() {
     return Positioned.fill(
       bottom: 410,
@@ -220,9 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ---------------------------------------------------------------------------
   // Top bar: search + notification
-  // ---------------------------------------------------------------------------
   Widget _buildTopBar(BuildContext context) {
     return Row(
       children: [
@@ -271,9 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ---------------------------------------------------------------------------
   // Dynamic topic banner (sapaan + streak + tombol Tahsin AI)
-  // ---------------------------------------------------------------------------
   Widget _buildDynamicTopicBanner(BuildContext context) {
     return BlocBuilder<AuthAccountBloc, AuthAccountState>(
       builder: (context, authState) {
@@ -421,9 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ---------------------------------------------------------------------------
   // Menu Harian
-  // ---------------------------------------------------------------------------
   Widget _buildMenuHarian(BuildContext context, String currentLocation) {
     final streakState = context.watch<StreakCubit>().state;
     final streakCount = streakState is StreakLoaded
@@ -587,9 +578,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ---------------------------------------------------------------------------
   // Kabar Hari Ini
-  // ---------------------------------------------------------------------------
   Widget _buildKabarHariIni(BuildContext context, String currentLocation) {
     return BlocBuilder<NewsBloc, NewsState>(
       builder: (context, newsState) {
