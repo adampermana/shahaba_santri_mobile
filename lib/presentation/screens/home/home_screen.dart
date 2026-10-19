@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
       listener: (context, state) => _loadPrayerScheduleIfReady(state),
       child: DecoratedBox(
         decoration: const BoxDecoration(
-          color: ColorPalette.surfaceSecondary,
+          color: ColorPalette.scaffoldBackground,
         ),
         child: CustomScrollView(
           slivers: [

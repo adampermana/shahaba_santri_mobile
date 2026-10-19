@@ -44,7 +44,7 @@ class ColorPalette {
   static const Color surfaceForm = Color(0xFFF3F3F3);
   static const Color surfaceSecondary = Color(0xFFF3F3F3);
   static const Color surfaceTint = Color(0xFF1B8354);
-  static const Color background = Color(0xFF0F172A);
+  static const Color background = Color(0xFFF3F3F3);
   static const Color scaffoldBackground = background;
   static const Color scaffoldBackgroundAppBar = background;
 
