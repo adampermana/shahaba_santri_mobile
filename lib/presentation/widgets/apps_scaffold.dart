@@ -10,6 +10,7 @@ class AppScaffold extends StatelessWidget {
     this.bottomNavigationBar,
     this.resizeToAvoidBottomInset = true,
     this.motifHeight = 220,
+    this.backgroundColor,
   });
 
   final PreferredSizeWidget? appBar;
@@ -18,13 +19,14 @@ class AppScaffold extends StatelessWidget {
   final Widget? bottomNavigationBar;
   final bool resizeToAvoidBottomInset;
   final double motifHeight;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     // final topPadding = MediaQuery.of(context).padding.top;
 
     return Scaffold(
-      backgroundColor: ColorPalette.scaffoldBackground,
+      backgroundColor: backgroundColor ?? ColorPalette.scaffoldBackground,
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       floatingActionButton: floatingActionButton,
       bottomNavigationBar: bottomNavigationBar,

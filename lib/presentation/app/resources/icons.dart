@@ -9,6 +9,7 @@ abstract class AppIcons {
   static const String arrowLeftLine = '$_path/arrow-left-line.svg';
   static const String arrowRightLine = '$_path/arrow-right-line.svg';
   static const String bookmarkLine = '$_path/bookmark-line.svg';
+  static const String bookmarkFilled = '$_path/bookmark-fill.svg';
   static const String calendar = '$_path/calendar.svg';
   static const String closeLine = '$_path/close-line.svg';
   static const String compass3Line = '$_path/compass-3-line.svg';
@@ -30,6 +31,7 @@ abstract class AppIcons {
   static const String searchLine = '$_path/search-line.svg';
   static const String settings4Line = '$_path/settings-line.svg';
   static const String shareLine = '$_path/share-line.svg';
+  static const String stickyNote = '$_path/sticky-note-line.svg';
   static const String sunFoggyLine = '$_path/sun-foggy-line.svg';
   static const String sunLine = '$_path/sun-line.svg';
   static const String userLine = '$_path/user-line.svg';

@@ -22,10 +22,26 @@ class QuranSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final searchWidget = Container(
       height: height,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 13.5),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.16),
-        borderRadius: BorderRadius.circular(24),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(27),
+        border: Border.all(
+          color: const Color(0x14000000),
+          width: 1.125,
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 1,
+            offset: Offset(0, 0.5),
+          ),
+          BoxShadow(
+            color: Color(0x12000000),
+            blurRadius: 2,
+            offset: Offset(0, 1),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -33,8 +49,8 @@ class QuranSearchBar extends StatelessWidget {
             AppIcons.searchLine,
             width: 20,
             height: 20,
-            colorFilter: ColorFilter.mode(
-              Colors.white.withValues(alpha: 0.85),
+            colorFilter: const ColorFilter.mode(
+              Color(0xFF5E5E5E),
               BlendMode.srcIn,
             ),
           ),
@@ -45,21 +61,23 @@ class QuranSearchBar extends StatelessWidget {
               readOnly: readOnly,
               onTap: onTap,
               onChanged: onChanged,
-              cursorColor: Colors.white,
+              cursorColor: const Color(0xFF007D56),
               textAlignVertical: TextAlignVertical.center,
               style: const TextStyle(
                 fontSize: 12,
                 fontFamily: 'Satoshi',
                 fontWeight: FontWeight.w500,
-                color: Colors.white,
+                color: Color(0xFF0F172A),
               ),
               decoration: const InputDecoration(
                 border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
                 hintText: 'Cari ayat atau surah disini',
                 hintStyle: TextStyle(
-                  color: Color(0xFFA6A6A6),
+                  color: Color(0xFF5E5E5E),
                   fontSize: 12,
                   fontFamily: 'Satoshi',
                   fontWeight: FontWeight.w500,

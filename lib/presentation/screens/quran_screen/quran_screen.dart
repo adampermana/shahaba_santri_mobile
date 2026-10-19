@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
+import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
@@ -50,6 +51,7 @@ class _QuranViewState extends State<_QuranView> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      backgroundColor: ColorPalette.surfaceSecondary,
       appBar: _buildAppBar(context),
       body: BlocListener<QuranBloc, QuranState>(
         listenWhen: (prev, curr) => prev.currentTab != curr.currentTab,
@@ -119,6 +121,28 @@ class _QuranViewState extends State<_QuranView> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: Row(
             children: [
+              GestureDetector(
+                onTap: () {
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go(RouterPath.mainPath);
+                  }
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: SvgPicture.asset(
+                    AppIcons.arrowLeftLine,
+                    width: 24,
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(
+                      Color(0xFF5E5E5E),
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              ),
               Expanded(
                 child: QuranSearchBar(
                   readOnly: true,
@@ -168,29 +192,41 @@ class _BookmarkButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Ink(
-          width: 36,
-          height: 36,
-          decoration: BoxDecoration(
-            color: const Color(0x1FFFFFFF),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: const Color(0x29E8E8E8),
-              width: 0.9,
-            ),
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.6),
+        border: Border.all(
+          color: const Color(0x14000000),
+          width: 0.9,
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 1,
+            offset: Offset(0, 1),
           ),
+          BoxShadow(
+            color: Color(0x12000000),
+            blurRadius: 2,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12.6),
           child: Center(
             child: SvgPicture.asset(
               AppIcons.bookmarkLine,
               width: 20,
               height: 20,
               colorFilter: const ColorFilter.mode(
-                Colors.white,
+                Color(0xFF0F172A),
                 BlendMode.srcIn,
               ),
             ),
@@ -209,27 +245,41 @@ class _SurahList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state.surahsLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+        child: CircularProgressIndicator(color: ColorPalette.primaryColor),
+      );
     }
 
     if (state.surahsError.isNotEmpty) {
-      return Center(child: Text(state.surahsError));
+      return Center(
+        child: Text(
+          state.surahsError,
+          style: const TextStyle(
+            color: Color(0xFF0F172A),
+            fontFamily: 'Satoshi',
+          ),
+        ),
+      );
     }
 
     final surahs = state.surahs;
 
     if (surahs.isEmpty) {
-      return const Center(child: Text('Tidak ada surah ditemukan'));
+      return const Center(
+        child: Text(
+          'Tidak ada surah ditemukan',
+          style: TextStyle(
+            color: Color(0xFF5E5E5E),
+            fontFamily: 'Satoshi',
+          ),
+        ),
+      );
     }
 
     return ListView.separated(
-      padding: EdgeInsets.zero,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       itemCount: surahs.length,
-      separatorBuilder: (_, _) => const Divider(
-        height: 1,
-        thickness: 1,
-        color: Color(0x29E8E8E8),
-      ),
+      separatorBuilder: (_, _) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final surah = surahs[index];
         return SurahCard(
@@ -259,27 +309,41 @@ class _JuzList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state.juzLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+        child: CircularProgressIndicator(color: ColorPalette.primaryColor),
+      );
     }
 
     if (state.juzError.isNotEmpty) {
-      return Center(child: Text(state.juzError));
+      return Center(
+        child: Text(
+          state.juzError,
+          style: const TextStyle(
+            color: Color(0xFF0F172A),
+            fontFamily: 'Satoshi',
+          ),
+        ),
+      );
     }
 
     final juzList = state.juzList;
 
     if (juzList.isEmpty) {
-      return const Center(child: Text('Tidak ada juz ditemukan'));
+      return const Center(
+        child: Text(
+          'Tidak ada juz ditemukan',
+          style: TextStyle(
+            color: Color(0xFF5E5E5E),
+            fontFamily: 'Satoshi',
+          ),
+        ),
+      );
     }
 
     return ListView.separated(
-      padding: EdgeInsets.zero,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       itemCount: juzList.length,
-      separatorBuilder: (_, _) => const Divider(
-        height: 1,
-        thickness: 1,
-        color: Color(0x29E8E8E8),
-      ),
+      separatorBuilder: (_, _) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final juz = juzList[index];
         return JuzCard(
