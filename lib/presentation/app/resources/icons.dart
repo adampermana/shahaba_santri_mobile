@@ -13,6 +13,7 @@ abstract class AppIcons {
   static const String calendar = '$_path/calendar.svg';
   static const String closeLine = '$_path/close-line.svg';
   static const String compass3Line = '$_path/compass-3-line.svg';
+  static const String compass3Fill = '$_path/compass-3-fill.svg';
   static const String fileCopyLine = '$_path/file-copy-line.svg';
   static const String flag2Line = '$_path/flag-line.svg';
   static const String foggyLine = '$_path/foggy-line.svg';
@@ -20,6 +21,7 @@ abstract class AppIcons {
   static const String homeUnselected = '$_path/home-unselected.svg';
   static const String homeSelected = '$_path/home-selected.svg';
   static const String information2Line = '$_path/information-2-line.svg';
+  static const String information2Fill = '$_path/information-2-fill.svg';
   static const String jadwalSholat = '$_path/jadwal-sholat.svg';
   static const String kisah = '$_path/kisah.svg';
   static const String quranUnselected = '$_path/quran-unselected.svg';

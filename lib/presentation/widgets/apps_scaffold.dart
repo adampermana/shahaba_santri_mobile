@@ -11,6 +11,7 @@ class AppScaffold extends StatelessWidget {
     this.resizeToAvoidBottomInset = true,
     this.motifHeight = 220,
     this.backgroundColor,
+    this.gradient,
   });
 
   final PreferredSizeWidget? appBar;
@@ -20,20 +21,27 @@ class AppScaffold extends StatelessWidget {
   final bool resizeToAvoidBottomInset;
   final double motifHeight;
   final Color? backgroundColor;
+  final Gradient? gradient;
 
   @override
   Widget build(BuildContext context) {
-    // final topPadding = MediaQuery.of(context).padding.top;
-
     return Scaffold(
-      backgroundColor: backgroundColor ?? ColorPalette.scaffoldBackground,
+      backgroundColor: gradient != null
+          ? Colors.transparent
+          : backgroundColor ?? ColorPalette.scaffoldBackground,
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       floatingActionButton: floatingActionButton,
       bottomNavigationBar: bottomNavigationBar,
       body: Stack(
         children: [
-          // motif jadi layer paling belakang, tinggi bebas
-          // (boleh nembus sampai area body, nggak dibatasi tinggi appbar lagi)
+          // Gradient background layer (optional)
+          if (gradient != null)
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(gradient: gradient),
+              ),
+            ),
+          // Motif layer
           Positioned(
             top: 0,
             right: 0,
@@ -43,8 +51,7 @@ class AppScaffold extends StatelessWidget {
               fit: BoxFit.fitHeight,
             ),
           ),
-          // appbar + body ditaruh di atas motif, keduanya transparan
-          // supaya motif kebaca di celah antara appbar & konten
+          // AppBar + body
           Column(
             children: [
               const SizedBox(height: 8),

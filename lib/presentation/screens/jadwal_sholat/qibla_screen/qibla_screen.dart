@@ -11,36 +11,20 @@ import 'package:sahaba_mobile/infrastructure/enum/enum.dart';
 import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
+import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/qibla_screen/widgets/qibla_chip.dart';
 import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
-import 'package:sahaba_mobile/presentation/widgets/widget_info_schip.dart';
 
-class QiblaScreen extends StatelessWidget {
+class QiblaScreen extends StatefulWidget {
   const QiblaScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) {
-        final cubit = sl<QiblaCubit>();
-        unawaited(cubit.loadQibla());
-        return cubit;
-      },
-      child: const _QiblaView(),
-    );
-  }
+  State<QiblaScreen> createState() => _QiblaScreenState();
 }
 
-class _QiblaView extends StatefulWidget {
-  const _QiblaView();
-
-  @override
-  State<_QiblaView> createState() => _QiblaViewState();
-}
-
-class _QiblaViewState extends State<_QiblaView> {
+class _QiblaScreenState extends State<QiblaScreen> {
   static const _hapticAngleThreshold = 5.0;
   static const _hapticThrottle = Duration(milliseconds: 180);
 
@@ -52,41 +36,52 @@ class _QiblaViewState extends State<_QiblaView> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return AppScaffold(
-      // backgroundColor: ColorPalette.scaffoldBackground,
-      appBar: _buildAppBar(context),
-      body: BlocConsumer<QiblaCubit, QiblaState>(
-        listenWhen: (previous, current) {
-          if (current is QiblaError) return true;
-          return current is QiblaLoaded;
-        },
-        listener: (context, state) {
-          if (state is QiblaError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
-            _resetHapticState();
-          }
+    return BlocProvider(
+      create: (_) {
+        final cubit = sl<QiblaCubit>();
+        unawaited(cubit.loadQibla());
+        return cubit;
+      },
+      child: AppScaffold(
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF09383B), Color(0xFF1898A1)],
+        ),
+        appBar: _buildAppBar(context),
+        body: BlocConsumer<QiblaCubit, QiblaState>(
+          listenWhen: (previous, current) {
+            if (current is QiblaError) return true;
+            return current is QiblaLoaded;
+          },
+          listener: (context, state) {
+            if (state is QiblaError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.message)),
+              );
+              _resetHapticState();
+            }
 
-          if (state is QiblaLoaded) {
-            _handleHaptic(state);
-          }
-        },
-        builder: (context, state) {
-          if (state is QiblaLoading || state is QiblaInitial) {
-            return _loadingState();
-          }
+            if (state is QiblaLoaded) {
+              _handleHaptic(state);
+            }
+          },
+          builder: (context, state) {
+            if (state is QiblaLoading || state is QiblaInitial) {
+              return _loadingState();
+            }
 
-          if (state is QiblaError) {
-            return _errorState(context, state.message, textTheme);
-          }
+            if (state is QiblaError) {
+              return _errorState(context, state.message, textTheme);
+            }
 
-          if (state is QiblaLoaded) {
-            return _loadedState(state, textTheme);
-          }
+            if (state is QiblaLoaded) {
+              return _loadedState(state, textTheme);
+            }
 
-          return const SizedBox.shrink();
-        },
+            return const SizedBox.shrink();
+          },
+        ),
       ),
     );
   }
@@ -118,6 +113,11 @@ class _QiblaViewState extends State<_QiblaView> {
           fontSize: 14,
           fontWeight: FontWeight.w600,
         ),
+      ),
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF09383B),
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
       ),
     );
   }
@@ -244,7 +244,10 @@ class _QiblaViewState extends State<_QiblaView> {
                       Stack(
                         // alignment: Alignment.center,
                         children: [
-                          Image.asset('assets/images/new-motif.png'),
+                          Image.asset(
+                            'assets/images/new-motif.png',
+                            opacity: const AlwaysStoppedAnimation(0.6),
+                          ),
                           Positioned(
                             top: -20,
                             left: 0,
@@ -520,7 +523,7 @@ class _DirectionInfo extends StatelessWidget {
           _directionText(),
           textAlign: TextAlign.center,
           style: textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w500,
             fontSize: 22,
             height: 1.25,
             color: ColorPalette.kWhite,
@@ -547,13 +550,13 @@ class _DirectionInfo extends StatelessWidget {
       spacing: 16,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        InfoChip(
-          text: '${qiblaDirection.toStringAsFixed(0)}°',
-          icon: AppIcons.compass3Line,
+        QiblaChip(
+          label: '${qiblaDirection.toStringAsFixed(0)}°',
+          icon: AppIcons.compass3Fill,
         ),
-        InfoChip(
-          text: 'Panduan',
-          icon: AppIcons.information2Line,
+        QiblaChip(
+          label: 'Panduan',
+          icon: AppIcons.information2Fill,
           onTap: () async => showDialog<void>(
             context: context,
             builder: (context) => _QiblaInfoModal(
