@@ -103,7 +103,7 @@ class _BottomSheetPasswordState extends State<BottomSheetPassword> {
 
     context.read<AuthBloc>().add(
       AuthEvent.postloginUser(
-        identifier: widget.email,
+        email: widget.email,
         password: _passwordController.text,
       ),
     );

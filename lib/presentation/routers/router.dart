@@ -12,6 +12,7 @@ import 'package:sahaba_mobile/business_logic/kisah_bloc/kisah_bloc.dart';
 import 'package:sahaba_mobile/business_logic/location_cubit/location_cubit.dart';
 import 'package:sahaba_mobile/business_logic/news_bloc/news_bloc.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/last_read_cubit.dart';
+import 'package:sahaba_mobile/business_logic/quran_bloc/quran_bloc.dart';
 import 'package:sahaba_mobile/business_logic/quran_bloc/quran_detail_cubit.dart';
 import 'package:sahaba_mobile/business_logic/streak_cubit/streak_cubit.dart';
 import 'package:sahaba_mobile/domains/kisah/kisah_response.dart';
@@ -29,14 +30,15 @@ import 'package:sahaba_mobile/presentation/screens/home/kisah/detail_kisah_scree
 import 'package:sahaba_mobile/presentation/screens/home/kisah/kisah_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/news/detail_news_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/home/news/list_all_news_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/home/quran_screen/detail_quran_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/home/quran_screen/history_collection_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/home/quran_screen/quran_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/home/quran_screen/search_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/jadwal_sholat_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/qibla_screen/qibla_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/jadwal_sholat/select_city_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/main_screen.dart';
 import 'package:sahaba_mobile/presentation/screens/onboarding/onboarding_screen.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/detail_quran_screen.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/history_collection_screen.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/submit_button_styles.dart';
 
 final _refreshStream = RouterRefreshStream([
@@ -48,67 +50,65 @@ final GoRouter router = GoRouter(
   refreshListenable: _refreshStream,
   initialLocation: RouterPath.rootPath,
   redirect: (context, state) {
-    final isOnBoarded = sl<CoreCubit>().state.isBoarding;
-    final location = state.matchedLocation;
-
-    // Belum onboarding → arahkan ke onboarding
-    if (!isOnBoarded) {
-      return location == RouterPath.onboardingPath
-          ? null
-          : RouterPath.onboardingPath;
-    }
-
-    // Sudah onboarding, jangan biarkan akses ke onboarding / root
-    final isOnboardingOrRoot =
-        location == RouterPath.onboardingPath ||
-        location == RouterPath.rootPath;
-    if (isOnboardingOrRoot) {
-      return RouterPath.loginPath;
-    }
-
-    return null;
-    // final authState = sl<AuthAccountBloc>().state;
-
-    // final isAuthUser = authState.maybeWhen(
-    //   authenticatedUser: (authData, [aiData]) => true,
-    //   orElse: () => false,
-    // );
-
-    // final isAuthGuest = authState.maybeWhen(
-    //   authenticatedGuest: (_) => true,
-    //   orElse: () => false,
-    // );
-
     // final isOnBoarded = sl<CoreCubit>().state.isBoarding;
     // final location = state.matchedLocation;
 
-    // // 1. Belum onboarding — paksa ke onboarding
+    // // Belum onboarding → arahkan ke onboarding
     // if (!isOnBoarded) {
-    //   if (location == RouterPath.onboardingPath) return null;
-    //   return RouterPath.onboardingPath;
+    //   return location == RouterPath.onboardingPath
+    //       ? null
+    //       : RouterPath.onboardingPath;
     // }
 
-    // final isPublic =
-    //     location.startsWith(RouterPath.loginPath) ||
-    //     location.startsWith(RouterPath.registerPath) ||
-    //     location.startsWith(RouterPath.greetingPath);
-
-    // // 2. Belum login (unauthenticated) — hanya boleh akses area publik
-    // if (!isAuthUser && !isAuthGuest) {
-    //   if (isPublic) return null;
+    // // Sudah onboarding, jangan biarkan akses ke onboarding / root
+    // final isOnboardingOrRoot =
+    //     location == RouterPath.onboardingPath ||
+    //     location == RouterPath.rootPath;
+    // if (isOnboardingOrRoot) {
     //   return RouterPath.loginPath;
     // }
 
-    // // 3. Sudah login sebagai guest atau user — cegah akses kembali ke onboarding/auth/greeting/root
-    // final isAuthArea =
-    //     location == RouterPath.onboardingPath ||
-    //     location == RouterPath.rootPath ||
-    //     location.startsWith(RouterPath.loginPath) ||
-    //     location.startsWith(RouterPath.registerPath) ||
-    //     location.startsWith(RouterPath.greetingPath);
-    // if (isAuthArea) return RouterPath.mainPath;
-
     // return null;
+    final authState = sl<AuthAccountBloc>().state;
+
+    final isAuthUser = authState.maybeWhen(
+      authenticatedUser: (authData, [aiData]) => true,
+      orElse: () => false,
+    );
+
+    final isAuthGuest = authState.maybeWhen(
+      authenticatedGuest: (_) => true,
+      orElse: () => false,
+    );
+
+    final isOnBoarded = sl<CoreCubit>().state.isBoarding;
+    final location = state.matchedLocation;
+
+    // 1. Belum onboarding — paksa ke onboarding
+    if (!isOnBoarded) {
+      if (location == RouterPath.onboardingPath) return null;
+      return RouterPath.onboardingPath;
+    }
+
+    final isPublic =
+        location.startsWith(RouterPath.loginPath) ||
+        location.startsWith(RouterPath.registerPath) ||
+        location.startsWith(RouterPath.greetingPath);
+
+    // 2. Belum login (unauthenticated) — hanya boleh akses area publik
+    if (!isAuthUser && !isAuthGuest) {
+      if (isPublic) return null;
+      return RouterPath.loginPath;
+    }
+
+    // 3. Sudah login sebagai guest atau user — cegah akses kembali ke onboarding/auth/greeting/root
+    final isAuthArea =
+        location == RouterPath.onboardingPath ||
+        location == RouterPath.rootPath ||
+        location.startsWith(RouterPath.loginPath);
+    if (isAuthArea) return RouterPath.mainPath;
+
+    return null;
   },
 
   errorBuilder: (context, state) {
@@ -152,10 +152,7 @@ final GoRouter router = GoRouter(
       path: RouterPath.greetingPath,
       builder: (context, state) => const GreetingScreen(),
     ),
-    // GoRoute(
-    //   path: RouterPath.forgotPasswordPath,
-    //   builder: (context, state) => const Forg(),
-    // ),
+
     GoRoute(
       // Main path
       path: RouterPath.mainPath,
@@ -164,6 +161,61 @@ final GoRouter router = GoRouter(
       ),
 
       routes: [
+        GoRoute(
+          path: RouterPath.quranPath,
+          builder: (context, state) => BlocProvider.value(
+            value: sl<QuranBloc>(),
+            child: const QuranScreen(),
+          ),
+          routes: [
+            // Search Quran
+            GoRoute(
+              path: RouterPath.searchQuranPath,
+              builder: (context, state) {
+                final args = state.extra;
+                if (args is SearchQuranArgs) {
+                  return SearchQuranScreen(args: args);
+                }
+                return const SearchQuranScreen(
+                  args: SearchQuranArgs(surahs: [], juzList: []),
+                );
+              },
+            ),
+
+            // Detail Quran
+            GoRoute(
+              path: RouterPath.detailQuranPath,
+              builder: (context, state) {
+                final args = state.extra;
+                if (args is QuranDetailArgs) {
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (_) {
+                          final cubit = sl<QuranDetailCubit>();
+                          unawaited(cubit.load(args));
+                          return cubit;
+                        },
+                      ),
+                      BlocProvider.value(value: sl<LastReadCubit>()),
+                    ],
+                    child: DetailQuranScreen(args: args),
+                  );
+                }
+                return const DetailQuranScreen();
+              },
+            ),
+
+            // History Collection (Bookmark & Catatan)
+            GoRoute(
+              path: RouterPath.historyCollectionPath,
+              builder: (context, state) => BlocProvider.value(
+                value: sl<QuranBloc>(),
+                child: const HistoryCollectionScreen(),
+              ),
+            ),
+          ],
+        ),
         GoRoute(
           path: RouterPath.selectCityPath,
           builder: (context, state) {
@@ -181,17 +233,6 @@ final GoRouter router = GoRouter(
             );
           },
         ),
-        // GoRoute(
-        //   path: RouterPath.productDetailPath,
-        //   builder: (context, state) {
-        //     final extra = state.extra as Map<String, dynamic>?;
-        //     return DetailProductScreen(
-        //       id: extra?['id'] as int? ?? 0,
-        //       ad: extra?['ad'] as ProductData?,
-        //       isAds: extra?['isAds'] as bool? ?? false,
-        //     );
-        //   },
-        // ),
         GoRoute(
           path: RouterPath.listAllNewsPath,
           builder: (context, state) => const ListAllNewsScreen(),
@@ -217,13 +258,6 @@ final GoRouter router = GoRouter(
           path: RouterPath.qiblaPath,
           builder: (context, state) => const QiblaScreen(),
         ),
-        // GoRoute(
-        //   path: RouterPath.sahabaAiPath,
-        //   builder: (context, state) => BlocProvider(
-        //     create: (_) => sl<AiChatBloc>(),
-        //     child: const SahabaAiScreen(),
-        //   ),
-        // ),
         GoRoute(
           path: RouterPath.kisahPath,
           builder: (context, state) => BlocProvider(
@@ -248,113 +282,6 @@ final GoRouter router = GoRouter(
           path: RouterPath.calendarPath,
           builder: (context, state) => const CalendarScreen(),
         ),
-        // GoRoute(
-        //   path: RouterPath.productHalalPath,
-        //   builder: (context, state) => const ProductHalalScreen(),
-        //   routes: [
-        //     GoRoute(
-        //       path: RouterPath.productDetailPath,
-        //       builder: (context, state) {
-        //         final extra = state.extra as Map<String, dynamic>?;
-        //         return DetailProductScreen(
-        //           id: extra?['id'] as int? ?? 0,
-        //           ad: extra?['ad'] as ProductData?,
-        //           isAds: extra?['isAds'] as bool? ?? false,
-        //         );
-        //       },
-        //     ),
-        //     GoRoute(
-        //       path: RouterPath.historyProductPath,
-        //       builder: (context, state) {
-        //         final extra = state.extra as Map<String, dynamic>?;
-        //         return HistoryProductDetailScreen(
-        //           id: extra?['id'] as int? ?? 0,
-        //           lat: extra?['lat'] as double?,
-        //           long: extra?['long'] as double?,
-        //           eventTime: extra?['eventTime'] as String?,
-        //         );
-        //       },
-        //     ),
-
-        //     GoRoute(
-        //       path: RouterPath.cameraPath,
-        //       builder: (context, state) => BlocProvider.value(
-        //         value: sl<LocationBloc>(),
-        //         child: const CameraScanScreen(),
-        //       ),
-        //       routes: [
-        //         GoRoute(
-        //           path: RouterPath.productDetailPath,
-        //           builder: (context, state) {
-        //             final extra = state.extra as Map<String, dynamic>?;
-        //             return DetailProductScreen(
-        //               id: extra?['id'] as int? ?? 0,
-        //               ad: extra?['ad'] as ProductData?,
-        //               isAds: extra?['isAds'] as bool? ?? false,
-        //             );
-        //           },
-        //         ),
-        //       ],
-        //     ),
-
-        //     //  Global Search Product Halal
-        //     GoRoute(
-        //       path: RouterPath.searchProductHalalPath,
-        //       builder: (context, state) => const SearchProductHalalScreen(),
-        //     ),
-
-        //     GoRoute(
-        //       path: RouterPath.listDetailBrandByProductPath,
-        //       builder: (context, state) {
-        //         final extra = state.extra as Map<String, dynamic>?;
-        //         return ListDetailBrandByProductScreen(
-        //           id: extra?['id'] as int? ?? 0,
-        //           brandId: extra?['brand_id'] as int?,
-        //           partnerName: extra?['partner_name'] as String?,
-        //           imageUrl: extra?['image'] as String?,
-        //         );
-        //       },
-        //       routes: [
-        //         GoRoute(
-        //           path: RouterPath.productDetailPath,
-        //           builder: (context, state) {
-        //             final extra = state.extra as Map<String, dynamic>?;
-        //             return DetailProductScreen(
-        //               id: extra?['id'] as int? ?? 0,
-        //             );
-        //           },
-        //         ),
-        //       ],
-        //     ),
-
-        //     // Category Product
-        //     GoRoute(
-        //       path: RouterPath.categoryProductPath,
-        //       builder: (context, state) {
-        //         final extra = state.extra as Map<String, dynamic>?;
-        //         return CategoryProductScreen(
-        //           key: state.pageKey,
-        //           id: extra?['id'] as int? ?? 0,
-        //           name: extra?['name'] as String? ?? '',
-        //         );
-        //       },
-
-        //       routes: [
-        //         GoRoute(
-        //           path: RouterPath.productDetailPath,
-        //           builder: (context, state) {
-        //             final extra = state.extra as Map<String, dynamic>?;
-        //             return DetailProductScreen(
-        //               id: extra?['id'] as int? ?? 0,
-        //               ad: extra?['ad'] as ProductData?,
-        //               isAds: extra?['isAds'] as bool? ?? false,
-        //             );
-        //           },
-        //         ),
-        //       ],
-        //     ),
-        //   ],
-        // ),
         GoRoute(
           path: RouterPath.jadwalSholatPath,
           builder: (context, state) => MultiBlocProvider(
@@ -372,58 +299,12 @@ final GoRouter router = GoRouter(
           ),
         ),
         GoRoute(
-          path: '${RouterPath.quranPath}/${RouterPath.detailQuranPath}',
-          builder: (context, state) {
-            final args = state.extra;
-            if (args is QuranDetailArgs) {
-              return MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                    create: (_) {
-                      final cubit = sl<QuranDetailCubit>();
-                      unawaited(cubit.load(args));
-                      return cubit;
-                    },
-                  ),
-                  BlocProvider.value(value: sl<LastReadCubit>()),
-                ],
-                child: DetailQuranScreen(args: args),
-              );
-            }
-
-            return const DetailQuranScreen();
-          },
-        ),
-
-        GoRoute(
           path: RouterPath.sahabaAiPath,
           builder: (context, state) => BlocProvider(
             create: (_) => sl<AiChatBloc>(),
             child: const SahabaAiScreen(),
           ),
         ),
-
-        // Camera
-        // GoRoute(
-        //   path: RouterPath.cameraPath,
-        //   builder: (context, state) => BlocProvider.value(
-        //     value: sl<LocationBloc>(),
-        //     child: const CameraScanScreen(),
-        //   ),
-        //   routes: [
-        //     GoRoute(
-        //       path: RouterPath.productDetailPath,
-        //       builder: (context, state) {
-        //         final extra = state.extra as Map<String, dynamic>?;
-        //         return DetailProductScreen(
-        //           id: extra?['id'] as int? ?? 0,
-        //           ad: extra?['ad'] as ProductData?,
-        //           isAds: extra?['isAds'] as bool? ?? false,
-        //         );
-        //       },
-        //     ),
-        //   ],
-        // ),
         // Detail News
         GoRoute(
           path: RouterPath.detailNewsPath,
@@ -440,28 +321,6 @@ final GoRouter router = GoRouter(
           },
         ),
 
-        // Detail Quran
-        GoRoute(
-          path: '${RouterPath.quranPath}/${RouterPath.searchQuranPath}',
-          builder: (context, state) {
-            final args = state.extra;
-            if (args is SearchQuranArgs) {
-              return SearchQuranScreen(args: args);
-            }
-
-            return const SearchQuranScreen(
-              args: SearchQuranArgs(surahs: [], juzList: []),
-            );
-          },
-        ),
-
-        // History Collection (Bookmark & Catatan)
-        GoRoute(
-          path: '${RouterPath.quranPath}/${RouterPath.historyCollectionPath}',
-          builder: (context, state) {
-            return const HistoryCollectionScreen();
-          },
-        ),
       ],
     ),
   ],

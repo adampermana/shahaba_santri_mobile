@@ -99,7 +99,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
 
     final result = await _authRepositories.postLoginUser(
-      identifier: event.identifier,
+      email: event.email,
       password: event.password,
     );
 
@@ -120,7 +120,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           statusCode: 200,
           loginResponse: r,
           authDataHive: _authRepositories.fetchDataLoginUser(),
-          message: r.message,
+          message: r.meta?.message,
         ),
       ),
     );
@@ -284,7 +284,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           statusCode: 200,
           loginResponse: r,
           authDataHive: _authRepositories.fetchDataLoginGuest(),
-          message: r.message,
+          message: r.meta?.message,
         ),
       ),
     );
@@ -358,7 +358,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           loadingRestoreAccount: false,
           successRestoreAccount: true,
           statusCode: 200,
-          message: r.message,
+          message: r.meta?.message,
         ),
       ),
     );
@@ -595,7 +595,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           statusCode: 200,
           loginResponse: r,
           authDataHive: _authRepositories.fetchDataLoginUser(),
-          message: r.message,
+          message: r.meta?.message,
         ),
       ),
     );

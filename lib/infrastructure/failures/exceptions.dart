@@ -86,12 +86,19 @@ class ServerException extends ServerFailures implements Exception {
           break;
         }
 
+        // Parse meta object if present
+        final meta = responseData['meta'] is Map
+            ? Map<String, dynamic>.from(responseData['meta'] as Map)
+            : null;
+
         // Parse flat response: message, status, code, errors, error
-        final responseMessage = _asString(responseData['message']);
+        final responseMessage = _asString(responseData['message']) ??
+            _asString(meta?['message']);
         final responseError = _asString(responseData['error']);
         final responseCode =
             _asStatusCode(responseData['status']) ??
-            _asStatusCode(responseData['code']);
+            _asStatusCode(responseData['code']) ??
+            _asStatusCode(meta?['code']);
         final validationErrors = _parseValidationErrors(
           responseData['errors'],
         );

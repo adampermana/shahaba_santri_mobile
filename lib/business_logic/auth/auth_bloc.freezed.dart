@@ -161,12 +161,12 @@ return postLoginPin(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String email)?  getValidationEmail,TResult Function( String identifier,  String password)?  postloginUser,TResult Function( String name,  String email,  String password)?  postRegister,TResult Function( String email,  String code)?  postVerifyEmail,TResult Function( String email)?  postResendEmailOtp,TResult Function()?  postloginGuest,TResult Function()?  postloginAi,TResult Function( String jwt)?  postRestoreAccount,TResult Function( String pin)?  postCreatePin,TResult Function( String email)?  postRequestResetPinOtp,TResult Function( String email,  String code,  String pin)?  postResetPin,TResult Function( String email)?  postRequestForgotPasswordOtp,TResult Function( String email,  String code,  String newPassword)?  postResetPassword,TResult Function( String identifier,  String pin)?  postLoginPin,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String email)?  getValidationEmail,TResult Function( String email,  String password,  String? fcmToken)?  postloginUser,TResult Function( String name,  String email,  String password)?  postRegister,TResult Function( String email,  String code)?  postVerifyEmail,TResult Function( String email)?  postResendEmailOtp,TResult Function()?  postloginGuest,TResult Function()?  postloginAi,TResult Function( String jwt)?  postRestoreAccount,TResult Function( String pin)?  postCreatePin,TResult Function( String email)?  postRequestResetPinOtp,TResult Function( String email,  String code,  String pin)?  postResetPin,TResult Function( String email)?  postRequestForgotPasswordOtp,TResult Function( String email,  String code,  String newPassword)?  postResetPassword,TResult Function( String identifier,  String pin)?  postLoginPin,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _GetValidationEmail() when getValidationEmail != null:
 return getValidationEmail(_that.email);case _PostloginUser() when postloginUser != null:
-return postloginUser(_that.identifier,_that.password);case _PostRegister() when postRegister != null:
+return postloginUser(_that.email,_that.password,_that.fcmToken);case _PostRegister() when postRegister != null:
 return postRegister(_that.name,_that.email,_that.password);case _PostVerifyEmail() when postVerifyEmail != null:
 return postVerifyEmail(_that.email,_that.code);case _PostResendEmailOtp() when postResendEmailOtp != null:
 return postResendEmailOtp(_that.email);case _PostloginGuest() when postloginGuest != null:
@@ -196,12 +196,12 @@ return postLoginPin(_that.identifier,_that.pin);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String email)  getValidationEmail,required TResult Function( String identifier,  String password)  postloginUser,required TResult Function( String name,  String email,  String password)  postRegister,required TResult Function( String email,  String code)  postVerifyEmail,required TResult Function( String email)  postResendEmailOtp,required TResult Function()  postloginGuest,required TResult Function()  postloginAi,required TResult Function( String jwt)  postRestoreAccount,required TResult Function( String pin)  postCreatePin,required TResult Function( String email)  postRequestResetPinOtp,required TResult Function( String email,  String code,  String pin)  postResetPin,required TResult Function( String email)  postRequestForgotPasswordOtp,required TResult Function( String email,  String code,  String newPassword)  postResetPassword,required TResult Function( String identifier,  String pin)  postLoginPin,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String email)  getValidationEmail,required TResult Function( String email,  String password,  String? fcmToken)  postloginUser,required TResult Function( String name,  String email,  String password)  postRegister,required TResult Function( String email,  String code)  postVerifyEmail,required TResult Function( String email)  postResendEmailOtp,required TResult Function()  postloginGuest,required TResult Function()  postloginAi,required TResult Function( String jwt)  postRestoreAccount,required TResult Function( String pin)  postCreatePin,required TResult Function( String email)  postRequestResetPinOtp,required TResult Function( String email,  String code,  String pin)  postResetPin,required TResult Function( String email)  postRequestForgotPasswordOtp,required TResult Function( String email,  String code,  String newPassword)  postResetPassword,required TResult Function( String identifier,  String pin)  postLoginPin,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started();case _GetValidationEmail():
 return getValidationEmail(_that.email);case _PostloginUser():
-return postloginUser(_that.identifier,_that.password);case _PostRegister():
+return postloginUser(_that.email,_that.password,_that.fcmToken);case _PostRegister():
 return postRegister(_that.name,_that.email,_that.password);case _PostVerifyEmail():
 return postVerifyEmail(_that.email,_that.code);case _PostResendEmailOtp():
 return postResendEmailOtp(_that.email);case _PostloginGuest():
@@ -230,12 +230,12 @@ return postLoginPin(_that.identifier,_that.pin);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String email)?  getValidationEmail,TResult? Function( String identifier,  String password)?  postloginUser,TResult? Function( String name,  String email,  String password)?  postRegister,TResult? Function( String email,  String code)?  postVerifyEmail,TResult? Function( String email)?  postResendEmailOtp,TResult? Function()?  postloginGuest,TResult? Function()?  postloginAi,TResult? Function( String jwt)?  postRestoreAccount,TResult? Function( String pin)?  postCreatePin,TResult? Function( String email)?  postRequestResetPinOtp,TResult? Function( String email,  String code,  String pin)?  postResetPin,TResult? Function( String email)?  postRequestForgotPasswordOtp,TResult? Function( String email,  String code,  String newPassword)?  postResetPassword,TResult? Function( String identifier,  String pin)?  postLoginPin,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String email)?  getValidationEmail,TResult? Function( String email,  String password,  String? fcmToken)?  postloginUser,TResult? Function( String name,  String email,  String password)?  postRegister,TResult? Function( String email,  String code)?  postVerifyEmail,TResult? Function( String email)?  postResendEmailOtp,TResult? Function()?  postloginGuest,TResult? Function()?  postloginAi,TResult? Function( String jwt)?  postRestoreAccount,TResult? Function( String pin)?  postCreatePin,TResult? Function( String email)?  postRequestResetPinOtp,TResult? Function( String email,  String code,  String pin)?  postResetPin,TResult? Function( String email)?  postRequestForgotPasswordOtp,TResult? Function( String email,  String code,  String newPassword)?  postResetPassword,TResult? Function( String identifier,  String pin)?  postLoginPin,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _GetValidationEmail() when getValidationEmail != null:
 return getValidationEmail(_that.email);case _PostloginUser() when postloginUser != null:
-return postloginUser(_that.identifier,_that.password);case _PostRegister() when postRegister != null:
+return postloginUser(_that.email,_that.password,_that.fcmToken);case _PostRegister() when postRegister != null:
 return postRegister(_that.name,_that.email,_that.password);case _PostVerifyEmail() when postVerifyEmail != null:
 return postVerifyEmail(_that.email,_that.code);case _PostResendEmailOtp() when postResendEmailOtp != null:
 return postResendEmailOtp(_that.email);case _PostloginGuest() when postloginGuest != null:
@@ -357,11 +357,12 @@ as String,
 
 
 class _PostloginUser implements AuthEvent {
-  const _PostloginUser({required this.identifier, required this.password});
+  const _PostloginUser({required this.email, required this.password, this.fcmToken});
   
 
- final  String identifier;
+ final  String email;
  final  String password;
+ final  String? fcmToken;
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -373,16 +374,16 @@ _$PostloginUserCopyWith<_PostloginUser> get copyWith => __$PostloginUserCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PostloginUser&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.password, password) || other.password == password));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PostloginUser&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,identifier,password);
+int get hashCode => Object.hash(runtimeType,email,password,fcmToken);
 
 @override
 String toString() {
-  return 'AuthEvent.postloginUser(identifier: $identifier, password: $password)';
+  return 'AuthEvent.postloginUser(email: $email, password: $password, fcmToken: $fcmToken)';
 }
 
 
@@ -393,7 +394,7 @@ abstract mixin class _$PostloginUserCopyWith<$Res> implements $AuthEventCopyWith
   factory _$PostloginUserCopyWith(_PostloginUser value, $Res Function(_PostloginUser) _then) = __$PostloginUserCopyWithImpl;
 @useResult
 $Res call({
- String identifier, String password
+ String email, String password, String? fcmToken
 });
 
 
@@ -410,11 +411,12 @@ class __$PostloginUserCopyWithImpl<$Res>
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? identifier = null,Object? password = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,Object? fcmToken = freezed,}) {
   return _then(_PostloginUser(
-identifier: null == identifier ? _self.identifier : identifier // ignore: cast_nullable_to_non_nullable
+email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
-as String,
+as String,fcmToken: freezed == fcmToken ? _self.fcmToken : fcmToken // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

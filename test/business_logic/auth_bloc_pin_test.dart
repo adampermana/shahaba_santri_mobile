@@ -185,10 +185,13 @@ void main() {
         ).thenAnswer(
           (_) async => const Right(
             LoginResponse(
-              success: true,
-              message: 'Login berhasil',
-              token: 'jwt-token',
-              isPin: true,
+              meta: LoginMeta(
+                message: 'Login berhasil',
+                success: true,
+              ),
+              data: LoginData(
+                accessToken: 'jwt-token',
+              ),
             ),
           ),
         );
@@ -209,7 +212,7 @@ void main() {
             .having((s) => s.successLoginPin, 'successLoginPin', isTrue)
             .having((s) => s.statusCode, 'statusCode', 200)
             .having(
-              (s) => s.loginResponse?.token,
+              (s) => s.loginResponse?.data?.accessToken,
               'token',
               'jwt-token',
             ),

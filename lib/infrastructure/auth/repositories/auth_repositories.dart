@@ -32,38 +32,97 @@ class AuthRepositories implements IAuthRepositories {
 
   @override
   Future<Either<ServerFailures, LoginResponse>> postLoginUser({
-    required String identifier,
+    required String email,
     required String password,
   }) async {
     try {
+      // Fcm token
+      final firebaseMessaging = sl<FirebaseMessaging>();
+      final fcmToken = await firebaseMessaging.getToken();
       final response = await _remoteDatasource.postLoginUser(
-        identifier: identifier,
+        email: email,
         password: password,
+        fcmToken: fcmToken.toString(),
       );
 
-      if (response.success == false) {
+      if (response.meta?.success == false) {
         return Left(
           ServerFailures(
             statusCode: 401,
             title: 'Login gagal',
-            message: response.message ?? 'Identifier atau kata sandi salah',
+            message: response.meta?.message ?? 'Email atau kata sandi salah',
           ),
         );
       }
 
-      final token = response.token;
-      final isPin = response.isPin ?? response.data?.isPin;
-      if (token != null) {
+      final accessToken = response.data?.accessToken;
+      final refreshToken = response.data?.refreshToken;
+      final user = response.data?.user;
+
+      if (accessToken != null) {
         await _localDatasource.saveAuthUser(
           AuthDataHive(
-            accessToken: token,
-            tokenType: response.tokenType,
-            expiresIn: response.expiresIn,
-            isPin: isPin,
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            name: user?.name,
+            email: user?.email,
+            photoUrl: user?.photoUrl,
           ),
         );
       }
 
+      return Right(response);
+    } on ServerFailures catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<ServerFailures, LoginResponse>> postRefreshToken({
+    required String refreshToken,
+  }) async {
+    try {
+      final response = await _remoteDatasource.postRefreshToken(
+        refreshToken: refreshToken,
+      );
+
+      if (response.meta?.success == false) {
+        return Left(
+          ServerFailures(
+            statusCode: 401,
+            title: 'Sesi berakhir',
+            message: response.meta?.message ?? 'Gagal memperbarui sesi',
+          ),
+        );
+      }
+
+      final newAccessToken = response.data?.accessToken;
+      final newRefreshToken = response.data?.refreshToken;
+      final user = response.data?.user;
+
+      if (newAccessToken != null) {
+        final current = _localDatasource.authUserDataHive;
+        await _localDatasource.saveAuthUser(
+          (current ?? AuthDataHive()).copyWith(
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken ?? refreshToken,
+            name: user?.name ?? current?.name,
+            email: user?.email ?? current?.email,
+            photoUrl: user?.photoUrl ?? current?.photoUrl,
+          ),
+        );
+      }
+
+      return Right(response);
+    } on ServerFailures catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<ServerFailures, UserProfileResponse>> getUserProfile() async {
+    try {
+      final response = await _remoteDatasource.getUserProfile();
       return Right(response);
     } on ServerFailures catch (e) {
       return Left(e);
@@ -175,7 +234,7 @@ class AuthRepositories implements IAuthRepositories {
         platform: platform,
       );
 
-      final token = response.token;
+      final token = response.data?.accessToken;
       if (token != null) {
         await _localDatasource.saveAuthGuest(
           AuthDataHive(
@@ -398,25 +457,28 @@ class AuthRepositories implements IAuthRepositories {
         pin: pin,
       );
 
-      if (response.success == false) {
+      if (response.meta?.success == false) {
         return Left(
           ServerFailures(
             statusCode: 401,
             title: 'Login gagal',
-            message: response.message ?? 'Identifier atau PIN salah',
+            message: response.meta?.message ?? 'Identifier atau PIN salah',
           ),
         );
       }
 
-      final token = response.token;
-      final isPin = response.isPin ?? response.data?.isPin;
-      if (token != null) {
+      final accessToken = response.data?.accessToken;
+      final refreshToken = response.data?.refreshToken;
+      final user = response.data?.user;
+
+      if (accessToken != null) {
         await _localDatasource.saveAuthUser(
           AuthDataHive(
-            accessToken: token,
-            tokenType: response.tokenType,
-            expiresIn: response.expiresIn,
-            isPin: isPin,
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            name: user?.name,
+            email: user?.email,
+            photoUrl: user?.photoUrl,
           ),
         );
       }

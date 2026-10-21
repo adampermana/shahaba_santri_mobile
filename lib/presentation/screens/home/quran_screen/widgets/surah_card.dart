@@ -50,7 +50,7 @@ class SurahCard extends StatelessWidget {
             child: Row(
               children: [
                 SizedBox(
-                  width: 36,
+                  width: 60,
                   child: Text(
                     '${int.tryParse(surah.index ?? '') ?? surah.index}',
                     textAlign: TextAlign.center,

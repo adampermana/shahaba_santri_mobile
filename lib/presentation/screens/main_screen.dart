@@ -20,7 +20,7 @@ import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/create_pin_flow.dart';
 import 'package:sahaba_mobile/presentation/screens/home/home_screen.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/quran_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/profile/profile_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/bottom_navigation_bar.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart';
 
@@ -55,8 +55,8 @@ class MainProvider extends StatelessWidget {
             return cubit;
           },
         ),
-        BlocProvider(
-          create: (_) => sl<QuranBloc>()
+        BlocProvider.value(
+          value: sl<QuranBloc>()
             ..add(const QuranEvent.loadSurahs())
             ..add(const QuranEvent.loadJuz()),
         ),
@@ -125,7 +125,9 @@ class _MainScreenState extends State<_MainScreen> {
   List<Widget> get _screens => [
     HomeScreen(isActive: _selectedIndex == 0),
     const SizedBox.shrink(),
-    const QuranScreen(),
+    const ProfileScreen(),
+
+    // const QuranScreen(),
   ];
 
   void _onTabChanged(int index) {

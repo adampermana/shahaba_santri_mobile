@@ -9,8 +9,9 @@ class AuthEvent with _$AuthEvent {
   }) = _GetValidationEmail;
 
   const factory AuthEvent.postloginUser({
-    required String identifier,
+    required String email,
     required String password,
+    String? fcmToken,
   }) = _PostloginUser;
 
   const factory AuthEvent.postRegister({

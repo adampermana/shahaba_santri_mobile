@@ -52,7 +52,7 @@ class JuzCard extends StatelessWidget {
             child: Row(
               children: [
                 SizedBox(
-                  width: 36,
+                  width: 48,
                   child: Text(
                     '${int.tryParse(juz.index ?? '') ?? juz.index}',
                     textAlign: TextAlign.center,

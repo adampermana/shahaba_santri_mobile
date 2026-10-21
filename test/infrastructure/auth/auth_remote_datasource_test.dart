@@ -155,14 +155,10 @@ void main() {
     const path = '/api/v1/auth/guest';
 
     final tGuestJson = {
-      'meta': {'code': 200, 'message': 'Success'},
+      'meta': {'message': 'Success', 'success': true},
       'data': {
-        'id': null,
-        'token': 'guest-token-abc',
-        'user_id': null,
-        'name': 'Guest',
-        'status': 1,
-        'is_pending_deletion': false,
+        'access_token': 'guest-token-abc',
+        'refresh_token': 'guest-refresh-abc',
       },
     };
 
@@ -180,7 +176,7 @@ void main() {
         );
 
         expect(result, isA<LoginResponse>());
-        expect(result.token, 'guest-token-abc');
+        expect(result.data?.accessToken, 'guest-token-abc');
 
         verify(
           () => mockDio.post<Map<String, dynamic>>(
@@ -237,20 +233,26 @@ void main() {
   // ── postLoginUser ────────────────────────────────────────────────────────
 
   group('postLoginUser', () {
-    const path = '/api/v1/public/auth/login';
+    const path = '/api/v1/auth/login';
 
     final tSuccessJson = {
-      'success': true,
-      'message': 'Login successful',
+      'meta': {
+        'message': 'Login successful',
+        'success': true,
+      },
       'data': {
-        'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test',
-        'token_type': 'Bearer',
-        'expires_in': 24,
+        'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test',
+        'refresh_token': 'refresh-token-test',
+        'user': {
+          'id': '1',
+          'email': 'yivahey454@aminavin.com',
+          'name': 'Test User',
+        },
       },
     };
 
     test(
-      'should POST to /api/v1/public/auth/login and return LoginResponse',
+      'should POST to /api/v1/auth/login and return LoginResponse',
       () async {
         whenPost(
           mockDio,
@@ -258,20 +260,25 @@ void main() {
         ).thenAnswer((_) async => _resp(tSuccessJson, path: path));
 
         final result = await datasource.postLoginUser(
-          identifier: 'yivahey454@aminavin.com',
+          email: 'yivahey454@aminavin.com',
           password: 'secret123',
+          fcmToken: 'fcm-sample-token',
         );
 
         expect(result, isA<LoginResponse>());
-        expect(result.token, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test');
-        expect(result.message, 'Login successful');
+        expect(
+          result.data?.accessToken,
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test',
+        );
+        expect(result.meta?.message, 'Login successful');
 
         verify(
           () => mockDio.post<Map<String, dynamic>>(
             path,
             data: {
-              'identifier': 'yivahey454@aminavin.com',
+              'email': 'yivahey454@aminavin.com',
               'password': 'secret123',
+              'fcm_token': 'fcm-sample-token',
             },
           ),
         ).called(1);
@@ -284,8 +291,11 @@ void main() {
           type: DioExceptionType.badResponse,
           statusCode: 401,
           responseData: {
-            'success': false,
-            'message': 'invalid identifier or password',
+            'error': 'bad_request',
+            'meta': {
+              'message': 'invalid identifier or password',
+              'success': false,
+            },
           },
           path: path,
         ),
@@ -293,8 +303,9 @@ void main() {
 
       expect(
         () => datasource.postLoginUser(
-          identifier: 'yivahey454@aminavin.com',
+          email: 'yivahey454@aminavin.com',
           password: 'wrongpassword',
+          fcmToken: 'fcm-sample-token',
         ),
         throwsA(
           isA<ServerException>().having(
@@ -402,12 +413,14 @@ void main() {
     const path = '/api/v1/public/auth/login/pin';
 
     final tSuccessJson = {
-      'success': true,
-      'message': 'Login via PIN successful',
-      'token': 'pin-jwt-token',
-      'token_type': 'Bearer',
-      'expires_in': 3600,
-      'is_pin': true,
+      'meta': {
+        'message': 'Login via PIN successful',
+        'success': true,
+      },
+      'data': {
+        'access_token': 'pin-jwt-token',
+        'refresh_token': 'pin-refresh-token',
+      },
     };
 
     test(
@@ -424,9 +437,8 @@ void main() {
         );
 
         expect(result, isA<LoginResponse>());
-        expect(result.token, 'pin-jwt-token');
-        expect(result.isPin, isTrue);
-        expect(result.message, 'Login via PIN successful');
+        expect(result.data?.accessToken, 'pin-jwt-token');
+        expect(result.meta?.message, 'Login via PIN successful');
 
         verify(
           () => mockDio.post<Map<String, dynamic>>(

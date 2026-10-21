@@ -23,7 +23,7 @@ import 'package:sahaba_mobile/domains/quran/surah_model.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/home/quran_screen/search_quran_screen.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/search_bar_widget.dart';
 
@@ -421,20 +421,19 @@ class _HomeScreenState extends State<HomeScreen> {
         ? streakState.currentStreak
         : 1;
 
-    // Ukuran icon = ukuran frame asli di Figma (bukan ukuran wrapper 56).
     final menuItems = [
       _MenuItem(
         label: 'Al - Quran',
-        icon: AppIcons.homeQuran, // Figma 1284:2835 (48 x 48)
+        icon: AppIcons.homeQuran,
         iconWidth: 48,
         iconHeight: 48,
         onTap: () => context.push(
-          '${RouterPath.mainPath}/${RouterPath.quranPath}',
+          '$currentLocation/${RouterPath.quranPath}',
         ),
       ),
       _MenuItem(
         label: 'Studio Qur’an',
-        icon: AppIcons.homeQiraah, // Figma 1284:2878 (BARU)
+        icon: AppIcons.homeQiraah,
         iconWidth: 56,
         iconHeight: 52.12,
         iconDy: 4.06,
@@ -444,7 +443,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       _MenuItem(
         label: 'Jadwal Salat',
-        icon: AppIcons.homeSalat, // Figma 1284:2892 (42 x 42)
+        icon: AppIcons.homeSalat,
         iconWidth: 42,
         iconHeight: 42,
         badgeCount: streakCount,
@@ -454,7 +453,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       _MenuItem(
         label: 'Kalendar',
-        icon: AppIcons.homeCalendar, // Figma 1284:2914 (40 x 40)
+        icon: AppIcons.homeCalendar,
         iconWidth: 40,
         iconHeight: 40,
         onTap: () => context.push(

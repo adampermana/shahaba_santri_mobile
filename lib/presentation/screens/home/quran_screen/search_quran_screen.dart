@@ -13,9 +13,9 @@ import 'package:sahaba_mobile/domains/quran/verses/indopak.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/juz_card.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/quran_search_bar.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/surah_card.dart';
+import 'package:sahaba_mobile/presentation/screens/home/quran_screen/widgets/juz_card.dart';
+import 'package:sahaba_mobile/presentation/screens/home/quran_screen/widgets/quran_search_bar.dart';
+import 'package:sahaba_mobile/presentation/screens/home/quran_screen/widgets/surah_card.dart';
 import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_appbar_widget.dart';
 
@@ -127,7 +127,7 @@ class _SearchQuranScreenState extends State<SearchQuranScreen> {
         style: textTheme.titleLarge?.copyWith(
           fontSize: 16,
           fontWeight: FontWeight.w500,
-          color: ColorPalette.kWhite,
+          color: ColorPalette.kBlack,
         ),
       ),
       actions: [
@@ -138,7 +138,7 @@ class _SearchQuranScreenState extends State<SearchQuranScreen> {
             width: 24,
             height: 24,
             colorFilter: const ColorFilter.mode(
-              ColorPalette.kWhite,
+              ColorPalette.kBlack,
               BlendMode.srcIn,
             ),
           ),

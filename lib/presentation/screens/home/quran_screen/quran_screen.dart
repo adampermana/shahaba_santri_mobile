@@ -9,30 +9,21 @@ import 'package:sahaba_mobile/domains/quran/quran_detail_model.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/routers/router_path.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/search_quran_screen.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/juz_card.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/quran_search_bar.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/quran_tab_bar.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/surah_card.dart';
+import 'package:sahaba_mobile/presentation/screens/home/quran_screen/search_quran_screen.dart';
+import 'package:sahaba_mobile/presentation/screens/home/quran_screen/widgets/juz_card.dart';
+import 'package:sahaba_mobile/presentation/screens/home/quran_screen/widgets/quran_search_bar.dart';
+import 'package:sahaba_mobile/presentation/screens/home/quran_screen/widgets/quran_tab_bar.dart';
+import 'package:sahaba_mobile/presentation/screens/home/quran_screen/widgets/surah_card.dart';
 import 'package:sahaba_mobile/presentation/widgets/apps_scaffold.dart';
 
-class QuranScreen extends StatelessWidget {
+class QuranScreen extends StatefulWidget {
   const QuranScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const _QuranView();
-  }
+  State<QuranScreen> createState() => _QuranScreenState();
 }
 
-class _QuranView extends StatefulWidget {
-  const _QuranView();
-
-  @override
-  State<_QuranView> createState() => _QuranViewState();
-}
-
-class _QuranViewState extends State<_QuranView> {
+class _QuranScreenState extends State<QuranScreen> {
   late final PageController _pageController;
 
   @override
@@ -75,7 +66,9 @@ class _QuranViewState extends State<_QuranView> {
                 return QuranTabBar(
                   currentIndex: state.currentTab,
                   onTabChanged: (index) {
-                    context.read<QuranBloc>().add(QuranEvent.changeTab(index));
+                    context.read<QuranBloc>().add(
+                      QuranEvent.changeTab(index),
+                    );
                   },
                 );
               },
@@ -277,7 +270,7 @@ class _SurahList extends StatelessWidget {
     }
 
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
       itemCount: surahs.length,
       separatorBuilder: (_, _) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
@@ -341,7 +334,7 @@ class _JuzList extends StatelessWidget {
     }
 
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
       itemCount: juzList.length,
       separatorBuilder: (_, _) => const SizedBox(height: 8),
       itemBuilder: (context, index) {

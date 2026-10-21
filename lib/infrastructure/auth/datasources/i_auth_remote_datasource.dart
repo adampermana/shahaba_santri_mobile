@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:sahaba_mobile/domains/auth/login/login_respon_ai.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_response.dart';
+import 'package:sahaba_mobile/domains/auth/login/login_respon_ai.dart';
 import 'package:sahaba_mobile/domains/auth/password/forgot_password_response.dart';
 import 'package:sahaba_mobile/domains/auth/password/reset_password_response.dart';
 import 'package:sahaba_mobile/domains/auth/pin/pin_response.dart';
 import 'package:sahaba_mobile/domains/auth/pin/request_reset_pin_response.dart';
+import 'package:sahaba_mobile/domains/auth/profile/user_profile_response.dart';
 import 'package:sahaba_mobile/domains/auth/register/register_response.dart';
 import 'package:sahaba_mobile/domains/auth/resend_otp/resend_otp_response.dart';
 import 'package:sahaba_mobile/domains/auth/validation_email/validation_email_response.dart';
@@ -19,9 +20,16 @@ abstract class IAuthRemoteDatasource {
   });
 
   Future<LoginResponse> postLoginUser({
-    required String identifier,
+    required String email,
     required String password,
+    required String fcmToken,
   });
+
+  Future<LoginResponse> postRefreshToken({
+    required String refreshToken,
+  });
+
+  Future<UserProfileResponse> getUserProfile();
 
   Future<RegisterResponse> postRegister({
     required String name,

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:sahaba_mobile/domains/auth/hive/auth_data_hive.dart';
 import 'package:sahaba_mobile/domains/auth/hive/auth_data_katanara_hive.dart';
 import 'package:sahaba_mobile/domains/auth/login/login_respon_ai.dart';
@@ -7,6 +8,7 @@ import 'package:sahaba_mobile/domains/auth/password/forgot_password_response.dar
 import 'package:sahaba_mobile/domains/auth/password/reset_password_response.dart';
 import 'package:sahaba_mobile/domains/auth/pin/pin_response.dart';
 import 'package:sahaba_mobile/domains/auth/pin/request_reset_pin_response.dart';
+import 'package:sahaba_mobile/domains/auth/profile/user_profile_response.dart';
 import 'package:sahaba_mobile/domains/auth/register/register_response.dart';
 import 'package:sahaba_mobile/domains/auth/resend_otp/resend_otp_response.dart';
 import 'package:sahaba_mobile/domains/auth/validation_email/validation_email_response.dart';
@@ -15,6 +17,7 @@ import 'package:sahaba_mobile/infrastructure/auth/datasources/auth_local_datasou
 import 'package:sahaba_mobile/infrastructure/auth/datasources/i_auth_remote_datasource.dart';
 import 'package:sahaba_mobile/infrastructure/failures/failures.dart';
 import 'package:sahaba_mobile/infrastructure/services/firebase_messaging_service.dart';
+import 'package:sahaba_mobile/injector.dart';
 
 part 'auth_repositories.dart';
 
@@ -28,9 +31,16 @@ abstract class IAuthRepositories {
   });
 
   Future<Either<ServerFailures, LoginResponse>> postLoginUser({
-    required String identifier,
+    required String email,
     required String password,
+    // required String fcmToken,
   });
+
+  Future<Either<ServerFailures, LoginResponse>> postRefreshToken({
+    required String refreshToken,
+  });
+
+  Future<Either<ServerFailures, UserProfileResponse>> getUserProfile();
 
   Future<Either<ServerFailures, RegisterResponse>> postRegister({
     required String name,

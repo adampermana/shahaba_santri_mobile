@@ -130,7 +130,7 @@ Future<void> _initQuranFeature() async {
     ..registerLazySingleton<IQuranRepository>(
       () => QuranRepository(sl()),
     )
-    ..registerFactory(() => QuranBloc(sl()))
+    ..registerLazySingleton(() => QuranBloc(sl()))
     ..registerFactory(() => QuranDetailCubit(sl()))
     ..registerLazySingleton(() => LastReadCubit(sl()));
 }

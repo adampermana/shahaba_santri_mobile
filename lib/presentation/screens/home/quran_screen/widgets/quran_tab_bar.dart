@@ -12,8 +12,8 @@ class QuranTabBar extends StatelessWidget {
 
   static const _tabs = ['Surah', 'Juz'];
   static const _activeColor = Color(0xFF007D56);
-  static const _inactiveColor = Color(0xFFA6A6A6);
-  static const _borderColor = Color(0x33E8E8E8); // rgba(232, 232, 232, 0.2)
+  static const _inactiveColor = Color(0xFF5E5E5E);
+  static const _borderColor = Color(0x14000000); // rgba(0, 0, 0, 0.08)
 
   @override
   Widget build(BuildContext context) {

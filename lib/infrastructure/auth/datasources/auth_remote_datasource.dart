@@ -22,26 +22,49 @@ class AuthRemoteDatasource implements IAuthRemoteDatasource {
 
   @override
   Future<LoginResponse> postLoginUser({
-    required String identifier,
+    required String email,
     required String password,
+    required String fcmToken,
   }) async {
     try {
       final response = await _dio.post<Map<String, dynamic>>(
-        '/api/v1/public/auth/login',
+        '/api/v1/auth/login',
         data: {
-          'identifier': identifier,
+          'email': email,
           'password': password,
+          'fcm_token': fcmToken,
         },
       );
       return LoginResponse.fromJson(response.data!);
     } on DioException catch (e) {
-      if (e.type == DioExceptionType.badResponse &&
-          e.response?.statusCode == 401) {
-        final raw = e.response?.data;
-        if (raw is Map<String, dynamic>) {
-          return LoginResponse.fromJson(raw);
-        }
-      }
+      throw ServerException.withError(e);
+    }
+  }
+
+  @override
+  Future<LoginResponse> postRefreshToken({
+    required String refreshToken,
+  }) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/api/v1/auth/refresh',
+        data: {'refresh_token': refreshToken},
+        options: Options(extra: {'skipRefresh': true}),
+      );
+      return LoginResponse.fromJson(response.data!);
+    } on DioException catch (e) {
+      throw ServerException.withError(e);
+    }
+  }
+
+  @override
+  Future<UserProfileResponse> getUserProfile() async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/api/v1/auth/profile',
+      );
+      return UserProfileResponse.fromJson(response.data!);
+    } on DioException catch (e) {
       throw ServerException.withError(e);
     }
   }
@@ -311,8 +334,7 @@ class AuthRemoteDatasource implements IAuthRemoteDatasource {
       return LoginResponse.fromJson(response.data!);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.badResponse &&
-          (e.response?.statusCode == 401 ||
-              e.response?.statusCode == 400)) {
+          (e.response?.statusCode == 401 || e.response?.statusCode == 400)) {
         final raw = e.response?.data;
         if (raw is Map<String, dynamic>) {
           return LoginResponse.fromJson(raw);

@@ -21,7 +21,7 @@ import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extensi
 import 'package:sahaba_mobile/infrastructure/helpers/helper.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
-import 'package:sahaba_mobile/presentation/screens/quran_screen/widgets/bottom_sheet__select_quran_widgets.dart';
+import 'package:sahaba_mobile/presentation/screens/home/quran_screen/widgets/bottom_sheet__select_quran_widgets.dart';
 import 'package:sahaba_mobile/presentation/widgets/cache_images.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_dialogs_widget.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
@@ -582,7 +582,7 @@ PreferredSizeWidget _detailAppBar(
   return AppBar(
     toolbarHeight: 50,
     automaticallyImplyLeading: false,
-    backgroundColor: const Color(0xffF0E9E0),
+    backgroundColor: ColorPalette.kWhite,
     elevation: 0,
     scrolledUnderElevation: 0,
     surfaceTintColor: Colors.transparent,
@@ -599,7 +599,7 @@ PreferredSizeWidget _detailAppBar(
             height: 24,
           ),
           Text(
-            'Kembali',
+            'BacaQur`an',
             style: textTheme.titleSmall?.copyWith(
               color: ColorPalette.contentSecondary,
               fontWeight: FontWeight.w500,
@@ -620,10 +620,13 @@ PreferredSizeWidget _detailAppBar(
       const SizedBox(width: 16),
       GestureDetector(
         onTap: onSettingTap,
-        child: SvgPicture.asset(
-          AppIcons.settings4Line,
-          width: 24,
-          height: 24,
+        child: const Text(
+          'Aa',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
+          ),
         ),
       ),
       const SizedBox(width: 16),
@@ -700,7 +703,7 @@ Widget _tabItem(
         width: context.mediaQuerySize.width * 0.34,
         padding: const EdgeInsets.only(top: 16),
         decoration: BoxDecoration(
-          color: const Color(0xffF0E9E0),
+          color: ColorPalette.kWhite,
           border: Border(
             bottom: BorderSide(
               color: isActive ? ColorPalette.primaryColor : Colors.transparent,
@@ -1101,6 +1104,7 @@ Widget _verseRow(
                   },
                 ),
                 const SizedBox(width: 12),
+                // arabic text
                 Expanded(
                   child: Text.rich(
                     TextSpan(
@@ -1116,6 +1120,14 @@ Widget _verseRow(
                             fontWeight: FontWeight.w500,
                           ),
                         ),
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 4),
+                            child: _StickyNoteButton(verse: verse),
+                          ),
+                        ),
+
                         // Number Ayat Arabic
                         WidgetSpan(
                           alignment: PlaceholderAlignment.middle,
@@ -1561,53 +1573,70 @@ Widget _verseNumberBadge(
 }) {
   final textTheme = Theme.of(context).textTheme;
 
-  return SizedBox.square(
-    dimension: 30,
-    child: isSelected
-        ? Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: _verseBadgeFigmaGreen,
-                width: 1.5,
-              ),
-            ),
-            padding: const EdgeInsets.all(2),
-            child: Container(
-              decoration: const BoxDecoration(
-                color: _verseBadgeFigmaGreen,
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                '$number',
-                style: textTheme.labelSmall?.copyWith(
-                  color: ColorPalette.kWhite,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  height: 1,
-                ),
-              ),
-            ),
-          )
-        : Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: _verseBadgeFigmaGreen,
-              ),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              '$number',
-              style: textTheme.labelSmall?.copyWith(
-                color: ColorPalette.kBlack,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                height: 1,
-              ),
+  if (isSelected) {
+    return SizedBox.square(
+      dimension: 30,
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: _verseBadgeFigmaGreen, width: 1.5),
+        ),
+        padding: const EdgeInsets.all(2),
+        child: Container(
+          decoration: const BoxDecoration(
+            color: _verseBadgeFigmaGreen,
+            shape: BoxShape.circle,
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            '$number',
+            style: textTheme.labelSmall?.copyWith(
+              color: ColorPalette.kWhite,
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              height: 1,
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  // number of ayat + bookmark
+  return Column(
+    mainAxisSize: MainAxisSize.min, // tinggi mengikuti isi, bukan 30
+    children: [
+      Container(
+        width: 30,
+        height: 30,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: _verseBadgeFigmaGreen),
+        ),
+        child: Text(
+          '$number',
+          style: textTheme.labelSmall?.copyWith(
+            color: ColorPalette.kBlack,
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            height: 1,
+          ),
+        ),
+      ),
+      const SizedBox(height: 4),
+      IconButton(
+        onPressed: () {},
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints.tightFor(width: 24, height: 24),
+        style: IconButton.styleFrom(
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+        icon: SvgPicture.asset(
+          AppIcons.bookmarkFilled,
+        ),
+      ),
+    ],
   );
 }
 
@@ -1635,4 +1664,345 @@ Widget _errorState(BuildContext context, String message) {
       ),
     ),
   );
+}
+
+class _StickyNoteButton extends StatefulWidget {
+  const _StickyNoteButton({required this.verse});
+
+  final QuranVerseModel verse;
+
+  @override
+  State<_StickyNoteButton> createState() => _StickyNoteButtonState();
+}
+
+class _StickyNoteButtonState extends State<_StickyNoteButton>
+    with SingleTickerProviderStateMixin {
+  final GlobalKey _key = GlobalKey();
+  OverlayEntry? _overlayEntry;
+  late final AnimationController _animController;
+  late final Animation<double> _fadeAnim;
+  late final Animation<double> _scaleAnim;
+  late final _tooltipArrowWidth = 14.25;
+  late final _tooltipArrowHeight = 11.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _fadeAnim = CurvedAnimation(
+      parent: _animController,
+      curve: Curves.easeOut,
+      reverseCurve: Curves.easeIn,
+    );
+    _scaleAnim = Tween<double>(begin: 0.85, end: 1).animate(
+      CurvedAnimation(
+        parent: _animController,
+        curve: Curves.easeOutBack,
+        reverseCurve: Curves.easeIn,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _removeOverlay();
+    _animController.dispose();
+    super.dispose();
+  }
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  Future<void> _dismiss() async {
+    await _animController.reverse();
+    _removeOverlay();
+  }
+
+  void _toggleTooltip() {
+    if (_overlayEntry != null) {
+      unawaited(_dismiss());
+      return;
+    }
+
+    final box = _key.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null) return;
+
+    final position = box.localToGlobal(Offset.zero);
+    final size = box.size;
+    final media = MediaQuery.of(context);
+    final screenWidth = media.size.width;
+    final screenHeight = media.size.height;
+
+    const tooltipWidth = 210.0;
+    const screenPadding = 12.0;
+    const gap = 4.0;
+    const estimatedHeight = 160.0;
+
+    final iconCenterX = position.dx + size.width / 2;
+
+    // Sisi kanan card sejajar dengan sisi kanan ekor, ekor tepat di bawah/atas ikon
+    var left = iconCenterX + _tooltipArrowWidth / 2 - tooltipWidth;
+    left = left
+        .clamp(screenPadding, screenWidth - tooltipWidth - screenPadding)
+        .toDouble();
+
+    final arrowCenterX = (iconCenterX - left)
+        .clamp(
+          _tooltipArrowWidth / 2 + 8,
+          tooltipWidth - _tooltipArrowWidth / 2,
+        )
+        .toDouble();
+
+    // Kalau ruang di bawah tidak cukup, tampilkan di atas ikon
+    final showBelow =
+        position.dy + size.height + gap + estimatedHeight <
+        screenHeight - media.padding.bottom;
+
+    _overlayEntry = OverlayEntry(
+      builder: (ctx) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () => unawaited(_dismiss()),
+        child: Stack(
+          children: [
+            Positioned(
+              left: left,
+              top: showBelow ? position.dy + size.height + gap : null,
+              bottom: showBelow ? null : screenHeight - position.dy + gap,
+              child: FadeTransition(
+                opacity: _fadeAnim,
+                child: ScaleTransition(
+                  scale: _scaleAnim,
+                  alignment: Alignment(
+                    (arrowCenterX / tooltipWidth) * 2 - 1,
+                    showBelow ? -1 : 1,
+                  ),
+                  child: _StickyNoteTooltipCard(
+                    verse: widget.verse,
+                    width: tooltipWidth,
+                    arrowCenterX: arrowCenterX,
+                    pointUp: showBelow,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+    unawaited(_animController.forward());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      key: _key,
+      behavior: HitTestBehavior.opaque,
+      onTap: _toggleTooltip,
+      child: const CacheImageOrSvg(
+        source: AppIcons.stickyNote,
+        width: 24,
+        height: 24,
+      ),
+    );
+  }
+}
+
+class _StickyNoteTooltipCard extends StatelessWidget {
+  const _StickyNoteTooltipCard({
+    required this.verse,
+    required this.width,
+    required this.arrowCenterX,
+    required this.pointUp,
+  });
+
+  final QuranVerseModel verse;
+  final double width;
+  final double arrowCenterX;
+  final bool pointUp;
+
+  static const _bgColor = Color(0xFFFEF6DF);
+  static const _bodyColor = Color(0xFF545454);
+  static const _padding = 12.0;
+  final _tooltipArrowWidth = 14.25;
+  final _tooltipArrowHeight = 11.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Material(
+      color: Colors.transparent,
+      child: SizedBox(
+        width: width,
+        child: CustomPaint(
+          painter: _TooltipBubblePainter(
+            color: _bgColor,
+            arrowCenterX: arrowCenterX,
+            pointUp: pointUp,
+          ),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              _padding,
+              _padding + (pointUp ? _tooltipArrowHeight : 0),
+              _padding,
+              _padding + (pointUp ? 0 : _tooltipArrowHeight),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.edit, size: 16, color: Colors.black),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Catatan Anda',
+                      style: textTheme.labelLarge?.copyWith(
+                        color: Colors.black,
+                        fontSize: 12,
+                        height: 28 / 12,
+                        fontFamily: 'Satoshi',
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  // Ganti dengan field catatan kalau modelnya punya
+                  _cleanQuranText(verse.translation).trim(),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: _bodyColor,
+                    fontSize: 12,
+                    height: 20 / 12,
+                    fontFamily: 'Satoshi',
+                    fontWeight: FontWeight.w400,
+                  ),
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Menggambar card + ekor sebagai satu bentuk, lengkap dengan shadow.
+class _TooltipBubblePainter extends CustomPainter {
+  _TooltipBubblePainter({
+    required this.color,
+    required this.arrowCenterX,
+    required this.pointUp,
+  });
+
+  final Color color;
+  final double arrowCenterX;
+  final bool pointUp;
+
+  static const _r = 8.0;
+
+  // Shadow dari Figma: (offsetY, blur, alpha)
+  static const _shadows = [
+    (2.0, 4.0, 0.08),
+    (6.0, 6.0, 0.07),
+    (14.0, 9.0, 0.04),
+    (26.0, 10.0, 0.01),
+  ];
+
+  Path _buildPath(Size size) {
+    const _tooltipArrowWidth = 14.25;
+    const _tooltipArrowHeight = 11.0;
+    final w = size.width;
+    final top = pointUp ? _tooltipArrowHeight : 0.0;
+    final bottom = pointUp ? size.height : size.height - _tooltipArrowHeight;
+    final hw = _tooltipArrowWidth / 2;
+    final cx = arrowCenterX;
+    // Ekor menempel di pojok kanan -> sudut itu siku & ekor berbentuk segitiga siku
+    final flush = cx + hw >= w - 0.5;
+    const radius = Radius.circular(_r);
+
+    final p = Path()..moveTo(_r, top);
+
+    // ===== sisi atas + sisi kanan bagian atas =====
+    if (pointUp) {
+      if (flush) {
+        p
+          ..lineTo(w - _tooltipArrowWidth, top)
+          ..lineTo(w, 0);
+      } else {
+        p
+          ..lineTo(cx - hw, top)
+          ..lineTo(cx, 0)
+          ..lineTo(cx + hw, top)
+          ..lineTo(w - _r, top)
+          ..arcToPoint(Offset(w, top + _r), radius: radius);
+      }
+    } else {
+      p
+        ..lineTo(w - _r, top)
+        ..arcToPoint(Offset(w, top + _r), radius: radius);
+    }
+
+    // ===== sisi kanan -> sisi bawah =====
+    if (pointUp) {
+      p
+        ..lineTo(w, bottom - _r)
+        ..arcToPoint(Offset(w - _r, bottom), radius: radius)
+        ..lineTo(_r, bottom);
+    } else if (flush) {
+      p
+        ..lineTo(w, size.height)
+        ..lineTo(w - _tooltipArrowWidth, bottom)
+        ..lineTo(_r, bottom);
+    } else {
+      p
+        ..lineTo(w, bottom - _r)
+        ..arcToPoint(Offset(w - _r, bottom), radius: radius)
+        ..lineTo(cx + hw, bottom)
+        ..lineTo(cx, size.height)
+        ..lineTo(cx - hw, bottom)
+        ..lineTo(_r, bottom);
+    }
+
+    // ===== sisi kiri =====
+    p
+      ..arcToPoint(Offset(0, bottom - _r), radius: radius)
+      ..lineTo(0, top + _r)
+      ..arcToPoint(Offset(_r, top), radius: radius)
+      ..close();
+
+    return p;
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final bubble = _buildPath(size);
+
+    for (final (dy, blur, alpha) in _shadows) {
+      canvas.drawPath(
+        bubble.shift(Offset(0, dy)),
+        Paint()
+          ..color = Colors.black.withValues(alpha: alpha)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, blur / 2),
+      );
+    }
+
+    canvas.drawPath(bubble, Paint()..color = color);
+  }
+
+  @override
+  bool shouldRepaint(_TooltipBubblePainter old) =>
+      old.color != color ||
+      old.arrowCenterX != arrowCenterX ||
+      old.pointUp != pointUp;
 }
