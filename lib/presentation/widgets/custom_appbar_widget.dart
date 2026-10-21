@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sahaba_mobile/infrastructure/extension/datetime_extension.dart';
 import 'package:sahaba_mobile/infrastructure/extension/device_responsive_extension.dart';
@@ -20,6 +21,7 @@ class CustomAppBar {
     double? elevation,
     double? leadingWidth,
     PreferredSizeWidget? bottom,
+    SystemUiOverlayStyle? systemOverlayStyle,
   }) => AppBar(
     key: key,
     automaticallyImplyLeading: automaticallyImplyLeading,
@@ -35,6 +37,7 @@ class CustomAppBar {
     surfaceTintColor: Colors.transparent,
     bottom: bottom,
     backgroundColor: backgroundColor,
+    systemOverlayStyle: systemOverlayStyle,
   );
 
   // 2. Complex AppBar  (search + icon row in title)

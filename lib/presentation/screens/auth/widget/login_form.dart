@@ -11,7 +11,6 @@ import 'package:sahaba_mobile/injector.dart';
 import 'package:sahaba_mobile/presentation/app/resources/color_palette.dart';
 import 'package:sahaba_mobile/presentation/app/resources/icons.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/auth_card.dart';
-import 'package:sahaba_mobile/presentation/screens/auth/widget/bottom_sheet_pin.dart';
 import 'package:sahaba_mobile/presentation/screens/auth/widget/forgot_pin_flow.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_snackbar.dart';
 import 'package:sahaba_mobile/presentation/widgets/custom_textfield.dart';

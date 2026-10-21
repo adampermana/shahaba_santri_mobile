@@ -51,7 +51,7 @@ class CalendarGrid extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: isSunday ? const Color(0xFFD44333) : ColorPalette.kWhite,
+              color: isSunday ? const Color(0xFFD44333) : ColorPalette.kBlack,
             ),
           ),
         ),
@@ -133,8 +133,15 @@ class _CalendarDayCell extends StatelessWidget {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
+              gradient: isSelected
+                  ? const LinearGradient(
+                      begin: Alignment.center,
+                      end: Alignment.bottomCenter,
+                      colors: [Color(0xFF09383B), Color(0xFF1898A1)],
+                    )
+                  : null,
               color: isSelected
-                  ? ColorPalette.primaryColor
+                  ? null
                   : isToday
                   ? Colors.white.withValues(alpha: 0.20)
                   : Colors.transparent,
@@ -150,7 +157,7 @@ class _CalendarDayCell extends StatelessWidget {
                           '$day',
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: ColorPalette.kWhite,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -175,7 +182,7 @@ class _CalendarDayCell extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: ColorPalette.kWhite,
+                        color: ColorPalette.contentTertiary,
                       ),
                     ),
                   ),

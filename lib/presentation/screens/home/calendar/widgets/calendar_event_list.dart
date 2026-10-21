@@ -90,9 +90,14 @@ class _EventRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected
-              ? Colors.white.withValues(alpha: 0.08)
-              : ColorPalette.scaffoldBackground,
+          gradient: isSelected
+              ? const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFF09383B), Color(0xFF1898A1)],
+                )
+              : null,
+          color: isSelected ? null : ColorPalette.scaffoldBackground,
           border: isLast
               ? null
               : const Border(
@@ -100,11 +105,6 @@ class _EventRow extends StatelessWidget {
                     color: ColorPalette.borderTransparent,
                   ),
                 ),
-          // borderRadius: isFirst
-          //     ? const BorderRadius.vertical(top: Radius.circular(8))
-          //     : isLast
-          //     ? BorderRadius.zero
-          //     : BorderRadius.zero,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,49 +148,31 @@ class _EventRow extends StatelessWidget {
                           : 14,
                       color: isSelected
                           ? ColorPalette.kWhite
-                          : ColorPalette.kWhite,
+                          : ColorPalette.primaryColor,
                     ),
                   ),
                   Text(
-                    event.type == 'holiday' ? 'Hari Libur' : 'Cuti Bersama',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    hijriDateStr,
                     style: textTheme.bodySmall?.copyWith(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: isSelected
                           ? const Color(0xFFDDDDDD)
-                          : ColorPalette.inverseSecondary,
+                          : ColorPalette.contentTertiary,
                     ),
                   ),
                 ],
               ),
             ),
-            Column(
-              spacing: 4,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  dateStr,
-                  style: textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: isSelected
-                        ? ColorPalette.kWhite
-                        : ColorPalette.primaryColor,
-                  ),
-                ),
-                Text(
-                  hijriDateStr,
-                  style: textTheme.bodySmall?.copyWith(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: isSelected
-                        ? const Color(0xFFDDDDDD)
-                        : ColorPalette.inverseSecondary,
-                  ),
-                ),
-              ],
+            Text(
+              dateStr,
+              style: textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: isSelected
+                    ? ColorPalette.kWhite
+                    : ColorPalette.primaryColor,
+              ),
             ),
           ],
         ),

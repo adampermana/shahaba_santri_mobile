@@ -35,7 +35,7 @@ class CalendarNavHeader extends StatelessWidget {
               style: textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
                 fontSize: 16,
-                color: ColorPalette.kWhite,
+                color: ColorPalette.primaryColor,
               ),
             ),
             const SizedBox(height: 4),
@@ -67,11 +67,13 @@ class _NavArrowButton extends StatelessWidget {
 
     return Container(
       decoration: ShapeDecoration(
-        color: Colors.white.withValues(alpha: 0.12),
+        color: ColorPalette.surfaceTertiary,
         shape: RoundedRectangleBorder(
-          side: const BorderSide(
+          side: BorderSide(
             strokeAlign: BorderSide.strokeAlignOutside,
-            color: Color(0x51E8E8E8),
+            color: ColorPalette.kBlack.withValues(
+              alpha: 0.08,
+            ) /* semantic-border-transparent */,
           ),
           borderRadius: BorderRadius.circular(16),
         ),
@@ -86,7 +88,9 @@ class _NavArrowButton extends StatelessWidget {
             width: 24,
             height: 24,
             colorFilter: ColorFilter.mode(
-              isDisabled ? ColorPalette.contentDisabled : ColorPalette.kWhite,
+              isDisabled
+                  ? ColorPalette.contentDisabled
+                  : ColorPalette.primaryColor,
               BlendMode.srcIn,
             ),
           ),

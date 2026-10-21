@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -41,66 +42,73 @@ class _QuranScreenState extends State<QuranScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      backgroundColor: ColorPalette.surfaceSecondary,
-      appBar: _buildAppBar(context),
-      body: BlocListener<QuranBloc, QuranState>(
-        listenWhen: (prev, curr) => prev.currentTab != curr.currentTab,
-        listener: (context, state) {
-          if (_pageController.hasClients &&
-              _pageController.page?.round() != state.currentTab) {
-            unawaited(
-              _pageController.animateToPage(
-                state.currentTab,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              ),
-            );
-          }
-        },
-        child: Column(
-          children: [
-            BlocBuilder<QuranBloc, QuranState>(
-              buildWhen: (prev, curr) => prev.currentTab != curr.currentTab,
-              builder: (context, state) {
-                return QuranTabBar(
-                  currentIndex: state.currentTab,
-                  onTabChanged: (index) {
-                    context.read<QuranBloc>().add(
-                      QuranEvent.changeTab(index),
-                    );
-                  },
-                );
-              },
-            ),
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  context.read<QuranBloc>().add(QuranEvent.changeTab(index));
-                },
-                children: [
-                  BlocBuilder<QuranBloc, QuranState>(
-                    buildWhen: (prev, curr) =>
-                        prev.surahsLoading != curr.surahsLoading ||
-                        prev.surahsError != curr.surahsError ||
-                        prev.surahs != curr.surahs,
-                    builder: (context, state) => _SurahList(state: state),
-                  ),
-                  BlocBuilder<QuranBloc, QuranState>(
-                    buildWhen: (prev, curr) =>
-                        prev.juzLoading != curr.juzLoading ||
-                        prev.juzError != curr.juzError ||
-                        prev.juzList != curr.juzList,
-                    builder: (context, state) => _JuzList(state: state),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: ColorPalette.surfaceSecondary,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
       ),
-    );
+      child: AppScaffold(
+        backgroundColor: ColorPalette.surfaceSecondary,
+        appBar: _buildAppBar(context),
+        body: BlocListener<QuranBloc, QuranState>(
+          listenWhen: (prev, curr) => prev.currentTab != curr.currentTab,
+          listener: (context, state) {
+            if (_pageController.hasClients &&
+                _pageController.page?.round() != state.currentTab) {
+              unawaited(
+                _pageController.animateToPage(
+                  state.currentTab,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                ),
+              );
+            }
+          },
+          child: Column(
+            children: [
+              BlocBuilder<QuranBloc, QuranState>(
+                buildWhen: (prev, curr) => prev.currentTab != curr.currentTab,
+                builder: (context, state) {
+                  return QuranTabBar(
+                    currentIndex: state.currentTab,
+                    onTabChanged: (index) {
+                      context.read<QuranBloc>().add(
+                        QuranEvent.changeTab(index),
+                      );
+                    },
+                  );
+                },
+              ),
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    context.read<QuranBloc>().add(QuranEvent.changeTab(index));
+                  },
+                  children: [
+                    BlocBuilder<QuranBloc, QuranState>(
+                      buildWhen: (prev, curr) =>
+                          prev.surahsLoading != curr.surahsLoading ||
+                          prev.surahsError != curr.surahsError ||
+                          prev.surahs != curr.surahs,
+                      builder: (context, state) => _SurahList(state: state),
+                    ),
+                    BlocBuilder<QuranBloc, QuranState>(
+                      buildWhen: (prev, curr) =>
+                          prev.juzLoading != curr.juzLoading ||
+                          prev.juzError != curr.juzError ||
+                          prev.juzList != curr.juzList,
+                      builder: (context, state) => _JuzList(state: state),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ), // Column
+        ), // BlocListener (body)
+      ), // AppScaffold
+    ); // AnnotatedRegion
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
