@@ -116,13 +116,15 @@ class JadwalSholatScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   state.message,
-                                  style: const TextStyle(color: Colors.white),
+                                  style: const TextStyle(
+                                    color: ColorPalette.kBlack,
+                                  ),
                                 ),
                                 const SizedBox(height: 16),
                                 SubmitButtonStylesWidget(
                                   textButton: 'Coba Lagi',
                                   height: 50,
-                                  textButtonColor: ColorPalette.kWhite,
+                                  textButtonColor: ColorPalette.kBlack,
                                   primaryColor: ColorPalette.primaryColor,
                                   style: SubmitButtonStyle.elevated,
                                   onPressed: () => _reload(context),
@@ -248,13 +250,8 @@ class _LoadedViewState extends State<_LoadedView> {
                       horizontalPadding,
                       24 + MediaQuery.paddingOf(context).bottom,
                     ),
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Color(0x330F172A), ColorPalette.background],
-                      ),
-                    ),
+                    color: ColorPalette.scaffoldBackground,
+
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: ConstrainedBox(
@@ -647,7 +644,7 @@ class _HeaderDateNavigator extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: textTheme.titleMedium?.copyWith(
-                  color: ColorPalette.kWhite,
+                  color: ColorPalette.primaryColor,
                   fontWeight: FontWeight.w700,
                   fontSize: 16,
                 ),
@@ -658,7 +655,7 @@ class _HeaderDateNavigator extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: textTheme.bodySmall?.copyWith(
-                  color: ColorPalette.kWhite,
+                  color: ColorPalette.kBlack.withValues(alpha: 0.64),
                   fontWeight: FontWeight.w500,
                   fontSize: 12,
                 ),
@@ -709,7 +706,7 @@ class _HeaderDateArrowButton extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.16),
                 borderRadius: borderRadius,
                 border: Border.all(
-                  color: Colors.white,
+                  color: ColorPalette.kBlack.withValues(alpha: 0.1),
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -731,7 +728,7 @@ class _HeaderDateArrowButton extends StatelessWidget {
                   width: 24,
                   height: 24,
                   colorFilter: const ColorFilter.mode(
-                    ColorPalette.kWhite,
+                    ColorPalette.primaryColor,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -842,7 +839,7 @@ class _LocationChip extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.16),
                 borderRadius: borderRadius,
                 border: Border.all(
-                  color: Colors.white,
+                  color: ColorPalette.kBlack.withValues(alpha: 0.08),
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -865,7 +862,7 @@ class _LocationChip extends StatelessWidget {
                     width: 24,
                     height: 24,
                     colorFilter: const ColorFilter.mode(
-                      ColorPalette.kWhite,
+                      ColorPalette.primaryColor,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -881,7 +878,7 @@ class _LocationChip extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: textTheme.bodySmall?.copyWith(
                           fontSize: 12,
-                          color: ColorPalette.kWhite,
+                          color: ColorPalette.kBlack.withValues(alpha: 0.80),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -893,7 +890,7 @@ class _LocationChip extends StatelessWidget {
                     width: 24,
                     height: 24,
                     colorFilter: const ColorFilter.mode(
-                      ColorPalette.kWhite,
+                      ColorPalette.kBlack,
                       BlendMode.srcIn,
                     ),
                   ),

@@ -45,7 +45,7 @@ class InfoChip extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.16),
                 borderRadius: borderRadius,
                 border: Border.all(
-                  color: Colors.white,
+                  color: ColorPalette.kBlack.withValues(alpha: 0.08),
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -70,14 +70,14 @@ class InfoChip extends StatelessWidget {
                     // height: 24,
                     fit: BoxFit.cover,
                     colorFilter: const ColorFilter.mode(
-                      ColorPalette.kWhite,
+                      ColorPalette.primaryColor,
                       BlendMode.srcIn,
                     ),
                   ),
                   Text(
                     text ?? '',
                     style: textTheme.bodySmall?.copyWith(
-                      color: ColorPalette.kWhite,
+                      color: ColorPalette.kBlack.withValues(alpha: 0.80),
                     ),
                   ),
                 ],

@@ -38,11 +38,11 @@ class PrayerTimeTile extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final iconColor = isActive
         ? ColorPalette.kWhite
-        : ColorPalette.kWhite.withValues(alpha: 0.87);
+        : ColorPalette.kBlack.withValues(alpha: 0.87);
     final labelColor = isActive
         ? ColorPalette.kWhite
-        : ColorPalette.kWhite.withValues(alpha: 0.87);
-    final timeColor = isActive ? ColorPalette.kWhite : ColorPalette.kWhite;
+        : ColorPalette.kBlack.withValues(alpha: 0.80);
+    final timeColor = isActive ? ColorPalette.kWhite : ColorPalette.kBlack;
 
     final volumeColor = isActive
         ? ColorPalette.kWhite
@@ -190,12 +190,12 @@ class _PrayerCheckbox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final borderColor = isHistory
-        ? ColorPalette.kWhite.withValues(alpha: 0.38)
+        ? ColorPalette.kBlack.withValues(alpha: 0.38)
         : isChecked
-        ? (isActive ? ColorPalette.kWhite : ColorPalette.primaryColor)
+        ? (isActive ? ColorPalette.kBlack : ColorPalette.primaryColor)
         : isActive
-        ? ColorPalette.kWhite
-        : ColorPalette.kWhite.withValues(alpha: 0.65);
+        ? ColorPalette.scaffoldBackground
+        : ColorPalette.scaffoldBackground;
     final fillColor = isHistory
         ? Colors.transparent
         : isChecked
