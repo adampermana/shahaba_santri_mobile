@@ -227,7 +227,7 @@ class _LoadedViewState extends State<_LoadedView> {
               Positioned(
                 left: 0,
                 right: 0,
-                top: 0,
+                top: -20,
                 height: PrayerLandscape.heightFor(width),
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 700),
@@ -250,7 +250,14 @@ class _LoadedViewState extends State<_LoadedView> {
                       horizontalPadding,
                       24 + MediaQuery.paddingOf(context).bottom,
                     ),
-                    color: ColorPalette.scaffoldBackground,
+                    // color: ColorPalette.scaffoldBackground,
+                    decoration: const BoxDecoration(
+                      color: ColorPalette.scaffoldBackground,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(32),
+                        topRight: Radius.circular(32),
+                      ),
+                    ),
 
                     child: Align(
                       alignment: Alignment.topCenter,

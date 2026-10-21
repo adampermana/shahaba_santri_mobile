@@ -729,82 +729,92 @@ class _QiblaInfoModal extends StatelessWidget {
 
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-      backgroundColor: ColorPalette.scaffoldBackground,
+      backgroundColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
       clipBehavior: Clip.antiAlias,
-      child: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Image.asset(
-              'assets/images/motif-appbar.png',
-              height: 130,
-              fit: BoxFit.fitHeight,
-            ),
+      child: DecoratedBox(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF09383B), Color(0xFF1898A1)],
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(28, 32, 28, 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SvgPicture.asset(
-                  QiblaIcons.kalibrasi,
-                  width: 128,
-                  height: 96,
-                ),
-                const SizedBox(height: 18),
-                Text(
-                  'Tips Akurasi Kompas',
-                  textAlign: TextAlign.center,
-                  style: textTheme.titleLarge?.copyWith(
-                    color: ColorPalette.kWhite,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    height: 1.2,
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Image.asset(
+                'assets/images/motif-appbar.png',
+                height: 130,
+                fit: BoxFit.fitHeight,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(28, 32, 28, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    QiblaIcons.kalibrasi,
+                    width: 128,
+                    height: 96,
                   ),
-                ),
-                const SizedBox(height: 22),
-                Text(
-                  'Untuk mendapatkan arah kiblat yang lebih presisi, gerakkan '
-                  'ponsel Anda membentuk pola angka 8 di udara beberapa kali.',
-                  textAlign: TextAlign.justify,
-                  style: textTheme.bodyLarge?.copyWith(
-                    color: ColorPalette.inverseSecondary,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 28),
-                SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: onClose,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorPalette.primaryColor,
-                      foregroundColor: ColorPalette.kWhite,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(28),
-                      ),
-                    ),
-                    child: Text(
-                      'Tutup',
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: ColorPalette.kWhite,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.2,
-                      ),
+                  const SizedBox(height: 18),
+                  Text(
+                    'Tips Akurasi Kompas',
+                    textAlign: TextAlign.center,
+                    style: textTheme.titleLarge?.copyWith(
+                      color: ColorPalette.kWhite,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      height: 1.2,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 22),
+                  Text(
+                    'Untuk mendapatkan arah kiblat yang lebih presisi, gerakkan '
+                    'ponsel Anda membentuk pola angka 8 di udara beberapa kali.',
+                    textAlign: TextAlign.justify,
+                    style: textTheme.bodyLarge?.copyWith(
+                      color: ColorPalette.inverseSecondary,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: onClose,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ColorPalette.kWhite,
+                        foregroundColor: ColorPalette.kWhite,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(28),
+                        ),
+                      ),
+                      child: Text(
+                        'Tutup',
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: ColorPalette.kBlack,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
